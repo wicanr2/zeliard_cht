@@ -123,3 +123,4 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --hd-reference /proje
 - 42 個本地文件連結、Python 語法、JSON、IDA 索引與輸入身份核對通過；正式範本 LICENSE 保留，實際忽略規則涵蓋原始包、試作圖、收據與 go.work。
 - 最新二進位為 `1d4b472fb36fda44a59452040830205150add0890743613617a8a9f0f763ea0f`，Go metadata 記錄基底 `93b4dbd` 加未提交的本輪功能。收據另記來源檔指紋，不把此建置稱為正式版本或乾淨 tag 產物。
 - `find /project -user root -o -type d -name '*.md'` 沒有異常。依工作樹掛載檢查 Docker，執行中及已停止的相關容器均為空；沒有新映像或需要移除的被取代映像。
+- HD 功能提交 `7401bab8517e1c3dbbfeb045c7abc233fce45bd0` 已推送 `origin/main`。主機 gh API 回讀遠端 `main` 的 SHA 與本地一致，工作樹乾淨。此後只整理交接文件，沒有修改已驗證的程式或素材。
