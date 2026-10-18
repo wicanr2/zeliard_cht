@@ -1,0 +1,31 @@
+# 原始遊戲、手冊與封包不入庫。
+*.zip
+*.rar
+*.7z
+*.pdf
+*.exe
+*.EXE
+*.COM
+*.BIN
+*.SAR
+*.DRV
+*.USR
+*.CFG
+/org_game/
+/manual/
+/workplace/
+/dist-all/
+*.i64
+*.idb
+go.work
+go.work.sum
+
+# 執行期與工具產物。
+*.log
+*.tmp
+__pycache__/
+.DS_Store
+Thumbs.db
+/.agents/
+/.codex/
+/.aws/

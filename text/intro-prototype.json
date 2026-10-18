@@ -1,0 +1,6 @@
+{
+  "key": "prototype/intro/two-thousand-years",
+  "source": "Two thousand years,",
+  "translation": "兩千年前，",
+  "evidence": "ZELRES1.SAR 檔案偏移 0x109F；dosgolem 01B1:6FFB，10729940 指令、3000 cycles；繪字端尚未確認"
+}
