@@ -188,3 +188,5 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --k
 - 新二進位 SHA-256 `a899b4b8fa5887be801e20147d4ac6668649c4a3d7943d74400a51b8b5656390`，在 GUI 執行期間未替換。此次沒有增加 HD 素材或開啟新的 HD 比較，先前邊框／國王的收據仍保留原身份。
 - 窄 IDA 匯出擴充共用 ASCIIZ 繪字函式與分級索引，從原固定國王段重建；長老來源另保存輸入雜湊與位址空間，未混淆兩份段傾印。
 - 待完成：名稱輸入／讀檔 UI、Yes/No、其他商店與遊戲文字、其餘 HD 圖面、音效輸出、戰鬥及實體手把。最新稽核、GitHub 提交與容器清理結果在收尾追加。
+- 收尾稽核通過：42 個自有來源檔、29 個原版檔案、882 個執行器快照檔案、65 個本地文件連結；原始包、LICENSE、IDA 索引與輸入身份相符。`workplace/current-audit-sage-save.json` 保存當輪身份，沒有原版素材加入 Git。
+- 功能提交 `1f40ff9326485f5ab612b85c8eb9a05254e38b2a` 已推送私人儲存庫；主機 gh 回讀 main 相符，visibility 仍為 private。所有本專案探針／GUI／IDA 容器已回收，擁有權自檢無異常，沒有修改其他專案資源。
