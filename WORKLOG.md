@@ -356,3 +356,4 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --k
 - 既有navigation-v3的gate-steady已在放開後run250k，steps226850000／cycles232759171，再正常Up250k／run20m入洞。因此不另跑重複原版研究。GUI3只改tap_steps250k、確認keyup、release250k、再辨圖；畫格參考與v2逐byte相同，沒有新增相位或碰撞容差，時間與次數上限不變。
 - GUI3同52443權威exit0，正常冷F7、買50、城鎮不用、石門、洞窟選用、消耗、重開空欄及返回城鎮950完成。實際放開後錨點264→248→232且持鍵空；14張實圖目視，26項原版圖示／選框／金額／關閉／回城RGB比較零差。58次正常按放、116筆確認，最長0.121秒；389固定輸入、原件、自建存檔及copy2 mtime不變，capture-tail正常結束、容器空、擁有權異常0。保留paragraph18／kind2／first_difference242舊文字安全退回；HD關閉、生命滿80，不驗受傷恢復量。GUI1／2失敗收據不改。
 - 根端另讀使用訊息、空欄及返回三張實際PNG，記 `root-gui-review-v3.json`。主入口在GUI3稽核通過後同步b8c1be29，舊別名保留；完整 `current-audit.json`通過74自有檔、43來源／10鍵序、29原件、882快照、48點配對與150點回歸、GUI3與兩次失敗身份。README、現況、工作清單及驗證矩陣已更新；沒有新正式版號或封包，下一步HUD與場景名稱，提交核對待追加。
+- 功能提交 `edb006ed51a0630e9f103095cf0b7ec60a71ca55`已推送，主機gh回讀遠端main相同，儲存庫仍PRIVATE。提交後以FEATURE_COMMIT核對43來源及10鍵序逐檔符合該功能提交，完整稽核再次PASS。主入口b8c1be29、151文件連結有效、容器空、擁有權異常0；74自有檔不含原版、圖面、字型或收據。完整中文／HD、音效、戰鬥、實體手把與正式平台包仍未完成或未驗。
