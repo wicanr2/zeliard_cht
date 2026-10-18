@@ -401,3 +401,4 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --k
 - pair-v5同93063權威exit0，9點完整1MiB與原版顯示／CPU時間／檔案／按鍵相同，30捲動子步及3種寫入前呈現通過；兩頂層八catalog子項及八Draw拒絕通過，沒有skip。go vet／build-v3同58142 exit0，固定08b3309／50來源／10鍵序，舊候選與GUI失敗完整保留。新三張PNG與根端已讀舊圖逐byte相同。
 - GUI3同35191權威exit0，兩頁中文與結束還原通過。163輸入不變，58按放確認／最長0.101秒、24圖目視；20區域、頁間區外、同GUI背景還原零差，最後1000、held空、Town source空／rejected0。最後原版raw對actualX採固定palette，不冒稱獨立當次色盤。圓角3點差已由同位置原版補證消除，沒有任意mask。根端另讀三張actualX圖。容器空、ownership異常0；未重驗HD、實體手把、新平台或正式封包。
 - 新source-audit核對83自有檔、50來源／10鍵序、29原件、882快照、169連結、字型與自建存檔mtime，異常0。首次稽核漏font掛載後依同命令補RO掛載乾淨通過；分析缺PIL沿既有ImageMagick，未在host執行或另建image。主入口同步08b3309，規格限定CONFORMED於一位居民，112其他來源仍未正常試玩；提交及private推送待回讀。
+- 功能提交 `70f544465fe4e497ebe28d0f8fbd20cd61b40cde`已推送，主機gh回讀main相同、visibility仍PRIVATE。主入口08b3309、原29檔、882快照、50來源／10鍵序與GUI3完整收據均已整合；其餘112居民、40場景與完整HD／中文仍未完成或未驗。文件收尾另記metadata提交，不重跑未修改的程式或追加發行tag。
