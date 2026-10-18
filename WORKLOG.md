@@ -536,3 +536,36 @@ main3後處理保留不同頁時刻80原生pixel差，範圍(48,121)-(55,142)，
 本輪完整收尾current-audit-v1.json為PASS_SCOPED_CURRENT：100自有檔、52Go／62來源／14鍵序、45完整點及11066呈現、68內部pass、兩GUI569固定輸入、九張根端actualX、末4653人物HDpixels零差。80原生／720HD跨時刻頁外差如實保留，不作same-state聲明。201文件連結及全部原件／快照／字型／存檔mtime通過，擁有權異常0；007／008限定CONFORMED，009仍READY隔離試作。主入口已同步經GUI驗過的def76c62，原cf763及90fbb別名不覆寫。Docker find擁有權／md目錄自檢空，專案遊戲容器均結束；後處理若仍有一次性容器，收尾再核對。
 
 程式與規格提交d647652caa41eaea67bef32d21e9dc04079cc857已推送origin/main，主機git ls-remote回讀同值，host gh回讀visibility=PRIVATE。完整GUI收尾補錄：nav3 17組暫停聯集外0、14組50候選完整角色的69822三倍像素零差；292有限持鍵快照中82筆raw不同於presented且HD匹配。main3 26項ROI、終態14336原生前景重建及4653角色高清像素零差，跨頁80原生／720HD差保留。兩路102PNG為82本輪逐張目視及20精確舊PNG雜湊引用，180按放確認、持鍵空、原件／字型／存檔與mtime不變。main原receipt的舊skyline+frame字串保留，完整實際scope由audit／review校正，不改歷史收據。以下文件收尾記錄另隨文件提交推送，不更改已驗程式。
+
+
+## 2026-10-19：地面HD正式接入
+
+上一goal輪屬實質進展，6891588已推送、def76主入口與007／008限定驗收通過。本輪重新核對乾淨工作樹、READY009及隔離37pass／七點正常配對來源，才移入正式Go來源。新增TownGround及測試，主入口增加可選-town-ground-art；完整前景／地面色號及RGB／實際色盤皆先驗，沿完成快照camera分兩層取樣，所有失配整層不寫，無素材不啟用。原有配對測試增加可選地面合成／洞窟拒絕，沒有改原版輸入與Run。舊62份完整來源與def76身份保留，主入口執行檔尚未換。
+
+依試玩入口沿用唯一既有tester，準備foreground-v1/gui-ground-nav-tools-v1與gui-ground-tools-v1、對應空輸出gui-ground-nav-v1與gui-ground-v1。正常鍵序／時間上限沿成功v3；只增加地面直接取樣及雙層捲動／切換驗證。新來源與候選尚未凍結，工具先prepare，不得啟動。新目錄沿既有foreground-v1用途索引，不建立第二份工作歷程。
+
+正式地面驗證51139同一權威退出0，未重啟：37地面pass／無skip或fail，go vet與build通過；cave與居民兩條正常配對共16點完整1MiB、14欄Regs、色號／色盤、時間、FileOps／KeyReads及持鍵相同，memory hash逐點等於前輪pair3。5157完整畫格呈現／61中途保留／145快照／未涵蓋0，地面只在五個選定完成點合成與一洞窟拒絕，不把全部呈現稱地面逐幀合成；見ground-canonical-pair-review-v1.json。
+
+正式候選workplace/bin/zeliard-preview-ground-v1 SHA-256為19ac2719c26926e1f7fee88f58fb7afc8f8a6a8ef40172a99673c765e9beafb2。ground-canonical-identity-v1.json固定102自有／54Go／64來源、14鍵序及5本地圖面；完整64來源另存ground-canonical-v1-sources，READY009全文另存ready-ground-spec-v2.md。主入口仍def76，GUI工具可依候選freeze，根端核對獨立圖面取樣預檢後才序列啟動。原版、字型、存檔與生成圖不入Git。
+
+來源稽核89553權威退出0，ground-canonical-source-audit-v1.json核對102自有檔、64執行來源、14鍵序及5圖，40內部pass事件及16完整原版點。29原件、882份dosgolem來源、字型、自建存檔與mtime及204文件連結通過，擁有權異常0。這是來源與配對稽核，GUI尚未啟動。
+
+新地面GUI工具使用normal-v1/restored.indexed完整camera153參考，SHA-256為dd777f4940d2ffe32d5fae6a8274c0f3a0878fb84e3f7fd3f425a4af92d6d224。舊GUI的camera149參考保持原身份；兩者在遠山實際矩形(48,24)-(272,78)逐byte相同，crop SHA-256為22fb614b02b3d9ac436c85b7d56c62ce9004d1254f6c52160de2cf62edeb7cf9。地面需完整153參考，不能只因遠山crop相同就接受任意舊畫格。產品來源守衛不放寬。
+
+兩套地面工具準備81235退出0，root逐檔核對317加306共623輸入、64來源、候選19ac與獨立RGBA預檢後放行序列nav再main；見ground-gui-release-review-v1.json。正常鍵序及600／630秒界限沿既有工具，失敗停止，不重投或增加等待。007／008／009與程式、圖面持續凍結。
+
+GUI執行期間只追加主角既有來源核對，不動候選。actor_observations_v1.py在Docker只讀既有三份scene proof及原版記憶體／indexed／色盤；54207退出0，11個不同正常來源共2221個可見主角不透明像素零差，資源RGBA身份全部吻合。觀察到C2bit0-phase1與C2bit1-phase1／2／3，其餘六鍵仍未正常觀察，不推測方向或動作名稱。證據在coherent-frame-v1/actor-observations-v1.json，尚無主角HD實作；先解圖層還原，再換不同alpha圖像。
+
+主角觀察分類勘誤：上段首次摘要混淆12個正常狀態與11個可見來源，也將完全在畫布外的C2bit1-phase2算成可見姿態。原JSON及腳本另存actor-observations-v1-before-visible-correction，修正為只將visible_opaque_checked大於0的鍵列入可見集合。2221可見像素零差及資源RGBA身份不變；已見圖像為三鍵，其餘七鍵未驗。這是研究摘要分類修正，沒有修改正式程式或GUI工具。
+
+主角手繪沿內建imagegen技能。第一張v1為1024×1536，SHA-256為dbdf72f71205c4b1fcfadd6b80a251bcc40578126941bcd5f0cb306c49bb7256；根端判讀其幼年／軟帽造型與手冊封面差異大，棄用但保留圖與完整提示詞。第二張v2補右半手冊外封面的成年盔甲及角盔參考，仍以原版C2bit0-phase1保持側身姿態與顏色，SHA-256為ea49f2489f990bd774fe98f1430fc2786b28b2bc22e7e2f2142b0b4ca8303ef0，1024×1536。兩張都保留生成alpha，邊界alpha0至1，最大254，沒有自行去背；v2為待小尺寸合成候選，未接正式前端。完整提示詞／生成記錄／目視判讀均沿CONTEXT主角入口，Docker複製與量測51744及78793退出0、UID/GID1000。
+
+手冊外封面擷取使用既有dkk-inventory映像。兩次unar指定檔名／索引都回報No files extracted，雖工具exit0但輸出缺失，工作記退出1；連續失敗後回查路由及既有方法，不再調參重投，原因未明。lsar已證實001為無壓縮成員，故只讀固定RAR檔案offset795782、長度805872並核CRC32=463732862及JPEG首尾，再寫本地研究副本；42735退出0，SHA-256為df09df42e3a5dcc82cf0782b4f7870141784e035dd2aa30cf091844916f4a8d5，來源契約見manual-terms-v1/player-manual-cover-v1.json。002沒有提取。根端直接讀001，右半神劍封魔封面有角盔、紅身甲與藍肩甲，左半風神傳承廣告不作主角來源。這是視覺參考，不推測人物設定或玩法。
+
+player_underlay_v1.py只讀既有已驗scene proof與當次原版記憶體／色號，81656退出0。10個Muralla正常來源各14336像素按地形、居民、主角順序重建，合計143360色號零差；2015個主角不透明像素含94個居民重疊位置。原版主角下層另存逐點indexed及player-underlay-v1.json，兩個城堡來源明示跳過。這是原版下層證據，不是主角HD實作，也未以另一時刻圖片補洞；高清地形取樣及新alpha合成另驗。
+
+地面GUI nav唯一57900／86849及main唯一85364／56433皆退出0。nav三招牌及第二F7後，正常50k短鍵／250k放開以232→216→216→224三組對齊，Up進Malicia；main居民039fff兩頁與關閉恢復，金幣1000。623固定輸入、原29、字型、自建存檔及copy2 mtime不變，184ack／92脈衝、持鍵空；兩路capture-tail正常退出。root另逐張讀九張actualX，來源與判讀保存在兩份root-ground GUI review。主入口同步19ac，def76別名保留，見mainalias-sync-ground-v1.json。
+
+逐圖與像素後處理36361退出0，107PNG含88張本輪逐張讀圖與19個完整hash精確舊圖引用。22個暫停點及一個最終來源共82432原生RGB格、741888高清直接RGBA取樣零差，最終3584indexed地面格零差。nav19組聯集外0，角色樣本76770高清像素零差；其中17組同含主角與居民，兩組只涵蓋主角。main兩組暫停9351及最終4653角色像素零差、14336原生前景重建／26ROI／兩次triplet區外及還原0。本次兩頁框外0，前輪80差保留原身份。302有限移動取樣中77筆保留來源且前景／遠山HD匹配，但該串沒有地面旗標，不宣稱77筆地面全真。中途pause在35EE，只稱批次中途；洞窟可見名稱及C000模組確認，地面撤除且無presented副檔。最終彙總在gui-ground-v1/final-summary.json；兩初版audit另存，後處理缺/orig掛載及摘要欄位錯誤記postprocessing-environment-note，未重跑GUI。
+
+009限定CONFORMED，README補-town-ground-art與固定camera153完整參考入口；目前狀態與矩陣同步。根端最終稽核初版把兩個package pass算進40個test pass而退出1，修正為只數含Test欄位後以同容器／命令乾淨重跑，66830退出0，沒有重跑產品測試。ground-current-audit-v1.json核102自有檔、54Go／64來源、14鍵序、5圖、16完整配對及40內部test pass；623GUI輸入在收尾時全不變，後續只有009文件由READY改為限定CONFORMED，其原全文已另存。205連結、原29／snapshot882／字型／存檔與mtime及擁有權通過。主角僅研究候選，其他HD中文、音效、實體手把、平台與正式封包未完成。

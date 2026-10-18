@@ -69,6 +69,8 @@ type game struct {
 	townSceneryHD        *hd.TownScenery
 	townSceneryMatch     bool
 	townFrames           *hd.TownFrames
+	townGroundHD         *hd.TownGround
+	townGroundMatch      bool
 	kingHD               *hd.King
 	kingHDMatched        bool
 	kingHDPose           int
@@ -397,6 +399,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"town_background_hd_matched": g.townBackgroundMatch,
 			"town_scenery_hd_matched":    g.townSceneryMatch,
 			"town_frame_presentation":    g.townFrames.State(),
+			"town_ground_hd_matched":     g.townGroundMatch,
 			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
 			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
 			"text_cursor":                g.o.Word(oracle.Far(0x01b1, 0xff4c)),
@@ -431,13 +434,22 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.hdMatched = g.hdMatched || g.townSkyHDMatched
 	}
 	g.townBackgroundMatch = false
-	var townPrimary, townResources, townExtra []byte
+	var townPrimary, townResources, townExtra, townPalette []byte
 	if g.townBackgroundHD != nil || g.townSceneryHD != nil {
 		townPrimary = g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
 		townResources = g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
 		townExtra = g.o.Bytes(oracle.Far(0x21b1, 0), 65536)
 		if presented != nil {
 			townPrimary, townResources, townExtra = presented.Primary, presented.Resources, presented.Extra
+		}
+	}
+	if g.townGroundHD != nil {
+		if presented != nil {
+			townPalette = presented.Palette
+		} else {
+			for _, c := range g.o.Palette() {
+				townPalette = append(townPalette, c[:]...)
+			}
 		}
 	}
 	if g.hdEnabled && g.townBackgroundHD != nil && w == 320 && h == 200 {
@@ -448,6 +460,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hdEnabled && g.townSceneryHD != nil && w == 320 && h == 200 {
 		g.townSceneryMatch = g.townSceneryHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, image.Pt(0, barHeight), true)
 		g.hdMatched = g.hdMatched || g.townSceneryMatch
+	}
+	g.townGroundMatch = false
+	if g.hdEnabled && g.townGroundHD != nil && w == 320 && h == 200 {
+		g.townGroundMatch = g.townGroundHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, townPalette, image.Pt(0, barHeight))
+		g.hdMatched = g.hdMatched || g.townGroundMatch
 	}
 	g.kingHDMatched, g.kingHDPose = false, -1
 	if g.hdEnabled && g.kingHD != nil && w == 320 && h == 200 {
@@ -608,6 +625,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"town_sky_hd_matched": g.townSkyHDMatched, "town_background_hd_matched": g.townBackgroundMatch,
 				"town_scenery_hd_matched": g.townSceneryMatch,
 				"town_frame_presentation": g.townFrames.State(),
+				"town_ground_hd_matched":  g.townGroundMatch,
 				"town_background_cache":   g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224), "town_background_module": g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64)})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
@@ -660,6 +678,7 @@ func main() {
 	townBackgroundMemory := flag.String("town-background-memory", "", "可選：完整遠山正常原版記憶體參考")
 	townBackgroundArt := flag.String("town-background-art", "", "可選：完整手繪遠山PNG，搭配原版樹梢遮罩")
 	townSceneryArt := flag.String("town-scenery-art-dir", "", "可選：Muralla三段手繪前景圖目錄，搭配town-background-memory")
+	townGroundArt := flag.String("town-ground-art", "", "可選：Muralla雙層手繪地面PNG，搭配已驗前景與town-sky-reference")
 	townSignsText := flag.String("town-signs-text", "", "可選：Muralla招牌中文TSV，搭配前景HD")
 	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
 	kingRefB := flag.String("king-reference-b", "", "可選：本地原版國王姿態 B 的 screen.bin")
@@ -763,6 +782,12 @@ func main() {
 			log.Printf("城鎮前景HD未載入，保留原貌：%v", err)
 		}
 		g.townFrames = hd.NewTownFrames(g.o, g.townSceneryHD)
+	}
+	if *townGroundArt != "" {
+		g.townGroundHD, err = hd.NewTownGround(g.townSceneryHD, *townSkyRef, *townGroundArt)
+		if err != nil {
+			log.Printf("城鎮地面HD未載入，保留原貌：%v", err)
+		}
 	}
 	if *kingRefA != "" || *kingRefB != "" || *kingArt != "" || *kingSpeakingArt != "" {
 		g.kingHD, err = hd.NewKing(*kingRefA, *kingRefB, filepath.Join(filepath.Dir(*kingRefA), "palette.bin"), *kingArt, *kingSpeakingArt)

@@ -1,6 +1,6 @@
 # Muralla 地面手繪覆繪
 
-狀態：READY，限可撤回Muralla地面試作。已完成來源、離線構圖與隔離拒絕驗證，尚未接正式入口或完成GUI。
+狀態：CONFORMED，限固定版本Muralla已列正常路徑的可撤回三倍地面試作。其他地面、角色、正式倍率／預設與發行平台未在此驗收。
 
 ## 範圍與來源
 
@@ -8,6 +8,7 @@
 
 - 原版 EXE SHA-256：`fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341`。
 - 原版來源、色號、色盤及逐點雜湊見 `workplace/town-hd-v1/foreground-v1/ground-proof-v1.json`。十個正常來源共35,840原生像素零差。
+- 地面原版參考須為`foreground-v1/normal-v1/restored.indexed`的camera153完整64000-byte畫格，SHA-256為`dd777f4940d2ffe32d5fae6a8274c0f3a0878fb84e3f7fd3f425a4af92d6d224`。它同時可作`-town-sky-reference`：遠山實際矩形`(48,24)-(272,78)`與舊camera149參考逐byte相同，crop SHA-256為`22fb614b02b3d9ac436c85b7d56c62ce9004d1254f6c52160de2cf62edeb7cf9`。遠山crop相同不代表其他完整畫格可作地面參考。
 - 已證實：原生每列112像素重複兩次。以camera153為參考，上8列每camera移8像素，下8列移16像素，超出以112取模。
 - 已證實：IDA 9.4 的 `3628`／`36A4` 原始 `rep movsw` 分別搬移8／16像素。原名、bytes及工具輸入見 `scene-prototype-v1/coherent-frame-v1/ida-scroll-v1.json`。IDA線性0對應執行期01B1段偏移，不是EXE檔案偏移。
 - 強推論：相同關係適用其他正常camera。每次覆繪仍須核對當次全部3,584原生色號與RGB，不能由camera數字單獨接受。
@@ -21,7 +22,7 @@
 
 三點離線構圖入口為 `scene-prototype-v1/coherent-frame-v1/ground_preview_v1.go`、`ground-preview-v1.json`及 `ground-visual-review-v1.json`。camera153、61、179的原生公式及高清區外差異均為0，目視底線齊平，沒有蓋住角色或狀態列。這不等於行走或實際視窗驗收；重複紋理與上下帶動態接合仍待確認。
 
-## 預定接入契約
+## 接入契約
 
 1. 獨立、可選素材入口。缺圖、損壞、尺寸或雜湊不符時保留原貌；不改無素材啟動方式。
 2. 沿用規格007已驗的Muralla來源範圍與人物group上限，另驗規格008的捲動程式碼與固定色盤。
@@ -40,4 +41,10 @@
 
 `coherent-frame-v1/ground-overlay-v1.json`只在編譯器測試環境加入`town_ground.go.draft`及`town_ground_test.go.draft`，沒有修改候選def76的62份來源或正式入口。權威45520退出0，`ground-draft-test-v1.jsonl`三頂層及34子項共37pass事件，無skip／fail。十五個正常原版來源包含十個地面接受點與五個對話／跨場拒絕；每個接受點驗完整高清直接取樣、源記憶體不變及區外0。十九種模式、來源長度、色盤、程式碼、地面色號／RGB、前景、人物group及畫布失配均原子退回；缺圖、損壞圖／參考與缺前景也拒絕。這些只證明離線試作契約，不當作GUI或完整遊戲一致。
 
-接入採獨立`-town-ground-art`選項，搭配已驗前景來源及`-town-sky-reference`的原版色號參考。不提供素材則維持原貌。每次繪製驗實際完整色盤、規格008來源以及規格007完整前景，再核對全部地面色號與RGB；有完整快照時全部共用快照來源。後續必須補正常原版配對與實際X視窗行走、兩層接合、切換及跨場，不先標CONFORMED。
+接入採獨立`-town-ground-art`選項，搭配已驗前景來源及上述camera153的`-town-sky-reference`。不提供素材則維持原貌。每次繪製驗實際完整色盤、規格008來源以及規格007完整前景，再核對全部地面色號與RGB；有完整快照時全部共用快照來源。
+
+正式來源候選`19ac2719`及64份完整來源由`coherent-frame-v1/ground-canonical-identity-v1.json`固定，原READY全文另存`ready-ground-spec-v2.md`。37內部pass、vet及build通過；兩條正常路徑16點完整1MiB、14欄Regs、原版色號／色盤、時間、檔案及輸入相同，五個完成點合成地面、洞窟拒絕，見`ground-canonical-pair-review-v1.json`。5157次呈現屬完整畫格層，不稱全部地面逐幀對拍。
+
+實際X視窗入口為`foreground-v1/gui-ground-nav-v1/`及`gui-ground-v1/`。兩路唯一執行皆退出0，317加306共623項固定輸入、原件29檔、字型及存檔雜湊與mtime不變。正常三招牌、第二次F7、短鍵對齊及Up入Malicia、居民兩頁及關閉恢復通過；根端九張實際圖的目視另存`root-ground-nav-gui-review-v1.json`／`root-ground-main-gui-review-v1.json`。
+
+兩份`visual-review.json`核對107張PNG，88張本輪逐張目視、19張以完整雜湊沿用已讀舊圖。兩份`ground-pixel-review.json`核對22個暫停點及一個最終完成來源，共82432原生RGB格及741888高清直接取樣像素零差；最終3584原生色號也相同。nav的19組聯集外差異為0，角色樣本共76770高清像素零差，其中17組同時覆蓋主角與居民；main兩組暫停9351及最終4653角色像素零差、26項中文與數字ROI及完整還原通過。302筆有限移動取樣中77筆保留較早完成畫格並匹配前景與遠山HD；這些移動樣本未保存地面旗標，地面驗證採上述暫停與最終來源取樣。不外推連續影片的每一幀。洞窟原版模組與可見名稱相符，城鎮地面撤除且沒有舊presented副檔名。184筆按下／放開確認，末持鍵空，正常capture-tail退出；沒有在本輪驗Ctrl＋Q退出路徑或新增存檔。

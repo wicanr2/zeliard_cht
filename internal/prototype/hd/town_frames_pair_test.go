@@ -72,6 +72,13 @@ func runTownFramesPair(t *testing.T, path, out string) {
 		t.Fatal(err)
 	}
 	frames := NewTownFrames(b, scene)
+	var ground *TownGround
+	if artwork := os.Getenv("ZELIARD_GROUND_ART"); artwork != "" {
+		ground, err = NewTownGround(scene, filepath.Join(project, "workplace/town-hd-v1/foreground-v1/normal-v1/restored.indexed"), artwork)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 	canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
 	var selected *TownPresentation
 	draws, held, uncovered, modal := 0, 0, 0, 0
@@ -181,6 +188,20 @@ func runTownFramesPair(t *testing.T, path, out string) {
 			before := b.Bytes(oracle.Far(0, 0), 1<<20)
 			if selected != nil && !scene.Draw(canvas, b.VideoMode(), selected.Primary, selected.Resources, selected.Extra, selected.Indexed, selected.RGB, image.Point{}, true) {
 				t.Fatal("正常完成來源HD失配", f[1])
+			}
+			if ground != nil {
+				if selected != nil {
+					if !ground.Draw(canvas, b.VideoMode(), selected.Primary, selected.Resources, selected.Extra, selected.Indexed, selected.RGB, selected.Palette, image.Point{}) {
+						t.Fatal("正常完成來源地面HD失配", f[1])
+					}
+				} else if strings.HasSuffix(f[1], "cave-entered") {
+					in := frames.read(b.Indexed(), nil)
+					_, _, rgb := b.ScreenRGB()
+					unchanged := cloneTownBytes(canvas.Pix)
+					if ground.Draw(canvas, in.mode, in.primary, in.resources, in.extra, in.indexed, rgb, in.palette, image.Point{}) || !bytes.Equal(unchanged, canvas.Pix) {
+						t.Fatal("地面HD蓋住洞窟")
+					}
+				}
 			}
 			if !bytes.Equal(before, b.Bytes(oracle.Far(0, 0), 1<<20)) {
 				t.Fatal("HD改寫原版")

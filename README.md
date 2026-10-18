@@ -68,7 +68,9 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 
 城堡與Muralla鎮的完整遠山 HD 使用 `-town-sky-reference`、`-town-sky-palette`、`-town-background-memory`、`-town-background-art`載入本地原版畫格、色盤、正常記憶體及手繪圖。背景依原版樹梢遮罩合成，保留前景輪廓；正常走路、居民中文及原貌切換已驗，矩形切口已消除，見[完整背景規格](docs/spec/006-town-background-mask.md)。舊 `-town-sky-art`可單獨重現上方54列的[前輪試作](docs/spec/005-town-skyline-hd.md)。
 
-Muralla前景另加 `-town-scenery-art-dir`，目錄內須有本地 `town-left-art-v2.png`、`town-middle-art-v2.png`及 `town-right-art-v2.png`，並提供上述正常記憶體與色盤。加 `-town-signs-text /project/text/town-signs-prototype.tsv`顯示三個中文招牌。圖面沿原版地圖位置合成，保留主角與居民；換場、對話或來源失配時整層退回。行走時以原版完成點的完整畫格合成，重讀後恢復、三招牌、正常入洞與居民兩頁已驗。原貌與HD共用同一呈現來源；當次原版畫格及來源時間另存，方法見[完整畫格規格](docs/spec/008-town-frame-presentation.md)。原版地面與部分像素邊緣仍可見，角色本身尚未HD。素材身份、入口映射與驗證範圍見[前景規格](docs/spec/007-town-scenery-hd.md)。
+Muralla前景另加 `-town-scenery-art-dir`，目錄內須有本地 `town-left-art-v2.png`、`town-middle-art-v2.png`及 `town-right-art-v2.png`，並提供上述正常記憶體與色盤。加 `-town-signs-text /project/text/town-signs-prototype.tsv`顯示三個中文招牌。圖面沿原版地圖位置合成，保留主角與居民；換場、對話或來源失配時整層退回。行走時以原版完成點的完整畫格合成，重讀後恢復、三招牌、正常入洞與居民兩頁已驗。原貌與HD共用同一呈現來源；當次原版畫格及來源時間另存，方法見[完整畫格規格](docs/spec/008-town-frame-presentation.md)。部分原版像素邊緣仍可見，角色本身尚未HD。素材身份、入口映射與驗證範圍見[前景規格](docs/spec/007-town-scenery-hd.md)。
+
+Muralla地面另加 `-town-ground-art /project/workplace/town-hd-v1/foreground-v1/ground-handpaint-v1.png`，並將上述 `-town-sky-reference`指定為本地 `foreground-v1/normal-v1/restored.indexed`的完整camera153畫格。圖面按原版上下兩層的速度捲動；正常行走、原貌切換與還原、重讀、居民交談後恢復及進洞撤除已有視窗驗證。缺圖或來源失配時保留原貌。固定參考身份與驗證邊界見[地面規格](docs/spec/009-town-ground-hd.md)；其餘地面、主角與洞窟尚未HD。
 
 ## 授權
 

@@ -128,7 +128,8 @@
 | [docs/source-index.json](docs/source-index.json) | 固定輸入的位址語意、推論等級與證據索引；IDA 匯出自動合併，未證實項附警示 |
 | [docs/spec/001-runtime-overlay.md](docs/spec/001-runtime-overlay.md) | 使用者選定架構與前端雛形邊界 |
 | [docs/spec/008-town-frame-presentation.md](docs/spec/008-town-frame-presentation.md) | 城鎮繪製批次、完整畫格與原始／呈現收據的試作契約 |
-| [docs/spec/009-town-ground-hd.md](docs/spec/009-town-ground-hd.md) | Muralla雙層地面來源、取樣與待驗覆繪規格 |
+| [docs/spec/009-town-ground-hd.md](docs/spec/009-town-ground-hd.md) | Muralla雙層地面來源、取樣與限定驗收規格 |
+| [internal/prototype/hd/town_ground.go](internal/prototype/hd/town_ground.go)、[地面測試](internal/prototype/hd/town_ground_test.go) | 原版雙層地面守衛、高清直接取樣與原子退回 |
 | [internal/prototype/hd/town_frames.go](internal/prototype/hd/town_frames.go) | 原版捲動／完成回呼、單一快照、來源時間與撤除 |
 | [internal/prototype/hd/town_scenery_reload_test.go](internal/prototype/hd/town_scenery_reload_test.go) | 重讀來源、角色保留及已用／保留區邊界驗證 |
 | [text/host.json](text/host.json) | 前端雛形的可見中文 |
