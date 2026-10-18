@@ -1,0 +1,310 @@
+{
+  "schema": 1,
+  "tool": "dosgolem固定882來源、Go1.24.13、IDA9.4／16bit",
+  "address_space": "dosgolem實模式01B1段內偏移，IDA binary base0；file offset另外標示，不是EXE偏移",
+  "source_evidence": "workplace/hud-v1/source-evidence.json",
+  "source_evidence_sha256": "15aaf7d0749f0aeca4bd32b04bb3a53338fb4b9865a0c30eba2b9efa3c689acc",
+  "input_exe_sha256": "fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341",
+  "ida_input_sha256": "51a087f2bf332b916e96ace05a72e679872646300dba39176f32584d8b7ecf81",
+  "code_range": {
+    "space": "dosgolem 01B1段內偏移，對應IDA base0",
+    "start": "22bf",
+    "end_exclusive": "2386",
+    "sha256": "a4564867c4b2fa886ea061551023ca7343b7e6b33f2ec9dd392b6aa452627504"
+  },
+  "entries": [
+    {
+      "key": "zelres2.file.000d34",
+      "file": "ZELRES2.SAR",
+      "file_sha256": "bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1",
+      "module_payload": "0xec",
+      "module_prefix_sha256": "631aae73e277a153ce7baa07afd517d2c240ca9f716460b70852ee4cf3c4c0ff",
+      "runtime_base": "0x6000",
+      "runtime_header": "6c44",
+      "entry": "22bf",
+      "complete": "2344",
+      "text": "GOLD",
+      "header_hex": "0dbb0104",
+      "source_sha256": "f131617711d6d8003af143a8da40cd6abdd34aad17280f697cd3fb2d4d8a7fb8",
+      "source_length": 8,
+      "safe_box": [
+        53,
+        187,
+        21,
+        8
+      ],
+      "foreground": 27,
+      "shadow": 18,
+      "background": 5,
+      "bitmap_sha256": "a0c227264c80c53a38e82bf80e4c19d77fde57a8fe22d457f75142f7edcf2fad",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22bf-6c44-240891829.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    },
+    {
+      "key": "zelres2.file.000d3c",
+      "file": "ZELRES2.SAR",
+      "file_sha256": "bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1",
+      "module_payload": "0xec",
+      "module_prefix_sha256": "631aae73e277a153ce7baa07afd517d2c240ca9f716460b70852ee4cf3c4c0ff",
+      "runtime_base": "0x6000",
+      "runtime_header": "6c4c",
+      "entry": "22bf",
+      "complete": "2344",
+      "text": "PLACE",
+      "header_hex": "0daf0105",
+      "source_sha256": "4ffa2e5c697ff7efa7e573a1ebea22ce4e07da74b6cbbf44718906549d4f7629",
+      "source_length": 9,
+      "safe_box": [
+        53,
+        175,
+        26,
+        8
+      ],
+      "foreground": 27,
+      "shadow": 18,
+      "background": 5,
+      "bitmap_sha256": "ee64bb99d91a5d70f62559a5f18b725af14c4f826fe6243e55dba3ebf0ca339d",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22bf-6c4c-240893421.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    },
+    {
+      "key": "zelres1.file.00db4c",
+      "file": "ZELRES1.SAR",
+      "file_sha256": "56a73b59e952dab47fb0171a3fb1cdb7d641baceafa97e2826057f877a590eb0",
+      "module_payload": "0xceb5",
+      "module_prefix_sha256": "52f853bd81c7f4df96b95725385cc7eea5acae560fb5ee409e6af1d2daae3510",
+      "runtime_base": "0x6000",
+      "runtime_header": "6c93",
+      "entry": "22bf",
+      "complete": "2344",
+      "text": "LIFE",
+      "header_hex": "0ea30004",
+      "source_sha256": "3411735a43d6f3672dc08d2cba94e3946f7beb2c5ecfa172b7317710626a2bf6",
+      "source_length": 8,
+      "safe_box": [
+        56,
+        163,
+        21,
+        8
+      ],
+      "foreground": 27,
+      "shadow": 18,
+      "background": 5,
+      "bitmap_sha256": "1fdff0f8705807c751ef48c519413afed06ce2e38973f117b79177b07c9eb50a",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22bf-6c93-182502047.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    },
+    {
+      "key": "zelres1.file.00db54",
+      "file": "ZELRES1.SAR",
+      "file_sha256": "56a73b59e952dab47fb0171a3fb1cdb7d641baceafa97e2826057f877a590eb0",
+      "module_payload": "0xceb5",
+      "module_prefix_sha256": "52f853bd81c7f4df96b95725385cc7eea5acae560fb5ee409e6af1d2daae3510",
+      "runtime_base": "0x6000",
+      "runtime_header": "6c9b",
+      "entry": "22bf",
+      "complete": "2344",
+      "text": "ALMAS",
+      "header_hex": "1ebb0305",
+      "source_sha256": "876f33a7d4c981dcbec281ff384592aa17bea287cbab5b469b2b78321ed86d69",
+      "source_length": 9,
+      "safe_box": [
+        123,
+        187,
+        26,
+        8
+      ],
+      "foreground": 27,
+      "shadow": 18,
+      "background": 5,
+      "bitmap_sha256": "0e4ce579ca3cd17fb3e0a5321ccf347fb592eba3c16ed630ec2f19450541f5f3",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22bf-6c9b-182503667.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    },
+    {
+      "key": "zelres1.file.00db5d",
+      "file": "ZELRES1.SAR",
+      "file_sha256": "56a73b59e952dab47fb0171a3fb1cdb7d641baceafa97e2826057f877a590eb0",
+      "module_payload": "0xceb5",
+      "module_prefix_sha256": "52f853bd81c7f4df96b95725385cc7eea5acae560fb5ee409e6af1d2daae3510",
+      "runtime_base": "0x6000",
+      "runtime_header": "6ca4",
+      "entry": "22bf",
+      "complete": "2344",
+      "text": "GOLD",
+      "header_hex": "0dbb0104",
+      "source_sha256": "f131617711d6d8003af143a8da40cd6abdd34aad17280f697cd3fb2d4d8a7fb8",
+      "source_length": 8,
+      "safe_box": [
+        53,
+        187,
+        21,
+        8
+      ],
+      "foreground": 27,
+      "shadow": 18,
+      "background": 5,
+      "bitmap_sha256": "a0c227264c80c53a38e82bf80e4c19d77fde57a8fe22d457f75142f7edcf2fad",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22bf-6ca4-182504954.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    },
+    {
+      "key": "zelres1.file.00db65",
+      "file": "ZELRES1.SAR",
+      "file_sha256": "56a73b59e952dab47fb0171a3fb1cdb7d641baceafa97e2826057f877a590eb0",
+      "module_payload": "0xceb5",
+      "module_prefix_sha256": "52f853bd81c7f4df96b95725385cc7eea5acae560fb5ee409e6af1d2daae3510",
+      "runtime_base": "0x6000",
+      "runtime_header": "6cac",
+      "entry": "22bf",
+      "complete": "2344",
+      "text": "PLACE",
+      "header_hex": "0daf0105",
+      "source_sha256": "4ffa2e5c697ff7efa7e573a1ebea22ce4e07da74b6cbbf44718906549d4f7629",
+      "source_length": 9,
+      "safe_box": [
+        53,
+        175,
+        26,
+        8
+      ],
+      "foreground": 27,
+      "shadow": 18,
+      "background": 5,
+      "bitmap_sha256": "ee64bb99d91a5d70f62559a5f18b725af14c4f826fe6243e55dba3ebf0ca339d",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22bf-6cac-182506608.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    },
+    {
+      "key": "zelres2.file.038dce",
+      "file": "ZELRES2.SAR",
+      "file_sha256": "bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1",
+      "module_payload": "0x38a1a",
+      "module_prefix_sha256": "968819bb6c4906514b4fce3e2ce99764b73cfa003f48d7d57d4cf8b12da8ffb6",
+      "runtime_base": "0xc000",
+      "runtime_header": "c3b0",
+      "entry": "22cd",
+      "complete": "2344",
+      "text": "Felishika\\s Castle",
+      "header_hex": "16af0012",
+      "source_sha256": "c8cf927df49458b04881a4f808d6114709347e348001043926aac478122a25f6",
+      "source_length": 22,
+      "safe_box": [
+        88,
+        175,
+        91,
+        8
+      ],
+      "foreground": 9,
+      "shadow": 45,
+      "background": 5,
+      "bitmap_sha256": "d3b08035b85e002fb6cab531f6bd0291aef9cff6f7ec6aaaadf41fcecdd28509",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22cd-c3b0-52683526.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    },
+    {
+      "key": "zelres2.file.0399b8",
+      "file": "ZELRES2.SAR",
+      "file_sha256": "bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1",
+      "module_payload": "0x392dc",
+      "module_prefix_sha256": "025bf2982660c942cbefed303ccdd0523ff824756a0fe0bb2587b99e0931e7ec",
+      "runtime_base": "0xc000",
+      "runtime_header": "c6d8",
+      "entry": "22cd",
+      "complete": "2344",
+      "text": "Muralla Town",
+      "header_hex": "19af000c",
+      "source_sha256": "509586a8fd61e448dc59d1809698384990b038c7fd3e9a4198104e0ddc2e5a38",
+      "source_length": 16,
+      "safe_box": [
+        100,
+        175,
+        61,
+        8
+      ],
+      "foreground": 9,
+      "shadow": 45,
+      "background": 5,
+      "bitmap_sha256": "f0a7fb5da7dec2411619381a07e88e33fb37052448b4b32bd9a2bb84e4d83075",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22cd-c6d8-182510252.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    },
+    {
+      "key": "zelres3.file.00c31a",
+      "file": "ZELRES3.SAR",
+      "file_sha256": "9c19b9c317d3006e11f8a5cad8ea1f226f8043e11c6467fa27f10eef33175ef0",
+      "module_payload": "0xad02",
+      "module_prefix_sha256": "3f5edbc8b51aa017211fb0ca808f807a1ade51d95e14b49dadf593e90ada24eb",
+      "runtime_base": "0xc000",
+      "runtime_header": "d614",
+      "entry": "22cd",
+      "complete": "2344",
+      "text": "Cavern of Malicia",
+      "header_hex": "16af0011",
+      "source_sha256": "61781cf71ad3d592a973abacbd4f87c2f1ed4a984009b012f0ad5b77266f1e32",
+      "source_length": 21,
+      "safe_box": [
+        88,
+        175,
+        86,
+        8
+      ],
+      "foreground": 9,
+      "shadow": 45,
+      "background": 5,
+      "bitmap_sha256": "2c3ad1e64e2227cb08a8a95cd7a17a9d67d7edc3ec1c58828769288074d86d8c",
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "level": "已證實",
+      "evidence": [
+        "trace-v2/header-22cd-d614-240898542.json",
+        "ida-evidence.json",
+        "observation-comparison-v2.json"
+      ]
+    }
+  ],
+  "limits": [
+    "只驗已觀察四欄、兩個模組變體與三場景名稱",
+    "不是完整1MiB中文配對或實際視窗",
+    "自動函式邊界與名稱不當作語意證據"
+  ]
+}

@@ -59,6 +59,7 @@ type game struct {
 	scroll               *overlay.Scroll
 	dialogue             *overlay.Dialogue
 	menuLabels           *overlay.Labels
+	hud                  *overlay.HUD
 	hd                   *hd.Frame
 	kingHD               *hd.King
 	kingHDMatched        bool
@@ -438,6 +439,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.menuLabels.ObserveFrame(g.o.Indexed(), g.o.Palette())
 		g.menuLabels.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
+	if g.hud != nil && w == 320 && h == 200 {
+		g.hud.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
+	}
 	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
 	hdLabel := "hd"
 	if g.hd != nil {
@@ -573,6 +577,7 @@ func main() {
 	introScroll := flag.String("intro-scroll", "", "可選：首章捲動中文試譯 TSV，取代單句 prototype")
 	dialogueText := flag.String("dialogue-text", "", "可選：對話與報價試譯 TSV")
 	labelsText := flag.String("labels-text", "", "可選：城鎮選單標籤試譯 TSV")
+	hudText := flag.String("hud-text", "", "可選：狀態列與場景名稱試譯 TSV")
 	hdRef := flag.String("hd-reference", "", "可選：本地城鎮 probe 的 screen.bin，同目錄須有 palette.bin")
 	hdArt := flag.String("hd-art", "", "可選：本輪手繪邊框 PNG，僅供 HD prototype")
 	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
@@ -722,6 +727,12 @@ func main() {
 	}
 	if g.dialogue != nil {
 		g.dialogue.UseLabels(g.menuLabels)
+	}
+	if *hudText != "" {
+		g.hud, err = overlay.NewHUD(o, root, *hudText, font)
+		if err != nil {
+			log.Printf("狀態列試譯未載入，保留原文：%v", err)
+		}
 	}
 	ebiten.SetWindowSize(width, height)
 	ebiten.SetWindowTitle(g.label("title"))

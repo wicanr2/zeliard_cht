@@ -545,3 +545,18 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - NO USE小圖示不假定走文字入口。四張正常圖的完整16×16圖示SHA-256同為 `1eee9c14d388ec401a73b41898b6b9cfc7497315a292fd1b6828ae293c7278a3`，原生範圍 `(58,131,16,16)`。覆繪僅用內框 `(59,132,14,14)`，保留圖示框及原版紅／橙選框。原版色盤、兩組已驗無魔法頂部面板、模組前綴及完整文字來源也須相符，未知畫面退回；後續其他魔法配置沒有冒稱已覆蓋。
 - 窄trace-v1嚴格64KiB比較差2bytes於01B1:0A6F／0A70。兩值分別為27563與27766，精確對應各自存檔複本UTC修改時間13:29:23與13:35:44的DOS編碼。差異紀錄SHA-256為 `b73d519d8569fbcdf9ad7c8bf0202498339d5e7851bc4e98a030321c5c7aaad5`。trace-v2執行前保留原版複本mtime，55點色號、色盤、64KiB段、FileOps及含KeyReads收據全部相同，沒有遮罩。此探針不稱完整1MiB或實際視窗驗收。
 - 正式正常鍵序為 [item-shop-use.commands](tools/item-shop-use.commands)，SHA-256 `0c7ef14432a52850db25ce9e8859f3cf5e94868b0c9dbbc3e9b3d0bb6c4f18c4`。原版48點在 `workplace/item-use-v1/normal-v3/`，279200000steps／286064030cycles、950、持鍵空、沒有寫檔。導航來源 `navigation-v1/receipt.json`另記石門實圖與對齊，保留第4個非必要粗段，不宣稱最短鍵序或碰撞容差。中文完整配對及實際視窗另驗。
+
+## 2026-10-18：狀態列四欄與三場景名稱
+
+入口 `workplace/hud-v1/source-evidence.json` SHA-256為 `15aaf7d0749f0aeca4bd32b04bb3a53338fb4b9865a0c30eba2b9efa3c689acc`，受版控索引為 [hud-source-index.json](docs/hud-source-index.json)。原版EXE沿既有fe1c00b3，固定882來源摘要2a5ad11a；Go1.24.13、3000 cycles、自己正常建立的SAVETEST。IDA9.4輸入冷啟動01B1段SHA-256為 `51a087f2bf332b916e96ace05a72e679872646300dba39176f32584d8b7ecf81`，IDA base0等於該段內偏移，檔案偏移另列，沒有套用EXE位移。
+
+- 已證實：01B1:200Eh近呼叫表指向22BFh，2010h指向22CDh；前者設定字色27／陰影18，後者9／45，均走2312h四byte header及2344h完成。2345h字形常式將陰影寫入DI+1，字距5原生像素。因此 `x=header[0]*4+header[2]`、`y=header[1]`、`count=header[3]`，完整字形需`count*5+1`寬及8高，包含最後一欄陰影。原始函式名保留為sub_22BF等，沒有以名稱推定語意。
+- 九個來源含SAR1 payloadCEB5h載入6000h的LIFE／ALMAS／GOLD／PLACE，SAR2 payloadECh載入6000h的GOLD／PLACE，以及SAR2 payload38A1Ah／392DCh與SAR3 payloadAD02h載入C000h的城堡／城鎮／洞窟名。各筆完整來源、模組前綴、字形與色盤雜湊、安全區及完成圖在索引；23次匹配完成畫格逐筆核對。首次誤沿用城鎮module定位城堡，已由原始header斷言拒絕並更正，歷史analysis-v1-failure保留。
+- 原版探針v2程式SHA-256為 `bc901fa7ca213966318b9980cf6bf248e7511303b8ecf392c4ee00f170d1fc5b`，二進位為 `6312fd4116516632f70ffc3d71648102545a981233aaf6a4aa7b679fb324359f`。同48點色號、色盤、64KiB段、FileOps及含KeyReads收據與無探針原版逐byte相同。copy2在執行前固定來源mtime，沒有遮罩；這份窄證據不稱完整1MiB中文配對或正常視窗。
+- 勘誤：前輪從畫面讀為Cavern of Ialicia，原始SAR3檔案C31Ah及實際01B1:D618字串逐byte證實Cavern of Malicia。C88Fh另有同名字串，但不是此次載入模組，不接入。歷史圖片與收據不覆寫；後續以Malicia為準。中文試譯保留Felishika／Muralla／Malicia原拼法，不宣稱手冊官方譯名。
+- 生命與寶石原版字形在6000h模組換入洞窟版後仍存在。新層保存已驗來源快照，每幀只比對完整原版欄位與色盤，不把卸載模組誤當清框；未知覆寫退回，同一完整字形還原可恢復。最多五欄，不移動原版數字、條形或圖示。新層完整配對、字模與安全區測試、正常GUI另留收據。
+
+- 固定候選3aeca361的46來源／10鍵序身份在 `workplace/hud-v1/candidate-identity-v1.json`。`pair-test-v2.jsonl`三個頂層與七個catalog子項PASS，無fail或skip；新層與舊使用各48點完整1MiB、色號、色盤、CS:IP、steps／cycles相同。新層收據SHA-256為 `81f3665baa7ac52088e3e2d6b9cbdc6659baccae3c7a62ee9ea771430d2b60a1`，舊使用為 `df64f64f665d2b626c902f1040cd59b1e113eb82a92754df13793ef3143d16fd`。每個中文字模確實可見，安全區外0、數字與生命條原樣；五類失配及模組卸載後欄位保留通過。go vet與建置通過。
+- 正常視窗 `gui-v1/receipt.json` SHA-256為 `18e0309bac3485a33298126c509f15b0ec4d28fbf03c80b60580a418eabc1348`，稽核為 `b901e73bea37bea960f71695f0bdf95bfbc6828dc01b0927cdde14a5c47e8892`，目視為 `e948f56d9430c553e043c5cffaa14e84e322c5e4c61d697bdde23f5c6dfb57c7`。同35152完成冷啟動城堡、冷F7城鎮、買50後950、物品頁開關、正常入洞及返回城鎮。47個原版區域及40個中文區域零差，8個HUD帶安全區外0；16圖目視、55次按放／110筆確認，最長確認0.182秒。最終286298902steps／293261430cycles，持鍵空、HD關、capture-tail退出0。保留paragraph18／kind2／first_difference422安全退回；本輪GUI保留藥水，未消耗或驗恢復量。394固定輸入、原件、字型、自建存檔及mtime不變，根端另看三圖，主入口已同步。
+- 共用字形的補證在 `font-primitive-proof.json`。01B1:F504指向F856，768-byte字型SHA-256為 `f16d564fee5c4472914b4dc64cf467bcd05da89125288a83b0b065d164707d07`；依IDA2345h指令重建24個完成header，原生像素全部零差，48個快照字型相同。原版29檔尚未找到同一連續字型，producer仍未知，不由此宣稱已定位檔案字型或散布字模。
+- 後續候選在 `scene-candidates.json`，SAR表邊界與項目數已檢查。175個模組掃得52個header形狀候選、42種字面，含5個本輪已驗來源。其餘消費端、載入基址、顏色與生命週期仍未知，不能直接納入中文層。此補證不改本輪固定候選或擴大CONFORMED範圍。

@@ -128,6 +128,9 @@
 | [docs/source-index.json](docs/source-index.json) | 固定輸入的位址語意、推論等級與證據索引；IDA 匯出自動合併，未證實項附警示 |
 | [docs/spec/001-runtime-overlay.md](docs/spec/001-runtime-overlay.md) | 使用者選定架構與前端雛形邊界 |
 | [text/host.json](text/host.json) | 前端雛形的可見中文 |
+| [text/hud-prototype.tsv](text/hud-prototype.tsv) | 狀態列四欄與三場景名稱的單行試譯 |
+| [docs/hud-source-index.json](docs/hud-source-index.json) | 狀態列來源、原版完成字形、安全區與證據等級 |
+| [internal/prototype/overlay/hud.go](internal/prototype/overlay/hud.go) | 已驗來源的獨立狀態列覆繪，不改原版數值或輸入 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
 | [text/intro-scroll-prototype.tsv](text/intro-scroll-prototype.tsv) | 首章 30 行試譯，鍵為本地 SAR 的檔案偏移；專名尚待手冊校訂 |
 | [text/dialogue-prototype.tsv](text/dialogue-prototype.tsv) | 國王、長老、武器店、銀行與道具店的對話試譯；原文與控制碼仍留在本地遊戲資料 |

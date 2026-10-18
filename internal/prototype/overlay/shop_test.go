@@ -93,6 +93,14 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 		t.Fatal(err)
 	}
 	d.UseLabels(l)
+	var hud *HUD
+	if catalog := os.Getenv("ZELIARD_HUD_TEXT"); catalog != "" {
+		hud, err = NewHUD(machines[1], root, catalog, font)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	seenHUD := map[string]bool{}
 	if err = os.MkdirAll(out, 0755); err != nil {
 		t.Fatal(err)
 	}
@@ -408,6 +416,18 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if strings.Contains(commandPath, "item-shop") && (f[1] == "item-outside" || f[1] == "item-inventory-closed") && inside+outside != 0 {
 				t.Fatal("離店或關閉物品頁後殘留中文", f[1])
 			}
+			var hudKeys []string
+			hudPixels := 0
+			if hud != nil {
+				hudPixels, hudKeys = assertHUDCheckpoint(t, f[1], hud, b, dst)
+				for _, key := range hudKeys {
+					seenHUD[key] = true
+				}
+				inside += hudPixels
+				if !bytes.Equal(mem, b.Bytes(oracle.Far(0, 0), 1<<20)) || !bytes.Equal(raw, b.Indexed()) {
+					t.Fatal("狀態列覆繪改寫原版")
+				}
+			}
 			fp, e := os.Create(filepath.Join(out, f[1]+".png"))
 			if e != nil {
 				t.Fatal(e)
@@ -417,13 +437,16 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if e != nil {
 				t.Fatal(e)
 			}
-			receipts = append(receipts, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "state_equal": true, "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "gold": b.Word(oracle.Far(0x01b1, 0x86)), "dialogue_rendered": drawn, "dialogue_key": key, "quotation": d.QuotationState(), "bank_dialogue": d.BankState(), "item_purchase": d.ItemPurchaseState(), "item_sale": d.ItemSaleState(), "item_explanation": d.ItemExplanationState(), "dialogue_lead": string(d.lead), "dialogue_masks": dialogueMasks, "masked_labels": maskedLabels, "modal_pixels_changed": 0, "label_keys": keys, "inside_changed": inside, "outside_changed": outside, "held_keys": b.HeldKeys()})
+			receipts = append(receipts, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "state_equal": true, "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "gold": b.Word(oracle.Far(0x01b1, 0x86)), "dialogue_rendered": drawn, "dialogue_key": key, "quotation": d.QuotationState(), "bank_dialogue": d.BankState(), "item_purchase": d.ItemPurchaseState(), "item_sale": d.ItemSaleState(), "item_explanation": d.ItemExplanationState(), "dialogue_lead": string(d.lead), "dialogue_masks": dialogueMasks, "masked_labels": maskedLabels, "modal_pixels_changed": 0, "label_keys": keys, "hud_keys": hudKeys, "hud_pixels_changed": hudPixels, "inside_changed": inside, "outside_changed": outside, "held_keys": b.HeldKeys()})
 		default:
 			t.Fatalf("未知命令 %s", line)
 		}
 	}
 	if len(receipts) != wantCheckpoints || len(machines[1].HeldKeys()) != 0 {
 		t.Fatal("正常商店路徑未完整完成")
+	}
+	if hud != nil && len(seenHUD) != 9 {
+		t.Fatal("狀態列九個來源未全部走到", seenHUD)
 	}
 	scope := "normal new game, reward, Chinese quotation with original price/trade glyphs, purchase, farewell, inventory"
 	if strings.Contains(commandPath, "insufficient") {
@@ -443,6 +466,9 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 	}
 	if strings.Contains(commandPath, "branches") {
 		scope = "normal cold F7 own save, three item descriptions/pages, empty sell, prerequisite purchase50, sale confirmation25 and result975, departure and inventory removal; full original state equal"
+	}
+	if hud != nil {
+		scope += "; independent HUD layer: four fields, three scene names and two source variants; original numeric/bar/icon pixels preserved"
 	}
 	data, err := json.MarshalIndent(map[string]any{"commands_sha256": fmtHash(commands), "checkpoints": receipts, "dialogue_rejections": d.Rejections, "scope": scope}, "", "  ")
 	if err != nil {
