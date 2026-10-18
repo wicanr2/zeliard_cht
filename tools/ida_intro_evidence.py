@@ -25,6 +25,16 @@ def main():
     data = source.read_bytes()
     assert len(data) == 65536, len(data)
     assert data[0x6FFB:0x700E] == b"Two thousand years,"
+    index_path = pathlib.Path(__file__).resolve().parent.parent / "docs/source-index.json"
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    assert index["schema"] == 1 and index["input_sha256"] == hashlib.sha256(data).hexdigest()
+    annotations = {int(e["address"], 16): e for e in index["entries"]}
+    assert len(annotations) == len(index["entries"])
+
+    def annotation(address):
+        entry = annotations.get(address, {"level":"未知", "semantic":None, "evidence":[]})
+        assert entry["level"] in ("已證實", "強推論", "假說", "未知")
+        return {**entry, "warning":entry["level"] != "已證實"}
     # Binary loader 預設為 32 位元；本工具只接受此固定 16 位元段。
     # 僅調整由唯讀輸入新建的一次性 DB，不載入或修改正式資料庫。
     ida_ida.inf_set_app_bitness(16)
@@ -33,7 +43,8 @@ def main():
     assert not ida_ida.inf_is_64bit() and not ida_ida.inf_is_32bit_exactly()
     # 兩個入口來自 dosgolem 的實際 SAR 載入記錄，不對其用途命名。
     callback = int.from_bytes(data[0x300C:0x300E], "little")
-    for address in (0x3000, 0x6000, callback):
+    callbacks = [int.from_bytes(data[i:i+2], "little") for i in (0x300C, 0x300E, 0x3010)]
+    for address in (0x3000, 0x6000, *callbacks):
         ida_ua.create_insn(address)
         ida_funcs.add_func(address)
     ida_auto.auto_wait()
@@ -54,10 +65,11 @@ def main():
                 "bytes":(ida_bytes.get_bytes(reference.frm, idc.get_item_size(reference.frm)) or b"").hex(),
                 "operand":ida_lines.tag_remove(idc.generate_disasm_line(reference.frm, 0) or ""),
                 "evidence_level":"unknown; navigation until consumer verified",
+                "semantic_index":annotation(reference.frm),
             })
     functions = []
     starts = {int(r["function_start"], 16) for r in references if r["function_start"]}
-    for address in (0x6363, callback):
+    for address in (0x6363, *callbacks):
         function = ida_funcs.get_func(address)
         if function:
             starts.add(function.start_ea)
@@ -70,9 +82,10 @@ def main():
                 "address":hex(address),
                 "bytes":(ida_bytes.get_bytes(address, idc.get_item_size(address)) or b"").hex(),
                 "operand":ida_lines.tag_remove(idc.generate_disasm_line(address, 0) or ""),
+                "semantic_index":annotation(address),
             })
         functions.append({"original_name":idc.get_func_name(start), "start":hex(start),
-                          "end":hex(function.end_ea), "instructions":instructions})
+                          "end":hex(function.end_ea), "semantic_index":annotation(start), "instructions":instructions})
     result = {
         "schema":1, "tool":"IDA " + ida_kernwin.get_kernel_version(),
         "input_name":source.name, "input_sha256":hashlib.sha256(data).hexdigest(),
@@ -80,17 +93,18 @@ def main():
         "address_space":"IDA binary image base 0; offsets in dosgolem segment 01B1 at 10729940 steps",
         "runtime_mapping":"IDA 0x6FFB corresponds to dosgolem 01B1:6FFB, linear 0x8B0B",
         "function_count":ida_funcs.get_func_qty(), "text_offsets":[hex(i) for i in offsets],
+        "source_index_sha256":hashlib.sha256(index_path.read_bytes()).hexdigest(),
         "navigation_anchors":[
             {"address":"0x6363", "bytes":data[0x6363:0x636B].hex(),
-             "reason":"original immediate 0x6FF0 preceding indirect call; semantics unknown"},
+             "reason":"original immediate 0x6FF0 preceding indirect call", "semantic_index":annotation(0x6363)},
             {"address":"0x300C", "bytes":data[0x300C:0x300E].hex(),
-             "pointer_value":hex(callback), "reason":"snapshot word; call contract unknown"},
+             "pointer_value":hex(callback), "reason":"snapshot word", "semantic_index":annotation(0x300C)},
         ],
         "references":references, "functions":functions,
         "limitation":"xref and function boundaries do not alone prove text rendering semantics",
     }
     output = pathlib.Path(os.environ["ZELIARD_IDA_OUTPUT"])
-    output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     ida_pro.qexit(0)
 
 
@@ -98,5 +112,5 @@ try:
     main()
 except Exception:
     import traceback
-    pathlib.Path(os.environ["ZELIARD_IDA_OUTPUT"] + ".error").write_text(traceback.format_exc())
+    pathlib.Path(os.environ["ZELIARD_IDA_OUTPUT"] + ".error").write_text(traceback.format_exc(), encoding="utf-8")
     ida_pro.qexit(1)

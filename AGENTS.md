@@ -16,7 +16,7 @@
 - 建立私人 GitHub 儲存庫。README 的故事背景以本地中文手冊為來源。
 - 先完成原版可執行、可觀測的垂直切片，再接中文與 HD。不得用猜測填補原版規則。
 
-2026-10-18 使用者已選定直接以 dosgolem 執行原版，另指定參考 `/home/anr2/cht/psychic-war` 的中文與 HD 覆繪方式。不另建玩法重製引擎，也不再詢問此架構選擇。HD 畫風、倍率、預設主題及發行平台仍待確認。
+2026-10-18 使用者已選定直接以 dosgolem 執行原版，另指定參考 `/home/anr2/cht/psychic-war` 的中文與 HD 覆繪方式。後續選定比較圖 B「手繪奇幻」，只決定畫風。不另建玩法重製引擎，不再詢問已定架構或畫風。HD 正式倍率、預設主題、構圖及發行平台仍待確認。
 
 ## 參考來源與適用範圍
 
@@ -117,11 +117,13 @@
 | [tools/prepare.py](tools/prepare.py) | Docker 內安全解包、逐檔盤點與隔離來源快照 |
 | [tools/probe_receipt.py](tools/probe_receipt.py) | Docker 內固定預算探針與完整收據 |
 | [tools/ida_intro_evidence.py](tools/ida_intro_evidence.py) | IDA 9.4 的片頭段輸入雜湊、原始交叉參照與函式證據匯出 |
+| [docs/source-index.json](docs/source-index.json) | 固定輸入的位址語意、推論等級與證據索引；IDA 匯出自動合併，未證實項附警示 |
 | [docs/spec/001-runtime-overlay.md](docs/spec/001-runtime-overlay.md) | 使用者選定架構與前端雛形邊界 |
 | [text/host.json](text/host.json) | 前端雛形的可見中文 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
 | [tools/gui_smoke.py](tools/gui_smoke.py) | 有界 Xvfb 前端啟動與滑鼠開啟設定頁驗證 |
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |
+| [internal/prototype/hd/frame.go](internal/prototype/hd/frame.go) | 手繪雙側邊框試作，完整色號／RGB 匹配與整組退回 |
 
 新增研究文件須同輪掛進本索引或 CONTEXT 的證據入口。不得將暫存、舊待辦或綠色單元測試當作原版一致證據。
 

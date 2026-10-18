@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "input_name": "memory-01B1_0000.bin",
+  "input_sha256": "c9f188ea847e8d364ccf8dbc9f6a9b9c74e192c0c83bd7a012b552e6d89b13d8",
+  "address_space": "IDA binary base 0；dosgolem 01B1 段內位移；10729940 指令、3000 cycles",
+  "entries": [
+    {
+      "address": "0x300C",
+      "level": "已證實",
+      "semantic": "本次片頭快照的間接呼叫目的地 word，值為 32C9h",
+      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/probe-intro-consumer/stdout.txt", "workplace/ida-intro-v4/intro-evidence.json"]
+    },
+    {
+      "address": "0x32C9",
+      "level": "強推論",
+      "semantic": "片頭單行字形緩衝建立；正式畫面定位與特效契約未解",
+      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/ida-intro-v4/intro-evidence.json", "workplace/probe-intro-consumer/stdout.txt"]
+    },
+    {
+      "address": "0x32D8",
+      "level": "已證實",
+      "semantic": "首行呼叫中 lodsb 依 DS:SI 讀取原文字面，SI 由 6FF0h 遞增",
+      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/probe-intro-consumer/stdout.txt"]
+    },
+    {
+      "address": "0x332C",
+      "level": "已證實",
+      "semantic": "本次片頭顯示呼叫；AX 由 0 至 9 推進，BX=0020h、CX=5078h，選取 CS:4511h 起的單行緩衝並寫入 MCGA 視訊區",
+      "evidence": ["RESEARCH-LOG.md#片頭顯示區定位", "workplace/probe-intro-display/stdout.txt", "workplace/ida-intro-display-utf8/intro-evidence.json"]
+    },
+    {
+      "address": "0x3369",
+      "level": "已證實",
+      "semantic": "本次前 11 次呼叫的畫面起點 AX 均為 2800h；接著移入 DI",
+      "evidence": ["RESEARCH-LOG.md#片頭顯示區定位", "workplace/probe-intro-display/stdout.txt"]
+    },
+    {
+      "address": "0x339C",
+      "level": "已證實",
+      "semantic": "本次顯示迴圈首列 ES=A000h、DI=2800h、CX=0078h，列間 DI 增加 0140h；對應原生畫面 (0,32,320,120)",
+      "evidence": ["RESEARCH-LOG.md#片頭顯示區定位", "workplace/probe-intro-display/stdout.txt", "workplace/ida-intro-display-utf8/intro-evidence.json"]
+    },
+    {
+      "address": "0x6358",
+      "level": "強推論",
+      "semantic": "片頭文字行的推進及顯示調度；完整控制碼未解",
+      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/ida-intro-v4/intro-evidence.json"]
+    },
+    {
+      "address": "0x6363",
+      "level": "已證實",
+      "semantic": "mov si,6FF0h 設定含前導空格的首行起點",
+      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/ida-intro-v4/intro-evidence.json"]
+    },
+    {
+      "address": "0x6366",
+      "level": "已證實",
+      "semantic": "經 CS:300Ch 間接呼叫 32C9h；本次前兩次 SI 分別為 6FF0h、7010h",
+      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/probe-intro-consumer/stdout.txt"]
+    }
+  ]
+}

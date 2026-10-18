@@ -21,6 +21,7 @@ import (
 	"github.com/wicanr2/dosgolem/xlate"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/controls"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/hd"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/overlay"
 )
 
@@ -54,6 +55,8 @@ type game struct {
 	captured             bool
 	captureTail          int
 	intro                *xlate.Layer
+	hd                   *hd.Frame
+	hdEnabled, hdMatched bool
 	overlayPixels        []byte
 	texture              *ebiten.Image
 	canvas               *image.RGBA
@@ -225,6 +228,12 @@ func (g *game) Update() error {
 	x, y := ebiten.CursorPosition()
 	point := image.Pt(x, y)
 	click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft)
+	if click && point.In(image.Rect(8, 8, 150, 40)) {
+		g.hdEnabled = false
+	}
+	if click && point.In(image.Rect(158, 8, 340, 40)) && g.hd != nil {
+		g.hdEnabled = !g.hdEnabled
+	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
 		g.panel = !g.panel
 		g.listening = ""
@@ -342,6 +351,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 			}
 		}
 	}
+	g.hdMatched = false
+	if g.hdEnabled && g.hd != nil && w == 320 && h == 200 {
+		g.hdMatched = g.hd.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(g.o.Indexed(), rgb)
 		clear(g.overlayPixels)
@@ -350,8 +363,12 @@ func (g *game) Draw(screen *ebiten.Image) {
 			draw.Draw(g.canvas, image.Rect(0, barHeight, width, barHeight+600), src, image.Point{}, draw.Over)
 		}
 	}
-	g.button(image.Rect(8, 8, 150, 40), g.label("original"), true)
-	g.button(image.Rect(158, 8, 340, 40), g.label("hd"), false)
+	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
+	hdLabel := "hd"
+	if g.hd != nil {
+		hdLabel = "hd_ready"
+	}
+	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
 	g.button(image.Rect(348, 8, 540, 40), g.label("controller"), g.panel)
 	pause := "pause"
 	if g.paused {
@@ -359,6 +376,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	g.button(image.Rect(548, 8, 740, 40), g.label(pause), g.paused)
 	g.text(image.Rect(12, 650, 948, 678), g.label("prototype"))
+	if g.hdEnabled && !g.hdMatched {
+		g.text(image.Rect(748, 8, 948, 40), g.label("hd_fallback"))
+	}
 	if g.panel {
 		draw.Draw(g.canvas, image.Rect(40, 80, 920, 630), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
 		g.text(image.Rect(60, 90, 900, 120), g.label("panel_title"))
@@ -414,7 +434,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			if g.intro != nil {
 				stamps = len(g.intro.Stamps)
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps})
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -452,6 +472,8 @@ func main() {
 	panel := flag.Bool("show-controller", false, "GUI 測試啟動時展開手把頁")
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
 	introText := flag.String("intro-text", "text/intro-prototype.json", "片頭覆繪原型譯文")
+	hdRef := flag.String("hd-reference", "", "可選：本地城鎮 probe 的 screen.bin，同目錄須有 palette.bin")
+	hdArt := flag.String("hd-art", "", "可選：本輪手繪邊框 PNG，僅供 HD prototype")
 	flag.Parse()
 	if *orig == "" || *fontPath == "" || *userDir == "" || *cycles < 60 || *cycles > 10000 || *frames < 1 {
 		log.Fatal("須指定 -orig、-font、-user-dir；cycles 範圍 60–10000")
@@ -502,6 +524,12 @@ func main() {
 	o.SetScratch(filepath.Join(userRoot, "game"))
 	o.SetDOSBoxCycles(*cycles)
 	g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, cycles: *cycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), texture: ebiten.NewImage(width, height)}
+	if *hdRef != "" || *hdArt != "" {
+		g.hd, err = hd.NewFrame(*hdRef, filepath.Join(filepath.Dir(*hdRef), "palette.bin"), *hdArt)
+		if err != nil {
+			log.Printf("HD 試作未載入，保留原貌：%v", err)
+		}
+	}
 	if *introRef != "" {
 		g.intro, err = overlay.NewIntro(*introRef, *introText, font)
 		if err != nil {

@@ -92,3 +92,34 @@
 - Git 提交身份沿用 `Chun-Yu Wang`，此儲存庫信箱設為 GitHub 帳號 ID 對應的 `7655317+wicanr2@users.noreply.github.com`，不改全域設定。
 - 從完整 RRSAL-1.0 範本建立 LICENSE，只替換占位符。README 增加授權摘要與條款連結；遊戲、字型、手冊、記憶體傾印與收據不加入 Git。
 - 首次提交前審查實際 Git 清單、忽略規則與原始檔案雜湊，結果與提交紀錄於本節追加。
+
+- 初始審查通過：24 個程式／文件檔案、完整 RRSAL 範本、29 個原版檔案不變。初始提交 `93b4dbd` 已推送 `origin/main`，沒有原版檔案或本地收據入庫。
+
+## 2026-10-18：手繪 HD 雙側邊框試作
+
+- 使用者看過畫風比較圖後選定 B「手繪奇幻」。此決定只涵蓋畫風，正式構圖、角色比例、倍率與預設主題仍未定稿。
+- 使用內建 imagegen 產生比較圖與透明手繪石雕雙欄圖。完整原圖、提示詞、來源及雜湊存本地 `workplace/`，不把未定稿試作圖當作正式發行素材或加入 Git。
+- 新增 `internal/prototype/hd/`，核對固定原版基線與圖像身份，僅覆蓋原生左右各 48×200 的裝飾區。圖面直接合成在顯示解析度；左右任一失配、色盤變化、缺圖或損壞都保留原貌。
+- 前端增加可選 HD 輸入與工具列切換。起始原貌、HD 試作與退回狀態均有明示標籤。所有功能留在 preview／prototype，沒有修改原版玩法、記憶體或存檔格式。
+- 建置、`go vet` 與五項 Go 測試通過，沒有 skip。真實城鎮與生成圖的測試包含邊界、唯讀輸入、失配、色盤變化、不完整畫格及缺圖。
+- `gui-hd-frame-v1` 走正常冷開機與城鎮操作，再經工具列暫停，同一畫格下切原貌→HD→原貌。兩側 172,017 像素改變，中間區外 0，還原畫格完全相同；實際視窗已目視核對。
+- 新二進位的原貌、手把頁與片頭單句在 `gui-smoke-v6` 重跑通過。生成圖、本地原版與字型保持唯讀輸入；沒有以合成手把事件宣稱 USB／藍牙驗收。
+- 中文研究：IDA 與 dosgolem 暫存器將 `sub_332C` 的片頭寫入區定位為 `(0,32,320,120)`，含背景及遮罩，沒有直接整塊覆蓋。細節見 RESEARCH-LOG，完整中文尚未完成。
+- 新增受版控的 `docs/source-index.json`，匯出工具自動合併原始位址、語意、等級與證據，未證實項帶警示。最新 JSON 身份與索引雜湊於最終稽核核對。
+- IDA 的第一輪索引讀取碰到 image 預設 ASCII；改成明確 UTF-8，從相同唯讀輸入重建，匯出成功。這是工具編碼問題，不是原版缺陷。沒有追查其他無關 helper 或硬體時序。
+- 沿用 Go／GUI／IDA 映像，所有工作負載在 Docker、UID/GID 1000:1000 下執行；新增 Go 子套件承載顯示試作，沒有新增研究根目錄或正式交付目錄。
+
+### HD 重跑入口
+
+沿用前節唯讀原版／字型、可寫專案及 Go 模組快取掛載。額外的測試環境為 `ZELIARD_HD_REFERENCE=/project/workplace/probe-newgame-60m/screen.bin`、`ZELIARD_HD_ART=/project/workplace/hd-border-prototype.png`。缺少本地輸入時 HD 測試 skip，不算驗收。
+
+GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --hd-reference /project/workplace/probe-newgame-60m/screen.bin --hd-art /project/workplace/hd-border-prototype.png --output /project/workplace/<新目錄>`。輸出原貌、HD、還原的實際視窗、原始色號、metadata 及 `hd-region-comparison.json`。
+
+正式場景／角色 HD、完整中文與換頁、對話／存讀檔／戰鬥、音效輸出及實體手把仍待後續。沒有 Release、正式打包或把儲存庫改為公開。
+
+### 本輪最終稽核
+
+- `workplace/current-audit-hd.json`：27 個自有來源檔，沒有原版、圖片、手冊、記憶體或本地收據入 Git。原始 ZIP／RAR、29 個解包檔案與 882 個 dosgolem 快照檔案雜湊全部不變。
+- 42 個本地文件連結、Python 語法、JSON、IDA 索引與輸入身份核對通過；正式範本 LICENSE 保留，實際忽略規則涵蓋原始包、試作圖、收據與 go.work。
+- 最新二進位為 `1d4b472fb36fda44a59452040830205150add0890743613617a8a9f0f763ea0f`，Go metadata 記錄基底 `93b4dbd` 加未提交的本輪功能。收據另記來源檔指紋，不把此建置稱為正式版本或乾淨 tag 產物。
+- `find /project -user root -o -type d -name '*.md'` 沒有異常。依工作樹掛載檢查 Docker，執行中及已停止的相關容器均為空；沒有新映像或需要移除的被取代映像。

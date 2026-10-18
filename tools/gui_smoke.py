@@ -90,7 +90,7 @@ def scenario(name, env, controller=False, intro=False):
             stop(process)
 
 
-def town_scenario(env):
+def town_scenario(env, hd_reference=None, hd_art=None):
     """僅用 X 視窗鍵盤事件走冷開機；語意結果須另行目視核對。"""
     capture = OUTPUT / "town-final.png"
     request = OUTPUT / "capture.request"
@@ -101,6 +101,8 @@ def town_scenario(env):
         "-user-dir", str(OUTPUT / "user"),
         "-capture", str(capture), "-capture-request", str(request),
     ]
+    if hd_reference and hd_art:
+        command.extend(["-hd-reference", str(hd_reference), "-hd-art", str(hd_art)])
     events = []
     reference = ROOT / "workplace/probe-newgame-60m"
     indexed = (reference / "screen.bin").read_bytes()
@@ -115,6 +117,12 @@ def town_scenario(env):
                          "-sample", "320x200!", "-depth", "8", "rgb:-"], env).stdout
         assert len(pixels) == 320 * 200 * 3, len(pixels)
         return bytes(pixels[i] for i in offsets) == expected
+
+    def display_pixels(path):
+        data = invoke(["convert", str(path), "-crop", "960x600+0+48", "+repage",
+                       "-depth", "8", "rgb:-"], env).stdout
+        assert len(data) == 960 * 600 * 3, len(data)
+        return data
     with (OUTPUT / "town.log").open("wb") as log:
         process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=log)
         try:
@@ -172,6 +180,45 @@ def town_scenario(env):
             shot("town-after-right")
             time.sleep(2)
             shot("town-released")
+            hd_comparison = None
+            if hd_reference and hd_art:
+                # 正常工具列暫停後，同一原版畫格切主題，不以載入測試狀態代替。
+                invoke(["xdotool", "mousemove", "--window", window, "620", "22", "click", "1"], env)
+                time.sleep(.3)
+                shot("town-original-paused")
+                original = display_pixels(OUTPUT / "town-original-paused.png")
+                invoke(["xdotool", "mousemove", "--window", window, "250", "22", "click", "1"], env)
+                time.sleep(.3)
+                shot("town-hd-paused")
+                hd = display_pixels(OUTPUT / "town-hd-paused.png")
+                invoke(["xdotool", "mousemove", "--window", window, "80", "22", "click", "1"], env)
+                time.sleep(.3)
+                shot("town-returned-original-paused")
+                restored = display_pixels(OUTPUT / "town-returned-original-paused.png")
+                changed_inside, changed_outside = 0, 0
+                for y in range(600):
+                    for x in range(960):
+                        i = 3 * (y * 960 + x)
+                        if original[i:i+3] != hd[i:i+3]:
+                            if x < 144 or x >= 816:
+                                changed_inside += 1
+                            else:
+                                changed_outside += 1
+                assert changed_inside > 0 and changed_outside == 0, (changed_inside, changed_outside)
+                assert original == restored, "原貌切回後畫格不同"
+                hd_comparison = {
+                    "source_state":"frontend paused through normal toolbar; no core execution during switches",
+                    "display_rectangles":[[0,48,144,600],[816,48,144,600]],
+                    "pixels_changed_inside":changed_inside, "pixels_changed_outside":changed_outside,
+                    "original_restored_exactly":True,
+                    "original_rgb_sha256":hashlib.sha256(original).hexdigest(),
+                    "hd_rgb_sha256":hashlib.sha256(hd).hexdigest(),
+                    "art_sha256":digest(hd_art), "reference_sha256":digest(hd_reference),
+                    "scope":"decorative side borders only; not full-game HD or RNG parity",
+                }
+                (OUTPUT / "hd-region-comparison.json").write_text(json.dumps(hd_comparison,indent=2)+"\n")
+                invoke(["xdotool", "mousemove", "--window", window, "250", "22", "click", "1"], env)
+                time.sleep(.3)
             request.touch(exist_ok=False)
             metadata = pathlib.Path(str(capture) + ".json")
             deadline = time.monotonic() + 25
@@ -182,6 +229,8 @@ def town_scenario(env):
             frame = json.loads(metadata.read_text())
             assert frame["mode"] == 0x13 and not frame["panel"], frame
             assert not frame["held_keys"], frame
+            if hd_comparison:
+                assert frame["hd_enabled"] and frame["hd_matched"], frame
             time.sleep(.15)
             shot("town-final-window")
             code = process.wait(timeout=10)
@@ -190,12 +239,13 @@ def town_scenario(env):
                     "input_method":"X11 keyboard events, no state loading or memory writes",
                     "town_reference_sha256":digest(reference / "screen.bin"),
                     "town_hud_rect":[48,162,136,22],
+                    "hd_comparison":hd_comparison,
                     "semantic_result":"requires visual inspection; no full-game completion claim"}
         finally:
             stop(process)
 
 
-def main(gameplay=False):
+def main(gameplay=False, hd_reference=None, hd_art=None):
     OUTPUT.mkdir(exist_ok=False)
     before = {p.name:digest(p) for p in ORIGINAL.iterdir() if p.is_file()}
     env = {**os.environ, "DISPLAY":":91", "LIBGL_ALWAYS_SOFTWARE":"1", "GOMAXPROCS":"2"}
@@ -208,7 +258,7 @@ def main(gameplay=False):
                 if xvfb.poll() is not None or time.monotonic() > deadline:
                     raise RuntimeError("Xvfb 未啟動")
                 time.sleep(.1)
-            scenarios = ([town_scenario(env)] if gameplay else
+            scenarios = ([town_scenario(env, hd_reference, hd_art)] if gameplay else
                          [scenario("original", env), scenario("controller", env, True),
                           scenario("intro-zh", env, intro=True)])
         after = {p.name:digest(p) for p in ORIGINAL.iterdir() if p.is_file()}
@@ -229,6 +279,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=pathlib.Path, default=OUTPUT)
     parser.add_argument("--gameplay", action="store_true", help="用實際視窗按鍵驗證新局與移動")
+    parser.add_argument("--hd-reference", type=pathlib.Path)
+    parser.add_argument("--hd-art", type=pathlib.Path)
     args = parser.parse_args()
+    if bool(args.hd_reference) != bool(args.hd_art) or args.hd_art and not args.gameplay:
+        parser.error("HD 驗證須同時指定 --gameplay、--hd-reference、--hd-art")
     OUTPUT = args.output
-    main(args.gameplay)
+    main(args.gameplay, args.hd_reference, args.hd_art)
