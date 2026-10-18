@@ -177,6 +177,8 @@
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |
 | [internal/prototype/hd/town_player.go](internal/prototype/hd/town_player.go) | 規格010的Muralla主角八姿態、下層還原與高清合成 |
 | [internal/prototype/hd/town_player_test.go](internal/prototype/hd/town_player_test.go) | 主角拒絕原子性、素材身份及獨立合成證據比對 |
+| [tools/combat.commands](tools/combat.commands) | 正常冷F7入Malicia、出劍、交戰、第一寶石、跳躍與蹲下鍵序 |
+| [internal/prototype/overlay/combat_path_test.go](internal/prototype/overlay/combat_path_test.go) | 原版交戰與中文狀態列的完整原版狀態、區外及來源驗證 |
 | [internal/prototype/hd/item_shop.go](internal/prototype/hd/item_shop.go) | 道具店四組已觀察畫格與局部動畫覆繪 |
 | [internal/prototype/hd/item_shop_test.go](internal/prototype/hd/item_shop_test.go) | 道具店HD來源、動畫範圍、原子退回及區外不寫入驗證 |
 | [tools/item-shop-branches.commands](tools/item-shop-branches.commands) | 三件商品介紹、空賣、首瓶出售與售後物品頁的正常鍵序 |

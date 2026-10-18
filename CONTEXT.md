@@ -11,12 +11,12 @@
 | 本地 Git | 已初始化 `main`，設定 `origin` | 環境 placeholder 已不存在；使用 GitHub noreply 信箱作本儲存庫提交身份 |
 | 遊戲包 | 已安全解包與逐檔盤點 | 30 個壓縮項目，含目錄；29 個檔案，清單在本地 `workplace/source-manifest.json` |
 | 中文手冊 | RAR 已列目錄，17 張 JPG | 已人工讀外封面及第 1、5–8、10、13 頁；另含地圖等掃描，17 張不等於 17 頁 |
-| dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 原版、中文覆繪配對及實際 X 視窗均通過；戰鬥未驗 |
+| dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 首場交戰／第一寶石及跳／蹲另已通過原版、中文配對與正常視窗；不代表全遊戲已驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | Muralla主角八個行走姿態限定驗收通過，主入口同步a6917c83 | 010已READY；隔離28點原版狀態相同，新八鍵114688原生像素零差；下層與新圖各62208高清像素零差。010限定CONFORMED；40主角加28畫格回歸pass、28完整原版點／vet／build通過；兩GUI693輸入不變，最終3456主角高清像素零差，66來源／13圖固定 |
+| 本輪工作 | 首場交戰與基本動作驗證通過，洞窟HD來源研究已推進 | 25點完整原版狀態相同；出劍／第一寶石及交戰前跳／蹲分別有正常視窗證據。主入口a691不變，67來源含新增測試，洞窟HD尚未接入 |
 | HD | 手繪奇幻邊框、室內人物、完整遠山、Muralla前景／地面與主角八姿態prototype | 既有場景已驗切換、重讀、居民兩頁與入洞。主角已驗正常行走／重讀／切換及居民兩頁後恢復；phase4、居民與洞窟尚未HD，正式倍率／預設待確認 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -41,7 +41,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步沿已驗入洞路徑，補首場戰鬥的正常原版操作與顯示來源。[主角規格](docs/spec/010-town-player-hd.md)已限定CONFORMED，八鍵正常來源、下層／alpha與兩路GUI已驗。沿既有城鎮繪製批次、重讀來源及洞口導航，不重新探索。其後接其餘片頭與物品共用消費端、首場戰鬥及其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步閉合洞窟初始4192批次、伸出武器及動態下層，建立洞窟HD的DRAFT規格與離線合成，再依READY閘門接入。首場交戰／第一寶石及交戰前跳／蹲已完成限定驗證，不重新探索鍵序。[主角規格](docs/spec/010-town-player-hd.md)已限定CONFORMED，八鍵正常來源、下層／alpha與兩路GUI已驗。沿既有城鎮繪製批次、重讀來源及洞口導航，不重新探索。其後接其餘片頭與物品共用消費端、其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -50,6 +50,17 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 移動GUI修正版`workplace/combat-v1/movement-v2/`同43055／65371退出0，原版已證離門鍵序、Up跳／落地／Down蹲／放開恢復、1000／0及五欄HUD已驗；500輸入及存檔mtime不變。根端五圖目視入口為`root-movement-review-v2.json`。首戰GUI保留自己的限定身份，補驗未重跑交戰。
+
+- 首場戰鬥目前來源身份固定於`workplace/combat-v1/current-identity-v1.json`，完整67份執行與測試來源另存`current-sources-v1/`。前端仍使用a691，新增一份測試與第15條鍵序。`pair-review-v1.json`核原版重播與中文配對的25點，`root-pair-review-v1.json`保存根端三張目視；`audit_combat_current_v1.py`及`current-audit-v1.json`用於本輪收尾，不沿用前輪105檔稽核。私人遠端與乾淨工作樹身份另記`repository-sync-v1.json`。
+- 洞窟繪製的窄研究仍使用`workplace/combat-v1/`：`cave-entered.primary`取自正常當次1MiB的01B1段，`ida_cave_v3.py`及`ida-cave-v3.json`保存IDA9.4原始位址／bytes／xref。`cave_actor_v2.py`／`cave-actor-proof-v2.json`核本體與前後手臂，`cave_terrain_v1.py`／`cave-terrain-proof-v1.json`核靜態圖塊。完整身份入口為`cave-research-index-v1.json`。使用既有py312-v1映像，不重建工具鏈；v1匯出編碼失敗保留。本資料只供來源定位，不代表HD已接入。
+- 首戰GUI結果集中`workplace/combat-v1/gui-v1/`，29699／31475退出0。首劍、交戰、寶石0→1及五欄HUD已見；低生命後的Up／Down只有送鍵證據，截圖未能清楚辨認跳／蹲。補驗只做入洞後、交戰前的移動，不重跑首戰；工具使用同根的`movement-tools-v1/`，唯一結果使用`movement-v1/`，仍沿a691及目前67來源身份。
+- 洞窟完成點的唯讀探針為`workplace/combat-v1/frame_probe_v1.go`，輸出集中同根`frame-v1/`；只觀察IDA已定位的01B1:3123，不改原版。與固定v3鍵序的live狀態另作核對，完成來源不得冒稱當次live。
+- 入洞門口與跳躍輸入的情境另以正常原版核對：`workplace/combat-v1/movement-original-v1.commands`及`movement-original-v1/receipt.json`，固定先左移離門再跳／蹲，不交戰、不注入狀態。不將門口Up誤當無條件跳躍。
+- 移動GUI初版`movement-v1/`在站姿驗證工具的縮圖幾何停下，未送洞窟跳／蹲；完整960×680視窗誤縮320×200，混入工具列與頁尾。根端與tester正確裁圖各核同ROI零差。修正用`movement-tools-v2/`及唯一`movement-v2/`，並採已驗左移離門鍵序；初版失敗保留，不增加像素容忍。
+
+- 首場戰鬥正常原版入口為`workplace/combat-v1/entry-v3/receipt.json`，中文配對為`pair-v3/receipt.json`，25點完整原版狀態相同；正式[正常鍵序](tools/combat.commands)及[配對測試](internal/prototype/overlay/combat_path_test.go)已接入驗證。實際視窗與移動補驗、洞窟RE來源見本節上方入口。前端a691及原29檔不變；本項不等於戰鬥／洞窟HD完成。
 
 - 主角GUI最小彙總為`foreground-v1/gui-player-v1/final-summary.json`，NAV存相同副本；107PNG含72逐張目視及35完整hash引用。`gui-player-nav-v1/paused-view-pixel-review.json`核20暫停點，`gui-player-v1/final-player-comparison.json`核最終完成來源與面積平均。`pixel-review.json`保留異camera框角18／9／27原始差，不概稱26ROI皆零。315取樣的81保留來源未存主角旗標，不宣稱全真。`audit_player_current_v1.py`與`player-current-audit-v1.json`是本輪唯一現行收尾入口，原29／882快照／font／save及mtime／擁有權／211文件連結已核對；其他歷史audit不重跑作本輪證據。
 
