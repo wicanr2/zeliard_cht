@@ -534,3 +534,5 @@ main3原66607與權威19124均退出0，278固定輸入不變；兩路共569輸�
 main3後處理保留不同頁時刻80原生pixel差，範圍(48,121)-(55,142)，沒有追NPC內部規則或重跑GUI。根端核對兩頁原版時間不同，TownFrames.used、TownScenery與TownBackground均false，80點全在兩頁中文框(56,24)-(232,110)外；見root-cross-time-review-v1.json。此差異不適用same-state框外零差斷言，視覺紅衣角色僅作觀察。各頁中文字／marker／數字同來源ROI零差與三圓角27HDpixels背景來源限制另保留，不藏差異或猜原版狀態。
 
 本輪完整收尾current-audit-v1.json為PASS_SCOPED_CURRENT：100自有檔、52Go／62來源／14鍵序、45完整點及11066呈現、68內部pass、兩GUI569固定輸入、九張根端actualX、末4653人物HDpixels零差。80原生／720HD跨時刻頁外差如實保留，不作same-state聲明。201文件連結及全部原件／快照／字型／存檔mtime通過，擁有權異常0；007／008限定CONFORMED，009仍READY隔離試作。主入口已同步經GUI驗過的def76c62，原cf763及90fbb別名不覆寫。Docker find擁有權／md目錄自檢空，專案遊戲容器均結束；後處理若仍有一次性容器，收尾再核對。
+
+程式與規格提交d647652caa41eaea67bef32d21e9dc04079cc857已推送origin/main，主機git ls-remote回讀同值，host gh回讀visibility=PRIVATE。完整GUI收尾補錄：nav3 17組暫停聯集外0、14組50候選完整角色的69822三倍像素零差；292有限持鍵快照中82筆raw不同於presented且HD匹配。main3 26項ROI、終態14336原生前景重建及4653角色高清像素零差，跨頁80原生／720HD差保留。兩路102PNG為82本輪逐張目視及20精確舊PNG雜湊引用，180按放確認、持鍵空、原件／字型／存檔與mtime不變。main原receipt的舊skyline+frame字串保留，完整實際scope由audit／review校正，不改歷史收據。以下文件收尾記錄另隨文件提交推送，不更改已驗程式。

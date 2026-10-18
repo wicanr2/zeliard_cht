@@ -7,7 +7,7 @@
 | 項目 | 現況 | 證據與限制 |
 |---|---|---|
 | 使用者目標 | dosgolem、繁中、HD、工具列手把綁定 | 已授權開工；規則見 [AGENTS.md](AGENTS.md) |
-| GitHub | 已建立並推送 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 主機gh回讀PRIVATE，前景及居民中文修正提交3ef84700已推送並核對遠端main；行走完整畫格另沿規格008試作 |
+| GitHub | 已推送私人 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 城鎮畫格修正d647652c已推送，主機git核對遠端main相同，host gh回讀PRIVATE；後續文件收尾見WORKLOG |
 | 本地 Git | 已初始化 `main`，設定 `origin` | 環境 placeholder 已不存在；使用 GitHub noreply 信箱作本儲存庫提交身份 |
 | 遊戲包 | 已安全解包與逐檔盤點 | 30 個壓縮項目，含目錄；29 個檔案，清單在本地 `workplace/source-manifest.json` |
 | 中文手冊 | RAR 已列目錄，17 張 JPG | 已人工讀第 1、5–8、10、13 頁；另含封面、地圖等掃描，17 張不等於 17 頁 |
