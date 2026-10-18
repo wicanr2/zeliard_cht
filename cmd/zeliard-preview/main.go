@@ -58,6 +58,7 @@ type game struct {
 	intro                *xlate.Layer
 	scroll               *overlay.Scroll
 	dialogue             *overlay.Dialogue
+	menuLabels           *overlay.Labels
 	hd                   *hd.Frame
 	kingHD               *hd.King
 	kingHDMatched        bool
@@ -388,6 +389,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.dialogue != nil && w == 320 && h == 200 {
 		g.dialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
+	if g.menuLabels != nil && w == 320 && h == 200 {
+		g.menuLabels.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
+	}
 	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
 	hdLabel := "hd"
 	if g.hd != nil {
@@ -513,6 +517,7 @@ func main() {
 	introText := flag.String("intro-text", "text/intro-prototype.json", "片頭覆繪原型譯文")
 	introScroll := flag.String("intro-scroll", "", "可選：首章捲動中文試譯 TSV，取代單句 prototype")
 	dialogueText := flag.String("dialogue-text", "", "可選：國王初訪對話試譯 TSV")
+	labelsText := flag.String("labels-text", "", "可選：城鎮選單標籤試譯 TSV")
 	hdRef := flag.String("hd-reference", "", "可選：本地城鎮 probe 的 screen.bin，同目錄須有 palette.bin")
 	hdArt := flag.String("hd-art", "", "可選：本輪手繪邊框 PNG，僅供 HD prototype")
 	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
@@ -598,6 +603,12 @@ func main() {
 		g.dialogue, err = overlay.NewDialogue(o, filepath.Join(root, "ZELRES2.SAR"), *dialogueText, font)
 		if err != nil {
 			log.Printf("國王對話試譯未載入，保留原文：%v", err)
+		}
+	}
+	if *labelsText != "" {
+		g.menuLabels, err = overlay.NewLabels(o, filepath.Join(root, "ZELRES2.SAR"), *labelsText, font)
+		if err != nil {
+			log.Printf("選單試譯未載入，保留原文：%v", err)
 		}
 	}
 	ebiten.SetWindowSize(width, height)

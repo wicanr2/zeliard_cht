@@ -2,7 +2,7 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-目前前端雛形包含片頭首章 30 行中文、國王初訪兩段中文、手繪 HD 邊框與國王肖像，以及中文手把設定頁。已從正常新局進城堡，顯示兩段中文、領取 1000 金幣並回到城鎮。其餘中文、場景與角色 HD、實體手把、存讀檔與戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+目前前端雛形包含片頭首章 30 行、國王與長老對話中文、長老四列中文選單、手繪 HD 邊框與國王肖像，以及中文手把設定頁。已從正常新局領取 1000 金幣，到長老房屋建立新存檔，退出並冷重開讀回；實際視窗與原版狀態對照均通過。其餘中文、場景與角色 HD、實體手把及戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 ## 故事背景
 
@@ -42,7 +42,9 @@ workplace/bin/zeliard-preview \
 
 HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -hd-art /project/workplace/hd-border-prototype.png`。參考畫格同目錄須有 `palette.bin`。試作圖只保存在本機；雛形檢查固定圖像身份後，僅替換兩側裝飾，不遮擋中間場景或資訊。缺圖、換場或色盤不符時保留原貌。這些選項與正式資產格式仍在試作階段。
 
-國王初訪中文另加 `-dialogue-text /project/text/dialogue-prototype.tsv`，仍由原版控制出字、等待按鍵與賞金。國王 HD 肖像使用 `-king-reference-a`、`-king-reference-b`、`-king-art`、`-king-speaking-art` 載入本地兩個原版姿態及兩張手繪圖。它保留黃色外框，未知姿態退回原貌；完整參數與限制見[試作規格](docs/spec/001-runtime-overlay.md)。
+國王與長老對話中文另加 `-dialogue-text /project/text/dialogue-prototype.tsv`，長老選單加 `-labels-text /project/text/labels-prototype.tsv`。出字、等待按鍵、賞金與存讀檔仍由原版處理。存檔到長老房屋選「記錄歷程」，讀檔使用 F7；名稱輸入框與 Yes/No 尚保留英文。商店選項已有試譯，尚未逐店驗證。
+
+國王 HD 肖像使用 `-king-reference-a`、`-king-reference-b`、`-king-art`、`-king-speaking-art` 載入本地兩個原版姿態及兩張手繪圖。它保留黃色外框，未知姿態退回原貌；完整參數與限制見[試作規格](docs/spec/001-runtime-overlay.md)。
 
 ## 授權
 

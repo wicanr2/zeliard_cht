@@ -19,17 +19,17 @@ var dialogueBox = image.Rect(54, 98, 264, 150)
 var dialoguePrompt = image.Rect(156, 139, 164, 147)
 
 type dialogueParagraph struct {
-	key        string
-	start, end uint16
-	text       []rune
-	progress   map[uint16]int
-	total      int
+	key            string
+	start, end     uint16
+	text           []rune
+	progress       map[uint16]int
+	total          int
+	prefix, script []byte
 }
 
-// Dialogue 是國王初訪兩段話的唯讀顯示試作。原版處理按鍵、捲頁與賞金。
+// Dialogue 是已核對國王與長老來源的唯讀顯示試作。原版處理按鍵、捲頁與存檔。
 type Dialogue struct {
 	font                        bitmap.Font
-	script                      []byte
 	paragraphs                  []dialogueParagraph
 	current, visible            int
 	active, pending, prompt     bool
@@ -60,22 +60,36 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 	if err != nil {
 		return nil, err
 	}
-	if len(records) != 3 || records[0][0] != "key" || records[0][1] != "zh-TW" {
-		return nil, fmt.Errorf("國王試譯須有兩筆及 key／zh-TW 欄位")
+	if len(records) < 2 || records[0][0] != "key" || records[0][1] != "zh-TW" {
+		return nil, fmt.Errorf("對話 TSV 須有 key／zh-TW 欄位")
 	}
-	d := &Dialogue{font: font, current: -1, script: append([]byte(nil), data[0x17249:0x17356]...)}
-	for i, bounds := range [][2]uint16{{0xa436, 0xa498}, {0xa4a1, 0xa537}} {
-		key := fmt.Sprintf("zelres2.file.%06x", int(bounds[0])+0xce1a)
-		text := records[i+1][1]
-		if records[i+1][0] != key || text == "" || strings.ContainsAny(text, "\n\r\t") {
+	texts := map[string]string{}
+	for _, record := range records[1:] {
+		if texts[record[0]] != "" || record[1] == "" {
+			return nil, fmt.Errorf("對話鍵重複或漏譯")
+		}
+		texts[record[0]] = record[1]
+	}
+	d := &Dialogue{font: font, current: -1}
+	// 檔案偏移與模組 payload 起點來自固定 SAR 及正常路徑傾印。
+	// 數值、控制碼與存檔動作仍由原版執行。
+	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}} {
+		key := fmt.Sprintf("zelres2.file.%06x", source[0])
+		text, ok := texts[key]
+		if !ok {
+			continue
+		}
+		delete(texts, key)
+		if text == "" || strings.ContainsAny(text, "\n\r\t") {
 			return nil, fmt.Errorf("對話鍵或文字不符：%s", key)
 		}
 		if _, err := dialogueLayout(font, []rune(text)); err != nil {
 			return nil, err
 		}
-		p := dialogueParagraph{key: key, start: bounds[0], end: bounds[1], text: []rune(text), progress: map[uint16]int{}}
-		for pos := bounds[0]; pos < bounds[1]; pos++ {
-			ch := data[int(pos)+0xce1a]
+		start, end := uint16(0xa000+source[0]-source[2]), uint16(0xa000+source[1]-source[2])
+		p := dialogueParagraph{key: key, start: start, end: end, text: []rune(text), progress: map[uint16]int{}, prefix: append([]byte(nil), data[source[2]:source[2]+64]...), script: append([]byte(nil), data[source[0]:source[1]]...)}
+		for pos := start; pos < end; pos++ {
+			ch := p.script[int(pos-start)]
 			if ch == 0xff {
 				pos++
 				continue
@@ -86,6 +100,9 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 			}
 		}
 		d.paragraphs = append(d.paragraphs, p)
+	}
+	if len(texts) != 0 {
+		return nil, fmt.Errorf("對話 catalog 含未知來源鍵")
 	}
 	o.OnCall(oracle.Far(0x01b1, 0x711b), d.beginGlyph)
 	o.OnCall(oracle.Far(0x01b1, 0x7120), func(o *oracle.Oracle) {
@@ -139,7 +156,7 @@ func (d *Dialogue) beginGlyph(o *oracle.Oracle) {
 	idx := -1
 	count := 0
 	for i, p := range d.paragraphs {
-		if n, ok := p.progress[pos]; ok {
+		if n, ok := p.progress[pos]; ok && bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0xa000), len(p.prefix)), p.prefix) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, p.start), len(p.script)), p.script) {
 			idx = i
 			count = n
 			break
@@ -147,7 +164,7 @@ func (d *Dialogue) beginGlyph(o *oracle.Oracle) {
 	}
 	// 7118h 只更新 CL。正常翻頁可帶回 CH=2，不能把整個 CX 當作 Y。
 	y := o.CX() & 0xff
-	if idx < 0 || o.DSReg() != 0x01b1 || o.AX()>>8 != 1 || int(o.BX()) < 54 || int(o.BX()) >= 264 || y < 99 || y > 139 || byte(o.AX()) != o.Byte(oracle.Far(0x01b1, pos)) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x711b), 5), []byte{0x2e, 0xff, 0x16, 0x22, 0x20}) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0xa42f), len(d.script)), d.script) {
+	if idx < 0 || o.DSReg() != 0x01b1 || o.AX()>>8 != 1 || int(o.BX()) < 54 || int(o.BX()) >= 264 || y < 99 || y > 139 || byte(o.AX()) != o.Byte(oracle.Far(0x01b1, pos)) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x711b), 5), []byte{0x2e, 0xff, 0x16, 0x22, 0x20}) {
 		if (d.active || idx >= 0) && len(d.Rejections) < 16 {
 			d.Rejections = append(d.Rejections, map[string]int{"kind": 1, "steps": int(o.Steps()), "source": int(pos), "index": idx, "ax": int(o.AX()), "bx": int(o.BX()), "cx": int(o.CX()), "ds": int(o.DSReg())})
 		}
@@ -184,6 +201,7 @@ func (d *Dialogue) capture(o *oracle.Oracle) {
 func dialogueLayout(font bitmap.Font, text []rune) ([]image.Point, error) {
 	x, y := 6, 4
 	points := make([]image.Point, 0, len(text))
+	noLineStart := func(r rune) bool { return strings.ContainsRune("，。！？；：、）］」』】〉》…", r) }
 	for i, ch := range text {
 		glyph := font[ch]
 		if len(glyph) != 16 && len(glyph) != 32 {
@@ -194,7 +212,11 @@ func dialogueLayout(font bitmap.Font, text []rune) ([]image.Point, error) {
 		latin := func(r rune) bool { return r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9' }
 		if latin(ch) && (i == 0 || !latin(text[i-1])) {
 			wordWidth := 0
-			for j := i; j < len(text) && latin(text[j]); j++ {
+			j := i
+			for ; j < len(text) && latin(text[j]); j++ {
+				wordWidth += len(font[text[j]]) / 16 * 16
+			}
+			for ; j < len(text) && noLineStart(text[j]); j++ {
 				wordWidth += len(font[text[j]]) / 16 * 16
 			}
 			if wordWidth > dialogueBox.Dx()*3-12 {
@@ -205,7 +227,12 @@ func dialogueLayout(font bitmap.Font, text []rune) ([]image.Point, error) {
 				y += 36
 			}
 		}
-		if x+w > dialogueBox.Dx()*3-6 {
+		// 保留下一串句尾標點的位置，避免逗號或句號單獨落在行首。
+		needed := w
+		for j := i + 1; j < len(text) && noLineStart(text[j]); j++ {
+			needed += len(font[text[j]]) / 16 * 16
+		}
+		if x+needed > dialogueBox.Dx()*3-6 && !noLineStart(ch) || x+w > dialogueBox.Dx()*3-6 {
 			x = 6
 			y += 36
 		}

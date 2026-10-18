@@ -45,7 +45,7 @@ def main():
     ida_auto.auto_wait()
     functions = []
     for start in idautils.Functions():
-        if not (start == 0x27E9 or 0x7000 <= start < 0x7300 or 0xA004 <= start < 0xA40F):
+        if not (start in (0x22CD,0x2345,0x27E9) or 0x7000 <= start < 0x7300 or 0xA004 <= start < 0xA40F):
             continue
         function = ida_funcs.get_func(start)
         instructions = [{"address":hex(a), "bytes":(ida_bytes.get_bytes(a, idc.get_item_size(a)) or b"").hex(),

@@ -124,8 +124,13 @@
 | [text/host.json](text/host.json) | 前端雛形的可見中文 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
 | [text/intro-scroll-prototype.tsv](text/intro-scroll-prototype.tsv) | 首章 30 行試譯，鍵為本地 SAR 的檔案偏移；專名尚待手冊校訂 |
-| [text/dialogue-prototype.tsv](text/dialogue-prototype.tsv) | 國王初訪兩段試譯；原文與控制碼仍留在本地遊戲資料 |
-| [internal/prototype/overlay/dialogue.go](internal/prototype/overlay/dialogue.go) | 國王對話逐字、捲動與待續標記的唯讀覆繪試作 |
+| [text/dialogue-prototype.tsv](text/dialogue-prototype.tsv) | 國王初訪與長老初訪／存檔試譯；原文與控制碼仍留在本地遊戲資料 |
+| [internal/prototype/overlay/dialogue.go](internal/prototype/overlay/dialogue.go) | 國王與長老對話逐字、捲動與待續標記的唯讀覆繪試作 |
+| [internal/prototype/overlay/labels.go](internal/prototype/overlay/labels.go) | 固定 SAR 模組與 ASCIIZ 來源核對的選單標籤覆繪試作 |
+| [internal/prototype/overlay/labels_test.go](internal/prototype/overlay/labels_test.go) | 冷新局走到長老選單的完整原版狀態與覆繪區域比較 |
+| [internal/prototype/overlay/save_load_test.go](internal/prototype/overlay/save_load_test.go) | 中文覆繪開／關的新存檔、退出與冷讀檔完整原版狀態比較 |
+| [tools/save-load.commands](tools/save-load.commands) | 上述測試的正常玩家鍵序，不含存檔或注入狀態 |
+| [text/labels-prototype.tsv](text/labels-prototype.tsv) | 武器店、銀行、道具店與長老選單試譯；尚待正常路徑驗證與術語校訂 |
 | [internal/prototype/overlay/scroll.go](internal/prototype/overlay/scroll.go) | 首章來源與逐列完成事件的唯讀覆繪；字級與版面仍為 prototype |
 | [tools/gui_smoke.py](tools/gui_smoke.py) | 有界 Xvfb 前端啟動與滑鼠開啟設定頁驗證 |
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |

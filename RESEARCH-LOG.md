@@ -203,3 +203,34 @@ IDA 9.4、metapc、16 位元，從上述唯讀段傾印新建一次性 `.i64`。
 - `gui-dialogue-hd-v4` 的國王切換已通過，但最後城鎮比較沿用已開啟的 HD，錯把它當作原貌基線。腳本改成每次比較先明確切原貌，v5 乾淨重跑通過。這是驗證腳本狀態問題，不是產品圖面還原失敗。
 
 八項具名 Go 測試通過，無測試 skip；`bitmap` 套件沒有獨立測試。完整中文、其餘人物／場景 HD、存讀檔、戰鬥及實體手把仍未完成或未驗。
+
+## 2026-10-18：長老中文選單與正常存讀檔
+
+本節接續國王切片。沿用固定原版 SAR、dosgolem 快照與 Go 1.24.13；共用執行器未修改。手冊人工核對 `SCAN0357_007.jpg` 印刷第 10 頁、`SCAN0357_009.jpg` 第 13 頁：長老房屋的 Record Experience 存檔，F7 讀檔。掃描只留本地 `workplace/save-path-manual/`。
+
+### 來源與顯示契約
+
+| 項目 | 原始定位與證據 | 等級與範圍 |
+|---|---|---|
+| SAR 目錄 | 固定 ZELRES2.SAR 開頭 232 bytes 為 58 個 little-endian uint32 偏移；每項前四 bytes 為 payload 長度，逐項恰接下一項及檔尾 | 已證實，限此固定檔案 |
+| 長老模組 | 目錄第 17 項 `0x1BCC2`，payload `0x1BCC6`、6973 bytes；正常第 253641450 指令 read 成功，對應段內 A000h | 已證實，正常玩家路徑 |
+| 正常長老段 | `save-path-replay/sage-next.segment`，65536 bytes，SHA-256 `22076a51f2a0f3d10115840090b8331107efe79d31776ceea90775b7c7236a00` | dosgolem 01B1 段內偏移，283900000 指令、290628496 cycles；不是 IDA 的新輸入 |
+| 長老對話來源 | SAR `0x1CA64..0x1CA83`、`0x1CA86..0x1CAAF`、`0x1CC43..0x1CC64`、`0x1CC66..0x1CCA0`、`0x1CE7E..0x1CEF1` | 來源 bytes 已證實；實跑涵蓋初訪、再次詢問、記錄旅程及保存成功，第一個詢問分支未走到 |
+| 長老四列 | SAR `0x1CA2B`、`0x1CA36`、`0x1CA40`、`0x1CA51`；對應 `01B1:AD65`、AD70、AD7A、AD8B 的 ASCIIZ | 已證實，來源及正常四列顯示 |
+| ASCIIZ 繪字 | 共用 `01B1:22DB`／完成 `2308`；`22E7` 起計算 X=BH×4+CL、Y=BL；`2381` 的 add di,5 | 已證實，限本次長老四列；原始 bytes／運算元見 IDA 匯出 |
+
+完整來源映射與 read 紀錄在 `workplace/sage-source-mapping.json`。IDA 9.4 仍從固定國王段輸入 SHA-256 `06b74a1ea26f25d7e81de50ecb9f9ece1e1851d9429b469c59cf6a80bbb1d156` 重建，匯出 `workplace/ida-dialogue-indexed-v4/dialogue-evidence.json`，新增共用 22CD／2345 函式。其位址空間為 IDA binary base 0，對應原版 01B1 段內偏移。索引保留原始名稱、位址、bytes 與等級，不把長老段冒充 IDA 國王輸入。
+
+`Dialogue` 改為逐段核對模組前 64 bytes 與完整來源文字，再處理來源位置；控制碼與原版動作不翻譯。`Labels` 觀察 ASCIIZ 完成畫格，僅覆繪已核對來源、原黑底白字、色號與色盤仍相符的文字行。長老四列 X=168，Y=38／48／58／68；中文 24×24 顯示像素，保留選擇箭頭。十八筆選單試譯目前只驗長老四筆，其餘商店仍待正常操作。
+
+`labels-sage-v3/receipt.json` 在 283.9m、284.65m 抽樣。完整 1 MiB 記憶體、色號、色盤、CS:IP、cycles 與無覆繪原版相同；國王 241 加長老 114 字形、四列標籤，兩點差異各 29080 顯示像素，對話／標籤區外 0。目視初稿發現逗號可能落行首，依實際字模寬度保留句尾標點位置；重跑通過。正式字級與術語仍為 prototype。
+
+### 新存檔與冷讀檔
+
+- 獨立試玩正常新局領賞後走到 Muralla Town 長老房屋，完成初訪，再選 Record Experience、輸入 SAVETEST、Enter。只用 KeyDown／KeyUp／Run，不載來源附帶存檔或注入狀態。新檔 256 bytes，SHA-256 `78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb`。
+- 原版第 318353491 指令建立成功，318353503 close 成功，Wrote 記錄 SAVETEST.usr／256。正常 Ctrl+Q／Y 後 DOS 退出碼 0。Close 後重新 Load，F7／Y／輸名／Enter，138950398 指令讀取新檔 256 bytes 成功，回到 Muralla Town 長老門口及 1000 金幣，持鍵為空。
+- `workplace/save-path-verified/audit.json` 記錄來源、命令、二進位、映像與 dosgolem 身份，29 個原始檔雜湊不變。早期探索沒有完成名稱輸入，未產生新檔；完成畫面觀察與輸名後成功，沒有據此開啟鍵盤 driver 逆向。
+- [正常鍵序](tools/save-load.commands) 與 [配對測試](internal/prototype/overlay/save_load_test.go) 保存可重播入口。`workplace/save-overlay-v1/receipt.json` 有十九點完整原版狀態比較；兩側各自建立新檔，bytes 及 SHA-256 相同，各自退出、冷開機並讀回。保存成功中文完整顯示，名稱及存檔識別未被翻譯。這是目前列出的正常路徑，未外推損壞存檔或所有裝置狀態。
+- `workplace/save-path-gui-v1/receipt.json` 以實際 X 鍵盤走相同玩家流程，新檔 XVIEW1.usr 256 bytes，SHA-256 `ac9c392c1dc1a0767e50edbd28aee396c1cfeedefaa77604cceafb193d7806f4`。正常退出碼 0；冷重開的新局先見金額 0，再 F7 讀回 Muralla Town／1000 金幣。新檔讀後不變、持鍵空、原始 29 檔不變。
+- 目視 `record-selected.png`、`record-name-entered.png`、`record-saved.png`、`restored-window.png`，長老初訪、四列及保存訊息中文可讀。名稱輸入框、檔案列表、Yes/No 與 F7 提示仍為英文；本次存讀流程未開 HD，不延伸成 HD 驗收。
+- 名稱輸入框切換讓舊對話畫格失效。GUI 保留 kind=2、glyphs=355、paragraph=6、visible=34、first_difference=148，見 `observe-before-restart.json`。顯示層安全移除舊中文，再由保存訊息的來源事件接回。配對測試也出現同類退回，完整原版狀態始終相同；此診斷屬既有 UI 切換邊界。

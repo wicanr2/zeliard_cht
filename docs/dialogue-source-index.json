@@ -118,6 +118,46 @@
         "workplace/ida-dialogue-indexed-v2/dialogue-evidence.json",
         "workplace/dialogue-v3/receipt.json"
       ]
+    },
+    {
+      "address": "0x22DB",
+      "level": "已證實",
+      "semantic": "正常長老四列選單的 ASCIIZ 繪字入口；DS:SI 對應 AD65、AD70、AD7A、AD8B，來源依 SAR 模組 payload 0x1BCC6 映射；只讀，不翻譯選單動作或存檔識別",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/labels-sage-v3/receipt.json",
+        "workplace/sage-source-mapping.json"
+      ]
+    },
+    {
+      "address": "0x22E7",
+      "level": "已證實",
+      "semantic": "ASCIIZ 入口先取 BH 為橫向四像素單位、BL 為縱座標，CL 為橫向附加像素；正常長老標籤核對 X=168、Y=38/48/58/68",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/labels-sage-v3/receipt.json",
+        "workplace/sage-source-mapping.json"
+      ]
+    },
+    {
+      "address": "0x2308",
+      "level": "已證實",
+      "semantic": "ASCIIZ 的 LODSB 讀到 NUL 後返回；正常長老四列完成事件供唯讀畫格擷取",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/labels-sage-v3/receipt.json",
+        "workplace/sage-source-mapping.json"
+      ]
+    },
+    {
+      "address": "0x2381",
+      "level": "已證實",
+      "semantic": "sub_2345 完成一個字形後 add di,5；正常長老標籤每字五原生像素、八列高",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/labels-sage-v3/receipt.json",
+        "workplace/sage-source-mapping.json"
+      ]
     }
   ]
 }

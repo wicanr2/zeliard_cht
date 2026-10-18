@@ -1,0 +1,146 @@
+king
+key 0x4d 10000000
+run 2000000
+key 0x4d 2000000
+key 0x48 250000
+run 10000000
+key 0x4b 2500000
+key 0x48 250000
+run 10000000
+key 0x4d 1000000
+key 0x48 250000
+run 10000000
+run 10000000
+key 0x39 50000
+run 10000000
+key 0x4d 12000000
+run 1000000
+key 0x4d 8000000
+run 1000000
+key 0x4d 8000000
+run 1000000
+key 0x4d 8000000
+run 1000000
+key 0x4d 6000000
+run 1000000
+key 0x4d 6000000
+run 1000000
+key 0x4d 1300000
+key 0x48 250000
+run 20000000
+key 0x39 50000
+run 10000000
+shot sage-menu
+key 0x50 50000
+run 200000
+key 0x50 50000
+run 200000
+key 0x50 50000
+run 200000
+key 0x39 50000
+run 13000000
+key 0x39 50000
+run 13000000
+key 0x50 50000
+run 1500000
+shot record-selected
+down 0x39
+run 500000
+shot name-before-keyup
+up 0x39
+run 1000
+shot name-after-keyup-1k
+run 500000
+shot name-after-keyup-500k
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+shot name-entered
+key 0x1c 100000
+run 2000000
+shot save-result
+run 10000000
+shot save-confirm-text
+key 0x39 500000
+run 1000000
+shot save-done
+run 10000000
+shot save-menu
+key 0x48 100000
+run 1500000
+key 0x48 100000
+run 1500000
+key 0x48 100000
+run 1500000
+shot go-outside-selected
+key 0x39 500000
+run 3000000
+shot sage-outside
+ down 0x1d
+key 0x10 150000
+up 0x1d
+run 3000000
+shot quit-dialog
+key 0x15 150000
+run 100000
+shot dos-exited
+new
+king
+key 0x41 500000
+run 2000000
+shot load-list
+key 0x15 150000
+run 1500000
+shot load-name
+key 0x0e 100000
+run 200000
+key 0x0e 100000
+run 200000
+key 0x0e 100000
+run 200000
+key 0x0e 100000
+run 200000
+key 0x0e 100000
+run 200000
+key 0x0e 100000
+run 200000
+key 0x0e 100000
+run 200000
+key 0x0e 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+shot load-name-entered
+key 0x1c 100000
+run 6000000
+shot load-result
+run 10000000
+shot restored
+quit
