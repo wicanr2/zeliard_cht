@@ -14,9 +14,9 @@
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 原版、中文覆繪配對及實際 X 視窗均通過；戰鬥未驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
-| 中文 | 工具列、首章、國王、長老、存讀提示、武器店、道具店、裝備、首瓶使用及狀態列 prototype | 四個狀態欄及Felishika城堡／Muralla鎮／Malicia洞窟已驗；其餘物品、場景名稱與文字待完成，專名仍保留原文 |
+| 中文 | 工具列、首章、國王、長老、存讀提示、武器店、道具店、裝備、首瓶使用及狀態列 prototype | 四欄、城堡／城鎮／洞窟及國王／武器店／小屋／Marid長老名稱已驗；53來源中40新增仍未正常走過，其餘物品與文字待完成，專名保留原文 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 狀態列九來源配對及正常視窗通過，主入口已同步3aeca361 | 新層48點及舊使用48點完整配對相同；正常視窗47個原版區域、40個中文區域零差，安全區外0。16張目視、110筆按放確認、394固定輸入不變；本輪GUI未消耗藥水，HD關閉 |
+| 本輪工作 | 四種新室內名稱配對及正常視窗已驗，主入口已同步f42ab9da | 新名稱13點、舊HUD48與舊使用48完整配對相同；44候選88種合成base及792拒絕通過。GUI1保留長老未對準exit1，GUI2以正常F7自建存檔補Marid退出0；24個原版及5次名稱區域零差，未把40未走過來源當完整驗收 |
 | HD | 手繪奇幻邊框、國王、長老、武器商人、銀行與道具店 prototype | 道具店四組抽樣來源測試通過，GUI實遇0／1／3各52406／52405／52384像素改變、區外0、完整還原；未遇pose2，不稱完整動畫。其餘場景／角色及正式倍率待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -41,7 +41,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-依 [WORKLIST.md](WORKLIST.md) 從既有52個header形狀候選補其餘場景名稱的消費端證據，再接其餘物品、片頭／對話；HD接城鎮場景及其餘角色。候選不等於已驗來源。狀態列九來源、銀行存提款及兩種告別，道具店三件六頁、清單捲動、首瓶買賣／使用／物品移除與四組HD抽樣已驗，不重新探索。正常存讀檔與已驗人物切片不重新開啟。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+依 [WORKLIST.md](WORKLIST.md) 從560筆字面候選整理其餘片頭、對話及物品的共用消費端與翻譯段落，HD接城鎮場景及其餘角色。場景53來源已接當次入口閘門，40未走過來源仍待正常抽樣，不以catalog存在當完成。四種新室內名稱、狀態列、銀行存提款與告別，道具店介紹／買賣／使用及既有HD切片不重新探索。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -51,10 +51,14 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 工具與本地證據入口
 
+- 其餘場景名稱的共用消費端與來源研究集中在 `workplace/scene-v1/`，入口為 `prepare.py`、`prepare_observer.py`、`analyze_v2.py`與 `consumer-evidence-v2.json`。沿既有國王／武器及長老正常路徑補header證據，21個完成header及10點64KiB配對相同，不重新解交易或存檔規則。44筆擴充候選及字形推導在 `source_contract.py`／`source-contract.json`；新層須當次入口唯一驗來源，不以字面直接覆繪。完整配對入口 `prepare_pair_commands.py`／`pair-commands.json`／`pair-test-v1.jsonl`；正常視窗首輪工具／部分結果在 `gui-tools-v1/`／`gui-v1/`，Marid補驗在 `gui-tools-v2/`／`gui-v2/`。未走過名稱仍保留候選等級。
+- 後續批次中文化的字面盤點沿同研究區 `body_candidates.py`／`body-text-candidates.json`及摘要。只盤點固定SAR可讀ASCII，不把切分點當成已驗段落、控制碼或消費端；原文與研究產物仍不加入Git。
+- 場景擴充固定候選及目前主入口SHA-256為 `f42ab9da5260cf213d91a210df54f64fe9b6dd5b3c9d38c1136218d52190899e`，別名 `workplace/bin/zeliard-preview-scene-v1`。身份在 `workplace/scene-v1/candidate-identity-v1.json`，47來源／10既有鍵序及2scene鍵序、51／48／53 catalog；建立時GUI待驗狀態保留。兩份測試紀錄六頂層／九子項PASS，13點新路徑及96點回歸通過，go vet／build-v1通過。`freeze.py`／`audit.py`及 `current-audit.json`合併兩份GUI、原件、舊失敗、補證與主入口。`gui-v2/`正常F7補Marid，139固定輸入、52筆按放確認、持鍵空、退出0；根端四種名稱實圖目視在 `root-gui-review-v2.json`。HD關閉、不交易，未重驗其他人物HD或正式封包。
+- 場景GUI v1保留部分結果：國王、武器店及小屋已達，長老前停在城鎮而權威exit1。原版門口補證入口同研究區 `navigation_prepare.py`／`navigation-v2/`；既有成功視窗的 `workplace/gui_sage_hd.py:329-362`使用房屋外觀對齊後Up，不能把盲步數累積當成已對齊。actualX的before／ack是觀察區間，不冒稱精確guestedge。
 - 狀態列與場景名稱研究集中在 `workplace/hud-v1/`，入口為 `prepare.py`、`prepare_v2.py`、`analyze.py`與 `source-evidence.json`。兩份原版觀察各48點色號、色盤、64KiB段、FileOps與完整收據相同，見 `observation-comparison-v2.json`；九筆來源／23次完成字形已驗。IDA9.4匯出入口 `ida_export.py`／`ida-evidence.json`，輸入為冷啟動01B1段，原名及位址保留；初次編碼失敗及來源斷言錯誤有獨立歷史檔，不視為產品缺陷。首版配對及46來源身份保留於 `pair-test-v1.jsonl`／`pair-v1/`與 `pair-source-v1.json`，最終驗證依下一筆固定候選。
 - 原版洞窟名稱勘誤：先前由畫面讀為Cavern of Ialicia，SAR3原始字串與實際22CD來源逐byte證實為Cavern of Malicia。後續以Malicia為準，歷史收據不改名或覆寫。
 - 共用字形核對在 `workplace/hud-v1/font_primitive_proof.py`／`font-primitive-proof.json`：01B1:F504指向F856，768-byte執行期字型以IDA2345指令重建24個完成header，全部原生像素零差，48個快照字型相同。原檔內尚未找到同一連續字型，來源producer仍未知，不開硬體driver研究。後續完整場景名稱候選清單由同研究區 `scene_candidates.py`／`scene-candidates.json`保存，只是header形狀與字面候選，消費端未驗者不得直接接入。
-- 狀態列固定候選及目前主入口SHA-256為 `3aeca36131bb9ca2192a9d9225ee8593c5f57caed5b5dce80948605a2be32206`，別名 `workplace/bin/zeliard-preview-hud-v1`。同研究區 `candidate-identity-v1.json`固定46來源／10鍵序、51對話／48標籤／9狀態列，保留建立時GUI待驗狀態；最終結果由 `current-audit.json`合併。`pair-test-v2.jsonl`及 `pair-v2/`含48點新層與48點舊使用回歸，三個頂層及七個catalog子項通過。`freeze.py`保留固定流程，`audit.py`／`source-audit.json`核對來源。正常視窗 `gui-v1/`同一handle完成冷F7、買50、物品頁開關、入洞及返回950，持鍵空、capture-tail退出0；根端三圖目視另記 `root-gui-review-v1.json`。47個原版及40個中文區域零差，8個HUD帶安全區外0；保留paragraph18／kind2／first_difference422舊對話安全退回，不稱全程零失配。
+- 前輪狀態列固定候選SHA-256為 `3aeca36131bb9ca2192a9d9225ee8593c5f57caed5b5dce80948605a2be32206`，別名 `workplace/bin/zeliard-preview-hud-v1`。同研究區 `candidate-identity-v1.json`固定46來源／10鍵序、51對話／48標籤／9狀態列，保留建立時GUI待驗狀態；最終結果由 `current-audit.json`合併。`pair-test-v2.jsonl`及 `pair-v2/`含48點新層與48點舊使用回歸，三個頂層及七個catalog子項通過。`freeze.py`保留固定流程，`audit.py`／`source-audit.json`核對來源。正常視窗 `gui-v1/`同一handle完成冷F7、買50、物品頁開關、入洞及返回950，持鍵空、capture-tail退出0；根端三圖目視另記 `root-gui-review-v1.json`。47個原版及40個中文區域零差，8個HUD帶安全區外0；保留paragraph18／kind2／first_difference422舊對話安全退回，不稱全程零失配。
 - 道具使用與物品頁文字的本輪證據、窄唯讀工具與正常鍵序集中在 `workplace/item-use-v1/`。入口為同目錄 `prepare.py`、`interactive.py`及後續來源收據；先沿已驗首瓶購買至物品頁，不重解買賣。中文手冊 `workplace/save-path-manual/珍084-神劍封魔/SCAN0357_008.jpg`印刷11至12頁已人工核對，道具在裝備頁選取後按Space使用；效果依固定原版實跑，不由手冊推定。
 - 前輪洞窟使用固定候選SHA-256為 `b8c1be290043ac525adfbd7687783b07065b8142f8daa755f76d2d9cf2c808c3`，別名 `workplace/bin/zeliard-preview-item-use-v2`。身份 `workplace/item-use-v1/candidate-identity-v2.json`，48點完整配對在 `pair-v4/item-use/receipt.json`與 `pair-test-v4.jsonl`，43來源／10鍵序、51對話／48標籤；go vet／build-v2與五項 `regression-v3.jsonl`通過。正常視窗為 `gui-tools-v3/`及 `gui-v3/`，根端另目視三圖記 `root-gui-review-v3.json`。收尾 `audit.py`／`current-audit.json`合併配對、回歸、GUI3、兩次歷史失敗及主入口；原件與固定輸入不變，擁有權異常0。
 - 使用GUI v1／v2保留各自權威exit1與部分收據；同一研究區下的 `navigation-v3/receipt.json`以原版持鍵重現首次失敗角色區域RGB零差，辨完整走路相位與暫態，再正常Up入洞。v2只增相位仍失敗，後續放開補證與 `gui-tools-v3/`、`gui-v3/`改核對先放開再擷取的正常次序，狀態依目前表及WORKLOG，不將準備入口當作通過。`pair-visual-review-v4.json`記根端三張配對圖目視；`next-hud-candidates.json`保存LIFE／PLACE／GOLD／ALMAS及Muralla Town的字面位置，消費端未知，沒有翻譯或掛鉤結論；不得據此直接接正式顯示。

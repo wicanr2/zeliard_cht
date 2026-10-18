@@ -369,3 +369,18 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --k
 - 唯一tester同35152正常視窗至權威exit0。城堡、城鎮、洞窟名稱與四欄中文已驗，47個原版區域及40個中文區域零差，8個HUD帶安全區外0；16圖目視、110筆按放確認、394輸入不變，最後950、持鍵空、HD關。此次保留藥水，未重驗消耗或恢復量；原版生命條參考沿使用前狀態。保留paragraph18／kind2／first_difference422舊對話安全退回，capture-tail正常退出，容器已移除。
 - 根端另看城鎮、洞窟及返回三張實際PNG，記root-gui-review-v1.json。GUI完成後才將主入口同步3aeca361，舊b8別名保留。FINAL_GUI整合稽核PASS，78自有檔、46來源／10鍵序、29原件、882固定快照、兩份48點配對、GUI與主入口相符，擁有權異常0。現況、README、規格與矩陣更新，CONFORMED限本輪九來源；沒有正式版號或封包。後續52候選只是字面與header形狀，待補消費端，不重開已驗切片。
 - 功能提交 `8b0c6f4b863821791953464d858c83c0ca6098b5`已推送，主機gh回讀遠端main相同，儲存庫仍PRIVATE。FEATURE_COMMIT整合稽核再次PASS，46來源及10鍵序逐檔符合功能提交，157個文件連結有效，78自有檔不含原版、圖面、字型或收據。專案容器空、擁有權異常0，沒有新增或重建image。完整中文／HD、音效、戰鬥、實體手把與正式平台包仍未完成或未驗。
+
+## 2026-10-18：其餘場景名稱的共用顯示契約
+
+- 前輪狀態列實作與私人推送為實際進展，接手HEAD6199a91及容器空。路由載入中文顯示隔離、文件職責及逆向技能；沿已有52個header形狀候選補共用消費端。新增 `workplace/scene-v1/`保存窄原版與觀察收據，入口掛入CONTEXT，不新建交付結構。先沿既有國王／武器及長老正常鍵序，不重解已驗交易或存檔。
+- 兩條原版與觀察v1各取得權威exit0，武器9點、長老1點完整64KiB／色號／色盤／FileOps／含KeyReads收據相同。初版完成事件沒有段傾印，另建只補2344段快照的6713d826觀察器，原名及舊輸出保留。v2同9636／69440終態皆exit0；首次分析在69440仍活著時先讀sage-menu而檔案未到，分類為驗證編排錯誤，回到同handle取得exit0後乾淨重跑成功，沒有重啟遊戲或改時序。
+- 21個完成header、完整來源及64-byte模組前綴唯一匹配，程式碼與字型相同。四個新增正常來源為國王、武器店、小屋及Marid長老，均在A000載入且走22CD／2344，原生字形重建零差。44個擴充候選的prefix／來源配對無歧義、全部譯文及陰影適合安全區；bank／magic沿既有層，ENEMY排除。套用腳本首個斷言誤把Draw列舉中的scene算漏，寫入前停止；修正純檢查後才套用，不是產品缺陷。
+- READY規格新增當次入口驗證契約，候選不預設base，以SI及相對header導出並核對prefix、完整來源、F504指標／字型及既有程式碼。原版完成字形／色盤相符才顯示，匹配多來源時拒絕；不改玩法、數值或輸入。索引新增44筆，其中4筆正常觀察為已證實，其餘40仍標強推論；TSV共53列，未宣稱全遊戲場景完成。
+- 配對同38342權威exit0，四個頂層及九子項PASS。新增武器10／長老3點及舊HUD48點完整1MiB、色號、色盤、CS:IP、steps／cycles相同，中文字模、數字／生命條及安全區外0。首條regex沒有命中舊使用實際名稱，未計為通過；另同39195以正確TestItemUseCavernNormalPathReadOnly跑48點回歸及TestHUDSceneAdmissionGuards，兩項PASS、exit0。44候選兩種base共88正確匹配，九類共792拒絕通過；合成條件不算正常可達證據。
+- go vet／建置同72941權威exit0，固定f42ab9da、47來源／10既有鍵序及2scene鍵序、51／48／53 catalog。根端已看4張配對圖，與正常GUI區分，記root-pair-review-v1.json。source-audit通過79自有檔、29原件、882快照、159連結及擁有權0異常；主入口仍3aeca361。唯一tester已獲固定身份，正常GUI依序跑兩新局，不交易不存檔，HD關閉；測試期間固定程式、譯文與索引。
+- GUI v1第一路46354權威exit0，國王／武器店中文清楚、1000、持鍵空、34筆按放確認，capture-tail正常退出。第二路44415權威exit1，國王／小屋已達，但長老比較仍是Muralla鎮；角色約184、房屋門約125，沒有正常入門。16個原版及4次中文名稱區域零差只涵蓋已達三種類，9圖目視；94固定輸入、原件、字型不變，容器空。失敗與partial保留，沒有把未達Marid當覆字缺陷，未觸發最後raw capture的限制也保留。
+- 查main.go可見Sync後RunCycles50000，observe在Draw才取樣；before／ack只能界定輸入區間，不能捏成精確guestedge。既有成功 `gui_sage_hd.py:329-362`有房屋外觀對齊，這次盲steps累積省略該視覺閘門。依最小充分原則，不追逐實際X每個edge。另以自建存檔正常冷F7後Up250k／run20m，同62136權威exit0直接進Marid；原版A000前綴、ACCD完整來源、字形e1d3bb2e與色盤已驗，1000、持鍵空、不寫檔、source save與copy2 mtime不變。原版圖已目視，補證在navigation-v2/verification.json。
+- 後續GUI v2只補正常冷F7自建存檔→Up→Marid，沿同f42候選，不重跑已過King／Hut／Weapon；來源、TSV及index持續固定。原v1失敗維持原身份，正常視窗另留收據。本地verify首讀把Go空byte slice的JSON空字串誤當必須空list，修正型別檢查後同輸入通過，未改原版或存檔。剩餘文字盤點取得560筆可讀ASCII字面候選、37303 bytes及104個catalog起點重合；這些不算已驗段落、漏譯數或翻譯覆蓋率。
+- GUI2同12249權威exit0，正常F7→房屋外觀核對→Up→Marid重訪完整，正文為既有重訪中文，不拿初訪正文當gate。26次按放／52筆確認、最長0.127秒，最後118760167steps／122781434cycles、1000、持鍵空、HD關、無對話拒絕。8個原版ROI及1個Marid名稱ROI零差，4圖目視；139輸入、原29、字型、自建存檔與copy2mtime不變，capture-tail正常退出，容器空、擁有權異常0。
+- GUI2額外核對當前原版indexed與固定原版palette的可見畫布，肖像及既有文字區外零差。首個分析框誤用208×48，依frozen dialogue.go真實210×52修正，保留number-bitmap-comparison-v1.json及其210像素差異，沒有加新mask或改產品。獨立palette未擷取的限制保留；沒有把固定參考冒稱本次palette收據。根端另看四種實際名稱PNG，記root-gui-review-v2.json。
+- GUI2完整稽核後同步主入口f42ab9da，舊3aeca別名保留。FINAL_GUI整合稽核PASS，核對79自有檔、47來源／10既有及2scene鍵序、109點配對、原件、882快照、GUI1原失敗與GUI2補驗、主入口及根端四圖。現況、README、規格及矩陣已更新；CONFORMED限來源閘門及四個正常新增來源，40未走過名稱仍未驗。沒有正式版號、封包或新image，推送結果待追加。

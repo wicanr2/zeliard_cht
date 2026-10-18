@@ -560,3 +560,16 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 正常視窗 `gui-v1/receipt.json` SHA-256為 `18e0309bac3485a33298126c509f15b0ec4d28fbf03c80b60580a418eabc1348`，稽核為 `b901e73bea37bea960f71695f0bdf95bfbc6828dc01b0927cdde14a5c47e8892`，目視為 `e948f56d9430c553e043c5cffaa14e84e322c5e4c61d697bdde23f5c6dfb57c7`。同35152完成冷啟動城堡、冷F7城鎮、買50後950、物品頁開關、正常入洞及返回城鎮。47個原版區域及40個中文區域零差，8個HUD帶安全區外0；16圖目視、55次按放／110筆確認，最長確認0.182秒。最終286298902steps／293261430cycles，持鍵空、HD關、capture-tail退出0。保留paragraph18／kind2／first_difference422安全退回；本輪GUI保留藥水，未消耗或驗恢復量。394固定輸入、原件、字型、自建存檔及mtime不變，根端另看三圖，主入口已同步。
 - 共用字形的補證在 `font-primitive-proof.json`。01B1:F504指向F856，768-byte字型SHA-256為 `f16d564fee5c4472914b4dc64cf467bcd05da89125288a83b0b065d164707d07`；依IDA2345h指令重建24個完成header，原生像素全部零差，48個快照字型相同。原版29檔尚未找到同一連續字型，producer仍未知，不由此宣稱已定位檔案字型或散布字模。
 - 後續候選在 `scene-candidates.json`，SAR表邊界與項目數已檢查。175個模組掃得52個header形狀候選、42種字面，含5個本輪已驗來源。其餘消費端、載入基址、顏色與生命週期仍未知，不能直接納入中文層。此補證不改本輪固定候選或擴大CONFORMED範圍。
+
+## 2026-10-18：場景名稱的當次消費端驗證
+
+來源入口為 `workplace/scene-v1/consumer-evidence-v2.json`，SHA-256為 `7873562215ef08e130f64175f9ce9fd011dac3500ff1ecf32396529124a29d22`。字型與22BF至2386機器碼沿前節固定雜湊；IDA位址仍為base0等於dosgolem01B1段內偏移，SAR檔案偏移另外記錄，不混用。新觀察器來源6713d826，沿前節已驗入口只補2344完成時64KiB段，不寫原版。正常武器9點及長老1點的色號、色盤、完整64KiB、FileOps與含KeyReads收據相同；這份窄觀察不稱完整1MiB配對。
+
+- 已證實：國王、武器店、小屋及Marid長老都走22CD／2344，載入基址A000，完整header、字串與64-byte模組前綴唯一匹配。21個場景／PLACE完成畫格依既有字形契約重建，原生像素零差；字型指標及768-byte字模、程式碼均相符。
+- 檔案定位：SAR2的國王body17238／module16E1A、武器body184C9／module17817、小屋body17809／module175C0、Marid body1C997／module1BCC6。完整來源與bitmap雜湊附於 [HUD索引](docs/hud-source-index.json)，原始位址及字串保留。專名仍保留原拼法，不稱手冊正式譯名。
+- 44候選的來源／字形推導在 `source-contract.json`，SHA-256為 `87db6cc153ca3465ef39d9ecdfebfe6d8c4c8c26062ccfa9b8daf300ff8b49e0`。完整header與prefix配對無歧義，固定字型推導的bitmap及53筆譯文均符合安全區。新增4筆有正常觀察，其餘40仍為強推論，不能由catalog存在推論正常可達或全遊戲完成。
+- 新契約只在實際22CD入口，以當次SI減去來源相對header導出base，唯一匹配模組前綴與完整原文；字型指標／雜湊及程式碼也須相符。2344完成再驗SI、完整bitmap與色盤。這讓候選必須在實際使用時通過消費端驗證，沒有依字面或固定場景索引強套中文。銀行／道具店標題維持既有層，ENEMY未納入。
+- 完整配對入口 `pair-v1/scenes/`國王／武器10點、國王／小屋／長老3點，以及 `pair-v1/hud/`48點；完整1MiB、色號、色盤、CS:IP、steps／cycles與原版相同。另 `regression-v1/item-use/`舊使用48點無覆繪殘留。兩份測試紀錄合計六個頂層及九個子項PASS、無skip。88個合成base匹配及792拒絕只證明來源閘門，不冒充未走過場景的正常遊玩；正常GUI另驗。
+- 正常GUI v1第一路國王及武器店通過，第二路小屋通過但長老門未對準，權威exit1與partial保留。既有成功GUI使用房屋外觀對齊；當前失敗的Draw觀察不是精確輸入edge，沒有據此宣稱同狀態原版重現。新的最小補證 `navigation-v2/verification.json`以正常冷F7自己存檔後Up直接進Marid，來源ACCD、模組A000與原始SAR2相符，完整字形e1d3bb2e與固定色盤相同。原版105300000steps／109182814cycles、1000、持鍵空、沒有寫檔；字形證據不替代後續正常X視窗。
+- GUI2收據 `gui-v2/receipt.json` SHA-256為 `8b3b2828e928d4b7d65aebbf7dbb24ade1f78e5f025b2b733c59f0b4bb39d800`，稽核為 `3c3ecd9b65bbf66974588759eefb619cad5d80fe6caf04cf9fe1d756517fdcf6`，目視為 `26b7273059c2ba8b05ca5306392c81c347ae3221ca874ce5ff5c04f88cac3a06`。正常F7自己存檔後Up進Marid，重訪中文及名稱清楚，8原版ROI／1名稱ROI零差。4圖目視、52筆按放確認、139輸入與copy2mtime不變；1000、持鍵空、HD關、capture-tail退出0、容器空。原GUI1的exit1及partial保持原樣，前三種名稱仍沿GUI1身份，不宣稱同一完整新局全部到達。
+- GUI2原版indexed SHA-256為 `779029018e65b6456fcc6cbbaa3c0b527e63d8ebb9acfa7ead370654bb7cfafd`，與原版補證同圖相符。以固定補證palette解碼後，實際視窗肖像與既有中文區外零差；本次未獨立擷取palette，不稱整份當前色盤已驗。首次分析錯用208×48對話範圍，依固定源碼210×52更正，原紀錄另存；修正是測量契約，不改產品或增加任意遮罩。根端四種實際名稱圖另記 `root-gui-review-v2.json`。

@@ -82,7 +82,7 @@ func assertHUDCheckpoint(t *testing.T, name string, h *HUD, o *oracle.Oracle, ds
 	raw, pal := o.Indexed(), o.Palette()
 	h.Draw(dst, raw, pal, image.Point{})
 	keys := h.VisibleKeys()
-	wants := map[string]string{"zelres1.file.00db4c": "生命", "zelres1.file.00db54": "寶石", "zelres1.file.00db5d": "金幣", "zelres1.file.00db65": "地點", "zelres2.file.000d34": "金幣", "zelres2.file.000d3c": "地點", "zelres2.file.038dce": "Felishika城堡", "zelres2.file.0399b8": "Muralla鎮", "zelres3.file.00c31a": "Malicia洞窟"}
+	wants := map[string]string{"zelres1.file.00db4c": "生命", "zelres1.file.00db54": "寶石", "zelres1.file.00db5d": "金幣", "zelres1.file.00db65": "地點", "zelres2.file.000d34": "金幣", "zelres2.file.000d3c": "地點", "zelres2.file.038dce": "Felishika城堡", "zelres2.file.0399b8": "Muralla鎮", "zelres3.file.00c31a": "Malicia洞窟", "zelres2.file.017238": "Felishika國王", "zelres2.file.017809": "小屋", "zelres2.file.0184c9": "武器防具店", "zelres2.file.01c997": "Marid長老"}
 	var boxes []image.Rectangle
 	for _, key := range keys {
 		s := h.sources[key]

@@ -30,6 +30,7 @@
 | 首章 30 行捲動中文 | 通過，限 prototype | `intro-scroll-v2/receipt.json`，160m 自然片頭六點抽樣的 1 MiB 記憶體、CS:IP、cycles、色號及色盤均與無掛鉤原版相同；覆繪區外 0，結尾及換章移除通過 |
 | 多行中文實際視窗 | 通過，限首章 | `gui-intro-scroll-v2/receipt.json` 與 `intro-scroll-window.png`；冷開機自然片頭，擷取時 7 來源行／62 完成列；正式字級與術語待校訂 |
 | 完整中文顯示與換頁 | 未完成 | 正式字串來源與其餘場景待 Z04 |
+| 四種新增室內名稱及來源閘門 | 完整配對及正常GUI通過，限已列來源 | `scene-v1/pair-v1/scenes/`武器10點、長老3點完整原版狀態相同，中文字模／安全區外0；舊HUD48與舊使用48回歸通過。44候選兩種base共88匹配、九類792拒絕通過，未走過40來源不稱正常可達。GUI1國王／武器店／小屋已達，長老門未對準exit1保留；GUI2正常F7自己存檔後Up補Marid退出0。合計24原版ROI、5次名稱ROI零差，HD關閉、不交易；原件與兩份不同範圍固定輸入不變，見 `scene-v1/current-audit.json` |
 | 狀態列四欄與三場景名稱 | 完整配對及正常X視窗通過，限九來源 | `hud-v1/pair-v2/hud/receipt.json`48點完整1MiB、色號、色盤、CS:IP、steps／cycles相同，安全區外0；四欄、三名稱、字模、數字／生命條及五類退回已驗。舊使用48點回歸通過。`hud-v1/gui-v1/`正常冷F7、買50、物品頁開關、入洞及返回950；47個原版區域、40個中文區域零差，8個HUD帶安全區外0，16圖目視、110筆按放確認、394輸入不變、持鍵空、退出0。HD關閉且未消耗藥水，其他場景未驗 |
 | HD 與原貌切換 | 通過，限雙側裝飾邊框試作 | `workplace/gui-hd-frame-v1/`，區內 172,017 像素不同、區外 0，原貌完整還原；完整左右失配、淡入色盤與短畫格退回測試通過 |
 | 國王 HD 肖像與口部姿態 | 通過，限兩個已觀察姿態 | `gui-dialogue-hd-v5/king-hd-region-comparison.json`；肖像內部 52,452 像素改變，外框及區外 0，原貌完整還原。兩個姿態只改口部圖面，未知姿態／淡入／缺圖退回測試通過 |
@@ -63,4 +64,6 @@
 
 前輪洞窟使用主入口b8c1be29保留歷史身份。`workplace/item-use-v1/current-audit.json`核對74自有檔、43來源／10鍵序、29原件、882快照、48點新配對與150點回歸，以及GUI3固定輸入與兩次失敗身份。go vet與建置通過，沒有具名skip；沒有重驗HD、實體手把、新平台或正式封包。
 
-目前主入口3aeca361已同步狀態列中文。`workplace/hud-v1/current-audit.json`核對78自有檔、46來源／10鍵序、29原件、882快照、兩份48點完整配對、GUI及根端三圖目視。三個頂層測試及七個catalog子項PASS，go vet與建置通過，無fail或skip。原版數字、生命條及圖示保留，舊對話paragraph18／kind2／first_difference422安全退回仍列限制。沒有重驗HD、實體手把、新平台或正式封包。
+前輪主入口3aeca361保留狀態列切片身份。`workplace/hud-v1/current-audit.json`核對78自有檔、46來源／10鍵序、29原件、882快照、兩份48點完整配對、GUI及根端三圖目視。三個頂層測試及七個catalog子項PASS，go vet與建置通過，無fail或skip。原版數字、生命條及圖示保留，舊對話paragraph18／kind2／first_difference422安全退回仍列限制。沒有重驗HD、實體手把、新平台或正式封包。
+
+目前主入口f42ab9da已同步場景擴充。`workplace/scene-v1/current-audit.json`核對79自有檔、47來源、10既有與2scene鍵序、29原件、882快照、109點完整配對與來源拒絕測試。兩份測試紀錄六頂層／九子項PASS，go vet與建置通過，無fail或skip。GUI1部分結果及失敗原樣保留，GUI2補Marid，139固定輸入與copy2存檔mtime不變；根端另目視四種實圖。沒有重驗HD、實體手把、新平台或正式封包。
