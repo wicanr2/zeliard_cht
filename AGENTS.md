@@ -129,6 +129,7 @@
 | [docs/spec/001-runtime-overlay.md](docs/spec/001-runtime-overlay.md) | 使用者選定架構與前端雛形邊界 |
 | [docs/spec/008-town-frame-presentation.md](docs/spec/008-town-frame-presentation.md) | 城鎮繪製批次、完整畫格與原始／呈現收據的試作契約 |
 | [docs/spec/009-town-ground-hd.md](docs/spec/009-town-ground-hd.md) | Muralla雙層地面來源、取樣與限定驗收規格 |
+| [docs/spec/010-town-player-hd.md](docs/spec/010-town-player-hd.md) | 主角資源鍵、下層還原、手繪合成與待驗閘門 |
 | [internal/prototype/hd/town_ground.go](internal/prototype/hd/town_ground.go)、[地面測試](internal/prototype/hd/town_ground_test.go) | 原版雙層地面守衛、高清直接取樣與原子退回 |
 | [internal/prototype/hd/town_frames.go](internal/prototype/hd/town_frames.go) | 原版捲動／完成回呼、單一快照、來源時間與撤除 |
 | [internal/prototype/hd/town_scenery_reload_test.go](internal/prototype/hd/town_scenery_reload_test.go) | 重讀來源、角色保留及已用／保留區邊界驗證 |
@@ -174,6 +175,8 @@
 | [internal/prototype/overlay/scroll.go](internal/prototype/overlay/scroll.go) | 首章來源與逐列完成事件的唯讀覆繪；字級與版面仍為 prototype |
 | [tools/gui_smoke.py](tools/gui_smoke.py) | 有界 Xvfb 前端啟動與滑鼠開啟設定頁驗證 |
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |
+| [internal/prototype/hd/town_player.go](internal/prototype/hd/town_player.go) | 規格010的Muralla主角八姿態、下層還原與高清合成 |
+| [internal/prototype/hd/town_player_test.go](internal/prototype/hd/town_player_test.go) | 主角拒絕原子性、素材身份及獨立合成證據比對 |
 | [internal/prototype/hd/item_shop.go](internal/prototype/hd/item_shop.go) | 道具店四組已觀察畫格與局部動畫覆繪 |
 | [internal/prototype/hd/item_shop_test.go](internal/prototype/hd/item_shop_test.go) | 道具店HD來源、動畫範圍、原子退回及區外不寫入驗證 |
 | [tools/item-shop-branches.commands](tools/item-shop-branches.commands) | 三件商品介紹、空賣、首瓶出售與售後物品頁的正常鍵序 |

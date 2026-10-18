@@ -72,6 +72,14 @@ func runTownFramesPair(t *testing.T, path, out string) {
 		t.Fatal(err)
 	}
 	frames := NewTownFrames(b, scene)
+	var player *TownPlayer
+	if artwork := os.Getenv("ZELIARD_PLAYER_ART"); artwork != "" {
+		player, err = NewTownPlayer(scene, artwork)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	playerDraws, playerCaveRefusals := 0, 0
 	var ground *TownGround
 	if artwork := os.Getenv("ZELIARD_GROUND_ART"); artwork != "" {
 		ground, err = NewTownGround(scene, filepath.Join(project, "workplace/town-hd-v1/foreground-v1/normal-v1/restored.indexed"), artwork)
@@ -203,6 +211,26 @@ func runTownFramesPair(t *testing.T, path, out string) {
 					}
 				}
 			}
+			playerMatched := false
+			if player != nil {
+				if selected != nil {
+					playerMatched = player.Draw(canvas, b.VideoMode(), selected.Primary, selected.Resources, selected.Extra, selected.Indexed, selected.RGB, selected.Palette, image.Point{})
+					if int(selected.Primary[0x83])*8 < 224 && selected.Primary[0xe7] < 4 && !playerMatched {
+						t.Fatal("正常可見主角HD失配", f[1])
+					}
+					if playerMatched {
+						playerDraws++
+					}
+				} else if strings.HasSuffix(f[1], "cave-entered") {
+					in := frames.read(b.Indexed(), nil)
+					_, _, rgb := b.ScreenRGB()
+					unchanged := cloneTownBytes(canvas.Pix)
+					if player.Draw(canvas, in.mode, in.primary, in.resources, in.extra, in.indexed, rgb, in.palette, image.Point{}) || !bytes.Equal(unchanged, canvas.Pix) {
+						t.Fatal("主角HD蓋住洞窟")
+					}
+					playerCaveRefusals++
+				}
+			}
 			if !bytes.Equal(before, b.Bytes(oracle.Far(0, 0), 1<<20)) {
 				t.Fatal("HD改寫原版")
 			}
@@ -214,7 +242,7 @@ func runTownFramesPair(t *testing.T, path, out string) {
 			if strings.HasSuffix(f[1], "cave-entered") && selected != nil {
 				t.Fatal("城鎮快照蓋住洞窟")
 			}
-			points = append(points, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "registers": b.Regs(), "state_equal": true, "memory_sha256": townBackgroundHash(before), "presentation": frames.State(), "town": dialogue.State()})
+			points = append(points, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "registers": b.Regs(), "state_equal": true, "memory_sha256": townBackgroundHash(before), "presentation": frames.State(), "town": dialogue.State(), "player_hd_matched": playerMatched})
 		default:
 			t.Fatal("未知正常命令", line)
 		}
@@ -223,7 +251,7 @@ func runTownFramesPair(t *testing.T, path, out string) {
 	if held == 0 || uncovered != 0 || len(b.HeldKeys()) != 0 {
 		t.Fatal("正常呈現驗收不足", held, uncovered)
 	}
-	data, e := json.MarshalIndent(map[string]any{"commands_sha256": townBackgroundHash(commands), "draws": draws, "held_complete": held, "uncovered": uncovered, "modal_frames": modal, "checkpoints": points, "captured": frames.captured, "refused": frames.refused, "held_keys": b.HeldKeys(), "scope": "兩個獨立dosgolem正常鍵序；各檢查點完整原版狀態與每50k完整呈現；F7選單用當次原版，恢復必須新完成來源；非GUI或其他城鎮驗收"}, "", "  ")
+	data, e := json.MarshalIndent(map[string]any{"commands_sha256": townBackgroundHash(commands), "draws": draws, "held_complete": held, "uncovered": uncovered, "modal_frames": modal, "checkpoints": points, "captured": frames.captured, "refused": frames.refused, "held_keys": b.HeldKeys(), "player_draws": playerDraws, "player_cave_refusals": playerCaveRefusals, "scope": "兩個獨立dosgolem正常鍵序；各檢查點完整原版狀態與每50k完整呈現；F7選單用當次原版，恢復必須新完成來源；非GUI或其他城鎮驗收"}, "", "  ")
 	if e != nil {
 		t.Fatal(e)
 	}

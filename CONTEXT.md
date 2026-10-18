@@ -16,8 +16,8 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | Muralla地面限定驗收通過，主入口同步19ac2719 | 固定54Go／64來源，16點完整原版相同、37地面pass／vet／build通過；兩GUI623輸入不變、107PNG核對，地面741888高清取樣零差，009限定CONFORMED。前輪def76與62來源身份保留 |
-| HD | 手繪奇幻邊框、室內人物、城堡／Muralla完整遠山、Muralla前景／地面與三招牌prototype | 正常行走、切換還原、第二F7、居民兩頁及正常入洞已驗。主角v2僅造型候選；主角／居民與洞窟尚未HD，正式倍率／預設待確認 |
+| 本輪工作 | Muralla主角八個行走姿態限定驗收通過，主入口同步a6917c83 | 010已READY；隔離28點原版狀態相同，新八鍵114688原生像素零差；下層與新圖各62208高清像素零差。010限定CONFORMED；40主角加28畫格回歸pass、28完整原版點／vet／build通過；兩GUI693輸入不變，最終3456主角高清像素零差，66來源／13圖固定 |
+| HD | 手繪奇幻邊框、室內人物、完整遠山、Muralla前景／地面與主角八姿態prototype | 既有場景已驗切換、重讀、居民兩頁與入洞。主角已驗正常行走／重讀／切換及居民兩頁後恢復；phase4、居民與洞窟尚未HD，正式倍率／預設待確認 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -41,7 +41,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步做主角高清下層合成與造型預覽。[地面規格](docs/spec/009-town-ground-hd.md)已限定驗收，原版主角下層10來源也已核對，避免重新探索城鎮繪製批次、重讀來源與洞口導航。其後接其餘片頭與物品共用消費端、首場戰鬥及其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。已驗居民兩頁、商店、HUD、道具使用及場景名稱不重新探索；新呈現方式只驗必要交互作用。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步沿已驗入洞路徑，補首場戰鬥的正常原版操作與顯示來源。[主角規格](docs/spec/010-town-player-hd.md)已限定CONFORMED，八鍵正常來源、下層／alpha與兩路GUI已驗。沿既有城鎮繪製批次、重讀來源及洞口導航，不重新探索。其後接其餘片頭與物品共用消費端、首場戰鬥及其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -50,6 +50,10 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 主角GUI最小彙總為`foreground-v1/gui-player-v1/final-summary.json`，NAV存相同副本；107PNG含72逐張目視及35完整hash引用。`gui-player-nav-v1/paused-view-pixel-review.json`核20暫停點，`gui-player-v1/final-player-comparison.json`核最終完成來源與面積平均。`pixel-review.json`保留異camera框角18／9／27原始差，不概稱26ROI皆零。315取樣的81保留來源未存主角旗標，不宣稱全真。`audit_player_current_v1.py`與`player-current-audit-v1.json`是本輪唯一現行收尾入口，原29／882快照／font／save及mtime／擁有權／211文件連結已核對；其他歷史audit不重跑作本輪證據。
+
+- 本輪主角沿[規格010](docs/spec/010-town-player-hd.md)。九張本地候選圖、原圖與完整提示詞索引為`coherent-frame-v1/player-art-set-v1.json`；正式只用八個已觀察行走鍵，phase4共用圖不接入。`prepare_player_study_v4.py`／`town_player_v4.go.draft`保存面積平均離線版，`player-preview-v4.json`／`player-pixel-review-v5.json`核十來源；`player-pair-v1/`／`player-pair-test-v1.jsonl`核三條正常鍵序28點完整原版相同。`player-presented-underlay-v1.json`核八可見鍵114688原生像素，`player-presented-preview-v1.json`／`player-presented-pixel-review-v1.json`核八來源下層及新圖各27648高清像素。連同前十來源合計各62208高清像素零差、94居民重疊位置。`player-ready-review-v1.json`固定審查及四圖目視，READY全文為`player-ready-spec-v1.md`。正式40內部pass／vet見`player-production-test-v1.jsonl`／`player-production-vet-v1.log`。正式候選與來源固定於`player-canonical-identity-v1.json`／`player-canonical-v1-sources/`，原版配對輸出為`player-canonical-pair-v1/`；主入口同步a691，19ac保留為ground-v1，見mainalias-sync-player-v1.json。GUI工具沿`foreground-v1/gui-player-nav-tools-v1/`與`gui-player-tools-v1/`，輸出各用`gui-player-nav-v1/`與`gui-player-v1/`；兩路權威40394／3567及30162／43304均退出0，693輸入不變；NAV20暫停點框外NPC與還原0，MAIN最後14336原生／3456主角高清／2889框外NPC像素零差。根端九圖沿root-player-nav-gui-review-v1.json及root-player-main-gui-review-v1.json。完整來源與衛生核對為player-pre-gui-audit-v1.json，現行收尾另記player-current-audit-v1.json。
 
 - 本輪地面接入沿[規格009](docs/spec/009-town-ground-hd.md)與既有`foreground-v1/scene-prototype-v1/coherent-frame-v1/`來源。GUI工具為`foreground-v1/gui-ground-nav-tools-v1/`與`gui-ground-tools-v1/`，結果在`gui-ground-nav-v1/`及`gui-ground-v1/`；主入口及`workplace/bin/zeliard-preview-ground-v1`均19ac2719，`mainalias-sync-ground-v1.json`記同步。`ground-canonical-identity-v1.json`／`ground-canonical-v1-sources/`固定64完整來源與5圖，READY009另存；`ground-canonical-test-v1.jsonl`／`ground-canonical-pair-test-v1.jsonl`與`ground-canonical-pair-review-v1.json`為37內部pass、16完整點及五點地面合成／洞窟拒絕。兩GUI audit退出0、623輸入不變，`visual-review.json`核107PNG，`ground-pixel-review.json`核22暫停點加最終來源，共82432原生RGB格／741888高清直接取樣零差。root九張actualX沿`root-ground-nav-gui-review-v1.json`／`root-ground-main-gui-review-v1.json`；目前完整稽核入口為`ground-current-audit-v1.json`及`audit_ground_current_v1.py`。
 
@@ -66,8 +70,9 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - 新前景GUI第二輪發現居民首頁等待時中文撤除，入口 `foreground-v1/gui-scenery-v2/`及後續 `scene-prototype-v1/mutation-probe-v1/`。先用只開居民中文的原版、每50k呈現與當次pixel差異定位原版producer；未判明前不標GUI通過、不改正式生命週期。
 
 - 後續主角與居民HD的資產盤點入口為 `workplace/town-hd-v1/foreground-v1/actor_inventory_v1.py`、`actor-inventory-v1.json`及 `player-source-sheet-v1.png`。`actor_observations_v1.py`與`scene-prototype-v1/coherent-frame-v1/actor-observations-v1.json`另核對既有12個不同正常狀態，其中11個可見來源共2221個主角不透明像素零差；正常看見三個資源姿態鍵，其餘七個仍是候選。phase2有正常狀態但角色全在畫布外，不能算可見姿態驗收。只核對固定資源及現成來源，不接正式前端；替換不同alpha圖像前須先處理主角下方圖層，避免殘留原版輪廓。
-- 主角手繪試樣同放`foreground-v1/`：`player-c2bit0-phase1-handpaint-v1.png`造型棄用，`player-c2bit0-phase1-handpaint-v2.png`為待合成候選。兩份完整提示詞及來源身份為`player-prompt-v1.txt`／`player-prompt-v2.txt`與`player-generation-record-v1.json`／`player-generation-record-v2.json`，目視判讀在`player-art-review-v2.json`。以內建imagegen產生，alpha未改寫，均不入Git。手冊外封面來源為`workplace/manual-terms-v1/珍084-神劍封魔/SCAN0357_001.jpg`及`player-manual-cover-v1.json`；只用右半《神劍封魔》角盔／盔甲輪廓，左半其他遊戲廣告不沿用。沒有主角HD正式實作。
-- 主角下層證據為同目錄`player_underlay_v1.py`及`scene-prototype-v1/coherent-frame-v1/player-underlay-v1.json`與逐點indexed。10個已驗Muralla正常畫格以地形→原版居民→原版主角順序重建，143360色號零差，2015個主角不透明像素含94個居民重疊位置。這閉合原版下層來源，高清地形合成與新主角alpha仍待驗，不改原版記憶體。
+- 主角手繪試樣同放`foreground-v1/`：`player-c2bit0-phase1-handpaint-v1.png`造型棄用，`player-c2bit0-phase1-handpaint-v2.png`為待合成候選。兩份完整提示詞及來源身份為`player-prompt-v1.txt`／`player-prompt-v2.txt`與`player-generation-record-v1.json`／`player-generation-record-v2.json`，目視判讀在`player-art-review-v2.json`。以內建imagegen產生，alpha未改寫，均不入Git。手冊外封面來源為`workplace/manual-terms-v1/珍084-神劍封魔/SCAN0357_001.jpg`及`player-manual-cover-v1.json`；只用右半《神劍封魔》角盔／盔甲輪廓，左半其他遊戲廣告不沿用。此為首輪造型研究；後續八鍵正式接入沿規格010與本節最新入口。
+- 主角下層證據為同目錄`player_underlay_v1.py`及`scene-prototype-v1/coherent-frame-v1/player-underlay-v1.json`與逐點indexed。10個已驗Muralla正常畫格以地形→原版居民→原版主角順序重建，143360色號零差，2015個主角不透明像素含94個居民重疊位置。這閉合原版下層來源；後續高清地形與主角alpha合成沿規格010最新入口，不改原版記憶體。
+- [主角規格010](docs/spec/010-town-player-hd.md)初版DRAFT研究保留。離線研究沿`coherent-frame-v1/town_player.go.draft`、`player-overlay-v1.json`與`player_preview_v1.go`，十來源underlay及mask與既有獨立Python證據完全一致，兩個已選姿態合成區外0。`verify_player_preview_v2.py`／`player-pixel-review-v2.json`直接核既有原版證據、34560高清下層像素及6912新圖像素零差，94原生居民重疊點保留；v1先前遮罩來源文字不精確，保留原版、以v2為準。`town_player_v2.go.draft`／`player-overlay-v2.json`／`player_preview_v2.go`另試固定裁切對齊腳底，結果入口`player-preview-v2.json`。`player_pose_references_v1.go`／`player-reference-v1.json`僅作十原版資源12倍檢視，不是HD素材或正常姿態驗收。該離線階段保持64正式來源與主入口19ac；後續正式66來源候選另記本節最新入口。
 - 下方原生(48,142)-(272,158)畫帶的初步取樣在同工作區 `ground-candidates-v1.json`。10城鎮來源有6個不同色號雜湊，不能當固定背景直接換圖；捲動關係已由後續ground-proof-v1解出，初始化producer仍未知，未接前端。
 - 後續 `foreground-v1/ground_proof_v1.py`／`ground-proof-v1.json`已證實10來源共35,840原生地面像素可由112pixels週期及camera重建。上8列每camera移8pixels，下8列移16pixels；IDA捲動原始來源見 `scene-prototype-v1/coherent-frame-v1/ida-scroll-v1.json`。這解決捲動關係，初始化producer仍未知，其他camera先列強推論；尚未接地面HD。來源與待驗接入沿[地面規格](docs/spec/009-town-ground-hd.md)，已由隔離試作證據審查到READY，正式入口尚未接入。`ground-prompt-v1.txt`及`ground-generation-record-v1.json`保存完整內建imagegen提示詞、實際2172×724圖面、來源hash與權利分類；候選crop為0,273,2172,467，alpha未修改，接縫與前端尚未驗。`scene-prototype-v1/coherent-frame-v1/ground_preview_v1.go`及`ground-preview-v1.json`另存三點離線構圖，未接正式入口。`ground-visual-review-v1.json`保存三張離線目視與來源hash，原生公式及區外零差；動態接合另驗。`ground-ready-review-v1.json`保存37內部pass及隔離來源審查；`ground-frontend-build-v1.json`保存49330d68隔離前端、vet與build，正式62來源不變，`ground-pair-review-v1.json`已補七點隔離正常原版配對、兩點地面合成及洞窟拒絕，完整狀態相同；正式接入與GUI仍待完成。既有候選四圖不變。
 

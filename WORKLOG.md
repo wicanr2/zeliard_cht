@@ -571,3 +571,27 @@ player_underlay_v1.py只讀既有已驗scene proof與當次原版記憶體／色
 009限定CONFORMED，README補-town-ground-art與固定camera153完整參考入口；目前狀態與矩陣同步。根端最終稽核初版把兩個package pass算進40個test pass而退出1，修正為只數含Test欄位後以同容器／命令乾淨重跑，66830退出0，沒有重跑產品測試。ground-current-audit-v1.json核102自有檔、54Go／64來源、14鍵序、5圖、16完整配對及40內部test pass；623GUI輸入在收尾時全不變，後續只有009文件由READY改為限定CONFORMED，其原全文已另存。205連結、原29／snapshot882／字型／存檔與mtime及擁有權通過。主角僅研究候選，其他HD中文、音效、實體手把、平台與正式封包未完成。
 
 正式程式與文件提交3c5779271866086a2fbee84ba45d8618703da3ff已推送origin/main，主機git ls-remote回讀同值，host gh回讀PRIVATE。只提交11份自有程式／文件，原版與生成圖／手冊／字型／收據留本地ignored區。Docker find自檢沒有root-owned檔或md目錄，所有本專案容器已結束；沒有新增或刪除工具映像。此推送紀錄另作文件提交，最終乾淨HEAD與遠端身份記於coherent-frame-v1/repository-sync-ground-v1.json，不改已驗64執行來源。
+
+## 2026-10-19：主角高清下層與合成預覽
+
+上一goal輪為實質進展：地面009限定CONFORMED、主入口19ac、私人遠端89343b8與本地相同。新輪核對工作樹乾淨、無專案容器、CONTEXT／WORKLIST與規格／文件路由，先沿原版主角下層十來源與v2圖面做離線合成。新增010為DRAFT並掛AGENTS索引，目標涵蓋十姿態鍵／九資源圖，不把單張試樣當完整動畫。正式64執行來源與主入口保持；研究仍用既有foreground-v1及coherent-frame-v1，不建第二工作樹。
+
+本輪後續完成九張主角候選圖，沿內建imagegen與原版放大參考修正左右朝向及窄步姿態。phase0／2首輪錯成跨步，保留舊圖再作局部腿姿修正，不改原版動作語意。完整提示詞、來源圖及圖面SHA索引為coherent-frame-v1/player-art-set-v1.json；批次記錄為player-art-batch-v1-record.json與player-art-closed-v2-record.json。phase4兩鍵共用一張，圖像相同不代表正常玩家已看見。
+
+工具曾回傳有效PNG data URL但預設檔案為零bytes，故只從同次工具結果回收player-c2bit1-phase2-handpaint-v1.png，沒有重新生成替代該次結果。首個容器因非TTY標準輸入關閉退出1；改用Docker-it、有界16MiB及raw模式回收，記於player-c2bit1-phase2-recovery-v1.json，所有檔案UID/GID1000。此圖是保留的首版，現行phase2另用姿態修正v2。
+
+離線v1整圖取樣及v2單圖裁切驗證下層成立；v3補九圖共同995×1493裁切、腳底對齊，但單點縮小有盔甲顆粒。v4改用16bit預乘RGBA整數面積平均，直接輸出48×72，圖外透明零仍計入分母，原PNG與alpha不改寫。舊版及失敗準備腳本的部分輸出均保留，沒有重寫成通過。player-pixel-review-v5.json核十來源，下層及新圖各34560高清像素零差，含94原生居民重疊位置。圖表只作資源鍵檢視，不當成原版動畫時序。
+
+隔離DRAFT正常配對45613退出0，沿既有scene-walk、scene-cave及npc-v2三鍵序，28點完整1MiB／Regs／色號／色盤／時間／檔案／輸入相同。7733呈現、263中途保留、未涵蓋0；12主角合成點及一次洞窟拒絕通過。捕獲八個可見鍵，獨立player_presented_underlay_v1.py從明示presented三段重建114688原生像素零差，不拼造live完整RAM。player-presented-pixel-review-v1.json另核八來源下層及新圖各27648高清像素零差，合計各62208；這八個首次來源沒有NPC重疊，重疊證據仍來自前十來源。
+
+隔離19內部pass及四個配對pass、四張根端離線目視與來源審查記player-ready-review-v1.json。確認64執行來源／14鍵序及主入口19ac未變後，010改READY並保留全文player-ready-spec-v1.md，SHA5b3cd03d。正式範圍限兩方向phase0至3，未見phase4兩鍵只留圖樣，程式明確拒絕。移除離線Underlay／DrawUnderlay API，再接TownPlayer、八圖身份與面積平均、可選-town-player-art-dir及town_player_hd_matched，原版存檔／輸入不變。
+
+正式40內部pass及vet同59413退出0，含18個獨立Python已驗圖面完整像素比較、來源不變、缺圖與未知來源／phase4等原子拒絕。建置65189退出0。兩次啟動失敗分別為GUI image只有python3及實作腳本漏掛/probe，皆在執行工作前失敗，修正同容器命令重跑；不是產品缺陷。候選固定來源／圖像身份沿player-canonical-identity-v1.json及player-canonical-v1-sources/，正式配對沿player-canonical-pair-v1/。GUI工具沿gui-player-nav-tools-v1與gui-player-tools-v1，目前prepare-only，不啟動；候選正式配對及GUI待完成，主入口19ac尚未更新。
+
+正式候選a6917c83固定56Go／66執行來源、14鍵序與13圖，主入口19ac未變；來源快照不覆寫。正式三路配對99772退出0，28點完整原版狀態相同、7733呈現／263中途保留／未涵蓋0、12主角合成與一次洞窟拒絕，見player-canonical-pair-review-v1.json。補抽完整畫格與重讀來源回歸，首輪漏設ZELIARD_SCENERY_RELOAD_ROOT而一項skip，舊記錄另存before-env-correction；補/probe設定以同image與命令乾淨重跑74012退出0，沒有產品程式改動。pre-GUI audit初版因正確拒絕skip退出1，重跑以修正後紀錄為準。兩路GUI工具先由測試agent獨立驗新公式，114688原生重建／27648高清像素零差，仍標離線；正式配對終態後才授權凍結並序列執行nav與main。
+
+兩路主角GUI各唯一一輪已通過：NAV40394／3567、MAIN30162／43304皆退出0，後處理79767也退出0，沒有開新GUI。693固定輸入前後相同，186ack／93按放、最長0.15秒、持鍵空、金幣各1000，以capture-tail正常結束。107PNG由72逐張目視及35完整PNG雜湊引用覆蓋，root另直接看九張actualX；各原圖與判讀雜湊保存在兩份root-player GUI review。單一彙總為gui-player-v1/final-summary.json，NAV存同份。
+
+NAV20組暫停點核live與完成來源時鐘一致、主角位置及框外居民47079高清像素／聯集外零差，實遇兩方向phase1／3四鍵。第二F7後正常洞口位置240→232→216→232→224，以四組既有50k短按／250k放開對齊，再Up入Malicia，主角HD撤除。MAIN居民兩頁、兩triplet區外／還原0、最終14336原生重建／3456主角高清合成／2889框外居民高清像素零差；當次居民重疊0，不冒稱離線94重疊已在GUI出現。26區域記錄保留異camera框角18／9／27原始差，只有同源角點、中文／marker／HUD及兩頁框外為0。315有限移動樣本的81保留來源只存遠山／前景旗標，沒有主角旗標，不宣稱81筆全真或全程無閃爍。
+
+原件29、字型、自建存檔與copy2 mtime、882份dosgolem來源快照及擁有權均通過，兩專案容器已結束清除。沒有新建或刪除工具映像。主入口同步a6917c83，舊19ac保留ground-v1，見mainalias-sync-player-v1.json。010改限定CONFORMED，READY全文保留。現行player-current-audit-v1.json同37736退出0，核105自有檔、56Go／66執行來源、14鍵序、13圖、68內部pass、28完整原版點、693GUI輸入、107PNG及211文件連結。README／CONTEXT／WORKLIST／矩陣同步，下一步首場戰鬥原版操作與顯示來源；phase4、其他HD中文、音效、實體手把、平台與正式封包仍未完成。host gh已登入並回讀PRIVATE。
