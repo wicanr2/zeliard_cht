@@ -132,6 +132,9 @@
 | [text/town-prototype.tsv](text/town-prototype.tsv) | 城鎮／城堡居民純文字腳本試譯，原版條件與控制碼不依賴譯文 |
 | [docs/spec/004-town-dialogue.md](docs/spec/004-town-dialogue.md) | 居民專用繪字流程、動態安全區與原版續頁契約 |
 | [docs/spec/005-town-skyline-hd.md](docs/spec/005-town-skyline-hd.md) | 城鎮遠山天空的來源、直接HD合成與安全退回 |
+| [docs/spec/006-town-background-mask.md](docs/spec/006-town-background-mask.md) | 完整遠山背景、原版圖塊快取與樹梢遮罩契約 |
+| [internal/prototype/hd/town_background.go](internal/prototype/hd/town_background.go) | 依原版已畫快取與透明位元合成完整遠山背景 |
+| [internal/prototype/hd/town_background_test.go](internal/prototype/hd/town_background_test.go) | 正常來源、前景保留、失配退回與完整原版配對 |
 | [internal/prototype/hd/town_sky.go](internal/prototype/hd/town_sky.go) | 已確認遠景的手繪圖面覆繪，不改原版狀態 |
 | [internal/prototype/hd/town_sky_test.go](internal/prototype/hd/town_sky_test.go) | 遠景來源、邊界、退回及正常交談配對驗證 |
 | [internal/prototype/overlay/town.go](internal/prototype/overlay/town.go) | 唯讀居民中文覆繪、來源閘門與背景還原 |

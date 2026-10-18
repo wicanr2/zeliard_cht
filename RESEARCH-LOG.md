@@ -607,3 +607,13 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 內建image_gen依原版構圖產生手繪圖，完整實際提示詞與來源／權利分類在同研究區。實際PNG1973×797，SHA `275f14de1b18ea6dea297999cdf76e2574bcdc9a4a975782d5c01901480058de`；畫帶(0,207)-(1973,589)直接取樣到672×162。這是顯示差異與本地研究素材，不是原版像素一致或可公開資產。
 - `pair-v1/receipt.json`正常9點完整原版1MiB、顯示、CPU時間、檔案與輸入相同。GUI2實際走冷F7、步行、中文兩頁、結束，權威exit0；兩組暫停HD切換的時間與持鍵不變、兩層聯集外0、原貌還原0。最後raw比對採固定來源palette，不稱當次獨立色盤。GUI1腳本點錯按鈕的exit1保留，不列為產品失敗。
 - 此層只完成上方54列。手繪與原版下層的水平接縫可見；樹木、建物、角色及完整城鎮HD仍待完成。規格與證據索引見 [遠景規格](docs/spec/005-town-skyline-hd.md)及 [CONTEXT](CONTEXT.md)。
+
+## 2026-10-19：完整遠山、已畫快取與前景位元
+
+- 來源入口為 `workplace/town-hd-v1/foreground-v1/`的 `ida-foreground-evidence-v3.json`、`normal-v1/receipt.json`、`layer-proof-v2.json`及 `display-contract.json`。原版EXE／SAR1／SAR2及dosgolem來源沿前節固定雜湊；Go1.24.13、cycles3000。IDA9.4輸入正常citizen-near.segment SHA-256 `3291a8aeb5cfb46026e0bcfd4fd26ddbf52a7b6cba80044d8d518eef94a5751f`，binary base0等於dosgolem01B1段內偏移，不是檔案偏移。
+- 已證實：3028..3050從VGA A000實模式段擷取原生(48,78)-(272,102)到01B1:A000，欄交錯排列。兩次正常3050快照的5376pixels與當時VGA全部相同；四個正常場景的完整1MiB與前輪原版配對相同，沒有寫原版。快取row-major SHA-256 `d248d2ed7371838652df05bd46908fab397446896e96860ba680492e7a9d1e6a`，完整遠山224×78為 `17a6bbaa433a3dc7123dcc20fab641eab8eab2d743c7a6f70dafee08a656c63b`。
+- 已證實：3123的3bytes解出4個6位元色號，31D8依資源段8000的旗標表及D000逐列位元，選圖塊色號或背景快取；本輪資源段11B1由01B1:FF2C讀得，旗標表8006。原始指令／bytes與來源身份在上述IDA與display-contract，語意不改原名。圖塊48bytes、8×8，遮罩8bytes，位元1露出背景。
+- 勘誤：最初直接讀FF2A地圖重建城堡差65pixels，其他三個場景0差。城堡地圖與E000已畫快取有五個項目不同；原版32C5..32F9存在動畫映射及地圖寫入。顯示必須讀E000，不能把下一次繪圖來源當作當前畫格。`layer-proof-v1.json`與原腳本保留，v2四場景5376pixels全部零差，沒有容忍或自訂透明mask。
+- 未知：SAR壓縮資料內圖塊／遮罩producer。對三個SAR搜尋完整runtime atlas／mask／旗標均無連續原bytes匹配，不能把runtime位址換算成SAR偏移。這不阻塞固定runtime來源、全區重建與原版位元覆繪；其他城鎮及跳躍／戰鬥仍未驗。
+- 手繪圖由內建image_gen依完整原版背景參考生成，實際2126×740，SHA-256 `3a6791169fb9fa28f3fac63310155249654ce3e80da21e6fec5b9d80bdf0d160`，直接合成672×234。固定ed01c199的9點完整原版配對相同；四點HD各134708／133826／133367／133367像素改變，前景及區外0。18失配類型與直接取樣通過。
+- GUI62531正常冷F7、走路、居民兩頁及結束退出0，200輸入不變。獨立Python讀當次E000及固定原版資源重建原貌5376pixels零差；兩組paused切換的前景／聯集外／還原0，時間不變。最後raw採固定來源色盤，不稱當次獨立色盤。根端三張actualX圖已讀，前輪水平矩形切口已消除；樹木、建物、角色本身仍為原貌，見 [完整背景規格](docs/spec/006-town-background-mask.md)。
