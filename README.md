@@ -2,7 +2,7 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-目前前端雛形已驗證從冷開機進入城鎮並移動，另有中文手把設定頁、片頭首章捲動中文與手繪 HD 邊框試作。原版探針與實際視窗已走進城堡並顯示國王對話。完整中文、場景與角色 HD、實體手把、存讀檔與戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+目前前端雛形包含片頭首章 30 行中文、國王初訪兩段中文、手繪 HD 邊框與國王肖像，以及中文手把設定頁。已從正常新局進城堡，顯示兩段中文、領取 1000 金幣並回到城鎮。其餘中文、場景與角色 HD、實體手把、存讀檔與戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 ## 故事背景
 
@@ -25,7 +25,7 @@
 
 ## 前端雛形
 
-入口為 [cmd/zeliard-preview](cmd/zeliard-preview/main.go)。提供本地手繪試作圖時，工具列可切換原貌與 HD 邊框；沒有素材時標示待製作。手把需先由系統完成配對或辨識，再到工具列選擇裝置並逐項綁定；尚未進行實體手把驗收。
+入口為 [cmd/zeliard-preview](cmd/zeliard-preview/main.go)。提供本地手繪試作圖時，工具列可切換原貌與 HD 圖面；沒有素材時標示待製作。手把需先由系統完成配對或辨識，再到工具列選擇裝置並逐項綁定；尚未進行實體手把驗收。
 
 建置後在 Docker 內執行：
 
@@ -41,6 +41,8 @@ workplace/bin/zeliard-preview \
 首章捲動中文試作加上 `-intro-scroll /project/text/intro-scroll-prototype.tsv`，會沿原版事件顯示 30 行試譯。專名與正式字級尚待校訂，其餘片頭及遊戲文字保留原文。舊單句試作仍可用 `-intro-reference` 指向本地重生的原版畫格。方法及限制見[架構與試作規格](docs/spec/001-runtime-overlay.md)。
 
 HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -hd-art /project/workplace/hd-border-prototype.png`。參考畫格同目錄須有 `palette.bin`。試作圖只保存在本機；雛形檢查固定圖像身份後，僅替換兩側裝飾，不遮擋中間場景或資訊。缺圖、換場或色盤不符時保留原貌。這些選項與正式資產格式仍在試作階段。
+
+國王初訪中文另加 `-dialogue-text /project/text/dialogue-prototype.tsv`，仍由原版控制出字、等待按鍵與賞金。國王 HD 肖像使用 `-king-reference-a`、`-king-reference-b`、`-king-art`、`-king-speaking-art` 載入本地兩個原版姿態及兩張手繪圖。它保留黃色外框，未知姿態退回原貌；完整參數與限制見[試作規格](docs/spec/001-runtime-overlay.md)。
 
 ## 授權
 

@@ -52,11 +52,16 @@ type game struct {
 	frames, captureFrame int
 	capturePath          string
 	captureRequest       string
+	observePath          string
 	captured             bool
 	captureTail          int
 	intro                *xlate.Layer
 	scroll               *overlay.Scroll
+	dialogue             *overlay.Dialogue
 	hd                   *hd.Frame
+	kingHD               *hd.King
+	kingHDMatched        bool
+	kingHDPose           int
 	hdEnabled, hdMatched bool
 	overlayPixels        []byte
 	texture              *ebiten.Image
@@ -232,7 +237,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && g.hd != nil {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.kingHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -337,6 +342,14 @@ func (g *game) button(box image.Rectangle, s string, active bool) {
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
+	if g.observePath != "" && g.frames%60 == 0 {
+		var rejections []map[string]int
+		if g.dialogue != nil {
+			rejections = g.dialogue.Rejections
+		}
+		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections})
+		_ = os.WriteFile(g.observePath, append(data, '\n'), 0644)
+	}
 	draw.Draw(g.canvas, g.canvas.Bounds(), &image.Uniform{color.RGBA{18, 23, 32, 255}}, image.Point{}, draw.Src)
 	w, h, rgb := g.o.ScreenRGB()
 	if w == 320 && h == 200 && len(rgb) == 320*200*3 {
@@ -356,6 +369,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hdEnabled && g.hd != nil && w == 320 && h == 200 {
 		g.hdMatched = g.hd.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
 	}
+	g.kingHDMatched, g.kingHDPose = false, -1
+	if g.hdEnabled && g.kingHD != nil && w == 320 && h == 200 {
+		g.kingHDMatched, g.kingHDPose = g.kingHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.hdMatched = g.hdMatched || g.kingHDMatched
+	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(g.o.Indexed(), rgb)
 		clear(g.overlayPixels)
@@ -367,10 +385,16 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.scroll != nil && w == 320 && h == 200 {
 		g.scroll.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
+	if g.dialogue != nil && w == 320 && h == 200 {
+		g.dialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
+	}
 	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
 	hdLabel := "hd"
 	if g.hd != nil {
 		hdLabel = "hd_ready"
+	}
+	if g.kingHD != nil {
+		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
 	g.button(image.Rect(348, 8, 540, 40), g.label("controller"), g.panel)
@@ -442,7 +466,13 @@ func (g *game) Draw(screen *ebiten.Image) {
 			if g.scroll != nil {
 				rows, sources = g.scroll.Rows, g.scroll.Sources
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched})
+			dialogueGlyphs, dialogueParagraphs := 0, 0
+			var dialogueRejections []map[string]int
+			if g.dialogue != nil {
+				dialogueGlyphs, dialogueParagraphs = g.dialogue.Glyphs, g.dialogue.Paragraphs
+				dialogueRejections = g.dialogue.Rejections
+			}
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -476,13 +506,19 @@ func main() {
 	cycles := flag.Uint64("cycles", 3000, "雛形 DOSBox 相容 cycles；尚非實機速度驗收值")
 	capture := flag.String("capture", "", "GUI 測試擷取路徑，完成後結束")
 	captureRequest := flag.String("capture-request", "", "GUI 測試：等待指定訊號檔存在再擷取，取代更新次數條件")
+	observePath := flag.String("observe", "", "可選：每秒寫入唯讀執行進度，供 GUI 驗證診斷")
 	frames := flag.Int("capture-frames", 120, "GUI 測試擷取前更新次數")
 	panel := flag.Bool("show-controller", false, "GUI 測試啟動時展開手把頁")
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
 	introText := flag.String("intro-text", "text/intro-prototype.json", "片頭覆繪原型譯文")
 	introScroll := flag.String("intro-scroll", "", "可選：首章捲動中文試譯 TSV，取代單句 prototype")
+	dialogueText := flag.String("dialogue-text", "", "可選：國王初訪對話試譯 TSV")
 	hdRef := flag.String("hd-reference", "", "可選：本地城鎮 probe 的 screen.bin，同目錄須有 palette.bin")
 	hdArt := flag.String("hd-art", "", "可選：本輪手繪邊框 PNG，僅供 HD prototype")
+	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
+	kingRefB := flag.String("king-reference-b", "", "可選：本地原版國王姿態 B 的 screen.bin")
+	kingArt := flag.String("king-art", "", "可選：本地手繪國王閉口 PNG")
+	kingSpeakingArt := flag.String("king-speaking-art", "", "可選：本地手繪國王說話 PNG")
 	flag.Parse()
 	if *orig == "" || *fontPath == "" || *userDir == "" || *cycles < 60 || *cycles > 10000 || *frames < 1 {
 		log.Fatal("須指定 -orig、-font、-user-dir；cycles 範圍 60–10000")
@@ -533,10 +569,17 @@ func main() {
 	o.SetScratch(filepath.Join(userRoot, "game"))
 	o.SetDOSBoxCycles(*cycles)
 	g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, cycles: *cycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), texture: ebiten.NewImage(width, height)}
+	g.observePath = *observePath
 	if *hdRef != "" || *hdArt != "" {
 		g.hd, err = hd.NewFrame(*hdRef, filepath.Join(filepath.Dir(*hdRef), "palette.bin"), *hdArt)
 		if err != nil {
 			log.Printf("HD 試作未載入，保留原貌：%v", err)
+		}
+	}
+	if *kingRefA != "" || *kingRefB != "" || *kingArt != "" || *kingSpeakingArt != "" {
+		g.kingHD, err = hd.NewKing(*kingRefA, *kingRefB, filepath.Join(filepath.Dir(*kingRefA), "palette.bin"), *kingArt, *kingSpeakingArt)
+		if err != nil {
+			log.Printf("國王 HD 圖組未載入，保留原貌：%v", err)
 		}
 	}
 	if *introScroll != "" {
@@ -550,6 +593,12 @@ func main() {
 			log.Fatal(err)
 		}
 		g.overlayPixels = make([]byte, width*600*4)
+	}
+	if *dialogueText != "" {
+		g.dialogue, err = overlay.NewDialogue(o, filepath.Join(root, "ZELRES2.SAR"), *dialogueText, font)
+		if err != nil {
+			log.Printf("國王對話試譯未載入，保留原文：%v", err)
+		}
 	}
 	ebiten.SetWindowSize(width, height)
 	ebiten.SetWindowTitle(g.label("title"))

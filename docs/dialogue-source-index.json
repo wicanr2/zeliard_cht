@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "input_name": "memory-01B1_0000.bin",
+  "input_sha256": "06b74a1ea26f25d7e81de50ecb9f9ece1e1851d9429b469c59cf6a80bbb1d156",
+  "address_space": "IDA binary base 0；dosgolem 01B1 段內位移；84m 指令、3000 cycles，正常新局進國王房間",
+  "entries": [
+    {
+      "address": "0x706C",
+      "level": "已證實",
+      "semantic": "國王模組經 CS:6004h 間接呼叫的對話 consumer；以 [FF4Ch] 取當前來源指標",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/probe-king-consumer-84m/stdout.txt"
+      ]
+    },
+    {
+      "address": "0x7097",
+      "level": "已證實",
+      "semantic": "lodsb 讀取 DS:SI 的對話 bytes；首個普通字元來源為 A436h",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/probe-king-consumer-84m/stdout.txt"
+      ]
+    },
+    {
+      "address": "0x711B",
+      "level": "已證實",
+      "semantic": "經 CS:2022h 呼叫原版字形繪製；BX 是 X、CL 是 Y。首字 AX=0142h、BX=0038h、CX=0063h、SI=A437h；正常翻頁也觀察 CX=028Bh，不以 CH 當作座標",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/probe-king-consumer-84m/stdout.txt",
+        "workplace/gui-dialogue-v3/town-final.png.json",
+        "workplace/gui-dialogue-hd-v5/receipt.json"
+      ]
+    },
+    {
+      "address": "0x7120",
+      "level": "已證實",
+      "semantic": "原版單字形繪製返回後的 pop ax，bytes 58；此處只觀察完成畫格",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/probe-king-consumer-84m/stdout.txt"
+      ]
+    },
+    {
+      "address": "0x7169",
+      "level": "已證實",
+      "semantic": "將 [FF4Eh] 歸零並增加 [FF4Fh] 行號；正常首段已觀察三次換行",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/probe-king-consumer-84m/stdout.txt"
+      ]
+    },
+    {
+      "address": "0x71A7",
+      "level": "強推論",
+      "semantic": "對話逐列捲動的間接呼叫點；需正常翻頁執行收據核對，不把函式名當成語意證據",
+      "evidence": [
+        "workplace/ida-king-v2/query.json"
+      ]
+    },
+    {
+      "address": "0x71C9",
+      "level": "強推論",
+      "semantic": "待續標記字形繪製返回後、等待按鍵之前；原始 BX=009Ch、CL=8Bh 的繪製入口在 71BCh",
+      "evidence": [
+        "workplace/ida-king-v2/query.json"
+      ]
+    },
+    {
+      "address": "0x71D9",
+      "level": "強推論",
+      "semantic": "等待按鍵返回且清除待續標記後；需正常翻頁收據核對",
+      "evidence": [
+        "workplace/ida-king-v2/query.json"
+      ]
+    },
+    {
+      "address": "0x7205",
+      "level": "已證實",
+      "semantic": "0Ch 對話控制碼的分支，歸零文字位置並清除對話框；正常初訪第 68287411 指令進入",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/probe-king-consumer-84m/stdout.txt"
+      ]
+    },
+    {
+      "address": "0xA056",
+      "level": "已證實",
+      "semantic": "國王模組設定 [FF4Ch]=SI；正常初訪觀察 SI=A42Fh，隨後進入 706Ch",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/probe-king-consumer-84m/stdout.txt"
+      ]
+    },
+    {
+      "address": "0xA068",
+      "level": "強推論",
+      "semantic": "國王對話 consumer 返回 FFh 後的間接離開分支；尚待正常結束收據",
+      "evidence": [
+        "workplace/ida-king-v2/query.json"
+      ]
+    },
+    {
+      "address": "0x2829",
+      "level": "已證實",
+      "semantic": "sub_27E9 在乘以每列 320 bytes 前 xor ch,ch，bytes 32 ED；字形繪製只使用 CL 的縱座標",
+      "evidence": [
+        "workplace/ida-dialogue-indexed-v2/dialogue-evidence.json",
+        "workplace/gui-dialogue-v3/town-final.png.json"
+      ]
+    },
+    {
+      "address": "0x71AC",
+      "level": "已證實",
+      "semantic": "原版單列捲動間接呼叫後的 pop cx，bytes 59；正常兩段對話觀察 50 次完成事件",
+      "evidence": [
+        "workplace/ida-dialogue-indexed-v2/dialogue-evidence.json",
+        "workplace/dialogue-v3/receipt.json"
+      ]
+    }
+  ]
+}

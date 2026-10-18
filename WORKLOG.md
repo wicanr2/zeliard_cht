@@ -149,3 +149,24 @@ GUI 分別執行 `python3 tools/gui_smoke.py --intro-scroll --output /project/wo
 - 現行稽核核對 30 個自有來源檔、29 個原版檔案、882 個執行器快照檔案及 46 個文件連結。IDA 9.4 匯出與現行位址索引、輸入 SHA-256 相符；六項測試與兩條新 GUI 流程通過，未 skip。
 - 最新二進位 SHA-256 為 `b99597ac7e7e7500cc34f56f8a7d25280174628ef182a2b50578d151b76d0a0b`。建置 metadata 為 `2959b8a` 加修改來源；實際 Go 來源在本輪功能提交中固定，不冒稱正式版。
 - `find /project -user root -o -type d -name '*.md'` 無異常；依工作樹掛載檢查 Docker，沒有相關執行中或停止容器。沒有新 image，也未清理其他專案資源。
+
+## 2026-10-18：國王初訪中文與手繪肖像
+
+- 上輪判定為進展：首章中文與正常進門已有來源及提交。本輪沿用目前工作樹，未重新開啟已完成的啟動／首章研究。
+- 路由命中復古逆向、本地化顯示隔離、正常玩家路徑、IDA 9.4、GUI 還原及文件職責。依各入口只讀必要契約；更新首頁摘要前另讀 README 標準。未使用平行代理，未修改共用 dosgolem。
+- 正常初訪段傾印與原始 SAR 錨點定位兩段文字。新增 UTF-8 TSV、唯讀逐字／捲動／標記覆繪、DRAFT 規格、對話位址索引及 IDA 匯出工具。新增檔案同輪掛入 AGENTS，不新增研究根目錄。
+- 實際視窗暴露 CH 帶回其他計數的情況。先記錄來源與暫存器，再查 IDA 的 `xor ch,ch`，把縱座標判定修正為 CL。v1／v3 的 240 字形與三次段落啟用未計通過；v5 為 241 字形、兩段、無失配，正常返回城鎮。
+- v2 未辨認到城鎮時停在黑畫面，沒有足夠進度證據，不列為產品缺陷或通過。新增可選 `-observe` 記錄執行進度、焦點與失配；GUI 軟體繪圖執行緒限制為 2，保持資源有界。沒有改原版速度參數來通過測試。
+- 使用內建 imagegen 製作國王閉口及說話圖。完整提示詞、來源、雜湊與本機試作分類存 `workplace/`；圖面由工具預設位置唯讀複製，不搬運憑證、不改原版圖檔。兩個姿態完整核對後接入，保留黃色外框；未知姿態、淡入及缺圖退回原貌。
+- 八項具名 Go 測試、go vet 與建置通過。無測試 skip，`bitmap` 套件沒有獨立測試。紀錄為 `workplace/test-dialogue-hd-v3.jsonl`；首章重跑 `intro-scroll-v3`，國王完整流程 `dialogue-v3`，均與無覆繪原版記憶體及時序相同。
+- 正常 X 視窗 `gui-dialogue-hd-v5` 通過兩段中文、1000 賞金、回城鎮與國王／城鎮 HD 還原。v4 最後的城鎮比較是腳本沿用 HD 開關的錯誤假設；明確切原貌後以同一容器映像重跑，未改產品來迎合比較。
+- 中文手冊第 3–4、7–8 頁再次對照原圖。手冊仍作操作與術語來源，本輪沒有補造角色官方譯名。提取掃描只留 `workplace/manual-terms-v1/`，不入 Git。
+- 自有程式、文件及譯文可提交；原版、掃描、生成圖、記憶體與收據仍留本地。沒有發行版、Release、正式封包或公開方式變更。
+
+### 重跑入口
+
+沿用前節 Docker 映像、UID/GID、唯讀原版／字型／快照與資源上限。完整具名測試環境增加 `ZELIARD_DIALOGUE_OUTPUT`，以及 `ZELIARD_KING_A`、`ZELIARD_KING_B`、`ZELIARD_KING_CLOSED`、`ZELIARD_KING_OPEN`，分別指向本地兩個原版姿態與兩張手繪 PNG。執行 `go test -p 2 ./internal/prototype/... -count=1 -json -timeout 165s`，缺本地資料的測試 skip 不算通過。
+
+GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --king-hd --hd-reference /project/workplace/probe-newgame-60m/screen.bin --hd-art /project/workplace/hd-border-prototype.png --output /project/workplace/<新目錄>`。Xvfb／前端由腳本有界持有，只有實際 X 按鍵及工具列操作；啟動前後核對二進位身份，避免測試中途被替換。
+
+本輪現行稽核為 `workplace/current-audit-dialogue-hd.json`。提交、遠端 SHA 與 Docker 清理結果於收尾追加。

@@ -117,15 +117,20 @@
 | [tools/prepare.py](tools/prepare.py) | Docker 內安全解包、逐檔盤點與隔離來源快照 |
 | [tools/probe_receipt.py](tools/probe_receipt.py) | Docker 內固定預算探針與完整收據 |
 | [tools/ida_intro_evidence.py](tools/ida_intro_evidence.py) | IDA 9.4 的片頭段輸入雜湊、原始交叉參照與函式證據匯出 |
+| [tools/ida_dialogue_evidence.py](tools/ida_dialogue_evidence.py) | IDA 9.4 的正常國王初訪段證據，合併對話位址索引及未證實警示 |
+| [docs/dialogue-source-index.json](docs/dialogue-source-index.json) | 固定國王段傾印的原始定位、語意等級與證據，不與片頭段混用 |
 | [docs/source-index.json](docs/source-index.json) | 固定輸入的位址語意、推論等級與證據索引；IDA 匯出自動合併，未證實項附警示 |
 | [docs/spec/001-runtime-overlay.md](docs/spec/001-runtime-overlay.md) | 使用者選定架構與前端雛形邊界 |
 | [text/host.json](text/host.json) | 前端雛形的可見中文 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
 | [text/intro-scroll-prototype.tsv](text/intro-scroll-prototype.tsv) | 首章 30 行試譯，鍵為本地 SAR 的檔案偏移；專名尚待手冊校訂 |
+| [text/dialogue-prototype.tsv](text/dialogue-prototype.tsv) | 國王初訪兩段試譯；原文與控制碼仍留在本地遊戲資料 |
+| [internal/prototype/overlay/dialogue.go](internal/prototype/overlay/dialogue.go) | 國王對話逐字、捲動與待續標記的唯讀覆繪試作 |
 | [internal/prototype/overlay/scroll.go](internal/prototype/overlay/scroll.go) | 首章來源與逐列完成事件的唯讀覆繪；字級與版面仍為 prototype |
 | [tools/gui_smoke.py](tools/gui_smoke.py) | 有界 Xvfb 前端啟動與滑鼠開啟設定頁驗證 |
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |
 | [internal/prototype/hd/frame.go](internal/prototype/hd/frame.go) | 手繪雙側邊框試作，完整色號／RGB 匹配與整組退回 |
+| [internal/prototype/hd/king.go](internal/prototype/hd/king.go) | 國王兩個已觀察姿態的手繪覆繪試作；未知姿態或色盤保留原貌 |
 
 新增研究文件須同輪掛進本索引或 CONTEXT 的證據入口。不得將暫存、舊待辦或綠色單元測試當作原版一致證據。
 

@@ -3,6 +3,7 @@
   "original": "原貌",
   "hd": "HD 待製作",
   "hd_ready": "HD 邊框試作",
+  "hd_art_ready": "HD 圖面試作",
   "hd_fallback": "此畫面保留原貌",
   "controller": "搖桿／手把",
   "pause": "暫停前端",
