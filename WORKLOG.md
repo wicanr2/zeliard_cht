@@ -142,3 +142,10 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --hd-reference /proje
 GUI 分別執行 `python3 tools/gui_smoke.py --intro-scroll --output /project/workplace/<新目錄>` 與 `python3 tools/gui_smoke.py --gameplay --king --output /project/workplace/<新目錄>`。腳本有界持有並回收 Xvfb、前端與子程序；只用 X11 正常按鍵操作。
 
 現行來源、輸入、二進位、IDA 索引與收據身份記在 `workplace/current-audit-scroll.json`。提交及 Docker 清理結果於收尾追加。
+
+### 本輪收尾
+
+- 首章中文功能提交 `390c199a08c78c12023f7256565cf97fa75fc7f4` 已推送 `origin/main`，主機 gh 回讀儲存庫仍為 private。提交只含自有程式、文件與試譯，沒有原版資料或本地收據。
+- 現行稽核核對 30 個自有來源檔、29 個原版檔案、882 個執行器快照檔案及 46 個文件連結。IDA 9.4 匯出與現行位址索引、輸入 SHA-256 相符；六項測試與兩條新 GUI 流程通過，未 skip。
+- 最新二進位 SHA-256 為 `b99597ac7e7e7500cc34f56f8a7d25280174628ef182a2b50578d151b76d0a0b`。建置 metadata 為 `2959b8a` 加修改來源；實際 Go 來源在本輪功能提交中固定，不冒稱正式版。
+- `find /project -user root -o -type d -name '*.md'` 無異常；依工作樹掛載檢查 Docker，沒有相關執行中或停止容器。沒有新 image，也未清理其他專案資源。
