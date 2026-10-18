@@ -37,6 +37,7 @@ type Dialogue struct {
 	paint                       *paintHistory
 	paintSerial                 uint64
 	quotation                   *Quotation
+	bank                        *bankDialogue
 	Glyphs, Paragraphs, Scrolls int
 	Rejections                  []map[string]int
 }
@@ -105,6 +106,10 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 		d.paragraphs = append(d.paragraphs, p)
 	}
 	d.quotation, err = newQuotation(o, data, texts, font, d.paint)
+	if err != nil {
+		return nil, err
+	}
+	d.bank, err = newBankDialogue(o, data, texts, font, d.paint)
 	if err != nil {
 		return nil, err
 	}
@@ -253,7 +258,9 @@ func dialogueLayout(font bitmap.Font, text []rune) ([]image.Point, error) {
 	return points, nil
 }
 
-func (d *Dialogue) Active() bool { return d.active || d.quotation != nil && d.quotation.active }
+func (d *Dialogue) Active() bool {
+	return d.active || d.quotation != nil && d.quotation.active || d.bank != nil && d.bank.active
+}
 
 // UseLabels 共用已驗證的商品來源與譯名，不複製另一份商品翻譯。
 func (d *Dialogue) UseLabels(l *Labels) {
@@ -277,7 +284,30 @@ func (d *Dialogue) QuotationState() map[string]any {
 	return map[string]any{"active": q.active, "stage": q.stage, "ready": q.ready, "glyphs": q.Glyphs, "completed": q.Completed, "price": price, "trade": trade}
 }
 
+func (d *Dialogue) BankState() map[string]any {
+	if d.bank == nil {
+		return nil
+	}
+	b := d.bank
+	parts := []map[string]string{}
+	for _, p := range b.parts {
+		number := ""
+		if len(p.number.raw) > 0 {
+			number = string(p.number.raw[:len(p.number.raw)-1])
+		}
+		parts = append(parts, map[string]string{"key": p.source.key, "amount": number})
+	}
+	current := ""
+	if b.current != nil {
+		current = b.current.source.key
+	}
+	return map[string]any{"active": b.active, "parts": parts, "current": current, "phase": b.phase, "glyphs": b.Glyphs, "completed": b.Completed}
+}
+
 func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, origin image.Point) bool {
+	if d.bank != nil && d.bank.active {
+		return d.bank.Draw(dst, indexed, palette, origin)
+	}
 	if d.quotation != nil && d.quotation.active {
 		return d.quotation.Draw(dst, indexed, palette, origin)
 	}

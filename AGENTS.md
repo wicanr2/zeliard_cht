@@ -130,12 +130,15 @@
 | [text/host.json](text/host.json) | 前端雛形的可見中文 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
 | [text/intro-scroll-prototype.tsv](text/intro-scroll-prototype.tsv) | 首章 30 行試譯，鍵為本地 SAR 的檔案偏移；專名尚待手冊校訂 |
-| [text/dialogue-prototype.tsv](text/dialogue-prototype.tsv) | 國王初訪與長老初訪／存檔試譯；原文與控制碼仍留在本地遊戲資料 |
+| [text/dialogue-prototype.tsv](text/dialogue-prototype.tsv) | 國王、長老、武器店與銀行的對話試譯；原文與控制碼仍留在本地遊戲資料 |
 | [internal/prototype/overlay/dialogue.go](internal/prototype/overlay/dialogue.go) | 國王與長老對話逐字、捲動與待續標記的唯讀覆繪試作 |
-| [internal/prototype/overlay/labels.go](internal/prototype/overlay/labels.go) | 核對 SAR1、SAR2、STICK 來源的提示與商品暫存列覆繪；保留輸入值及價格區 |
+| [internal/prototype/overlay/labels.go](internal/prototype/overlay/labels.go) | 核對 SAR1、SAR2、STICK 來源的提示、商品暫存列與銀行標題覆繪；保留輸入值及價格區 |
 | [internal/prototype/overlay/occlusion.go](internal/prototype/overlay/occlusion.go) | 觀察固定 MCGA 清框事件，依繪製先後裁切舊中文；整框原圖還原後解除遮擋 |
 | [internal/prototype/overlay/occlusion_test.go](internal/prototype/overlay/occlusion_test.go) | 多層遮擋、完整還原、未知變化與歷史淘汰的退回驗證 |
 | [internal/prototype/overlay/quotation.go](internal/prototype/overlay/quotation.go) | 已核對來源順序的武器報價覆繪；商品譯名共用來源，價格與折抵保留原版數字圖形 |
+| [internal/prototype/overlay/bank.go](internal/prototype/overlay/bank.go) | 銀行問句與後接結果的唯讀覆繪，逐筆保留原版數字圖形 |
+| [internal/prototype/overlay/bank_test.go](internal/prototype/overlay/bank_test.go) | 正常存提款的完整原版狀態、問句保留、數字圖形與未知畫面退回驗證 |
+| [tools/bank.commands](tools/bank.commands) | 自建存檔冷F7至銀行、存100、提50、查詢、無寶石與離店的原版鍵序 |
 | [internal/prototype/overlay/quotation_test.go](internal/prototype/overlay/quotation_test.go) | placeholder／字型／數字圖形合成與未知畫面退回驗證；合成數字不當原版行為證據 |
 | [internal/prototype/overlay/labels_test.go](internal/prototype/overlay/labels_test.go) | 冷新局走到長老選單的完整原版狀態與覆繪區域比較 |
 | [internal/prototype/overlay/save_load_test.go](internal/prototype/overlay/save_load_test.go) | 中文覆繪開／關的新存檔、退出與冷讀檔完整原版狀態比較 |
@@ -143,7 +146,7 @@
 | [tools/weapon-shop.commands](tools/weapon-shop.commands) | 正常領賞、武器交易、告別與裝備查看鍵序 |
 | [tools/weapon-insufficient.commands](tools/weapon-insufficient.commands) | 正常領賞後選第二把武器，走資金不足翻頁、告別及回城鎮的鍵序 |
 | [internal/prototype/overlay/shop_test.go](internal/prototype/overlay/shop_test.go) | 武器店中文覆繪與完整原版狀態、金額及區域配對 |
-| [text/labels-prototype.tsv](text/labels-prototype.tsv) | 27 筆選單、存讀檔、速度提示及兩個商品名試譯；未走過分支與正式術語待校訂 |
+| [text/labels-prototype.tsv](text/labels-prototype.tsv) | 選單、存讀檔、速度、商品名、裝備及銀行金額欄試譯；未走過分支與正式術語待校訂 |
 | [internal/prototype/overlay/scroll.go](internal/prototype/overlay/scroll.go) | 首章來源與逐列完成事件的唯讀覆繪；字級與版面仍為 prototype |
 | [tools/gui_smoke.py](tools/gui_smoke.py) | 有界 Xvfb 前端啟動與滑鼠開啟設定頁驗證 |
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |

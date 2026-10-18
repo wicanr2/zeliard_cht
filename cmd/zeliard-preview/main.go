@@ -352,12 +352,13 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.observePath != "" {
 		held := g.o.HeldKeys()
 		var rejections []map[string]int
-		var quotation map[string]any
+		var quotation, bankDialogue map[string]any
 		if g.dialogue != nil {
 			rejections = g.dialogue.Rejections
 			quotation = g.dialogue.QuotationState()
+			bankDialogue = g.dialogue.BankState()
 		}
-		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "held_keys": held, "frames": g.frames,
+		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "held_keys": held, "frames": g.frames,
 			"text_cursor":         g.o.Word(oracle.Far(0x01b1, 0xff4c)),
 			"advance_input_flags": int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
 		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。
@@ -497,13 +498,14 @@ func (g *game) Draw(screen *ebiten.Image) {
 			}
 			dialogueGlyphs, dialogueParagraphs := 0, 0
 			var dialogueRejections []map[string]int
-			var quotation map[string]any
+			var quotation, bankDialogue map[string]any
 			if g.dialogue != nil {
 				dialogueGlyphs, dialogueParagraphs = g.dialogue.Glyphs, g.dialogue.Paragraphs
 				dialogueRejections = g.dialogue.Rejections
 				quotation = g.dialogue.QuotationState()
+				bankDialogue = g.dialogue.BankState()
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose,
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "bank_dialogue": bankDialogue, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose,
 				"merchant_hd_matched": g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)

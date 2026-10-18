@@ -26,15 +26,17 @@ type labelSource struct {
 	raw       []byte
 	text      []rune
 	inventory bool
+	bankTitle bool
 }
 type labelStamp struct {
-	source             *labelSource
-	box                image.Rectangle
-	rows               []image.Rectangle
-	raw                []byte
-	palette            [256][3]uint8
-	paintSerial        uint64
-	foreground, shadow uint8
+	source                         *labelSource
+	box                            image.Rectangle
+	rows                           []image.Rectangle
+	raw                            []byte
+	palette                        [256][3]uint8
+	paintSerial                    uint64
+	foreground, shadow, background uint8
+	shadowOffset                   *image.Point
 }
 type listLabel struct {
 	source *labelSource
@@ -53,6 +55,7 @@ type Labels struct {
 	paint            *paintHistory
 	inventoryPending *labelStamp
 	inventoryIndex   int
+	bankTitlePending *labelStamp
 }
 
 func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels, error) {
@@ -155,7 +158,14 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 		for end < limit && (data[end] >= 0x20 && data[end] < 0x7f || data[end] == 13) {
 			end++
 		}
-		if end == off || end >= limit || data[end] != 0 && data[end] != 255 {
+		bankTitle := parts[0] == "zelres2" && module == 0x19462 && off == 0x19d54
+		if bankTitle {
+			if !bytes.Equal(data[off-4:off], []byte{0x18, 0xaf, 2, 8}) {
+				return nil, fmt.Errorf("銀行標題來源不符")
+			}
+			end = off + 8
+		}
+		if end == off || end >= limit || !bankTitle && data[end] != 0 && data[end] != 255 {
 			return nil, fmt.Errorf("介面來源須以 NUL 或 FF 結束：%s", row[0])
 		}
 		charWidth := 5
@@ -191,7 +201,11 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 				return nil, fmt.Errorf("選單譯文超出原文安全寬度：%s", row[0])
 			}
 		}
-		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:end+1]...), text: []rune(text), inventory: inventory}
+		rawEnd := end + 1
+		if bankTitle {
+			rawEnd = end
+		}
+		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:rawEnd]...), text: []rune(text), inventory: inventory, bankTitle: bankTitle}
 	}
 	o.OnCall(oracle.Far(0x01b1, 0x22db), func(q *oracle.Oracle) { l.begin(q, 5) })
 	o.OnCall(oracle.Far(0x01b1, 0x2308), func(q *oracle.Oracle) { l.finish(q, 5) })
@@ -203,6 +217,8 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 	o.OnCall(oracle.Far(0x01b1, 0x3804), func(q *oracle.Oracle) { l.finish(q, 5) })
 	o.OnCall(oracle.Far(0x01b1, 0xaa2b), l.beginInventory)
 	o.OnCall(oracle.Far(0x01b1, 0xaa30), l.finishInventory)
+	o.OnCall(oracle.Far(0x01b1, 0x22cd), l.beginBankTitle)
+	o.OnCall(oracle.Far(0x01b1, 0x2344), l.finishBankTitle)
 	return l, nil
 }
 
@@ -214,7 +230,7 @@ func (l *Labels) prepareListSource(o *oracle.Oracle) {
 		return
 	}
 	for _, s := range l.sources {
-		if s.width == 5 && int(s.base)+s.offset == int(o.SI()) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, s.base), len(s.prefix)), s.prefix) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, o.SI()), len(s.raw)), s.raw) {
+		if !s.bankTitle && s.width == 5 && int(s.base)+s.offset == int(o.SI()) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, s.base), len(s.prefix)), s.prefix) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, o.SI()), len(s.raw)), s.raw) {
 			l.listPrepared = &listLabel{source: s}
 			return
 		}
@@ -274,7 +290,7 @@ func (l *Labels) begin(o *oracle.Oracle, charWidth int) {
 	}
 	pos := int(o.SI())
 	for _, s := range l.sources {
-		if s.inventory || s.width != charWidth || s.offset+int(s.base) != pos {
+		if s.bankTitle || s.inventory || s.width != charWidth || s.offset+int(s.base) != pos {
 			continue
 		}
 		// 模組固定前綴與完整來源字串均須相符，不能只靠當次 SI 認出文字。
@@ -374,7 +390,7 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 		kept = append(kept, s)
 		drawn++
 		box := image.Rect(origin.X+s.box.Min.X*3, origin.Y+s.box.Min.Y*3, origin.X+s.box.Max.X*3, origin.Y+s.box.Max.Y*3)
-		bg, fg := pal[0], pal[s.foreground]
+		bg, fg := pal[s.background], pal[s.foreground]
 		var rows []image.Rectangle
 		for _, row := range s.rows {
 			rows = append(rows, image.Rect(origin.X+row.Min.X*3, origin.Y+row.Min.Y*3, origin.X+row.Max.X*3, origin.Y+row.Max.Y*3))
@@ -405,7 +421,11 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 					sx, sy := xx*2/3, yy*2/3
 					if g[sy*(w/8)+sx/8]&(0x80>>uint(sx%8)) != 0 {
 						if s.shadow != 0 {
-							p := image.Pt(x+xx+3, y+yy+3)
+							offset := image.Pt(3, 3)
+							if s.shadowOffset != nil {
+								offset = s.shadowOffset.Mul(3)
+							}
+							p := image.Pt(x+xx+offset.X, y+yy+offset.Y)
 							if p.In(rows[rowIndex]) && p.In(dst.Bounds()) && visiblePixel(p, origin, masks) {
 								c := pal[s.shadow]
 								dst.SetRGBA(p.X, p.Y, color.RGBA{c[0], c[1], c[2], 255})

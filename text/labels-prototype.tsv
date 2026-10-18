@@ -5,10 +5,15 @@ zelres2.file.0184f8	購買武器
 zelres2.file.018503	購買盾牌
 zelres2.file.01850e	商品說明
 zelres2.file.019d6e	離開
-zelres2.file.019d79	兌換 Almas
-zelres2.file.019d88	存入金幣
-zelres2.file.019d96	提取金幣
-zelres2.file.019da5	查詢餘額
+zelres2.file.019d54	銀行
+zelres2.file.019d79	以alma寶石換現金
+zelres2.file.019d88	存錢
+zelres2.file.019d96	領錢
+zelres2.file.019da5	查詢儲存金額
+zelres2.file.019db3	攜帶金幣
+zelres2.file.019dc2	存入金額
+zelres2.file.019dcf	銀行存款
+zelres2.file.019dde	領出金額
 zelres2.file.01adc1	離開
 zelres2.file.01adcc	購買物品
 zelres2.file.01add5	出售物品

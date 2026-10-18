@@ -1,0 +1,181 @@
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+shot cold-town
+key 0x41 500000
+run 2000000
+shot load-list
+key 0x15 150000
+run 1500000
+shot load-name
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+shot load-name-entered
+key 0x1c 100000
+run 16000000
+shot restored
+key 0x4b 8000000
+run 1000000
+shot fine-0
+key 0x4b 250000
+run 250000
+shot fine-1
+key 0x4b 250000
+run 250000
+shot fine-2
+key 0x48 250000
+run 20000000
+shot bank-greeting
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+shot balance-selected
+key 0x39 500000
+run 20000000
+shot initial-balance
+key 0x48 100000
+run 1500000
+key 0x48 100000
+run 1500000
+shot deposit-selected
+key 0x39 500000
+run 20000000
+shot deposit-prompt
+key 0x48 100000
+run 200000
+shot deposit-up-one
+key 0x4d 100000
+run 200000
+shot deposit-right-one
+key 0x50 100000
+run 200000
+shot deposit-down-one
+key 0x4b 100000
+run 200000
+shot deposit-left-one
+key 0x4d 100000
+run 500000
+shot deposit-right-from-ten
+key 0x4b 100000
+run 500000
+key 0x50 100000
+run 500000
+shot deposit-down-from-ten
+key 0x48 100000
+run 500000
+shot deposit-up-from-nine
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+shot deposit-hundred
+key 0x39 500000
+run 12000000
+shot deposit-result
+key 0x50 100000
+run 1500000
+shot withdraw-selected
+key 0x39 500000
+run 20000000
+shot withdraw-prompt
+key 0x4b 100000
+run 500000
+shot withdraw-ten
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+key 0x4b 100000
+run 500000
+shot withdraw-fifty
+key 0x39 500000
+run 15000000
+shot withdraw-result
+key 0x50 100000
+run 1500000
+shot final-balance-selected
+key 0x39 500000
+run 12000000
+shot final-balance
+key 0x48 100000
+run 1500000
+key 0x48 100000
+run 1500000
+key 0x48 100000
+run 1500000
+shot exchange-selected
+key 0x39 500000
+run 12000000
+shot no-almas
+key 0x48 100000
+run 1500000
+shot go-outside-selected
+key 0x39 500000
+run 20000000
+shot bank-farewell
+run 1000000
+shot bank-farewell-ready
+key 0x39 500000
+run 4000000
+shot bank-outside
