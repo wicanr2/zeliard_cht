@@ -68,6 +68,7 @@ type game struct {
 	townBackgroundMatch  bool
 	townSceneryHD        *hd.TownScenery
 	townSceneryMatch     bool
+	townFrames           *hd.TownFrames
 	kingHD               *hd.King
 	kingHDMatched        bool
 	kingHDPose           int
@@ -363,6 +364,17 @@ func (g *game) button(box image.Rectangle, s string, active bool) {
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
+	w, h, rawRGB := g.o.ScreenRGB()
+	raw := g.o.Indexed()
+	rgb, townRaw := rawRGB, raw
+	var presented *hd.TownPresentation
+	if g.townFrames != nil {
+		blocked := g.townDialogue != nil && g.townDialogue.State()["key"] != ""
+		presented = g.townFrames.Present(raw, rawRGB, blocked)
+		if presented != nil {
+			rgb, townRaw = presented.RGB, presented.Indexed
+		}
+	}
 	if g.observePath != "" {
 		held := g.o.HeldKeys()
 		var rejections []map[string]int
@@ -384,6 +396,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"hd_enabled":    g.hdEnabled, "town_sky_hd_matched": g.townSkyHDMatched,
 			"town_background_hd_matched": g.townBackgroundMatch,
 			"town_scenery_hd_matched":    g.townSceneryMatch,
+			"town_frame_presentation":    g.townFrames.State(),
 			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
 			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
 			"text_cursor":                g.o.Word(oracle.Far(0x01b1, 0xff4c)),
@@ -395,7 +408,6 @@ func (g *game) Draw(screen *ebiten.Image) {
 		}
 	}
 	draw.Draw(g.canvas, g.canvas.Bounds(), &image.Uniform{color.RGBA{18, 23, 32, 255}}, image.Point{}, draw.Src)
-	w, h, rgb := g.o.ScreenRGB()
 	if w == 320 && h == 200 && len(rgb) == 320*200*3 {
 		for y := 0; y < 200; y++ {
 			for x := 0; x < 320; x++ {
@@ -411,50 +423,59 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	g.hdMatched = false
 	if g.hdEnabled && g.hd != nil && w == 320 && h == 200 {
-		g.hdMatched = g.hd.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.hdMatched = g.hd.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 	}
 	g.townSkyHDMatched = false
 	if g.hdEnabled && g.townSkyHD != nil && w == 320 && h == 200 {
-		g.townSkyHDMatched = g.townSkyHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64), g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.townSkyHDMatched = g.townSkyHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64), raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.townSkyHDMatched
 	}
 	g.townBackgroundMatch = false
+	var townPrimary, townResources, townExtra []byte
+	if g.townBackgroundHD != nil || g.townSceneryHD != nil {
+		townPrimary = g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
+		townResources = g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
+		townExtra = g.o.Bytes(oracle.Far(0x21b1, 0), 65536)
+		if presented != nil {
+			townPrimary, townResources, townExtra = presented.Primary, presented.Resources, presented.Extra
+		}
+	}
 	if g.hdEnabled && g.townBackgroundHD != nil && w == 320 && h == 200 {
-		g.townBackgroundMatch = g.townBackgroundHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0), 65536), g.o.Bytes(oracle.Far(0x11b1, 0), 65536), g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.townBackgroundMatch = g.townBackgroundHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townRaw, rgb, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.townBackgroundMatch
 	}
 	g.townSceneryMatch = false
 	if g.hdEnabled && g.townSceneryHD != nil && w == 320 && h == 200 {
-		g.townSceneryMatch = g.townSceneryHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0), 65536), g.o.Bytes(oracle.Far(0x11b1, 0), 65536), g.o.Bytes(oracle.Far(0x21b1, 0), 65536), g.o.Indexed(), rgb, image.Pt(0, barHeight), true)
+		g.townSceneryMatch = g.townSceneryHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, image.Pt(0, barHeight), true)
 		g.hdMatched = g.hdMatched || g.townSceneryMatch
 	}
 	g.kingHDMatched, g.kingHDPose = false, -1
 	if g.hdEnabled && g.kingHD != nil && w == 320 && h == 200 {
-		g.kingHDMatched, g.kingHDPose = g.kingHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.kingHDMatched, g.kingHDPose = g.kingHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.kingHDMatched
 	}
 	g.sageHDMatched, g.sageHDPose = false, -1
 	if g.hdEnabled && g.sageHD != nil && w == 320 && h == 200 {
-		g.sageHDMatched, g.sageHDPose = g.sageHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.sageHDMatched, g.sageHDPose = g.sageHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.sageHDMatched
 	}
 	g.merchantHDMatched, g.merchantHDPose = false, -1
 	if g.hdEnabled && g.merchantHD != nil && w == 320 && h == 200 {
-		g.merchantHDMatched, g.merchantHDPose = g.merchantHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.merchantHDMatched, g.merchantHDPose = g.merchantHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.merchantHDMatched
 	}
 	g.bankHDMatched, g.bankHDPose = false, -1
 	if g.hdEnabled && g.bankHD != nil && w == 320 && h == 200 {
-		g.bankHDMatched, g.bankHDPose = g.bankHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.bankHDMatched, g.bankHDPose = g.bankHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.bankHDMatched
 	}
 	g.itemShopHDMatched, g.itemShopHDPose = false, -1
 	if g.hdEnabled && g.itemShopHD != nil && w == 320 && h == 200 {
-		g.itemShopHDMatched, g.itemShopHDPose = g.itemShopHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.itemShopHDMatched, g.itemShopHDPose = g.itemShopHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.itemShopHDMatched
 	}
 	if g.intro != nil && w == 320 && h == 200 {
-		g.intro.Frame(g.o.Indexed(), rgb)
+		g.intro.Frame(raw, rawRGB)
 		clear(g.overlayPixels)
 		if g.intro.Draw(g.overlayPixels, scale, nil) {
 			src := &image.RGBA{Pix: g.overlayPixels, Stride: width * 4, Rect: image.Rect(0, 0, width, 600)}
@@ -547,6 +568,13 @@ func (g *game) Draw(screen *ebiten.Image) {
 			if err := os.WriteFile(g.capturePath+".indexed", g.o.Indexed(), 0644); err != nil {
 				log.Printf("色號擷取失敗：%v", err)
 			}
+			if presented != nil {
+				for suffix, data := range map[string][]byte{".presented.indexed": presented.Indexed, ".presented.source.indexed": presented.SourceIndexed, ".presented.primary": presented.Primary, ".presented.resources": presented.Resources, ".presented.extra": presented.Extra, ".presented.palette": presented.Palette} {
+					if err := os.WriteFile(g.capturePath+suffix, data, 0644); err != nil {
+						log.Printf("完整畫格來源擷取失敗：%v", err)
+					}
+				}
+			}
 			stamps := 0
 			if g.intro != nil {
 				stamps = len(g.intro.Stamps)
@@ -579,6 +607,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"item_shop_hd_matched": g.itemShopHDMatched, "item_shop_hd_pose": g.itemShopHDPose,
 				"town_sky_hd_matched": g.townSkyHDMatched, "town_background_hd_matched": g.townBackgroundMatch,
 				"town_scenery_hd_matched": g.townSceneryMatch,
+				"town_frame_presentation": g.townFrames.State(),
 				"town_background_cache":   g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224), "town_background_module": g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64)})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
@@ -733,6 +762,7 @@ func main() {
 		if err != nil {
 			log.Printf("城鎮前景HD未載入，保留原貌：%v", err)
 		}
+		g.townFrames = hd.NewTownFrames(g.o, g.townSceneryHD)
 	}
 	if *kingRefA != "" || *kingRefB != "" || *kingArt != "" || *kingSpeakingArt != "" {
 		g.kingHD, err = hd.NewKing(*kingRefA, *kingRefB, filepath.Join(filepath.Dir(*kingRefA), "palette.bin"), *kingArt, *kingSpeakingArt)

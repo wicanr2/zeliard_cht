@@ -204,9 +204,11 @@ func townSceneTile(b []byte, off int) [64]byte {
 	return out
 }
 
-func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFrame, error) {
-	if mode != 0x13 || len(p) != 65536 || len(r) != 65536 || len(e) != 65536 || len(raw) != 64000 || len(rgb) != 192000 {
-		return nil, fmt.Errorf("顯示輸入不符")
+// 只排除不被group0..4讀取的保留圖塊，並封住未知group與ID。
+// 正常重讀的來源與完整像素證據見規格007「重讀後的來源範圍勘誤」。
+func townSceneSources(p, r, e []byte) ([]townSceneActor, error) {
+	if len(p) != 65536 || len(r) != 65536 || len(e) != 65536 {
+		return nil, fmt.Errorf("來源段長度不符")
 	}
 	guards := []struct {
 		b []byte
@@ -214,18 +216,16 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 	}{
 		{p[0x3000:0x3628], "73f650db23e2c2fe32c6a218ff5ab57d26f7c2200faab027003827e0575f67c7"},
 		{p[0x6975:0x6a77], "ca30aab0ce543dd922095b669255fe1a76dbcc5256992e1ee5b437fb91925182"},
-		{r[0x4000:0xd800], "778e38f516b6d1b87bc1ca5cd14611f1ed4691bd3d126576d938b877afdc8663"},
-		{e[0x7000:0x8800], "042190678c74ab520c0cec6d2e58dd1dd822eccca56e2cf7a0af1e7d2e66fa8f"},
+		{r[0x4000:0x5d80], "396a3b47dd240301fae669a494230194944987e2c46e32eaf35baa8e50d36825"},
+		{r[0x6000:0xd800], "d4d09c930a1ab73a2fdd75c280d393356b6769b34233f97628302438073ea9bc"},
+		{e[0x7000:0x74c0], "90de4921fb15fa26b9214b33e5c89daaa65106984db0f7417b3bd09f384392ce"},
+		{e[0x8000:0x8800], "2c7708d6978dbd5661612bf36d921b12facb3f5aebe283012f2baedc7603e431"},
 		{p[0xc000:0xc040], "025bf2982660c942cbefed303ccdd0523ff824756a0fe0bb2587b99e0931e7ec"},
 	}
 	for i, g := range guards {
 		if townBackgroundHash(g.b) != g.h {
 			return nil, fmt.Errorf("source guard %d", i)
 		}
-	}
-	camera, mp := townSceneWord(p, 0x80), townSceneWord(p, 0xff2a)
-	if townSceneWord(p, 0xff2c) != 0x11b1 || townSceneWord(r, 0x8000) != 0x8006 || mp-camera*8 != 0xc017 || townSceneWord(p, 0xc002) != 215 || camera+31 >= 215 {
-		return nil, fmt.Errorf("map geometry")
 	}
 	actors := []townSceneActor{}
 	for pos := townSceneWord(p, 0xc00f); ; pos += 8 {
@@ -235,7 +235,25 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 		if townSceneWord(p, pos) == 65535 {
 			break
 		}
+		if p[pos+2]&127 >= 5 {
+			return nil, fmt.Errorf("unknown townSceneActor group")
+		}
 		actors = append(actors, townSceneActor{townSceneWord(p, pos), int(p[pos+2] & 127), int(p[pos+4] & 3), int(p[pos+3]), p[pos+2]&128 != 0})
+	}
+	return actors, nil
+}
+
+func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFrame, error) {
+	if mode != 0x13 || len(raw) != 64000 || len(rgb) != 192000 {
+		return nil, fmt.Errorf("顯示輸入不符")
+	}
+	actors, err := townSceneSources(p, r, e)
+	if err != nil {
+		return nil, err
+	}
+	camera, mp := townSceneWord(p, 0x80), townSceneWord(p, 0xff2a)
+	if townSceneWord(p, 0xff2c) != 0x11b1 || townSceneWord(r, 0x8000) != 0x8006 || mp-camera*8 != 0xc017 || townSceneWord(p, 0xc002) != 215 || camera+31 >= 215 {
+		return nil, fmt.Errorf("map geometry")
 	}
 	under := func(wx int) (int, error) {
 		for _, a := range actors {
@@ -322,6 +340,9 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 		ids := append([]byte(nil), r[off:off+6]...)
 		for i := range ids {
 			ids[i]--
+			if ids[i] >= 152 {
+				return nil, fmt.Errorf("unknown townSceneActor tile")
+			}
 		}
 		if err := sprite(x, ids, 0x4100, 0x7000); err != nil {
 			return nil, err

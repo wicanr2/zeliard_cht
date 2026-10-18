@@ -456,3 +456,81 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --k
 - 固定cf763f7e候選的gui-scenery-v3完成正常冷F7、自建存檔、居民039fff兩頁及結束1000。原容器595691b9dd08的docker wait session1623權威exit0；241輸入、58按放確認不變，持鍵空。兩組暫停Frame／背景／前景合成區外0、原貌還原0，原版角色不透明樣本0差；30張實圖目視及26區域核對見該目錄audit、visual-review、pixel-review。原生地面、藍紫邊緣與接縫仍列限制。
 - 後續gui-scenery-nav-v1沿同候選獨立正常冷F7及分段Left。session24169權威exit1，250輸入不變、74按放確認、末持鍵空、容器清理。銀行與魔法物品招牌已目視；到walk-left-12暫停於01B1:35F1，原版前景上40列可精確辨camera57，但角色合成完整性未知，HD守衛維持退回。未走到武器招牌與洞口，不重命名為通過。
 - 行走途中walk-live-0.png實見HD開啟時遠山／前景退回原貌；449有限observer樣本有121次前景不匹配。輔助唯讀擷取session36763第二次import超3秒退出1，保留一張有效及一張截斷PNG。未改產品守衛或延長時間。partial-receipt、audit及visual-review保存部分成果與失敗範圍，下一步須先閉合完整畫格呈現相位。
+
+## 2026-10-19：完整畫格探針
+
+- 已驗前景及居民DS修正提交 `3ef84700cdad35cd299ada766998019912514cc9`，主機gh核對遠端main相同及PRIVATE。主入口cf763f7e不變；未發行、未提交原版或本地圖面。
+- 重讀逆向技能、規格閘門及文件職責，新增並索引規格008 DRAFT。現有 `coherent-frame-v1/`新增獨立Go模組，只讀原版68AC／68BA回呼及每50k畫面，量測完整批次、未完成呈現及批次外撤除。尚未接正式前端。
+- IDA v5保留原名、bytes、原始基準及6B41跳躍表排除。前次錯路徑、ASCII輸出與把跳躍表線性解碼的失敗均保留，沒有拿它們當產品缺陷。
+- probe-v1正常左行216完成／202中途保留／uncovered0；v2居民73完成／16保留／uncovered0，兩頁撤除。右行v2／v3有2次uncovered，v3獨立保存當次原始記憶體與色號，定位91.1M的原版捲動，並非入洞。這推翻68AC單一起點足夠的假說，規格008維持DRAFT；新增窄IDA捲動來源，不調容忍或未知特例。
+- IDA scroll-v1核對67D8／6852更新camera前即開始捲動，新增完整3000:371C守衛。probe-v4三路徑7733呈現／361完成／263中途保留，未涵蓋0；review-v4核對28完整原版記憶體與既有同鍵序收據相同，對話／F7入口／入洞撤除。規格008轉READY後才實作TownFrames及前端接入。
+- unit-test-v1、vet、build及pair-test-v1同session53129權威exit0。第一版完整28點及7733呈現通過；其後補四項來源雜湊metadata、舊skyline仍用liveRGB及完整Regs比較。這些差異另凍結候選與unit2／pair2，不拿建置前來源冒稱最終候選身份。
+- 最終unit2／vet／build／pair2同session20033權威exit0；28完整原版記憶體／Regs／flags／虛擬時間／鍵盤／檔案操作相同，7733呈現及263中途保留、未涵蓋0。固定候選90fbb5fa、51Go／61來源／13鍵序與READY快照另存candidate-identity-v1。凍結工具初次誤用容器output父路徑而exit1，改為唯讀project絕對來源後通過，不是產品缺陷。
+- source-audit-v1 PASS核對98自有檔、61來源、13鍵序、29原版、882dosgolem來源、字型、存檔hash及mtime；21內部pass、196文件連結、擁有權異常0。所有headless容器已回收；唯一tester開始正常視窗，同41756、固定候選及248輸入，尚待權威終態，主入口維持cf763。
+- 等待GUI期間只在既有foreground-v1保存地面窄證據。ground-proof-v1重建10來源35,840原生像素零差，112pixels週期、上下8列分別camera×8／×16；IDA原始rep movsw支持兩速捲動。初始化producer未知、不追無關driver；其他camera仍強推論。新增完整ground-prompt-v1，內建imagegen僅生成下一段本地素材，不改90fbb候選或其四圖面。
+- 主鏈41756權威exit0，根端另讀四張actualX，保存root-gui-review-v1。後續短輪12395權威exit1，三招牌及批次中途切換成立；104個持鍵raw≠presented且前景匹配樣本保留。第二次正常F7後captured221不再增加、refused97→135，洞口前停於178474506／68C8，未送Up。規格008回DRAFT；先查首個完成來源失配，不把它當fixture、不延時或放寬守衛。主入口cf763及90fbb身份不變，tester不重啟。
+- 主鏈248、短輪260固定輸入及所有原件／mtime／font不變，兩容器清理。短輪最終467持鍵觀察中104實際保留且HD匹配；398只為左行階段。主鏈NPC321與玩家201不透明樣本九倍共4698HDpixels零差。tester完整audit與second-load-refusal時序已保存，無終端fullRAM不補寫。
+- reload-v1正常兩次F7唯讀探針同44530退出0，102734324／68BA首次完成拒絕；快照顯示40NPC圖像及7遮罩bytes變更皆在ID152以上。C000、程式碼、色盤及已使用source相同。獨立decode_reload_v1三點14336pixels零差，reload_footprint_v1核對13來源、所有group0..4八組索引最大151、canonical tile0差；保留區writer未知，按最小充分證據停止。007／008重新READY後共用來源檢查，明確拒絕未知group及ID，像素守衛不變。
+- 在既有coherent-frame-v1下保存candidate-v1-sources，61檔逐一吻合原90fbb身份，避免後續修正失去失敗來源。新增正常三次F7的reload-v2.commands及實際來源／保留區／已用邊界測試；唯讀last_refusal只增加診斷。新建置及四路徑配對另用v3紀錄，尚不改主入口。
+- 地面新圖ground-handpaint-v1.png為2172×724 sRGBA，內建imagegen與完整提示詞／來源hash／權利分類在ground-generation-record-v1.json。alpha量測首版print因無全255整列而min(empty)退出1，原JSON及圖保留；依實際alpha量測的候選crop為0,273,2172,467，最小243，alpha未修改。尚無地面HD實作或接縫驗收。
+
+## 2026-10-19：完整畫格GUI工具準備
+
+- 依規格008建立ignored gui-coherent-tools-v1／gui-coherent-v1及gui-coherent-nav-tools-v1／gui-coherent-nav-v1入口。只準備工具，候選身份未固定前不啟動遊戲。主鏈沿原GUI3兩頁，短輪沿nav1的原版圖樣導航；比較改以完成點source時間、camera、cache與module為準，原indexed始終列為live raw，不將快照畫面稱當次CPU同狀態。
+
+## 2026-10-19：完整畫格候選正常視窗結果
+
+- 固定90fbb5fa候選的gui-coherent-v1同41756權威exit0，248輸入不變、58按放確認、持鍵空、正常capture-tail。30圖及26區域已讀，兩頁中文與結束、兩組原貌／HD還原通過。最終presented/source色號、三段及palette逐檔核對，獨立重建14336原像素0差；完成來源NPC321與player201不透明樣本共4698HDpixels0差。原indexed仍是live raw，不把呈現來源當成當次CPU完整狀態。
+- 後續gui-coherent-nav-v1同12395權威exit1，260輸入不變、120按放、持鍵空、容器清理。正常行走已讀銀行、魔法物品及武器防具三招牌；398有限持鍵觀察中有104筆used／drawing且raw與presented不同，104筆前景HD皆匹配。3336批次中途暫停的原貌／HD及兩種還原通過，但該拍兩hash相同，僅稱批次中途。69圖以60張新圖逐張讀及9張既有全檔hash相同圖覆核；16組合成區外0，9組有足夠既有角色樣本，其餘不冒稱角色對拍。
+- 第二次正常F7後TownFrames不再接受完成來源，最後capture221為138816544steps／143969875cycles；F7按前觀察139053030steps、refused57，reload-enter-release首次已記錄refused97，後至洞口refused135仍usedfalse。原圖精確辨camera179、玩家在門上，未送Up，無洞窟或最後capture-tail驗收。source／live C000及E000、按放括號與缺少RAM限制保存在second-load-refusal.json。整短輪保留失敗，根端回到窄原版證據，不調超時或放寬守衛。
+
+- 上段持鍵取樣數補充：398是第二次F7前的左行階段快照數；短輪最終另含Right，共467筆，實際raw／presented不同且保留來源的104筆不變。最終數值以gui-coherent-nav-v1/retained-frames-summary.json為準。
+
+## 2026-10-19：重讀來源守衛修正版GUI工具準備
+
+- 沿gui-coherent-v1與nav-v1建立v2工具／輸出，固定def76c62及62來源，不覆寫舊失敗。正常輸入與時間上限保持，短輪只修候選及收尾契約：進洞後TownFrames.used=false、不產生presented來源副檔名為正常；原indexed仍是當次原版。四路徑pair3待根端權威放行，準備時不啟GUI。
+
+
+## 2026-10-19：重讀來源修正配對與獨立入洞核對
+
+候選def76c62的52Go／62來源與14鍵序已凍結於coherent-frame-v1/candidate-identity-v2.json及candidate-v2-sources。權威69873退出0，unit-test-v3、go vet、build及四路徑pair-test-v3通過；另41693退出0，fallback-test-v4明確補跑舊來源／招牌拒絕測試。source-audit-v2.json核對45個完整1MiB及14欄Regs檢查點、11066次呈現、523完成快照、315中途保留、未涵蓋0；68內部pass事件，無skip／fail。原29檔、882份dosgolem快照、字型、自建存檔雜湊與mtime及198文件連結通過，擁有權異常0。主入口尚未改動。
+
+唯讀probe-source-v6.go.txt另重播相同三次F7鍵序，權威68937退出0；17個完整記憶體與pair3逐點相同。第三次恢復後Right及Up的01B1:C000..C040與已知Malicia洞窟模組完全相同，SHA-256為3f5edbc8b51aa017211fb0ca808f807a1ade51d95e14b49dadf593e90ada24eb，且不同Muralla；見reload-cave-entry-review-v1.json。不以Town快照撤除推論已入洞。此拋棄式舊寬守衛探針的180未涵蓋含F7選單，不冒稱新版呈現成果。稽核75237退出0。
+
+依試玩入口明確授權的單一既有tester開始GUI v2，先266輸入短輪再254輸入居民主鏈；來源、時間界限及正常鍵序固定，不增加等待或重投。舊90fbb兩份GUI與61份來源保持原身份。
+
+地面另以ground_preview_v1.go建立三個離線構圖，現有ground-proof-v1、imagegen原圖與alpha保持；只作可撤回預覽，不接正式入口。所有輸出集中既有coherent-frame-v1。新增本地證據沿CONTEXT既有完整畫格及地面入口索引，不加入Git。
+
+地面離線預覽78184退出0，三點各3584原生像素公式核對零差，HD改動限672×48畫帶、區外0。根端逐張讀camera153／61／179三張after圖，底線齊平且角色／狀態列未被覆蓋，暫無明顯垂直接縫，石塊重複與上下帶動態接合另驗；見ground-visual-review-v1.json。這不等於GUI或地面功能完成，原alpha保持。
+
+新增規格009為DRAFT，索引同輪掛入AGENTS與CONTEXT。來源限十個已驗地面原版來源及三張離線構圖；每次完整地面像素守衛、快照同來源、兩層速度與可選素材入口均列契約，尚未接正式路徑。新增文件使目前自有檔成100，候選def76建立時99檔的歷史身份不改寫，62執行來源與兩份READY快照不變。
+
+GUI短輪v2唯一權威38816退出1，未啟居民主鏈。三招牌及第二F7已達；原Town來源拒絕已恢復，末captured296／usedtrue、前景與遠山皆true、last_refusal空。此輪在舊proof角色模板的雙種類assert停止，未送Up、未產生完整RAM或presented來源副檔名。266固定輸入、29原件、字型、自建存檔及mtime不變，118ack／59脈衝、最長0.149秒、持鍵空；完整失敗資料保留gui-coherent-nav-v2。
+
+根端讀actualX洞口原貌與HD，另以既有actor-inventory-v1的50資源候選獨立逐像素精確比對，不取renderer遮罩。nav-template-review-v1.json證實player C2bit0／phase3在native(240,118)202opaque samples與NPC group0/index5在(88,118)190samples，HD抽樣均0差。舊proof沒有該player候選，是harness覆蓋不足；無當次RAM仍不稱完整前景重建。洞口目標x224而當次x240，須正常短鍵對齊，不能以模板命中代替入洞。新增原版三F7正常鍵序加短脈衝窄核對，未改產品或像素守衛。
+
+原版對齊窄核對34983退出0，reload-align-v1.commands沿三F7及右移正常路徑，不直接載入記憶體。既有8M右移為camera179／native x224／world205，另Right500k及release250k重現GUI的x240／phase3。固定8組Left50k＋release250k得到x240、232、232、232、232、232、224、224，camera皆179、持鍵空，完整記憶體逐點保存；見alignment-review-v1.json。這是正常短鍵對齊證據，不將GUI ack聲稱精確guest-edge。v3工具預定最多8組相同短鍵，每次暫停原貌精確定位，unknown或未達即退出；同一暫停來源門ROI／camera179／player224皆通過才resume及Up。
+
+nav-template-review-v2.json補當次兩個完整人物的全部三倍像素，1818＋1710共3528pixels零差；舊v1抽樣身份保留。沒有新增或放寬產品來源白名單、圖像容忍或原版規則。
+
+短輪v2收尾完成：gui-coherent-nav-v2/partial-receipt.json、audit.json及visual-review.json保留exit1，266輸入原樣不變，68PNG為51本輪逐圖及17精確舊PNG雜湊引用。16暫停組聯集外0、clocks／來源身份不變；353持鍵快照中104筆raw與presented不同且used／drawing／HDmatched為真。主鏈未啟、Up未送；沒有將模板工具失敗包成全輪PASS。
+
+依文件職責入口，v3測試工具放既有foreground-v1下的gui-coherent-nav-tools-v3及gui-coherent-tools-v3，對應空輸出為gui-coherent-nav-v3及gui-coherent-v3。只修50候選精確角色比對、重複圖樣去重與最多8組正常短鍵對齊，正常主鏈鍵序及既定時間界限不變，候選def76與62來源不變；工具先prepare及precheck，根端審查後才唯一啟動。
+
+地面DRAFT以Go編譯器overlay在隔離測試環境驗證，不寫正式來源；45520退出0，三頂層／37pass、無skip／fail，十五個原版來源含十接受／五拒絕、19失配原子退回及素材身份通過。高清直接取樣、來源不變、區外0已驗。規格009審查到READY，原DRAFT與READY全文分存，ground-ready-review-v1.json保存所有雜湊。候選def76與62份正式來源逐檔不變，地面還未接正式入口／GUI，無完成聲明。
+
+根端審查v3核心diff及完整50候選預檢，導航位置限界改為可完整觀測16px角色的原生48..256及8pixels格線；camera179、門ROI、唯一player位置、同一暫停來源與最多8組短鍵界限不變，不作碰撞容差。重凍nav3為291輸入／script749bd196，main3為278／3bc1dfef。唯一nav3原exec83751、權威wait9726，PASS才main3；目前尚在跑。
+
+地面前端另用編譯器overlay建置，正式main與62來源不變。第一次準備以固定空白找兩個metadata欄位而assert失敗，隨後建置因沒有草稿檔退出2；這是準備腳本問題，改為具次數斷言的欄位匹配後順序重跑。92649退出0，go vet與build通過，隔離執行檔SHA49330d6816b6746a56fbb520e5d4370d9d40dbbf3ad2c08e7482ebefbcb357be。ground-frontend-build-v1.json保存草稿主入口、地面類別／測試、overlay與READY009雜湊。這不是正式工作樹建置，未做地面正常配對／GUI，不同步主入口。
+
+nav3權威83751與9726均退出0，291固定輸入不變。三招牌正常到達，洞口初始232經一組Left50k＋release250k到224；同一暫停來源camera179／門ROI／完整角色模板皆通過，正常Up後actualX及終態模組3f5edbc8確認Malicia，金幣1000、持鍵空、TownFrames撤除且無presented副檔。122ack／61脈衝、最長0.106秒。根端另逐張讀五張三招牌／對齊／洞窟圖，見root-nav-gui-review-v2.json，原版角色／地面／藍色邊與洞窟HD未完成明列。main3依序啟動，完整nav逐圖／像素稽核尚在整理。
+
+main3原66607與權威19124均退出0，278固定輸入不變；兩路共569輸入已回讀，可解除來源凍結。居民一筆兩頁、glyph248／messages1／rejected0、末key空／box0、金幣1000、持鍵空。58ack／29脈衝、最長0.100秒，原29／字型／存檔及mtime不變。根端另逐張讀四張讀回／兩頁／關閉actualX，見root-main-gui-review-v2.json。兩路皆capture-tail正常退出，不稱Ctrl+Q或完整遊戲退出路徑驗收；tester完整像素與逐圖收尾尚在整理。
+
+根端目視註記勘誤：root-main-gui-review-v2初寫第二頁縮框，與當次兩張圖不符。原註記另存before-correction，新註記改為續頁補齊文字、框形沿原版保持；原始圖片不改寫。這是根端文字註記錯誤，沒有產品或測試變更。
+
+地面隔離正常配對78888退出0，無skip／fail。沿既有冷F7、右行及Up七點完整1MiB、14欄Regs、色號／色盤、時間、FileOps／KeyReads及持鍵相同，並與原pair3逐點memory hash相同。只在restored／cave-near兩個完成來源必經地面合成，洞窟內原子拒絕；2271呈現／45中途保留／未涵蓋0屬既有完整畫格層，不誇稱全數地面逐幀合成。ground-pair-review-v1.json記來源與此邊界，正式62來源仍不變，GUI待接入。
+
+main3後處理保留不同頁時刻80原生pixel差，範圍(48,121)-(55,142)，沒有追NPC內部規則或重跑GUI。根端核對兩頁原版時間不同，TownFrames.used、TownScenery與TownBackground均false，80點全在兩頁中文框(56,24)-(232,110)外；見root-cross-time-review-v1.json。此差異不適用same-state框外零差斷言，視覺紅衣角色僅作觀察。各頁中文字／marker／數字同來源ROI零差與三圓角27HDpixels背景來源限制另保留，不藏差異或猜原版狀態。
+
+本輪完整收尾current-audit-v1.json為PASS_SCOPED_CURRENT：100自有檔、52Go／62來源／14鍵序、45完整點及11066呈現、68內部pass、兩GUI569固定輸入、九張根端actualX、末4653人物HDpixels零差。80原生／720HD跨時刻頁外差如實保留，不作same-state聲明。201文件連結及全部原件／快照／字型／存檔mtime通過，擁有權異常0；007／008限定CONFORMED，009仍READY隔離試作。主入口已同步經GUI驗過的def76c62，原cf763及90fbb別名不覆寫。Docker find擁有權／md目錄自檢空，專案遊戲容器均結束；後處理若仍有一次性容器，收尾再核對。

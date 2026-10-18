@@ -7,7 +7,7 @@
 | 項目 | 現況 | 證據與限制 |
 |---|---|---|
 | 使用者目標 | dosgolem、繁中、HD、工具列手把綁定 | 已授權開工；規則見 [AGENTS.md](AGENTS.md) |
-| GitHub | 已建立並推送 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 主機gh回讀PRIVATE，完整遠山功能提交38e8cf5已推送並核對遠端main；54來源／10既有鍵序符合固定候選，推送收據見WORKLOG及本地稽核 |
+| GitHub | 已建立並推送 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 主機gh回讀PRIVATE，前景及居民中文修正提交3ef84700已推送並核對遠端main；行走完整畫格另沿規格008試作 |
 | 本地 Git | 已初始化 `main`，設定 `origin` | 環境 placeholder 已不存在；使用 GitHub noreply 信箱作本儲存庫提交身份 |
 | 遊戲包 | 已安全解包與逐檔盤點 | 30 個壓縮項目，含目錄；29 個檔案，清單在本地 `workplace/source-manifest.json` |
 | 中文手冊 | RAR 已列目錄，17 張 JPG | 已人工讀第 1、5–8、10、13 頁；另含封面、地圖等掃描，17 張不等於 17 頁 |
@@ -16,8 +16,8 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 主入口已同步cf763f7e，穩定前景與居民中文已驗 | 每50k共2886呈現／61次DS非01B1及九點配對，前景三路徑28點通過。GUI3兩頁、角色保留與切換／還原通過；短輪僅銀行／魔法招牌，角色繪製中途暫停而退出1。行走HD退回待以完整畫格修正，武器招牌／洞口GUI未完成；城鎮角色尚未HD |
-| HD | 手繪奇幻邊框、國王、長老、武器商人、銀行、道具店及完整城鎮遠山 prototype | 完整背景78列依原版遮罩合成，四來源逐像素重建、18拒絕與直接取樣通過；實際視窗下24列只改露出的背景。人物HD限前輪已驗姿態，其他城鎮／前景與正式倍率待完成 |
+| 本輪工作 | 城鎮完整畫格、重讀來源、三招牌／入洞與居民兩頁GUI通過 | def76固定52Go／62來源；四路徑45完整點及11066呈現相同，兩GUI共569固定輸入，原失敗保留。007／008限定CONFORMED；地面009為READY且隔離配對通過，下一步正式接入／GUI |
+| HD | 手繪奇幻邊框、室內人物、城堡／Muralla完整遠山、Muralla樹木／建物／岩壁與三招牌prototype | 行走完整畫格、重讀後恢復、居民兩頁及正常入洞已驗。主角／居民、地面及洞窟本身尚未HD，正式倍率／預設待確認 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -41,7 +41,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-先依 [WORKLIST.md](WORKLIST.md) 閉合城鎮繪製批次與完整畫格呈現，消除行走時的HD退回，再完成武器招牌／洞口GUI。其後接其餘片頭與物品共用消費端、首場戰鬥及其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。已驗居民兩頁、商店、HUD、道具使用及場景名稱不重新探索；新呈現方式只驗必要交互作用。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+先依 [地面規格](docs/spec/009-town-ground-hd.md)正式接入已驗隔離試作，再驗正常視窗行走、原貌切換及跨場撤除。城鎮繪製批次、重讀來源與三招牌／洞口GUI已閉合，不重新探索。其後接其餘片頭與物品共用消費端、首場戰鬥及其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。已驗居民兩頁、商店、HUD、道具使用及場景名稱不重新探索；新呈現方式只驗必要交互作用。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -51,14 +51,21 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 工具與本地證據入口
 
+- 最新重讀修正候選為 `workplace/bin/zeliard-preview-frames-v2`，SHA-256 `def76c62b558695ff341ebb82ab4b886612c1e8e2666c1113202dbe32dd36f04`。`foreground-v1/scene-prototype-v1/coherent-frame-v1/candidate-identity-v2.json`與`candidate-v2-sources/`固定62來源，READY007／008另存；`source-audit-v2.json`核對99自有檔、52Go、14鍵序、45完整點／11066呈現／315中途保留／523快照及68pass事件。`reload-cave-entry-review-v1.json`另核對三次F7及Malicia模組。GUI短輪v2同38816退出1，重讀後HD已恢復但舊proof角色模板未涵蓋當次player相位；`nav-template-review-v1.json`以全部50資源候選精確找到phase3/x240且角色HD抽樣0差。未送Up且無當次完整RAM，`nav-template-review-v2.json`另驗3528三倍人物像素零差；`alignment-review-v1.json`以正常原版Right500k及8組Left50k／release250k重現並對齊x240到224。新 `foreground-v1/gui-coherent-nav-tools-v3/`與`gui-coherent-tools-v3/`保存50候選及有界正常對齊工具；對應`gui-coherent-nav-v3/`與`gui-coherent-v3/`保存各唯一GUI輸出。nav3唯一83751／9726退出0，三招牌、第二F7、一組短按對齊及正常Up入Malicia已驗；根端五張actualX目視沿`root-nav-gui-review-v2.json`。main3同66607／19124退出0，兩頁及關閉已驗。007／008限定CONFORMED，完整整合沿`current-audit-v1.json`；主入口同步def76，地面保持獨立READY試作。
+
+- 重讀失配的最新證據為 `foreground-v1/scene-prototype-v1/coherent-frame-v1/reload-first-refusal.json`、`reload-scene-proof-v1.json`及 `reload-footprint-v1.json`。已證實group0..4只讀ID0..151，13來源canonical tile一致、三點各14336pixels零差；007／008按此重新READY。原90fbb的61份完整來源另存 `candidate-v1-sources/`並逐檔吻合原identity，失敗可重生。新版驗收見本節最新入口，舊失敗保持原身份。
+
+- [完整畫格規格](docs/spec/008-town-frame-presentation.md) 來源範圍修正已重新READY，舊90fbb失敗證據保留。原版捲動67D8／6852與繪製68AC共用68BA完成點，沿 `foreground-v1/scene-prototype-v1/coherent-frame-v1/review-v4.json`。可撤回候選 `workplace/bin/zeliard-preview-frames-v1` SHA-256為 `90fbb5fa2a04db2e140449ec82a5bfa853a353ef1aae7e852e7986d52522bd2d`，固定51Go／61來源與13鍵序；identity、原READY快照、unit-test-v2、pair-test-v2、pair-v2及source-audit-v1在同工作區。權威20033退出0，7733呈現／263中途保留／未涵蓋0、28點完整1MiB及Regs相同，21內部pass、原件29／snapshot882／存檔mtime／字型／擁有權均通過。`gui-coherent-v1/`同41756退出0、兩頁／切換成立；根端四圖見 `root-gui-review-v1.json`。`gui-coherent-nav-v1/`同12395退出1、三招牌及中途切換成立，但第二次F7後captured221／refused135，洞口未送Up。先前右向缺口及本次重讀失敗均保留；原.indexed維持live，額外presented及source副檔名明示來源時間。
+
 - 行走HD切換與中途暫停的呈現問題沿 `foreground-v1/gui-scenery-nav-v1/`與 `scene-prototype-v1/coherent-frame-v1/`追查。短輪僅通過銀行／魔法招牌，IP35F1中途暫停時原版人物尚未畫完；先查68AC原版繪製開始／完成與完整快照，不放寬像素守衛、不改dosgolem共用來源。
 
-- 主入口及別名 `workplace/bin/zeliard-preview-scenery-v3` SHA-256均為 `cf763f7e226304064ec7e9bbdfef23237ad6647459f104625d4657d7dd66ba8c`。`foreground-v1/scene-prototype-v1/candidate-identity-v3.json`固定48Go／58來源，與0b4b只差 `overlay/town.go`及 `town_test.go`。`town-ds-pair-v3/receipt.json`與 `town-ds-test-v3.jsonl`記每50k呈現、61次DS非01B1及正常完整配對；`test-v3.jsonl`、同20229 vet／build通過。`pair-v3/`三路徑28點同36364退出0，`source-audit-v3.json`PASS。`gui-scenery-v3/`同595691b9dd08及權威wait1623退出0、兩頁rejected0、241輸入不變、58按放、30圖／26區域、角色／聯集外／還原0；根端四圖入口 `scene-prototype-v1/root-gui-review-v3.json`。規格004限定CONFORMED，READY004／007快照另存。`gui-scenery-nav-v1/`同24169退出1，250輸入不變、74ack、40有效圖；銀行／魔法招牌已驗，武器／洞口未達，449行走樣本328匹配／121拒絕與actualX原貌退回如實保留。
+- 前輪主入口與保留別名 `workplace/bin/zeliard-preview-scenery-v3` SHA-256曾均為 `cf763f7e226304064ec7e9bbdfef23237ad6647459f104625d4657d7dd66ba8c`。`foreground-v1/scene-prototype-v1/candidate-identity-v3.json`固定48Go／58來源，與0b4b只差 `overlay/town.go`及 `town_test.go`。`town-ds-pair-v3/receipt.json`與 `town-ds-test-v3.jsonl`記每50k呈現、61次DS非01B1及正常完整配對；`test-v3.jsonl`、同20229 vet／build通過。`pair-v3/`三路徑28點同36364退出0，`source-audit-v3.json`PASS。`gui-scenery-v3/`同595691b9dd08及權威wait1623退出0、兩頁rejected0、241輸入不變、58按放、30圖／26區域、角色／聯集外／還原0；根端四圖入口 `scene-prototype-v1/root-gui-review-v3.json`。規格004限定CONFORMED，READY004／007快照另存。`gui-scenery-nav-v1/`同24169退出1，250輸入不變、74ack、40有效圖；銀行／魔法招牌已驗，武器／洞口未達，449行走樣本328匹配／121拒絕與actualX原貌退回如實保留。
 
 - 新前景GUI第二輪發現居民首頁等待時中文撤除，入口 `foreground-v1/gui-scenery-v2/`及後續 `scene-prototype-v1/mutation-probe-v1/`。先用只開居民中文的原版、每50k呈現與當次pixel差異定位原版producer；未判明前不標GUI通過、不改正式生命週期。
 
 - 後續主角與居民HD的資產盤點入口為 `workplace/town-hd-v1/foreground-v1/actor_inventory_v1.py`、`actor-inventory-v1.json`及 `player-source-sheet-v1.png`。只解當次固定Muralla資源的六圖索引與位元遮罩，不接正式前端；資源候選不等於全部姿態已正常觀察。
-- 下方原生(48,142)-(272,158)畫帶的後續取樣在同工作區 `ground-candidates-v1.json`。10城鎮來源有6個不同色號雜湊，不能當固定背景直接換圖；producer及與角色／世界座標的關係未知，未接前端。
+- 下方原生(48,142)-(272,158)畫帶的初步取樣在同工作區 `ground-candidates-v1.json`。10城鎮來源有6個不同色號雜湊，不能當固定背景直接換圖；捲動關係已由後續ground-proof-v1解出，初始化producer仍未知，未接前端。
+- 後續 `foreground-v1/ground_proof_v1.py`／`ground-proof-v1.json`已證實10來源共35,840原生地面像素可由112pixels週期及camera重建。上8列每camera移8pixels，下8列移16pixels；IDA捲動原始來源見 `scene-prototype-v1/coherent-frame-v1/ida-scroll-v1.json`。這解決捲動關係，初始化producer仍未知，其他camera先列強推論；尚未接地面HD。來源與待驗接入沿[地面規格](docs/spec/009-town-ground-hd.md)，已由隔離試作證據審查到READY，正式入口尚未接入。`ground-prompt-v1.txt`及`ground-generation-record-v1.json`保存完整內建imagegen提示詞、實際2172×724圖面、來源hash與權利分類；候選crop為0,273,2172,467，alpha未修改，接縫與前端尚未驗。`scene-prototype-v1/coherent-frame-v1/ground_preview_v1.go`及`ground-preview-v1.json`另存三點離線構圖，未接正式入口。`ground-visual-review-v1.json`保存三張離線目視與來源hash，原生公式及區外零差；動態接合另驗。`ground-ready-review-v1.json`保存37內部pass及隔離來源審查；`ground-frontend-build-v1.json`保存49330d68隔離前端、vet與build，正式62來源不變，`ground-pair-review-v1.json`已補七點隔離正常原版配對、兩點地面合成及洞窟拒絕，完整狀態相同；正式接入與GUI仍待完成。既有候選四圖不變。
 
 - 城鎮前景與角色的後續來源沿 `workplace/town-hd-v1/foreground-v1/`，入口 `decode_scene.py`／`scene-proof-v1.json`、`scene-proof-walk-v2.json`、`scene-contract-v3.json`及 `canonical-map-proof-v1.json`。四個原版點加八步行點，14336pixels全相同，restored重複，共11不同狀態；九個Muralla來源穩定，末步資源及C000已切城堡，整層退回。右行及正常Up另存 `scene-cave-v1/receipt.json`，`decode_scene_cave_v1.py`／`scene-proof-cave-v1.json`補第十個城鎮來源。`world_foreground.py`／`world-foreground-v1.json`保存215欄全鎮來源，兩批手繪圖、提示詞及權利分類在 `town-art-generation-v1.json`／`town-art-generation-v2.json`。`town-art-layout-v2.json`保存透明畫帶與六入口校正；`scene-prototype-v1/receipt.json`及 `visual-review.json`為離線10城鎮／3拒絕、角色與區外0及五圖目視。規格已READY，候選 `workplace/bin/zeliard-preview-scenery-v2`為0b4b6282，48Go／58來源；主入口仍為ed01c199，三路徑完整配對已驗，正常視窗待驗，見 [前景規格](docs/spec/007-town-scenery-hd.md)。
 
@@ -197,3 +204,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - 居民任意Draw點DS契約修正候選cf763f7固定後，可靠前景主鏈重驗在 `workplace/town-hd-v1/foreground-v1/gui-scenery-tools-v3/`及 `gui-scenery-v3/`；只換候選／固定來源／READY快照，原鍵序不變。前兩輪失敗保留；三段店面與洞口另短輪依正常入口判圖。
 
 - 前景後續短視窗工具與輸出入口為 `workplace/town-hd-v1/foreground-v1/gui-scenery-nav-tools-v1/`、`gui-scenery-nav-v1/`。用途為正常冷F7後分段行走、三段店面招牌與右洞口跨場；使用固定cf763候選，不取代主鏈GUI3或歷史失敗收據。
+
+- 完整城鎮畫格的下一輪正常視窗準備入口為 `workplace/town-hd-v1/foreground-v1/gui-coherent-tools-v1/`、`gui-coherent-v1/`與 `gui-coherent-nav-tools-v1/`、`gui-coherent-nav-v1/`。前者驗居民主鏈與完成來源切換，後者驗行走、原版繪製中途暫停、三招牌及洞口；候選尚未固定，未啟動遊戲。呈現來源與live原版色號分開記錄，沿規格008，不改主狀態表。
+
+- 重讀來源修正版的正常視窗工具入口為 `workplace/town-hd-v1/foreground-v1/gui-coherent-nav-tools-v2/`、`gui-coherent-nav-v2/`及 `gui-coherent-tools-v2/`、`gui-coherent-v2/`。固定def76c62候選，優先三招牌／正常第二F7／洞口，再居民兩頁；只準備及凍結，pair3權威終態放行前不啟動。洞窟末態應撤除Town完成來源，不要求presented副檔名，舊兩輪身份保留。
