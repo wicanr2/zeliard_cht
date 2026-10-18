@@ -617,3 +617,13 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 未知：SAR壓縮資料內圖塊／遮罩producer。對三個SAR搜尋完整runtime atlas／mask／旗標均無連續原bytes匹配，不能把runtime位址換算成SAR偏移。這不阻塞固定runtime來源、全區重建與原版位元覆繪；其他城鎮及跳躍／戰鬥仍未驗。
 - 手繪圖由內建image_gen依完整原版背景參考生成，實際2126×740，SHA-256 `3a6791169fb9fa28f3fac63310155249654ce3e80da21e6fec5b9d80bdf0d160`，直接合成672×234。固定ed01c199的9點完整原版配對相同；四點HD各134708／133826／133367／133367像素改變，前景及區外0。18失配類型與直接取樣通過。
 - GUI62531正常冷F7、走路、居民兩頁及結束退出0，200輸入不變。獨立Python讀當次E000及固定原版資源重建原貌5376pixels零差；兩組paused切換的前景／聯集外／還原0，時間不變。最後raw採固定來源色盤，不稱當次獨立色盤。根端三張actualX圖已讀，前輪水平矩形切口已消除；樹木、建物、角色本身仍為原貌，見 [完整背景規格](docs/spec/006-town-background-mask.md)。
+
+## 2026-10-19：Muralla前景與原版角色遮擋
+
+- 來源、工具與位址空間沿前節固定EXE／SAR與IDA9.4。`ida-foreground-evidence-v3.json`原始bytes／xref、`decode_scene.py`／`scene-proof-v1.json`與 `scene-proof-walk-v2.json`逐像素重建原生(48,78)-(272,142)。四正常點及八步行項全部14336pixels零差，restored重複，共11個不同狀態；此為已證實顯示格式，不外推玩法。
+- 已證實：01B1:E000為28×8已畫圖塊，FF／FE覆寫項回查FF2A當次地圖，FD從C00F八byte居民紀錄+3取底圖。NPC六圖索引在11B1:4000，圖像4100、21B1:7000遮罩；主角6975..6A3A以C2、E7及6A3B／6A59選圖，圖像11B1:6000、遮罩21B1:8000。正常樣本keep位元為1時來源色號皆0，故可保留原版不透明位元。未知nested FD與非零OR混合整層拒絕，不猜補。
+- 已證實：固定參考的地圖為C017、215欄，`world-foreground-v1.json`與 `canonical-map-proof-v1.json`保存來源。末步NPC圖像改1176bytes、C000已切城堡，`scene-contract-v3.json`保留五組完整身份並拒絕；v1／v2失敗與新SAR讀取保留，不以放寬雜湊處理跨場。右行及正常Up的 `scene-cave-v1/receipt.json`、`scene-proof-cave-v1.json`補第十城鎮來源，14336pixels亦零差；入洞後來源拒絕。
+- 手繪v1三張多出背景與地基，未採用。v2三張透明2172×724圖分段覆繪；來源、實際提示詞與本地權利分類在兩份 `town-art-generation`。`town-art-layout-v2.json`保存六入口約3至9nativepixels偏移與UV校正，不改原版入口熱區。
+- `scene-prototype-v1/receipt.json`離線Go1.24.13重建10城鎮來源，原版角色／框外0差，三個其他來源整層拒絕。根端檢視五圖：樹木、房舍與洞口手繪可辨，三招牌中文在安全框；原生地面、輪廓邊緣與角色仍保留。`visual-review.json`只授權接可撤回前端；正常視窗尚待，規格007達READY，不稱整鎮HD完成。
+- 後續人物資源候選：`actor-inventory-v1.json`沿固定restored的1MiB SHA-256 `9dd3657107f25c097debf5f6be68137d055d98bda2e22a59f6b854d88be5fdd9`、Go前景來源相同的atlas／mask身份，以Python3.13標準函式庫解碼六圖記錄。主角兩組各5項，共10項9個不同RGBA，C2兩組phase4相同；當次居民group0..4各8項，共40候選。50候選均無keep位元1且非零色號。根端已讀 `player-source-sheet-v1.png`，尚未賦予方向／姿態語意或接人物HD；未正常觀察項維持資源候選等級。
+- 追加勘誤：前景GUI2等待居民首頁時中文撤除，`gui-scenery-v2/`權威63247 exit1，未續頁。窄探針 `scene-prototype-v1/mutation-probe-v1/receipt.json`不載HD，只讓原版沿同一正常鍵序每50k呈現；88900000steps／92762567cycles、IP11A1:145B、DS11A1重現。全部15136個外框pixels相同，代碼SHA2011d284、字寬15eda023、prefix／table／body及色盤6dc0b8c0完全相符。已證實舊Draw誤套callback的DS01B1條件；不需要追原版driver。原候選0b4b與首次basic收據保留，規格004回READY，修正只拆CPU上下文與固定段身份，尚待新候選驗收。

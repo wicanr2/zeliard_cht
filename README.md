@@ -2,7 +2,7 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-目前前端雛形包含片頭首章 30 行、國王與長老對話中文、存讀提示、武器店、銀行存提款、道具店買賣與三種商品介紹，以及部分裝備名稱、藥水使用訊息與居民交談。生命、寶石、金幣、地點四個狀態欄，以及城堡、城鎮、洞窟、國王、武器店、小屋與Marid長老名稱也已接入。手繪 HD 已接入邊框、國王、長老、武器商人、銀行與道具店肖像，以及城堡／Muralla鎮的完整遠山背景。背景沿原版樹梢遮罩合成，前景本身仍為原貌。手把設定頁可選裝置並綁定按鍵。正常領賞、存讀檔、首筆武器交易、裝備開關、銀行存提款、首瓶藥水買賣與使用、六頁商品介紹及狀態列切片已有原版對照及正常視窗驗證，HD 切換只驗已觀察姿態。其餘中文、場景與角色 HD、音效、實體手把及戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+目前前端雛形包含片頭首章 30 行、國王與長老對話中文、存讀提示、武器店、銀行存提款、道具店買賣與三種商品介紹，以及部分裝備名稱、藥水使用訊息與居民交談。生命、寶石、金幣、地點四個狀態欄，以及城堡、城鎮、洞窟、國王、武器店、小屋與Marid長老名稱也已接入。手繪 HD 包含邊框、國王、長老、武器商人、銀行與道具店肖像、城堡／Muralla鎮的完整遠山，以及Muralla樹木、建物與岩壁前景試作。前景保留原版角色，武器、魔法與銀行招牌可顯示中文。手把設定頁可選裝置並綁定按鍵。正常領賞、存讀檔、首筆武器交易、裝備開關、銀行存提款、首瓶藥水買賣與使用、六頁商品介紹及狀態列切片已有原版對照及正常視窗驗證，HD 切換只驗已觀察姿態。其餘中文、場景與角色 HD、音效、實體手把及戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 ## 故事背景
 
@@ -66,7 +66,9 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 
 城鎮居民試譯另加 `-town-text /project/text/town-prototype.tsv`。已接113筆純文字來源，已以Muralla鎮一位居民完成原版配對及正常視窗的完整交談、續頁與結束；其餘來源待正常抽樣，含特殊控制碼的5筆保留原文。對話框沿原版行數變化，續頁箭頭及Space操作不變，來源或畫面不符時保留原文。試作邊界見[居民對話規格](docs/spec/004-town-dialogue.md)。
 
-城堡與Muralla鎮的完整遠山 HD 使用 `-town-sky-reference`、`-town-sky-palette`、`-town-background-memory`、`-town-background-art`載入本地原版畫格、色盤、正常記憶體及手繪圖。背景依原版樹梢遮罩合成，保留前景輪廓；正常走路、居民中文及原貌切換已驗，矩形切口已消除。樹木、建物與角色本身仍為原貌，見[完整背景規格](docs/spec/006-town-background-mask.md)。舊 `-town-sky-art`可單獨重現上方54列的[前輪試作](docs/spec/005-town-skyline-hd.md)。
+城堡與Muralla鎮的完整遠山 HD 使用 `-town-sky-reference`、`-town-sky-palette`、`-town-background-memory`、`-town-background-art`載入本地原版畫格、色盤、正常記憶體及手繪圖。背景依原版樹梢遮罩合成，保留前景輪廓；正常走路、居民中文及原貌切換已驗，矩形切口已消除，見[完整背景規格](docs/spec/006-town-background-mask.md)。舊 `-town-sky-art`可單獨重現上方54列的[前輪試作](docs/spec/005-town-skyline-hd.md)。
+
+Muralla前景另加 `-town-scenery-art-dir`，目錄內須有本地 `town-left-art-v2.png`、`town-middle-art-v2.png`及 `town-right-art-v2.png`，並提供上述正常記憶體與色盤。加 `-town-signs-text /project/text/town-signs-prototype.tsv`顯示三個中文招牌。圖面沿原版地圖位置合成，保留主角與居民；換場、對話或來源失配時整層退回。目前行走途中會因原版尚未畫完而暫退原貌，呈現時機仍待修正。原版地面與部分像素邊緣仍可見，角色本身尚未HD。素材身份、入口映射與驗證範圍見[前景規格](docs/spec/007-town-scenery-hd.md)。
 
 ## 授權
 

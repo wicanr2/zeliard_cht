@@ -167,10 +167,36 @@ func TestTownNormalDialogueReadOnly(t *testing.T) {
 		t.Fatal(err)
 	}
 	var receipts []map[string]any
+	presentation := image.NewRGBA(image.Rect(0, 0, 960, 600))
+	presentations, otherDSPresentations := 0, 0
 	run := func(n uint64) {
-		for _, o := range machines {
-			if err := o.Run(n); err != nil {
-				t.Fatal(err)
+		for n > 0 {
+			step := uint64(50000)
+			if n < step {
+				step = n
+			}
+			for _, o := range machines {
+				if err := o.Run(step); err != nil {
+					t.Fatal(err)
+				}
+			}
+			n -= step
+			b := machines[1]
+			drawn := d.Draw(presentation, b.Indexed(), b.Palette(), image.Point{})
+			presentations++
+			if d.Rejected != 0 {
+				t.Fatalf("任意呈現點失去居民來源：steps=%d DS=%04X state=%v", b.Steps(), b.DSReg(), d.State())
+			}
+			if drawn && b.DSReg() != 0x1b1 {
+				otherDSPresentations++
+				if townCode(b) || !townDisplayCode(b) {
+					t.Fatal("callback與顯示的DS契約未分離")
+				}
+				copyD := *d
+				copyD.begin(b)
+				if copyD.current != nil {
+					t.Fatal("callback接受錯誤DS")
+				}
 			}
 		}
 	}
@@ -253,10 +279,13 @@ func TestTownNormalDialogueReadOnly(t *testing.T) {
 	if mutationFrames["scroll-substep"] < 10 || mutationFrames["scroll-substep"]%10 != 0 {
 		t.Fatal("未走完原版十步捲動", mutationFrames)
 	}
+	if otherDSPresentations == 0 || presentations < 2000 {
+		t.Fatal("沒有驗到原版暫時切換DS的正常呈現點", presentations, otherDSPresentations)
+	}
 	if len(receipts) != 9 || len(machines[1].HeldKeys()) != 0 || d.current != nil || d.Glyphs == 0 || d.Rejected != 0 {
 		t.Fatal("居民路徑未完整完成", len(receipts), d.State())
 	}
-	data, err := json.MarshalIndent(map[string]any{"mutation_frames": mutationFrames, "commands_sha256": fmtHash(commands), "checkpoints": receipts, "scope": "一筆居民正常冷讀檔、續頁、結束；其餘112筆不計正常驗收"}, "", "  ")
+	data, err := json.MarshalIndent(map[string]any{"mutation_frames": mutationFrames, "presentations": presentations, "other_ds_presentations": otherDSPresentations, "commands_sha256": fmtHash(commands), "checkpoints": receipts, "scope": "一筆居民正常冷讀檔、每50k任意呈現、續頁、結束；其餘112筆不計正常驗收"}, "", "  ")
 	if err != nil {
 		t.Fatal(err)
 	}

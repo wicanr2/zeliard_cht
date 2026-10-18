@@ -66,6 +66,8 @@ type game struct {
 	townSkyHDMatched     bool
 	townBackgroundHD     *hd.TownBackground
 	townBackgroundMatch  bool
+	townSceneryHD        *hd.TownScenery
+	townSceneryMatch     bool
 	kingHD               *hd.King
 	kingHDMatched        bool
 	kingHDPose           int
@@ -256,7 +258,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -381,6 +383,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"town_dialogue": townDialogue,
 			"hd_enabled":    g.hdEnabled, "town_sky_hd_matched": g.townSkyHDMatched,
 			"town_background_hd_matched": g.townBackgroundMatch,
+			"town_scenery_hd_matched":    g.townSceneryMatch,
 			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
 			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
 			"text_cursor":                g.o.Word(oracle.Far(0x01b1, 0xff4c)),
@@ -419,6 +422,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hdEnabled && g.townBackgroundHD != nil && w == 320 && h == 200 {
 		g.townBackgroundMatch = g.townBackgroundHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0), 65536), g.o.Bytes(oracle.Far(0x11b1, 0), 65536), g.o.Indexed(), rgb, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.townBackgroundMatch
+	}
+	g.townSceneryMatch = false
+	if g.hdEnabled && g.townSceneryHD != nil && w == 320 && h == 200 {
+		g.townSceneryMatch = g.townSceneryHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0), 65536), g.o.Bytes(oracle.Far(0x11b1, 0), 65536), g.o.Bytes(oracle.Far(0x21b1, 0), 65536), g.o.Indexed(), rgb, image.Pt(0, barHeight), true)
+		g.hdMatched = g.hdMatched || g.townSceneryMatch
 	}
 	g.kingHDMatched, g.kingHDPose = false, -1
 	if g.hdEnabled && g.kingHD != nil && w == 320 && h == 200 {
@@ -474,7 +482,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil {
+	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -570,7 +578,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"bank_hd_matched": g.bankHDMatched, "bank_hd_pose": g.bankHDPose,
 				"item_shop_hd_matched": g.itemShopHDMatched, "item_shop_hd_pose": g.itemShopHDPose,
 				"town_sky_hd_matched": g.townSkyHDMatched, "town_background_hd_matched": g.townBackgroundMatch,
-				"town_background_cache": g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224), "town_background_module": g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64)})
+				"town_scenery_hd_matched": g.townSceneryMatch,
+				"town_background_cache":   g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224), "town_background_module": g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64)})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -621,6 +630,8 @@ func main() {
 	townSkyArt := flag.String("town-sky-art", "", "可選：本地手繪遠山PNG")
 	townBackgroundMemory := flag.String("town-background-memory", "", "可選：完整遠山正常原版記憶體參考")
 	townBackgroundArt := flag.String("town-background-art", "", "可選：完整手繪遠山PNG，搭配原版樹梢遮罩")
+	townSceneryArt := flag.String("town-scenery-art-dir", "", "可選：Muralla三段手繪前景圖目錄，搭配town-background-memory")
+	townSignsText := flag.String("town-signs-text", "", "可選：Muralla招牌中文TSV，搭配前景HD")
 	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
 	kingRefB := flag.String("king-reference-b", "", "可選：本地原版國王姿態 B 的 screen.bin")
 	kingArt := flag.String("king-art", "", "可選：本地手繪國王閉口 PNG")
@@ -715,6 +726,12 @@ func main() {
 		g.townSkyHD, err = hd.NewTownSky(root, *townSkyRef, *townSkyPalette, *townSkyArt)
 		if err != nil {
 			log.Printf("城鎮遠山HD未載入，保留原貌：%v", err)
+		}
+	}
+	if *townSceneryArt != "" || *townSignsText != "" {
+		g.townSceneryHD, err = hd.NewTownScenery(root, *townBackgroundMemory, *townSkyPalette, *townSceneryArt, *townSignsText, font)
+		if err != nil {
+			log.Printf("城鎮前景HD未載入，保留原貌：%v", err)
 		}
 	}
 	if *kingRefA != "" || *kingRefB != "" || *kingArt != "" || *kingSpeakingArt != "" {

@@ -180,7 +180,12 @@ func NewTownDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*
 }
 
 func townCode(o *oracle.Oracle) bool {
-	return o.VideoMode() == 0x13 && o.DSReg() == 0x1b1 &&
+	return o.DSReg() == 0x1b1 && townDisplayCode(o)
+}
+
+// 呈現可落在原版driver內。DS只約束消費端callback，固定段身份仍完整驗證。
+func townDisplayCode(o *oracle.Oracle) bool {
+	return o.VideoMode() == 0x13 &&
 		hudHash(o.Bytes(oracle.Far(0x1b1, 0x63ca), 0x664d-0x63ca)) == "2011d284c03ced34946616a7dde903d3e9972d9af6e00301f78d4ea0c562581c" &&
 		hudHash(o.Bytes(oracle.Far(0x1b1, 0x7b82), 192)) == "15eda0237134c09a79b7a068929c292ef9161f96c9f46d3b79b5555b5bfe9cf9"
 }
@@ -341,7 +346,7 @@ func (d *TownDialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uin
 	if d.current == nil || d.pending || len(d.completed) == 0 {
 		return false
 	}
-	if d.original == nil || !townCode(d.original) || !d.current.valid(d.original) || !hudPalette(palette) || !bytes.Equal(d.completed, townCrop(indexed, d.box)) {
+	if d.original == nil || !townDisplayCode(d.original) || !d.current.valid(d.original) || !hudPalette(palette) || !bytes.Equal(d.completed, townCrop(indexed, d.box)) {
 		d.Rejected++
 		d.reset()
 		return false

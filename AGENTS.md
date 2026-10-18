@@ -133,6 +133,11 @@
 | [docs/spec/004-town-dialogue.md](docs/spec/004-town-dialogue.md) | 居民專用繪字流程、動態安全區與原版續頁契約 |
 | [docs/spec/005-town-skyline-hd.md](docs/spec/005-town-skyline-hd.md) | 城鎮遠山天空的來源、直接HD合成與安全退回 |
 | [docs/spec/006-town-background-mask.md](docs/spec/006-town-background-mask.md) | 完整遠山背景、原版圖塊快取與樹梢遮罩契約 |
+| [docs/spec/007-town-scenery-hd.md](docs/spec/007-town-scenery-hd.md) | Muralla前景、原版角色遮擋與商店招牌的試作閘門 |
+| [internal/prototype/hd/town_scenery.go](internal/prototype/hd/town_scenery.go) | Muralla來源驗證、前景覆繪與原版角色保留 |
+| [internal/prototype/hd/town_scenery_test.go](internal/prototype/hd/town_scenery_test.go) | 原版畫格、獨立人物遮罩、失配及招牌安全區驗證 |
+| [internal/prototype/hd/town_scenery_pair_test.go](internal/prototype/hd/town_scenery_pair_test.go) | dosgolem冷讀檔、城鎮步行、居民與跨場的完整原版狀態配對 |
+| [text/town-signs-prototype.tsv](text/town-signs-prototype.tsv) | 三個店面招牌的來源與中文試譯 |
 | [internal/prototype/hd/town_background.go](internal/prototype/hd/town_background.go) | 依原版已畫快取與透明位元合成完整遠山背景 |
 | [internal/prototype/hd/town_background_test.go](internal/prototype/hd/town_background_test.go) | 正常來源、前景保留、失配退回與完整原版配對 |
 | [internal/prototype/hd/town_sky.go](internal/prototype/hd/town_sky.go) | 已確認遠景的手繪圖面覆繪，不改原版狀態 |

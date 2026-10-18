@@ -422,3 +422,37 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --k
 - 唯一tester沿正常playtest入口，獨立decoder先對三個原版來源5376pixels零差，再固定200輸入實跑GUI同62531退出0。冷F7自己存檔、步行、兩頁中文及結束正常；兩組暫停上54列108860、下24列24966／24507、側框172017像素改變，原版mask重建0、前景／聯集外／原貌還原0、直接取樣true、時間不變。58按放最長0.039秒、30圖目視、20區域零差，最後1000／held空／背景HD開啟。raw採固定palette限制保留。
 - 根端另讀三張actualX圖，確認樹梢／屋頂保留與矩形切口消除，前景本身仍為原貌。原29／882快照／font／自建存檔及mtime不變；來源稽核89自有、54來源／10鍵序、ownership異常0。主入口同步ed01c199，READY規格另存，限定CONFORMED只及完整遠山背景；GUI容器已清理，私人提交／推送與整合稽核待回讀。下一步樹木建物及角色HD、跳躍／戰鬥遮擋，不宣稱完整城鎮或全遊戲完成。
 - 功能提交 `38e8cf55b2e78883590e4edbb0c600b0fb98d829`已推送，主機gh回讀遠端main相同、visibility仍PRIVATE。`closeout.py`／`current-audit.json`合併原版重建、兩次快取捕捉、完整配對與GUI，54來源／10鍵序逐檔符合功能commit。READY規格保存及200輸入轉換可回查，主入口ed01c199、擁有權異常0、專案容器空。只提交自有程式與文件，沒有原版、字型、圖面或收據；未建立正式Release或tag。
+
+## 2026-10-19：城鎮前景與角色合成
+
+- 接手d765b90，工作樹及專案容器空。前輪完整遠山已實作、驗證並推送，屬實際進展。本輪沿資產逆向／IDA9.4及文件分工契約，重用foreground-v1的唯讀原版1MiB與IDA資料庫證據，新增decode_scene.py窄查前景、居民及主角的合成，不重開已驗背景或猜角色遮罩。
+- 原版四點完整前景／居民／主角重建14336pixels零差；原始16×24角色、6位元圖像及位元混合均依IDA原始定位。正常Left七段同99841退出0，新增八點也全零差，restored重複，共11不同狀態。固定world地圖215欄已抽出。source-contract兩次整體穩定斷言失敗後回查未知欄位契約，完整列出所有身份；末點原版新讀SAR7372bytes，NPC圖像改1176bytes且C000已切城堡，v3嚴格排除跨場，不忽略差異；首兩次失敗保留。
+- 內建image_gen三段v1圖保存後，目視發現天空／水面、地基及門偏移，未接入。v2改成透明前景、移除多出物件與地基，仍需約3至9nativepixels的入口校正。六份原圖及全部實際提示詞保留本地，沒有改alpha或提交素材。新DRAFT規格007與索引已建立；子目錄scene-prototype-v1只放離線合成程式及畫面，避免影響已固定觀察器的main.go／go.mod，尚不接正式前端。
+- 同98868右行與正常Up重播完成exit0，洞口新增一個城鎮來源14336pixels零差、入洞後嚴格來源拒絕。離線Go試作同27574 exit0，10城鎮、3拒絕、角色／前景框外0；根端五圖目視，三個中文招牌單行可讀。規格007補來源身份、六入口UV、失配與文字契約後轉READY，才接TownScenery及可選flags。
+- 前景HD／原版角色保留／招牌TSV測試同62359 pass，另補UTF-8、控制字元及空白驗證，候選v2同11548測試、go vet與build退出0，binary SHA-256 `0b4b62822c411935548b577aeff9dad1bd43b39862745df67d4406f1a941ec03`。57Go來源，主入口暫不換。單一tester依normal playtest技能固定v2，GUI與來源身份待回讀。
+- 配對v1同31438因npc鍵序路徑誤指foreground-v1失敗；同次walk與cave子項各PASS。屬驗證腳本環境問題，收據保留。v2改用實際 `workplace/prose-v1/npc-v2.commands`，同41752乾淨跑三路徑，未調整產品邏輯或通過標準。
+- 同41752三路徑85.7秒PASS，28檢查點完整1MiB、原版畫面／IP／steps／cycles／檔案／輸入一致，12次前景匹配，居民兩頁中文保留；根端三張配對圖另讀。來源計數勘誤：前輪54來源含45個.go及9個其他檔，不能當54個Go；本輪48個.go／58來源／94自有檔。初版freeze的57Go斷言失敗因分類錯誤，修正後 `candidate-identity-v2.json`固定實際清單。`audit_v2.py`首輪mount別名parent誤指根目錄，改用明確project路徑後 `source-audit-v2.json`PASS，原29／snapshot882／font／存檔與mtime不變、193文件連結有效、擁有權0。兩次工具失敗不屬產品缺陷。
+- GUI期間以唯讀固定restored記憶體盤點後續人物HD資源。`actor_inventory_v1.py`與本地索引／原生圖放同一foreground-v1工作區；不建立新正式資料格式、不改候選。只盤點當次原版六圖索引、圖像及透明位元，候選資源不當正常姿態驗收，角色名稱與跳躍／戰鬥仍未知。
+- 第二輪GUI同63247首頁等待出現中文撤除，尚未續頁，原版英文與箭頭仍在。候選0b4b保留，未宣稱GUI通過；`scene-prototype-v1/mutation-probe-v1/`只放隔離原版＋居民層的每50k呈現窄探針，使用反射唯讀取得完成畫格供差異定位，不進production或改玩法。先找原版寫入端，再走既有spec閘門修正。
+- 同34209窄探針每50k、不載HD重現88900000steps撤除，原始畫格差0；同73560補身份證據，DS=11A1，代碼／字寬／原文／prefix／table／palette全部相同，真因是任意Draw誤要求callback的DS01B1。未啟IDA或深挖driver。規格004補READY契約後拆townDisplayCode，callback仍驗DS；既有正常居民測試加每50k呈現、不同DS顯示與callback拒絕，保留原版完整配對、捲動與八拒絕。同20229正測試、vet及建置scenery-v3，尚未換主入口或宣稱GUI通過。
+- 同20229退出0，cf763f7e建置完成；正常每50k呈現2886次，其中61次其他DS仍顯中文，callback錯DS拒絕、30捲動子步及九點完整原版配對通過。前景三路徑同36364也退出0，28點完整原版狀態相同、12次前景匹配；來源稽核94自有／48Go／58來源／13鍵序、原29／snapshot882／font／save不變、擁有權0。新身份與READY004／007快照另存，不覆寫0b4b。
+- GUI3原工具session輸出在壓縮邊界缺失，保持同595691b9dd08容器，以docker wait唯一1623取得權威exit0，沒有重開遊戲。241輸入不變，58按放／29脈衝、最長0.794秒、持鍵空、1000；兩頁中文rejected0。兩組combinedHD401617／400793變更、聯集外／還原0，玩家206／200與NPC316樣本原貌像素0差。根端另讀四張actualX並存root-gui-review-v3。前兩GUI的exit1及部分結果保留。後續同cf763與250固定輸入啟三招牌／洞口短輪24169，主入口及READY狀態先不改。
+- 短輪期間只取樣下方畫帶(48,142)-(272,158)，10個原版城鎮畫格有6個不同色號雜湊。保存 `ground-candidates-v1.json`，不假定固定地面、不接HD、不追未知producer；人物候選盤點與此前景候選維持分開，runtime凍結不變。
+- 三段短輪24169退出1，銀行／魔法招牌已目視、武器／洞口未達；末IP35F1原版居民尚在繪製而工具先暫停，scenery=false符合守衛。250輸入不變、74ack、ownership0／容器空。449行走observer樣本328true／121false，輔助actualX也證實中途原貌退回，未宣稱無閃爍。`coherent-frame-v1/`只放唯讀正式IDA資料庫的獨立副本、68AC窄證據與原版快照試作；先查完整呈現點，保留cf763及所有GUI身份。
+- 已驗的cf763同步主入口，原ed01別名保留；004只閉合DS與居民兩頁，限定CONFORMED，007仍READY並明列行走中途退回。README／WORKLIST／驗證矩陣已同步穩定切片與短輪限制，沒有宣稱全城鎮HD。下一個獨立任務為完整畫格呈現，尚不修改runtime；先提交已驗自有程式與文件，原版／字型／圖面／收據仍不入Git。
+
+- 2026-10-19：唯一tester準備Muralla前景HD正常視窗，新增 `workplace/town-hd-v1/foreground-v1/gui-scenery-tools-v1/`及 `gui-scenery-v1/`，只保存固定工具輸入與實際X收據。沿已驗F7、居民兩頁、pause644／HD240；同暫停原貌與HD以原版圖像／位元樣本獨立核對玩家及NPC，不聲稱GUI有fullRAM。優先可靠主鏈，額外招牌與洞口獨立短輪；不修改目前狀態表、不改原版或規則。
+
+- 前景GUI首輪9499權威exit1，固定234輸入不變，首組暫停HD／角色保留通過。新增導航正常暫停取原貌後，兩筆running-only read_observe造成工具失敗，原版及產品未改。重讀正常試玩dump時機／GUI phase契約後，獨立 `gui-scenery-tools-v2/`／`gui-scenery-v2/`只允許兩筆觀察讀取paused，原鍵序及600／630秒不變。首輪failure/audit/partial與19圖保留，新輪沿唯一handle63247，尚未判定完成。
+
+- 前景GUI2權威63247 exit1，正常第一頁曾visible44／prompttrue，但actualX前安全退回英文，237輸入不變／持鍵空／容器清理。主線每50k呈現窄探針在無HD條件重現Draw誤套callback DS條件，拆持續身份檢查後候選cf763f7通過密集呈現及完整配對。獨立 `gui-scenery-tools-v3/`／`gui-scenery-v3/`沿同正常輸入重驗，兩舊失敗身份保留，不把部分切換通過改名全鏈PASS。
+
+## 2026-10-19：前景後續正常導航視窗準備
+
+- 在既有foreground-v1研究入口下新增gui-scenery-nav-tools-v1及gui-scenery-nav-v1，保存固定cf763候選的三段招牌／洞口短視窗工具與收據。先沿主鏈GUI3至權威終態，短輪不並行啟動。導航只以原版前景精確圖樣定位與正常按放步數推進，不注入位置；未知來源停止並保留圖面。
+
+## 2026-10-19：前景GUI3主鏈與後續短輪收尾
+
+- 固定cf763f7e候選的gui-scenery-v3完成正常冷F7、自建存檔、居民039fff兩頁及結束1000。原容器595691b9dd08的docker wait session1623權威exit0；241輸入、58按放確認不變，持鍵空。兩組暫停Frame／背景／前景合成區外0、原貌還原0，原版角色不透明樣本0差；30張實圖目視及26區域核對見該目錄audit、visual-review、pixel-review。原生地面、藍紫邊緣與接縫仍列限制。
+- 後續gui-scenery-nav-v1沿同候選獨立正常冷F7及分段Left。session24169權威exit1，250輸入不變、74按放確認、末持鍵空、容器清理。銀行與魔法物品招牌已目視；到walk-left-12暫停於01B1:35F1，原版前景上40列可精確辨camera57，但角色合成完整性未知，HD守衛維持退回。未走到武器招牌與洞口，不重命名為通過。
+- 行走途中walk-live-0.png實見HD開啟時遠山／前景退回原貌；449有限observer樣本有121次前景不匹配。輔助唯讀擷取session36763第二次import超3秒退出1，保留一張有效及一張截斷PNG。未改產品守衛或延長時間。partial-receipt、audit及visual-review保存部分成果與失敗範圍，下一步須先閉合完整畫格呈現相位。
