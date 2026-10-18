@@ -27,6 +27,7 @@ type labelSource struct {
 	text      []rune
 	inventory bool
 	bankTitle bool
+	itemTitle bool
 }
 type labelStamp struct {
 	source                         *labelSource
@@ -56,6 +57,7 @@ type Labels struct {
 	inventoryPending *labelStamp
 	inventoryIndex   int
 	bankTitlePending *labelStamp
+	itemTitlePending *labelStamp
 }
 
 func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels, error) {
@@ -159,13 +161,20 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 			end++
 		}
 		bankTitle := parts[0] == "zelres2" && module == 0x19462 && off == 0x19d54
+		itemTitle := parts[0] == "zelres2" && module == 0x1a588 && off == 0x1ada8
 		if bankTitle {
 			if !bytes.Equal(data[off-4:off], []byte{0x18, 0xaf, 2, 8}) {
 				return nil, fmt.Errorf("銀行標題來源不符")
 			}
 			end = off + 8
 		}
-		if end == off || end >= limit || !bankTitle && data[end] != 0 && data[end] != 255 {
+		if itemTitle {
+			if !bytes.Equal(data[off-4:off], []byte{0x0e, 0xaf, 0, 25}) {
+				return nil, fmt.Errorf("魔法物品店標題來源不符")
+			}
+			end = off + 25
+		}
+		if end == off || end >= limit || !bankTitle && !itemTitle && data[end] != 0 && data[end] != 255 {
 			return nil, fmt.Errorf("介面來源須以 NUL 或 FF 結束：%s", row[0])
 		}
 		charWidth := 5
@@ -202,10 +211,10 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 			}
 		}
 		rawEnd := end + 1
-		if bankTitle {
+		if bankTitle || itemTitle {
 			rawEnd = end
 		}
-		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:rawEnd]...), text: []rune(text), inventory: inventory, bankTitle: bankTitle}
+		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:rawEnd]...), text: []rune(text), inventory: inventory, bankTitle: bankTitle, itemTitle: itemTitle}
 	}
 	o.OnCall(oracle.Far(0x01b1, 0x22db), func(q *oracle.Oracle) { l.begin(q, 5) })
 	o.OnCall(oracle.Far(0x01b1, 0x2308), func(q *oracle.Oracle) { l.finish(q, 5) })
@@ -219,6 +228,8 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 	o.OnCall(oracle.Far(0x01b1, 0xaa30), l.finishInventory)
 	o.OnCall(oracle.Far(0x01b1, 0x22cd), l.beginBankTitle)
 	o.OnCall(oracle.Far(0x01b1, 0x2344), l.finishBankTitle)
+	o.OnCall(oracle.Far(0x01b1, 0x22cd), l.beginItemTitle)
+	o.OnCall(oracle.Far(0x01b1, 0x2344), l.finishItemTitle)
 	return l, nil
 }
 
@@ -230,7 +241,7 @@ func (l *Labels) prepareListSource(o *oracle.Oracle) {
 		return
 	}
 	for _, s := range l.sources {
-		if !s.bankTitle && s.width == 5 && int(s.base)+s.offset == int(o.SI()) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, s.base), len(s.prefix)), s.prefix) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, o.SI()), len(s.raw)), s.raw) {
+		if !s.bankTitle && !s.itemTitle && s.width == 5 && int(s.base)+s.offset == int(o.SI()) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, s.base), len(s.prefix)), s.prefix) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, o.SI()), len(s.raw)), s.raw) {
 			l.listPrepared = &listLabel{source: s}
 			return
 		}
@@ -290,7 +301,7 @@ func (l *Labels) begin(o *oracle.Oracle, charWidth int) {
 	}
 	pos := int(o.SI())
 	for _, s := range l.sources {
-		if s.bankTitle || s.inventory || s.width != charWidth || s.offset+int(s.base) != pos {
+		if s.bankTitle || s.itemTitle || s.inventory || s.width != charWidth || s.offset+int(s.base) != pos {
 			continue
 		}
 		// 模組固定前綴與完整來源字串均須相符，不能只靠當次 SI 認出文字。

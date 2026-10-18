@@ -22,8 +22,26 @@ func TestBankNormalPathReadOnly(t *testing.T) {
 	testWeaponShopNormalPath(t, "../../../tools/bank.commands", 35)
 }
 
+func TestBankNoPurchaseDepartureReadOnly(t *testing.T) {
+	if os.Getenv("ZELIARD_BANK_SAVE") == "" {
+		t.Skip("須掛載自己正常建立的起始存檔")
+	}
+	if out := os.Getenv("ZELIARD_SHOP_OUTPUT"); out != "" {
+		t.Setenv("ZELIARD_SHOP_OUTPUT", filepath.Join(out, "bank-no-purchase"))
+	}
+	testWeaponShopNormalPath(t, "../../../tools/bank-no-purchase.commands", 12)
+}
+
 func assertBankCheckpoint(t *testing.T, name string, d *Dialogue, l *Labels, o *oracle.Oracle, dst *image.RGBA, drawn bool) {
 	t.Helper()
+	if name == "no-purchase-farewell" || name == "no-purchase-farewell-ready" {
+		if !drawn || d.current < 0 || d.paragraphs[d.current].key != "zelres2.file.01a0bd" || d.visible != len(d.paragraphs[d.current].text) || o.Word(oracle.Far(0x01b1, 0xff4c)) != 0xac9b || o.Word(oracle.Far(0x01b1, 0x86)) != 1000 {
+			t.Fatal("銀行未交易告別的來源、完整中文或金額不符")
+		}
+	}
+	if name == "no-purchase-outside" && (drawn || d.Active() || o.Word(oracle.Far(0x01b1, 0x86)) != 1000) {
+		t.Fatal("銀行未交易離店殘留中文或金額改動")
+	}
 	wants := map[string][]string{
 		"bank-greeting":   {"zelres2.file.019def"},
 		"initial-balance": {"zelres2.file.01a05a"},

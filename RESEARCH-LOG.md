@@ -484,3 +484,25 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 64次正常按鍵、128筆按放全部確認，最長0.34秒，每次持鍵達指定原版步數。8個金額欄與3個GOLD區域同原版RGB；這是明列區域比較，不稱整段GUI同狀態對拍。16張實際PNG已逐圖目視，沒有截字，問句與後接結果完整，最後沒有銀行文字殘留。離店checkpoint563.981秒；最終312095974steps、364905164cycles、銀行覆繪inactive／completed10、無對話失配、持鍵空，capture-tail正常退出0，未另驗原版Ctrl+Q。
 
 原29檔、自建存檔來源及兩複本、字型、候選、TSV與參考圖面均不變，容器已回收，擁有權異常0。GUI未開HD；銀行肖像、ledger新存檔恢復、有alma兌換與其餘文字分支仍未驗。程式原始識別值、場景與其餘HUD尚未翻譯，不把此切片稱為完整中文化。
+
+## 2026-10-18：道具店購買來源與銀行肖像
+
+路由沿中文顯示隔離與正常玩家試玩入口。原版使用固定explore-v4、3000 cycles及自己正常建立的SAVETEST，雜湊沿用前節。原始29檔、存檔來源及dosgolem快照唯讀；證據只保存於本地研究目錄。
+
+- 道具店收據 `workplace/item-path-v1/receipt.json` SHA-256 `4c4bf480c8a441697019b26eaadb294f62ef0e5868644492408c36cabbf8e1c8`，來源映射 `source-evidence.json` SHA-256 `4a4e1212f5ef08e9420da4b0fa1ea8297b7bda18939123f77c1b7f6dc8f677c4`。32個正常檢查點的色號、色盤、64KiB段、FileOps及KeyReads相同；這項原版探針不稱完整1MiB配對或GUI。
+- SAR2檔案payload `0x1A588`、4646 bytes對應dosgolem實模式 `01B1:A000`。初訪段SHA-256 `3748f0286312470a8195befffc2eccb18d8dc98cac29e0637a9532fd5450996d`；已驗文字區 `[01B1:A81C,AB3C)`逐byte對應SAR2檔案 `[0x1ADA4,0x1B0C4)`。位址基準不可混用。
+- 711Bh／7120h各201個實際字形，383Eh／384Ah／37CCh／3804h各三次商品名稱。清單來源B09Ah、B0D4h、B0F4h，原始反斜線與控制碼保留。第二件實為Magia Stone，前次讀圖Magic Stone已勘誤。B21Eh數字暫存為50加單一FF，BX137／144、CL109；後接A901h的控制字元也實際進入字形入口，不用字面搜尋推定消費順序。
+- 第一件選取後即扣款1000→950，後續是是否繼續購物。歷史檔名 `first-item-quote.png`保留，但不稱購買前確認。正常離店後Return開物品頁，可見藥水圖示；沒有使用藥水。手冊第9–10頁的MAGIC四選項已核對；手冊稱五項但實列四項的差異保留。商品中文名稱為試譯，未宣稱官方譯名。
+- 道具店標題22CDh入口SI=A81Ch，header `0E AF 00 19`、正文A820h起25字元，原生範圍 `(56,175,125,8)`。原貌像素563個底色5、256個字色9、181個陰影45；每個陰影左鄰均為字色9。120-byte共用繪字段雜湊與銀行相同，但來源及header獨立核對，不推廣為任意標題格式。
+
+銀行三個已取得外框畫格的分組、原色盤與RGB對應在 `workplace/bank-hd-v1/source-mapping-v1.json`。三個畫格兩兩差84／497／413個原生像素，來源範圍為 `(56,23,96,64)`；三張1536×1024手繪圖直接取樣至內框282×186，不改原版動畫。完整內建imagegen提示詞組與原圖路徑在同目錄 `generation.json`。素材只作本地研究，不加入Git或發行包。
+
+首輪HD視窗固定c74e9484候選，迎客pose2內框52450像素改變、區外0、原貌完整還原，三圖steps130226791／cycles134586558相同。完整harness最終exit1，原因為未交易告別與先前交易後告別不同，腳本誤等後者。部分收據 `gui-v1/partial-receipt.json` SHA-256 `a5025e3db2df9545bd8289f4201789e6f975a2d5be53dd00f6b9916e3263d394`；不換名為成功，沒有重啟或改live腳本。
+
+未交易告別另由原版正常路徑核對。收據 `workplace/bank-hd-v1/no-purchase-source-v1/receipt.json` SHA-256 `2782656c7c4e07503c335c84f24167e98887bf178e780101b6707daffb2d8915`，來源映射SHA-256 `b9f57ba7f14b4777a5692de010a43a7c3821f6bb961d69e70edd356ba2c45059`。12點色號、色盤、64KiB段、FileOps及KeyReads相同。來源 `[01B1:AC5B,AC9D)`對應SAR2檔案 `[0x1A0BD,0x1A0FF)`；61字形連續，尾部控制碼完整，待續AC9Bh／旗標0已驗。正常Space後離店1000，持鍵空。原版此輪見pose0，首輪GUI則見pose1，不推測其切換規則。
+
+- 整合候選SHA-256 `dc2696ed47cf8d3f7d3a2a199f7408fc89fdf00943d298f216cb406ba24c7356`，來源身份 `workplace/item-overlay-v1/candidate-identity-v2.json`。Go1.24.13／Ebitengine2.9.9，固定dosgolem882來源，36筆對話、43筆標籤。八個受影響頂層測試與十一個catalog拒絕子項全部通過，無skip；六條配對各35／12／32／9／11／3個抽樣點完整1MiB、色號、色盤、CS:IP、steps／cycles相同，覆繪區外0。已驗命名離店／關閉檢查點覆繪差0，重新開啟裝備頁的中文不當作殘留。
+- 銀行HD新版收據 `workplace/bank-hd-v1/gui-v2/receipt.json` SHA-256 `5648ec301e09cff81614dd8281a732086584d3dcdc53c97207a71ed0c814ae72`，目視紀錄SHA-256 `c5ed1ea9fe7b4876df6065c16937a3b026711bf359e58816d5bcbb29475d1fc9`。正常冷F7、迎客pose2與未交易告別pose1，兩組各52450像素改變、區外0、全遊戲畫布還原0，來源RGB及直接素材取樣相同，paused steps／cycles不變。60筆按放確認、最長0.22秒，9張實際圖目視，正常離店1000、HD開但不匹配、持鍵空、capture-tail退出0。保留離店paragraph19／kind2／first_difference218安全退回，不稱三姿態GUI全驗或完整動畫。
+- 道具店GUI v1在導航主動停止，未進店或購買，失敗收據保留。來源補證 `workplace/item-overlay-v1/navigation-v2/receipt.json` SHA-256 `41478c5d7355a138147142d2cd00929a297b28f7b511619529e7e5527b9223f1`證實實圖門中心144、左向角色位置下，正常Up可進MAGIC，與既有初訪完整indexed相同、色盤相同。只修harness接受已證實136及144兩點，不推廣碰撞容差；新版GUI實際遇到136，不宣稱GUI另測144。
+- 道具店GUI v2收據 `workplace/item-overlay-v1/gui-v2/receipt.json` SHA-256 `98a4b392db04a5f1d0441ddae624414dd66cbfc61c9fc72fcae709616513b9d4`，目視紀錄SHA-256 `80c6076c5af9bae4837cf12454eafd417fdb825c41367398c32c5793e7b69cb2`。88筆按放確認、最長0.223秒，購買後78字形／ready7／completed1／price50；原版50的45×24圖形在三倍遊戲畫布 `(552,302)`RGB差0，六個金額／清單價格／藥水圖示區域也相同。11張實圖已逐張目視，續購否、告別、離店950、物品頁及關閉完整，持鍵空、capture-tail退出0。保留離店paragraph18／kind2／first_difference422舊文字退回，不稱零失配。
+- 兩次正常GUI固定輸入、候選、41來源與8鍵序、原29檔、自建存檔與複本及字型均不變，所有相關容器已回收，擁有權異常0。主入口已同步dc2696ed，原fc797237別名保留。NO USE、其餘HUD／場景、其他物品與藥水使用仍未翻譯或驗證；沒有新存檔持久性、實體手把、完整遊戲或正式平台包聲明。

@@ -14,9 +14,10 @@
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 原版、中文覆繪配對及實際 X 視窗均通過；戰鬥未驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
-| 中文 | 工具列、首章、國王、長老、存讀提示、武器店與裝備 prototype | 報價、未購物告別、裝備開關的配對與實際視窗通過；資金不足限配對。其餘物品與文字待完成 |
+| 中文 | 工具列、首章、國王、長老、存讀提示、武器店、道具店與裝備 prototype | 首瓶購買50、續購否、離店950及藥水物品頁的配對與實際視窗通過；其餘物品與文字待完成 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| HD | 手繪奇幻邊框、國王、長老與武器商人 prototype | 商人三姿態52409／52396／52419像素改變，區外0、完整還原，正常兩種離店通過；其餘場景／角色及正式倍率待完成 |
+| 本輪工作 | 銀行HD與道具店中文正常視窗通過 | 固定dc2696ed已同步主入口；銀行迎客／實遇告別切換與離店1000，道具店首瓶／續購／離店／物品頁950；收據入口見下方 |
+| HD | 手繪奇幻邊框、國王、長老、武器商人與銀行 prototype | 銀行GUI實遇pose2／pose1各52450像素改變、區外0、完整還原；三抽樣來源測試通過，不稱完整動畫。其餘場景／角色及正式倍率待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -40,7 +41,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-依 [WORKLIST.md](WORKLIST.md) 接道具店中文，再接其餘物品、片頭／對話及城鎮場景／角色HD。銀行存100、領50、查詢與離店切片已驗，不重新探索。已有商品、報價、數字暫存、清框、裝備繪字及武器商人三姿態證據，不重新探索這些入口。正常存讀檔已完成，不重新開啟輸入時序研究。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+依 [WORKLIST.md](WORKLIST.md) 接道具店其餘文字及HD，再接片頭／對話、物品與城鎮場景／角色HD。銀行存100、領50、查詢與兩種告別，道具店首瓶購買50／離店950及物品頁切片已驗，不重新探索。已有商品、報價、數字暫存、清框、裝備繪字及商人／銀行肖像來源，不重新探索這些入口。正常存讀檔已完成，不重新開啟輸入時序研究。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -50,12 +51,23 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 工具與本地證據入口
 
+- 銀行HD候選為 `workplace/bin/zeliard-preview-bank-hd-v1`，SHA-256 `c74e94846937224ed5a116bc107814c0adea876a03191278229e7559be1b5311`；38個來源身份在 `workplace/bank-hd-v1/candidate-identity-v1.json`，三畫格映射在 `source-mapping-v1.json`，內建imagegen完整提示詞在 `generation.json`。邊界與退回測試、建置及vet已通過，正常視窗驗證準備於同目錄 `gui-tools/`與 `gui-v1/`，尚未取代主入口。
+- 道具店原版證據入口為 `workplace/item-path-v1/receipt.json`、`source-evidence.json`及 `visual-review.json`。第一瓶Ken’ko Potion選取即扣款1000→950，後接詢問是否繼續購物；離店後物品頁可見藥水圖示。32點唯讀重播相同，尚未接中文或驗GUI。
+- 道具店中文準備區為 `workplace/item-overlay-v1/`，保存可撤回適配稿及後續配對收據；銀行HD視窗驗證期間不改動其38個固定來源。
+- 銀行HD視窗v1權威終態為exit1，保留 `workplace/bank-hd-v1/gui-v1/failure.json`與 `partial-receipt.json`。迎客pose2切換通過，未交易告別使用另一段原文，舊腳本誤等交易後參考而未完成離店。新分支原版窄證據入口為同目錄 `no-purchase-source-v1/`，補來源後才重驗，不將v1換名為成功。
+- 整合候選 `workplace/bin/zeliard-preview-bank-hd-item-v2` SHA-256 `dc2696ed47cf8d3f7d3a2a199f7408fc89fdf00943d298f216cb406ba24c7356`，來源固定於 `workplace/item-overlay-v1/candidate-identity-v2.json`。八個頂層回歸及十一個catalog子項全部通過，無skip；41來源、36對話、43標籤已凍結。銀行HD新視窗入口 `workplace/bank-hd-v1/gui-tools-v2/`、`gui-v2/`；道具店中文入口 `workplace/item-overlay-v1/gui-tools-v1/`、`gui-v1/`。依序啟動，尚未宣稱GUI通過或同步主入口。
+- 本輪稽核入口為 `workplace/item-overlay-v1/audit.py`與 `source-audit.json`，核對自有檔案邊界、原件、固定快照、候選來源、配對、文件連結及擁有權；實際視窗收尾另合併收據。
+- 本輪完整整合稽核為 `workplace/item-overlay-v1/current-audit.json`，同一 `audit.py`以 `FINAL_GUI=1`核對銀行／道具店兩份實際視窗、數字／圖示、HD區域及主入口身份；提交後另核對來源符合功能commit。
+- 稽核腳本契約更正保存於 `workplace/item-overlay-v1/audit-failure-record.json`；source_digest與manifest JSON檔案雜湊分開，離店／關閉依命名檢查點核對。整合原版狀態與六條配對已通過，不將腳本錯誤列為產品缺陷。
+- 道具店視窗v1在門口定位停止，權威exit1、未進店或購買，原件與固定來源不變。實際按鍵步數使門中心由128跳至144，超出腳本範圍；保留 `workplace/item-overlay-v1/gui-v1/failure.json`、`partial-receipt.json`及 `visual-review.json`。最小原版導航補證在同目錄 `navigation-v2/`，先確認144位置能否正常進店，再修驗證腳本，不改遊戲碰撞或候選程式。
+- 原版已證實門中心144可正常Up進MAGIC，完整indexed與既有初訪相同、色盤相同，收據 `workplace/item-overlay-v1/navigation-v2/receipt.json`。新道具店視窗工具／輸出為同目錄 `gui-tools-v2/`、`gui-v2/`，只修導航契約，沿同dc2696ed候選驗證；舊失敗保留。
+- 本輪兩份GUI已通過並同步主入口dc2696ed。銀行 `workplace/bank-hd-v1/gui-v2/receipt.json`與 `audit.json`驗迎客pose2／告別pose1、區外0及完整還原，60筆按放、退出0、離店1000。道具店 `workplace/item-overlay-v1/gui-v2/receipt.json`與 `audit.json`驗首瓶50／續購否／離店950／物品頁及關閉，88筆按放、11圖目視、原版數字與六個ROI相同、退出0。兩者原件及固定輸入不變；保留各一筆離店舊文字安全退回，不稱零失配。
 - 本輪銀行原版入口為 `workplace/bank-path-v1/receipt.json`，文字、數字及手冊映射為同目錄 `source-evidence.json`。銀行標題的原始推論保留，最新底色5／字色9／水平陰影45及位置98的勘誤見 `title-v3/palette-geometry-evidence.json`與 `workplace/bank-overlay-v1/bank-title-style-analysis.json`。
 - 銀行中文固定建置 `workplace/bin/zeliard-preview-bank-v4`，SHA-256 `fc7972373703d0124182e2f24331bf3cdba9913ff2364fdb239f903db816837a`，主入口已同步。來源身份為 `workplace/bank-overlay-v1/candidate-identity-v4.json`，28筆對話及39筆標籤。v4銀行35點、catalog與裝備11點配對通過，測試在同目錄 `test-v4.jsonl`及 `v4/`；來源稽核為 `source-audit.json`，目前整合稽核為 `current-audit.json`。v2／v3的標題缺漏失敗保留，不冒稱通過。
 - 銀行正常X視窗入口為 `workplace/bank-gui-v1/receipt.json`、`visual-review.json`及 `audit.json`，工具與固定身份在 `workplace/bank-gui-v1-tools/`。同一handle完成冷F7、存100、領50、查50、無alma及離店950；128筆按放確認、最長0.34秒，8個金額欄及3個GOLD區域與原版RGB相同。最後持鍵空、銀行覆繪inactive、capture-tail退出0，未開HD，未另驗Ctrl+Q或銀行ledger新存檔恢復。
 
 - dosgolem 來源 HEAD：`3e17c1eb3f3d58935b1e8a59b978b8c899f4a653`，來源工作樹有其他工作的未提交修改。
-- 本專案固定快照：`workplace/dosgolem-source/`，882 個檔案；逐檔清單雜湊 `2a5ad11a6c67b1e1d8a16d61830d8565f262ab38566f49d6ff076a721be58ada`。HEAD 不能單獨識別這份工具。
+- 本專案固定快照：`workplace/dosgolem-source/`，882 個檔案；來源摘要欄位 `source_digest`為 `2a5ad11a6c67b1e1d8a16d61830d8565f262ab38566f49d6ff076a721be58ada`。`workplace/dosgolem-source-manifest.json`檔案本身SHA-256為 `9f7211ce703d40b27c881651fb3077f10d2649c7b69685ce83c2752d7f09b8aa`。HEAD不能單獨識別這份工具。
 - 探針：`workplace/probe-startup-mcga/`、`probe-startup-replay/`、`probe-space-40m/`；重播比較為 `workplace/startup-replay-comparison.json`。
 - 即時前端片頭基線：`workplace/probe-intro-clock3000/`。3000 cycles／毫秒、10,729,940 指令、無輸入；與診斷 GUI 原版畫格逐點一致。
 - 單句與手把頁的既有 GUI 收據：`workplace/gui-smoke-v6/receipt.json`。新的首章捲動與國王正常操作見下方最新入口；未將舊 GUI 的二進位身份冒充本輪建置。
@@ -70,7 +82,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - 前輪 HD 與首章稽核：`workplace/current-audit-hd.json`、`current-audit-scroll.json`，保留各自來源與二進位身份。提示、長老／商品、彈窗、報價、裝備及商人輪另保留 `current-audit-ui.json`、`current-audit-weapon-sage.json`、`modal-audit-v1/current-audit.json`、`quote-audit-v1/current-audit.json`、`inventory-audit-v1/current-audit.json`與 `merchant-hd-v1/current-audit.json`；目前為 `workplace/bank-overlay-v1/current-audit.json`。
 - 同狀態區域比較：`workplace/gui-smoke-v4/intro-region-comparison.json`。原版色號完全相同，覆繪區內 3,655 個像素不同，區外 0。
 - 初始化工具身份：`workplace/gui-smoke-v4/provenance.json`，記錄當時 13 個來源檔、二進位、dosgolem 快照及映像 ID。該份舊收據沒有 Git 身份，現行程式以本儲存庫 HEAD 為準。
-- 最新前端二進位 SHA-256：`fc7972373703d0124182e2f24331bf3cdba9913ff2364fdb239f903db816837a`，主入口與 `zeliard-preview-bank-v4` 相同。基於商人三姿態版本加入銀行中文與診斷觀察，未稱正式版本；前輪 `zeliard-preview-merchant-all`及 `zeliard-preview-inventory-observe`保留歷史身份。
+- 最新前端二進位 SHA-256：`dc2696ed47cf8d3f7d3a2a199f7408fc89fdf00943d298f216cb406ba24c7356`，主入口與 `zeliard-preview-bank-hd-item-v2`相同。加入銀行HD、未交易告別及道具店中文，未稱正式版本；前輪 `zeliard-preview-bank-v4`、`zeliard-preview-merchant-all`與其他別名保留歷史身份。
 - 首章中文最新重跑：`workplace/intro-scroll-v3/receipt.json`。30 個來源行、430 個完成列事件；10,729,940／14m／30m／65m／110m／160m 指令抽樣，完整 1 MiB 記憶體、畫面色號、色盤、CS:IP 與虛擬時間均與無掛鉤原版相同。覆繪區外差異 0；結尾捲出與換章移除已驗。
 - 首章實際 X 視窗：`workplace/gui-intro-scroll-v2/receipt.json` 與 `intro-scroll-window.png`。自然片頭擷取時已觀察 7 個來源行、62 個完成列。專名暫留原文，正式術語與字級尚未定稿。
 - 早期國王正常操作：`workplace/probe-door-up-70m/`、`probe-king-0-84m/` 及 `gui-king-v2/receipt.json`。探針使用既有六次 Space，再於 60m 按 Right 2m、64m 按 Up 250k。GUI 以畫面核對進入國王房間，首段文字與原版收據相符；空白鍵後 GOLD 更新至 1000。不把賞金確認稱為對話全部翻頁完成。

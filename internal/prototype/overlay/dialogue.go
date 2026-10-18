@@ -38,6 +38,7 @@ type Dialogue struct {
 	paintSerial                 uint64
 	quotation                   *Quotation
 	bank                        *bankDialogue
+	itemPurchase                *itemPurchase
 	Glyphs, Paragraphs, Scrolls int
 	Rejections                  []map[string]int
 }
@@ -77,7 +78,7 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 	d := &Dialogue{font: font, current: -1, paint: observePaint(o)}
 	// 檔案偏移與模組 payload 起點來自固定 SAR 及正常路徑傾印。
 	// 數值、控制碼與存檔動作仍由原版執行。
-	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}, {0x185ea, 0x18606, 0x17817}, {0x18607, 0x18633, 0x17817}, {0x18634, 0x18661, 0x17817}, {0x1883e, 0x1885d, 0x17817}, {0x18899, 0x188b8, 0x17817}, {0x189f6, 0x18a16, 0x17817}, {0x1876b, 0x187c6, 0x17817}, {0x18a17, 0x18a57, 0x17817}} {
+	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}, {0x185ea, 0x18606, 0x17817}, {0x18607, 0x18633, 0x17817}, {0x18634, 0x18661, 0x17817}, {0x1883e, 0x1885d, 0x17817}, {0x18899, 0x188b8, 0x17817}, {0x189f6, 0x18a16, 0x17817}, {0x1876b, 0x187c6, 0x17817}, {0x18a17, 0x18a57, 0x17817}, {0x1adf3, 0x1ae11, 0x1a588}, {0x1ae15, 0x1ae2e, 0x1a588}, {0x1aeee, 0x1af12, 0x1a588}, {0x1b099, 0x1b0bd, 0x1a588}, {0x1a0bd, 0x1a0ff, 0x19462}} {
 		key := fmt.Sprintf("zelres2.file.%06x", source[0])
 		text, ok := texts[key]
 		if !ok {
@@ -110,6 +111,10 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 		return nil, err
 	}
 	d.bank, err = newBankDialogue(o, data, texts, font, d.paint)
+	if err != nil {
+		return nil, err
+	}
+	d.itemPurchase, err = newItemPurchase(o, data, texts, font, d.paint)
 	if err != nil {
 		return nil, err
 	}
@@ -259,13 +264,16 @@ func dialogueLayout(font bitmap.Font, text []rune) ([]image.Point, error) {
 }
 
 func (d *Dialogue) Active() bool {
-	return d.active || d.quotation != nil && d.quotation.active || d.bank != nil && d.bank.active
+	return d.active || d.quotation != nil && d.quotation.active || d.bank != nil && d.bank.active || d.itemPurchase != nil && d.itemPurchase.active
 }
 
 // UseLabels 共用已驗證的商品來源與譯名，不複製另一份商品翻譯。
 func (d *Dialogue) UseLabels(l *Labels) {
 	if d.quotation != nil {
 		d.quotation.labels = l
+	}
+	if d.itemPurchase != nil {
+		d.itemPurchase.labels = l
 	}
 }
 
@@ -305,6 +313,9 @@ func (d *Dialogue) BankState() map[string]any {
 }
 
 func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, origin image.Point) bool {
+	if d.itemPurchase != nil && d.itemPurchase.active {
+		return d.itemPurchase.Draw(dst, indexed, palette, origin)
+	}
 	if d.bank != nil && d.bank.active {
 		return d.bank.Draw(dst, indexed, palette, origin)
 	}
@@ -367,4 +378,16 @@ func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, 
 		}
 	}
 	return true
+}
+
+func (d *Dialogue) ItemPurchaseState() map[string]any {
+	q := d.itemPurchase
+	if q == nil {
+		return nil
+	}
+	price := ""
+	if len(q.price.raw) > 0 {
+		price = string(q.price.raw[:len(q.price.raw)-1])
+	}
+	return map[string]any{"active": q.active, "stage": q.stage, "ready": q.ready, "glyphs": q.Glyphs, "completed": q.Completed, "price": price}
 }

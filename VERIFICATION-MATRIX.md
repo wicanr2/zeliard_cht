@@ -34,9 +34,12 @@
 | 國王 HD 肖像與口部姿態 | 通過，限兩個已觀察姿態 | `gui-dialogue-hd-v5/king-hd-region-comparison.json`；肖像內部 52,452 像素改變，外框及區外 0，原貌完整還原。兩個姿態只改口部圖面，未知姿態／淡入／缺圖退回測試通過 |
 | 長老 HD 肖像與動畫像素 | 通過，限兩個已觀察畫格 | `gui-sage-hd-v1/` 正常新局進房，同狀態切換內部 50,926 像素不同、區外 0、原貌完整還原；四個原版動畫像素不變、steps／cycles 不變。缺圖、未知畫格、色盤及短畫格退回測試通過 |
 | 武器商人 HD | 通過，限三個已觀察姿態 | `merchant-hd-gui-v2/region-comparison.json`與獨立 `merchant-hd-v1/pixel-verification-v2.json`，三姿態52409／52396／52419像素改變，遊戲畫布內框外0差、原貌完整還原、暫停steps／cycles不變；原貌RGB與來源相同，HD與指定圖取樣相同。離店HD開啟但商人不匹配。來源、區外不寫入、缺圖／未知畫格／色盤／短畫格退回測試通過，不稱完整動畫 |
+| 銀行 HD | 通過，限三個抽樣來源及GUI實遇兩姿態 | `bank-hd-v1/hd-test-v1.jsonl`三來源／退回測試通過；`bank-hd-v1/gui-v2/`正常冷F7進銀行，迎客pose2與告別pose1各52450像素改變，區外0、原貌完整還原、直接圖面取樣與來源RGB相符、paused steps／cycles不變。正常離店1000後HD開但不匹配，持鍵空、退出0；未驗完整動畫 |
 | 武器店未購物離店中文 | 配對及實際視窗通過 | `merchant-hd-v1/no-purchase/receipt.json` 三點完整1MiB、色號、色盤、CS:IP、steps與cycles相同，區外0；18A17中文完整、金幣1000，離店整張覆繪差0。`merchant-hd-gui-v2/`驗B23E待鍵後離店1000，再正常進店交易及B1FD離店800。保留實際兩筆換場舊對話退回，不稱零失配 |
 | 其餘場景／角色 HD | 未實作 | B 手繪奇幻已選定，不把邊框與已驗人物外推為整個遊戲 HD |
 | 銀行存提款中文 | 配對及正常X視窗通過 | `bank-overlay-v1/v4/bank/receipt.json`35點完整1MiB、色號、色盤、CS:IP、steps／cycles相同，區外0、原版數字圖形保留，離店950且覆繪差0。`bank-gui-v1/`同handle冷F7、存100、領50、查50、無alma及正常離店950；128筆按放確認、最後持鍵空、capture-tail退出0，8個金額欄與3個GOLD區域同原版RGB。銀行ledger存檔持久性、餘額1、提空、有alma兌換及其他分支未驗 |
+| 銀行未交易告別中文 | 配對及正常X視窗通過 | `item-overlay-v1/v2/bank-no-purchase/receipt.json`12點完整原版狀態相同、區外0，AC9B待鍵及離店1000、覆繪差0。`bank-hd-v1/gui-v2/`完整新中文及正常離店，60筆按放確認、退出0；保留離店舊文字安全退回，不稱零失配 |
+| 道具店首瓶購買中文 | 配對及正常X視窗通過 | `item-overlay-v1/v2/item/receipt.json`32點完整1MiB、色號、色盤、CS:IP、steps／cycles相同、區外0，第一瓶即扣50、續購否、告別、離店950、物品頁及關閉。`item-overlay-v1/gui-v2/`11張實圖目視、88筆按放確認，50原版45×24數字圖形及六個金額／價格／藥水圖示ROI相同；持鍵空、退出0。NO USE仍原文，未使用藥水、未測其他商品／介紹／賣出；名稱為試譯 |
 | 工具列與手把映射 | 部分通過，限雛形 | 實際滑鼠開啟設定頁；合併輸入／斷線釋放、軸中立與越界、設定存讀三項測試通過 |
 | USB／藍牙實機 | 未執行 | 不以合成事件代替 |
 | GitHub PRIVATE | 通過 | 主機 gh 登入成功，建立 `wicanr2/zeliard_cht` 並回讀 `visibility=PRIVATE` |
@@ -45,4 +48,6 @@
 
 前輪商人三姿態及未購物離店兩項測試通過，沒有具名skip；紀錄為 `merchant-hd-v1/hd-test-v2.jsonl`與 `no-purchase-test-v2.jsonl`。未購物3點完整原版狀態相同、區外0，go vet及建置通過；該輪48e9c0bc已通過三姿態GUI與兩條離店。未重跑未改動的其他人物HD與手把測試。以上不計為完整中文、實體手把、完整遊玩或全場景HD完成。
 
-本輪銀行固定fc797237建置已同步主入口。`bank-overlay-v1/test-v4.jsonl`三個頂層測試與六個catalog拒絕子項全部通過，無具名skip；銀行35點、裝備11點配對及正常銀行GUI通過，go vet及建置通過。武器交易9點回歸取自v2的具名PASS，不稱該檔整批通過；v2／v3標題失敗與來源／顏色勘誤保留於WORKLOG及RESEARCH。銀行標題只在已驗來源使用底色5、字9及水平陰影45，未知畫格退回已驗。本輪GUI未開HD、未重跑未改動人物HD或手把，未另驗原版Ctrl+Q；銀行ledger的新存檔恢復仍未驗。
+銀行存提款切片的fc797237建置保留歷史身份。`bank-overlay-v1/test-v4.jsonl`三個頂層測試與六個catalog拒絕子項全部通過，無具名skip；銀行35點、裝備11點配對及正常銀行GUI通過，go vet及建置通過。武器交易9點回歸取自v2的具名PASS，不稱該檔整批通過；v2／v3標題失敗與來源／顏色勘誤保留於WORKLOG及RESEARCH。銀行標題只在已驗來源使用底色5、字9及水平陰影45，未知畫格退回已驗。該次GUI未開HD、未另驗原版Ctrl+Q；ledger的新存檔恢復仍未驗。
+
+目前主入口為dc2696ed整合候選。`item-overlay-v1/test-v2.jsonl`八個頂層及十一個catalog子項全部PASS、無skip，銀行35點、未交易12點、道具店32點、武器9點、裝備11點及商人未購物3點配對通過；go vet／建置通過。兩份新GUI以同一固定候選依序驗證，完整稽核在 `item-overlay-v1/current-audit.json`，70自有檔案、41來源與8鍵序、29原件、882快照及文件入口均核對。失敗GUI v1與後續來源補證保留原身份，不冒充成功。未重跑未改動的其他人物HD、手把或存讀檔GUI，未驗新平台或正式發行包。
