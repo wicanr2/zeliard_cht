@@ -58,6 +58,7 @@ type game struct {
 	intro                *xlate.Layer
 	scroll               *overlay.Scroll
 	dialogue             *overlay.Dialogue
+	townDialogue         *overlay.TownDialogue
 	menuLabels           *overlay.Labels
 	hud                  *overlay.HUD
 	hd                   *hd.Frame
@@ -360,6 +361,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 		held := g.o.HeldKeys()
 		var rejections []map[string]int
 		var quotation, bankDialogue, itemPurchase, itemSale, itemExplanation map[string]any
+		var townDialogue map[string]any
+		if g.townDialogue != nil {
+			townDialogue = g.townDialogue.State()
+		}
 		if g.dialogue != nil {
 			rejections = g.dialogue.Rejections
 			quotation = g.dialogue.QuotationState()
@@ -369,6 +374,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			itemExplanation = g.dialogue.ItemExplanationState()
 		}
 		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "held_keys": held, "frames": g.frames,
+			"town_dialogue":       townDialogue,
 			"text_cursor":         g.o.Word(oracle.Far(0x01b1, 0xff4c)),
 			"advance_input_flags": int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
 		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。
@@ -441,6 +447,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	if g.hud != nil && w == 320 && h == 200 {
 		g.hud.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
+	}
+	if g.townDialogue != nil && w == 320 && h == 200 {
+		g.townDialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
 	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
 	hdLabel := "hd"
@@ -533,6 +542,12 @@ func (g *game) Draw(screen *ebiten.Image) {
 				itemExplanation = g.dialogue.ItemExplanationState()
 			}
 			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose,
+				"town_dialogue": func() map[string]any {
+					if g.townDialogue != nil {
+						return g.townDialogue.State()
+					}
+					return nil
+				}(),
 				"merchant_hd_matched": g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose,
 				"bank_hd_matched": g.bankHDMatched, "bank_hd_pose": g.bankHDPose,
 				"item_shop_hd_matched": g.itemShopHDMatched, "item_shop_hd_pose": g.itemShopHDPose})
@@ -578,6 +593,7 @@ func main() {
 	dialogueText := flag.String("dialogue-text", "", "可選：對話與報價試譯 TSV")
 	labelsText := flag.String("labels-text", "", "可選：城鎮選單標籤試譯 TSV")
 	hudText := flag.String("hud-text", "", "可選：狀態列與場景名稱試譯 TSV")
+	townText := flag.String("town-text", "", "可選：城鎮居民純文字試譯 TSV")
 	hdRef := flag.String("hd-reference", "", "可選：本地城鎮 probe 的 screen.bin，同目錄須有 palette.bin")
 	hdArt := flag.String("hd-art", "", "可選：本輪手繪邊框 PNG，僅供 HD prototype")
 	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
@@ -735,6 +751,12 @@ func main() {
 		}
 	}
 	ebiten.SetWindowSize(width, height)
+	if *townText != "" {
+		g.townDialogue, err = overlay.NewTownDialogue(o, filepath.Join(root, "ZELRES2.SAR"), *townText, font)
+		if err != nil {
+			log.Printf("居民對話試譯未載入，保留原文：%v", err)
+		}
+	}
 	ebiten.SetWindowTitle(g.label("title"))
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetRunnableOnUnfocused(true)

@@ -129,6 +129,10 @@
 | [docs/spec/001-runtime-overlay.md](docs/spec/001-runtime-overlay.md) | 使用者選定架構與前端雛形邊界 |
 | [text/host.json](text/host.json) | 前端雛形的可見中文 |
 | [text/hud-prototype.tsv](text/hud-prototype.tsv) | 狀態欄與場景名稱53來源的單行試譯；未走過來源須經當次入口驗證 |
+| [text/town-prototype.tsv](text/town-prototype.tsv) | 城鎮／城堡居民純文字腳本試譯，原版條件與控制碼不依賴譯文 |
+| [docs/spec/004-town-dialogue.md](docs/spec/004-town-dialogue.md) | 居民專用繪字流程、動態安全區與原版續頁契約 |
+| [internal/prototype/overlay/town.go](internal/prototype/overlay/town.go) | 唯讀居民中文覆繪、來源閘門與背景還原 |
+| [internal/prototype/overlay/town_test.go](internal/prototype/overlay/town_test.go) | 正常交談配對、113筆容量與來源失配拒絕驗證 |
 | [docs/hud-source-index.json](docs/hud-source-index.json) | 狀態列來源、原版完成字形、安全區與證據等級 |
 | [internal/prototype/overlay/hud.go](internal/prototype/overlay/hud.go) | 當次入口唯一驗證來源的狀態列覆繪，不改原版數值或輸入 |
 | [internal/prototype/overlay/hud_scene_test.go](internal/prototype/overlay/hud_scene_test.go) | 正常室內名稱配對及候選來源的唯一匹配／失配退回測試 |

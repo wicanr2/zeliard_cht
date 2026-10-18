@@ -1,6 +1,6 @@
 # 目前狀態
 
-更新日期：2026-10-18，Asia/Taipei。
+更新日期：2026-10-19，Asia/Taipei。
 
 ## 目前狀態表
 
@@ -14,9 +14,9 @@
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 原版、中文覆繪配對及實際 X 視窗均通過；戰鬥未驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
-| 中文 | 工具列、首章、國王、長老、存讀提示、武器店、道具店、裝備、首瓶使用及狀態列 prototype | 四欄、城堡／城鎮／洞窟及國王／武器店／小屋／Marid長老名稱已驗；53來源中40新增仍未正常走過，其餘物品與文字待完成，專名保留原文 |
+| 中文 | 工具列、首章、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 四種新室內名稱配對及正常視窗已驗，主入口已同步f42ab9da | 新名稱13點、舊HUD48與舊使用48完整配對相同；44候選88種合成base及792拒絕通過。GUI1保留長老未對準exit1，GUI2以正常F7自建存檔補Marid退出0；24個原版及5次名稱區域零差，未把40未走過來源當完整驗收 |
+| 本輪工作 | 居民中文兩頁及正常結束已驗，修正捲字中途呈現，主入口同步08b3309 | 正常9點完整配對、30個原版捲動子步、3種寫入前呈現及GUI3通過；163固定輸入、20區域及背景還原零差。113來源中112未正常走過，5混合保留原文，兩次GUI失敗保留 |
 | HD | 手繪奇幻邊框、國王、長老、武器商人、銀行與道具店 prototype | 道具店四組抽樣來源測試通過，GUI實遇0／1／3各52406／52405／52384像素改變、區外0、完整還原；未遇pose2，不稱完整動畫。其餘場景／角色及正式倍率待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -41,7 +41,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-依 [WORKLIST.md](WORKLIST.md) 從560筆字面候選整理其餘片頭、對話及物品的共用消費端與翻譯段落，HD接城鎮場景及其餘角色。場景53來源已接當次入口閘門，40未走過來源仍待正常抽樣，不以catalog存在當完成。四種新室內名稱、狀態列、銀行存提款與告別，道具店介紹／買賣／使用及既有HD切片不重新探索。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+依 [WORKLIST.md](WORKLIST.md) 接其餘片頭與物品的共用消費端，補首場戰鬥正常路徑，再推進城鎮場景及其餘角色HD。5混合居民入口有共用文字與中途分派，先閉合文字片段／確認框生命週期，不猜交易或劇情語意。已驗居民兩頁、商店、HUD、道具使用及場景名稱不重新探索。113居民中112、53場景中40未正常走過，仍待抽樣；正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -51,6 +51,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 工具與本地證據入口
 
+- 居民中文及控制碼集中在 `workplace/prose-v1/`，原版入口 `consumer-evidence.json`、`ida-town-evidence-v2.json`、`world-script-inventory.json`。最新 `candidate-identity-v2.json`固定08b3309、50來源／10既有鍵序及town鍵序；`pair-v5/receipt.json`／`pair-test-v5.jsonl`驗9點完整1MiB、30捲動子步及3種原版寫入前呈現，go vet／build-v3通過。`gui-tools-v3/`／`gui-v3/`正常F7兩頁及結束，163輸入／58按放確認／24圖目視，20區域、頁間區外與還原0差；固定參考palette的限制保留。`root-gui-review-v3.json`根端另讀三張actualX圖，`current-audit.json`為整合入口。原06b候選及50來源存於 `candidate-v1-sources/`，GUI1導航與GUI2捲動退回失敗保留。`navigation-v1/verification.json`及兩份相位／圓角比較解釋導航及不同camera差異；`mutation-baseline.jsonl`證實6513中途退回真因。`mixed-control-notes.json`保存5混合入口與6種handler原始定位，不進runtime。113居民中112仍未正常走過，見 [居民規格](docs/spec/004-town-dialogue.md)。
 - 其餘場景名稱的共用消費端與來源研究集中在 `workplace/scene-v1/`，入口為 `prepare.py`、`prepare_observer.py`、`analyze_v2.py`與 `consumer-evidence-v2.json`。沿既有國王／武器及長老正常路徑補header證據，21個完成header及10點64KiB配對相同，不重新解交易或存檔規則。44筆擴充候選及字形推導在 `source_contract.py`／`source-contract.json`；新層須當次入口唯一驗來源，不以字面直接覆繪。完整配對入口 `prepare_pair_commands.py`／`pair-commands.json`／`pair-test-v1.jsonl`；正常視窗首輪工具／部分結果在 `gui-tools-v1/`／`gui-v1/`，Marid補驗在 `gui-tools-v2/`／`gui-v2/`。未走過名稱仍保留候選等級。
 - 後續批次中文化的字面盤點沿同研究區 `body_candidates.py`／`body-text-candidates.json`及摘要。只盤點固定SAR可讀ASCII，不把切分點當成已驗段落、控制碼或消費端；原文與研究產物仍不加入Git。
 - 場景擴充固定候選及目前主入口SHA-256為 `f42ab9da5260cf213d91a210df54f64fe9b6dd5b3c9d38c1136218d52190899e`，別名 `workplace/bin/zeliard-preview-scene-v1`。身份在 `workplace/scene-v1/candidate-identity-v1.json`，47來源／10既有鍵序及2scene鍵序、51／48／53 catalog；建立時GUI待驗狀態保留。兩份測試紀錄六頂層／九子項PASS，13點新路徑及96點回歸通過，go vet／build-v1通過。`freeze.py`／`audit.py`及 `current-audit.json`合併兩份GUI、原件、舊失敗、補證與主入口。`gui-v2/`正常F7補Marid，139固定輸入、52筆按放確認、持鍵空、退出0；根端四種名稱實圖目視在 `root-gui-review-v2.json`。HD關閉、不交易，未重驗其他人物HD或正式封包。

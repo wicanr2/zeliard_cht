@@ -385,3 +385,19 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --k
 - GUI2額外核對當前原版indexed與固定原版palette的可見畫布，肖像及既有文字區外零差。首個分析框誤用208×48，依frozen dialogue.go真實210×52修正，保留number-bitmap-comparison-v1.json及其210像素差異，沒有加新mask或改產品。獨立palette未擷取的限制保留；沒有把固定參考冒稱本次palette收據。根端另看四種實際名稱PNG，記root-gui-review-v2.json。
 - GUI2完整稽核後同步主入口f42ab9da，舊3aeca別名保留。FINAL_GUI整合稽核PASS，核對79自有檔、47來源／10既有及2scene鍵序、109點配對、原件、882快照、GUI1原失敗與GUI2補驗、主入口及根端四圖。現況、README、規格及矩陣已更新；CONFORMED限來源閘門及四個正常新增來源，40未走過名稱仍未驗。沒有正式版號、封包或新image，推送結果待追加。
 - 功能提交 `ba6639451608d6ead2120d946551493c4d061cc6`已推送，主機gh回讀main相同，仍PRIVATE。FEATURE_COMMIT稽核再次PASS，47來源及10既有鍵序逐檔符合提交，2scene鍵序及所有本地收據另驗固定雜湊；79自有檔、160文件連結、29原件及882快照不變，主入口f42ab9da，擁有權異常0、專案容器空。沒有原版、字型、圖面或收據加入Git。後續批次對話、其餘HD、音效、戰鬥、實體手把及正式平台包仍未完成或未驗。
+
+## 2026-10-18：批次對話來源與顯示契約
+
+- 前輪場景擴充、正常驗證與私人推送為實際進展，接手HEAD17402f1、工作樹與專案容器空。路由載入中文顯示隔離、文件分工，沿逆向技能與IDA9.4契約查共用對話流程。locked-v1未安裝，沿已有py312-v1，不重建image。新增 `workplace/prose-v1/`保存本輪來源／控制碼證據，入口同輪掛入CONTEXT。
+- 人工核對SCAN0357_006.jpg印刷7至8頁，市民接近時以Space交談，過多訊息再按Space。原版706C消費端把換行、清框及等待按鍵留在機器內，遇FF讀下一byte後返回場景caller。翻譯只觀察實際711B出字，不解釋FF callback為玩法，也不改原文。先從正常自建存檔接城鎮居民來源，不重開已驗商店交易。
+
+- 居民使用另一個63CA／7C58消費端，室內706C不能直接套用。初次Space兩輪未交談，依IDA623F檢查後確認是面向前1至3格FD標記，先太遠後重疊，不是按鍵hold太短。保留explore；正常冷F7自己存檔後Left2.5m、Space、續頁及結束成功。原版與唯讀觀察npc-normal-v2／npc-trace-v2各權威exit0，九點64KiB／畫面／色盤／FileOps／收據相同。
+- IDA沿既有py312-v1工具鏈匯出63CA、65E6、6609與完整呼叫者，保留原名／bytes／xref。十模組118腳本，113純文字FF段與5混合控制碼分開。113繁中試譯以UTF-8 TSV保存，原版文字只留ignored研究區；逐筆字型及獨立原文行數容量均通過，其他112未正常走過。READY規格004及索引已建立，5混合來源不猜回呼語意。
+- 新TownDialogue唯讀層與-town-text入口已接入，依當次63DA唯一驗完整原文、指標表、前綴、代碼、字寬表與模式；繪字、原版標記、終止等待與背景還原分開處理。初次test-v1為slice比較編譯錯誤，修測試後才執行。pair-v2／v3在第77字形s退回，診斷及IDA證實BX59是左側空白1扣除的合法原點。規格追加勘誤，改驗原版座標公式，不調寬文字安全區。
+- pair-v4同69945權威exit0，兩頂層及八catalog子項PASS，八Draw失配拒絕通過，無skip。正常9點完整1MiB、色號、色盤、CS:IP、steps／cycles、FileOps、KeyReads及持鍵相同；兩頁中文可讀，安全區／標記外0，離開整張覆繪差0。go vet／build-v2同50695權威exit0。固定候選06b63ee7、50來源／10既有鍵序及town鍵序，51／48／53／113 catalog；根端已讀兩頁配對PNG。唯一tester沿正常試玩方法開始X視窗驗證，固定runtime/catalog不再修改，主入口仍f42ab9da。
+
+- 2026-10-19續驗：GUI1同55254權威exit1，未Space，153輸入不變、52按放確認、held空、容器清理。原版Left2.75m補證同64114 exit0取得另一合法走路相位，48 actor樣本對失敗GUI零差；舊圖差4在下緣dy6／7，排除背景猜測。GUI2改兩種精確原版圖樣，不加容忍；導航及第一頁通過，正常續頁glyph220退回，32035權威exit1，160輸入／56確認不變，最後Space與raw capture未執行，原失敗保留。
+- 原版6513中途呈現測試以Docker覆掛測試檔、不改50候選來源，在同74141權威exit1重現bitmap已變、DS01B1、pending=false而退回，根因與IDA10步捲動一致。先保留06b全部50來源及READY規格，再補64FA→6516、654C→6551、658A→658F、639E→63A3寫入閘門。原版中途暫呈原貌且保留來源，沒有放寬畫面比對。
+- pair-v5同93063權威exit0，9點完整1MiB與原版顯示／CPU時間／檔案／按鍵相同，30捲動子步及3種寫入前呈現通過；兩頂層八catalog子項及八Draw拒絕通過，沒有skip。go vet／build-v3同58142 exit0，固定08b3309／50來源／10鍵序，舊候選與GUI失敗完整保留。新三張PNG與根端已讀舊圖逐byte相同。
+- GUI3同35191權威exit0，兩頁中文與結束還原通過。163輸入不變，58按放確認／最長0.101秒、24圖目視；20區域、頁間區外、同GUI背景還原零差，最後1000、held空、Town source空／rejected0。最後原版raw對actualX採固定palette，不冒稱獨立當次色盤。圓角3點差已由同位置原版補證消除，沒有任意mask。根端另讀三張actualX圖。容器空、ownership異常0；未重驗HD、實體手把、新平台或正式封包。
+- 新source-audit核對83自有檔、50來源／10鍵序、29原件、882快照、169連結、字型與自建存檔mtime，異常0。首次稽核漏font掛載後依同命令補RO掛載乾淨通過；分析缺PIL沿既有ImageMagick，未在host執行或另建image。主入口同步08b3309，規格限定CONFORMED於一位居民，112其他來源仍未正常試玩；提交及private推送待回讀。

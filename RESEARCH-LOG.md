@@ -573,3 +573,28 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 正常GUI v1第一路國王及武器店通過，第二路小屋通過但長老門未對準，權威exit1與partial保留。既有成功GUI使用房屋外觀對齊；當前失敗的Draw觀察不是精確輸入edge，沒有據此宣稱同狀態原版重現。新的最小補證 `navigation-v2/verification.json`以正常冷F7自己存檔後Up直接進Marid，來源ACCD、模組A000與原始SAR2相符，完整字形e1d3bb2e與固定色盤相同。原版105300000steps／109182814cycles、1000、持鍵空、沒有寫檔；字形證據不替代後續正常X視窗。
 - GUI2收據 `gui-v2/receipt.json` SHA-256為 `8b3b2828e928d4b7d65aebbf7dbb24ade1f78e5f025b2b733c59f0b4bb39d800`，稽核為 `3c3ecd9b65bbf66974588759eefb619cad5d80fe6caf04cf9fe1d756517fdcf6`，目視為 `26b7273059c2ba8b05ca5306392c81c347ae3221ca874ce5ff5c04f88cac3a06`。正常F7自己存檔後Up進Marid，重訪中文及名稱清楚，8原版ROI／1名稱ROI零差。4圖目視、52筆按放確認、139輸入與copy2mtime不變；1000、持鍵空、HD關、capture-tail退出0、容器空。原GUI1的exit1及partial保持原樣，前三種名稱仍沿GUI1身份，不宣稱同一完整新局全部到達。
 - GUI2原版indexed SHA-256為 `779029018e65b6456fcc6cbbaa3c0b527e63d8ebb9acfa7ead370654bb7cfafd`，與原版補證同圖相符。以固定補證palette解碼後，實際視窗肖像與既有中文區外零差；本次未獨立擷取palette，不稱整份當前色盤已驗。首次分析錯用208×48對話範圍，依固定源碼210×52更正，原紀錄另存；修正是測量契約，不改產品或增加任意遮罩。根端四種實際名稱圖另記 `root-gui-review-v2.json`。
+
+## 2026-10-18：居民專用對話消費端與動態外框
+
+本地入口 `workplace/prose-v1/consumer-evidence.json`、`ida-town-evidence-v2.json`、`world-script-inventory.json`。原版EXE、SAR2、工具鏈與位址基準見 [居民規格](docs/spec/004-town-dialogue.md)。IDA9.4的binary base0等於dosgolem01B1段內偏移；SAR2檔案偏移另外記錄。輸入 `explore/citizen-near-2.segment` SHA-256為 `dae6b666047046143c22326c2cbaadad61e3665d3add21a4887d78835d5ef405`，原名、bytes、xref與運算元保留。
+
+- 已證實：居民使用63CA及7C58游標，與室內706C／FF4C不同。63DA以C00D表查SI，64B2／64B7繪字，6551／658F標記，65A1結束等鍵，63A3背景還原。前節的706C結論僅限室內，不能直接套居民。
+- 已證實：623F檢Space旗標FF1D及C2朝向，FD居民標記須在面向前1至3格。首次Left1m太遠、再Left2m重疊，Space由BIOS讀到仍不交談。保留explore失敗；正常重播由固定自建存檔Left2.5m放開後達前三格，Space交談成功，不改NPC、角色座標或輸入旗標。
+- 已證實：正常來源為SAR2檔案039FFF、模組payload0392DC、段內CD23，腳本248 bytes SHA-256 `5cd9baf5dcd8e696df71b9ea95d4ba7049daf0831ab2c3e3b9d77563557a5ed7`。九點原版與唯讀觀察的64KiB、色號、色盤、FileOps及完整收據完全相同；完整1MiB另由後續覆繪配對證實。
+- 已證實：63CA至664C代碼SHA-256 `2011d284c03ced34946616a7dde903d3e9972d9af6e00301f78d4ea0c562581c`；7B82至7C41左側空白與advance表192 bytes SHA-256 `15eda0237134c09a79b7a068929c292ef9161f96c9f46d3b79b5555b5bfe9cf9`。producer未知，不由此推定原檔字型位置。
+- 已證實：6609依字寬168與空格後單字預看算行數，斜線換行、單FF結束。外框最多8行，7C4E／7C5A由原版控制。正常原文11行，外框(56,24)-(232,110)、安全區(60,28)-(228,106)、紅色標記(140,98)-(148,106)。中文以24顯示像素畫到3倍目標畫布，未修改原生畫面。
+- 強推論：十模組指標表118腳本，113純文字完整FF段、5混合控制碼。113譯文的鍵、字型及獨立原文行數容量全通過；只有039fff正常走過，另112須在實際63DA入口驗完整來源、前綴與表，不能稱全部可達。5混合源03BA83／03F1E2／03F291／03F294／03F346不覆繪，不猜購物／劇情回呼。
+- 追加勘誤：pair-v2／v3在第77字形s退回，BX59、CL58而安全區x60。IDA64A6／64AE依左側空白1扣除，故字形原點不等於可見像素邊界。改為驗證原版計算公式，沒有拓寬中文區；兩份失敗原樣保留。
+- 完整配對 `pair-v4/receipt.json`驗冷F7自建存檔、交談、續頁及離開9點，1MiB、色號、色盤、CS:IP、steps／cycles、FileOps、KeyReads及持鍵相同。第一頁44／全文63字，中文改變26080／27297像素，安全區外及紅標記0差，離開後整張覆繪差0；248次原版字形完成事件只作觀察數。八Draw拒絕、八catalog拒絕通過，未將合成條件算成正常路徑。
+- 正常X視窗另驗，配對圖目視不能取代GUI收據。固定候選06b63ee7、50來源、10既有鍵序與一條town鍵序，原件、字型、文字及含原版畫面的收據均留本地。完整中文、HD、音效、戰鬥與實體手把仍未完成或未驗。
+
+
+### 2026-10-19：中途呈現補證與正常視窗收斂
+
+- GUI1尚未交談即因走路相位辨識失敗，exit1保留。原版正常冷F7後Left2.75m、Space、續頁及結束成功，`navigation-v1/verification.json`權威exit0。actor48樣本對GUI的差異由4變0，來源為合法原版另一走路姿態，未加誤差容忍。相位比較在 `actor-phase-comparison.json`。
+- GUI2首頁中文與marker通過，續頁在glyph220退回英文。`mutation-baseline.jsonl`在118429284steps、DS01B1、原版6513一像素寫入後重現；色號已變、舊pending=false而清掉來源。這是產品顯示生命週期缺口，不是導航或原版遊戲失敗。候選06b與50來源及READY規格保存在 `candidate-v1-sources/`，兩份失敗不換名。
+- 已證實：64FA開始十次650E／6513一像素捲動，6516才完成一列。另654C、658A、639E是標記與背景寫入前。新層在整個寫入期間pending，只暫呈原版，不移除有效來源；完成後才capture。原版資料、輸入及時間不寫入。
+- `pair-v5/receipt.json`9點完整原版狀態相同，30子步及三種原版寫入前呈現通過；中文圖與已目視v4三PNG逐byte相同。候選08b3309、50來源／10既有鍵序、51／48／53／113 catalog，go vet／build-v3通過。
+- GUI3同35191權威exit0，正常F7自建存檔、兩頁中文44／63字及Space結束，1000、持鍵空、rejected0、HD關閉。163輸入／58按放確認及24圖目視，20區域、頁間區外與同GUI背景還原零差；根端另讀三張實際X圖。最終raw採固定來源palette對照，未獨立擷取色盤，不宣稱整段GUI同狀態。
+- GUI2下框3點在兩條原版near→page均保留進框前背景；換同navigation-v1的原版參考後352像素零差，見 `frame-corner-comparison.json`。GUI3三角點與本次pre-talk背景相同，未新增任意遮罩。
+- 5個混合入口中03F291、03F294、03F346共用FF結束區間；85／87會重新分派63C5及BL=4／5。六種handler原始bytes與位址在 `mixed-control-notes.json`，只證實底層跳轉與寫入，不替byte_4／34／9A及6AED猜玩法名稱。此補證未加譯文或runtime。
