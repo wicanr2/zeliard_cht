@@ -32,7 +32,7 @@ def invoke(args, env):
     return subprocess.run(args, env=env, check=True, timeout=5, capture_output=True)
 
 
-def scenario(name, env, controller=False, intro=False):
+def scenario(name, env, controller=False, intro=False, scroll=False):
     capture = OUTPUT / f"{name}.png"
     with (OUTPUT / f"{name}.log").open("wb") as log:
         command = [
@@ -45,6 +45,9 @@ def scenario(name, env, controller=False, intro=False):
         if intro:
             command.extend(["-intro-reference", str(ROOT / "workplace/probe-intro-clock3000/screen.bin"),
                             "-intro-text", str(ROOT / "text/intro-prototype.json")])
+        if scroll:
+            command.extend(["-intro-scroll", str(ROOT / "text/intro-scroll-prototype.tsv"),
+                            "-capture-frames", "600"])
         process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=log)
         try:
             deadline = time.monotonic() + 20
@@ -77,6 +80,8 @@ def scenario(name, env, controller=False, intro=False):
             assert state["panel"] == controller, state
             if intro:
                 assert state["intro_stamps"] == 1, state
+            if scroll:
+                assert state["intro_scroll_sources"] >= 3 and state["intro_scroll_rows"] >= 20, state
             time.sleep(.15)
             # 等 Draw 完成後擷取實際 X 視窗，避免把尚未處理滑鼠事件的畫面當成果。
             invoke(["import", "-window", window, str(OUTPUT / f"{name}-window.png")], env)
@@ -90,7 +95,7 @@ def scenario(name, env, controller=False, intro=False):
             stop(process)
 
 
-def town_scenario(env, hd_reference=None, hd_art=None):
+def town_scenario(env, hd_reference=None, hd_art=None, king=False):
     """僅用 X 視窗鍵盤事件走冷開機；語意結果須另行目視核對。"""
     capture = OUTPUT / "town-final.png"
     request = OUTPUT / "capture.request"
@@ -173,13 +178,60 @@ def town_scenario(env, hd_reference=None, hd_art=None):
             shot("town-before-right")
             invoke(["xdotool", "keydown", "Right"], env)
             events.append({"seconds":round(time.monotonic()-started, 3), "keydown":"Right"})
-            time.sleep(1)
+            time.sleep(.65 if king else 1)
             invoke(["xdotool", "keyup", "Right"], env)
             events.append({"seconds":round(time.monotonic()-started, 3), "keyup":"Right"})
             time.sleep(1)
             shot("town-after-right")
             time.sleep(2)
             shot("town-released")
+            if king:
+                king_ref = ROOT / "workplace/probe-king-0-84m"
+                kr = (king_ref / "screen.bin").read_bytes()
+                kp = (king_ref / "palette.bin").read_bytes()
+                name_offsets = [3*(y*320+x)+c for y in range(174,184) for x in range(54,184) for c in range(3)]
+                expected_name = bytes(kp[kr[i//3]*3+i%3] for i in name_offsets)
+
+                def native_shot(name):
+                    shot(name)
+                    return invoke(["convert", str(OUTPUT / (name + ".png")), "-crop", "960x600+0+48", "+repage",
+                                   "-sample", "320x200!", "-depth", "8", "rgb:-"], env).stdout
+
+                # 視窗更新速度不等於探針的指令預算。小步前進、嘗試進門，再核對實際地名。
+                for attempt in range(30):
+                    invoke(["xdotool", "keydown", "Up"], env)
+                    time.sleep(.15)
+                    invoke(["xdotool", "keyup", "Up"], env)
+                    time.sleep(.25)
+                    pixels = native_shot(f"king-entry-{attempt}")
+                    if bytes(pixels[i] for i in name_offsets) == expected_name:
+                        events.append({"king_room_name_matches_reference":True,"entry_attempt":attempt})
+                        break
+                    invoke(["xdotool", "keydown", "Right"], env)
+                    time.sleep(.1)
+                    invoke(["xdotool", "keyup", "Right"], env)
+                    events.append({"entry_attempt":attempt,"key_sequence":["Up","Right"],"held_seconds":[.15,.1]})
+                else:
+                    raise RuntimeError("未從視窗正常進入國王房間")
+                # 只辨認已目視核對的國王首段文字，避免把空對話框當成對話完成。
+                text_offsets = [3*(y*320+x)+c for y in range(98,138) for x in range(54,262) for c in range(3)]
+                expected_text = bytes(kp[kr[i//3]*3+i%3] for i in text_offsets)
+                for attempt in range(24):
+                    time.sleep(.5)
+                    name = f"king-checkpoint-{attempt}"
+                    pixels = native_shot(name)
+                    if bytes(pixels[i] for i in text_offsets) == expected_text:
+                        events.append({"king_first_dialogue_matches_reference":True, "reference_sha256":digest(king_ref / "screen.bin")})
+                        break
+                else:
+                    raise RuntimeError("未辨認到國王首段對話；不以空框或肖像當作交談成功")
+                shot("king-dialogue")
+                invoke(["xdotool", "keydown", "space"], env)
+                time.sleep(.12)
+                invoke(["xdotool", "keyup", "space"], env)
+                events.append({"seconds":round(time.monotonic()-started, 3), "key":"Space", "held_seconds":.12})
+                time.sleep(2)
+                shot("king-after-advance")
             hd_comparison = None
             if hd_reference and hd_art:
                 # 正常工具列暫停後，同一原版畫格切主題，不以載入測試狀態代替。
@@ -245,7 +297,7 @@ def town_scenario(env, hd_reference=None, hd_art=None):
             stop(process)
 
 
-def main(gameplay=False, hd_reference=None, hd_art=None):
+def main(gameplay=False, hd_reference=None, hd_art=None, scroll=False, king=False):
     OUTPUT.mkdir(exist_ok=False)
     before = {p.name:digest(p) for p in ORIGINAL.iterdir() if p.is_file()}
     env = {**os.environ, "DISPLAY":":91", "LIBGL_ALWAYS_SOFTWARE":"1", "GOMAXPROCS":"2"}
@@ -258,7 +310,8 @@ def main(gameplay=False, hd_reference=None, hd_art=None):
                 if xvfb.poll() is not None or time.monotonic() > deadline:
                     raise RuntimeError("Xvfb 未啟動")
                 time.sleep(.1)
-            scenarios = ([town_scenario(env, hd_reference, hd_art)] if gameplay else
+            scenarios = ([scenario("intro-scroll", env, scroll=True)] if scroll else
+                         [town_scenario(env, hd_reference, hd_art, king)] if gameplay else
                          [scenario("original", env), scenario("controller", env, True),
                           scenario("intro-zh", env, intro=True)])
         after = {p.name:digest(p) for p in ORIGINAL.iterdir() if p.is_file()}
@@ -281,8 +334,14 @@ if __name__ == "__main__":
     parser.add_argument("--gameplay", action="store_true", help="用實際視窗按鍵驗證新局與移動")
     parser.add_argument("--hd-reference", type=pathlib.Path)
     parser.add_argument("--hd-art", type=pathlib.Path)
+    parser.add_argument("--intro-scroll", action="store_true", help="自然片頭的多行中文覆繪")
+    parser.add_argument("--king", action="store_true", help="新局正常進城堡與國王交談，須配合 --gameplay")
     args = parser.parse_args()
     if bool(args.hd_reference) != bool(args.hd_art) or args.hd_art and not args.gameplay:
         parser.error("HD 驗證須同時指定 --gameplay、--hd-reference、--hd-art")
     OUTPUT = args.output
-    main(args.gameplay, args.hd_reference, args.hd_art)
+    if args.intro_scroll and args.gameplay:
+        parser.error("--intro-scroll 與 --gameplay 分開驗證")
+    if args.king and not args.gameplay:
+        parser.error("--king 須配合 --gameplay")
+    main(args.gameplay, args.hd_reference, args.hd_art, args.intro_scroll, args.king)

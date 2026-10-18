@@ -2,7 +2,7 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-目前前端雛形已驗證從冷開機進入城鎮並移動，另有中文手把設定頁、片頭單句覆繪與手繪 HD 邊框試作。完整中文、場景與角色 HD、實體手把、對話、存讀檔與戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+目前前端雛形已驗證從冷開機進入城鎮並移動，另有中文手把設定頁、片頭首章捲動中文與手繪 HD 邊框試作。原版探針與實際視窗已走進城堡並顯示國王對話。完整中文、場景與角色 HD、實體手把、存讀檔與戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 ## 故事背景
 
@@ -38,7 +38,7 @@ workplace/bin/zeliard-preview \
 
 `/orig` 須唯讀掛載完整原版資料，`/fonts` 為使用者提供的字型目錄。原版存檔另落在使用者目錄下的 `game/`，手把設定獨立保存。雛形尚未接音效輸出。
 
-可選的片頭單句試作用 `-intro-reference` 指向本地重生的原版畫格，方法及限制見[架構與試作規格](docs/spec/001-runtime-overlay.md)。此選項只驗證覆繪機制，不代表全遊戲已翻譯。
+首章捲動中文試作加上 `-intro-scroll /project/text/intro-scroll-prototype.tsv`，會沿原版事件顯示 30 行試譯。專名與正式字級尚待校訂，其餘片頭及遊戲文字保留原文。舊單句試作仍可用 `-intro-reference` 指向本地重生的原版畫格。方法及限制見[架構與試作規格](docs/spec/001-runtime-overlay.md)。
 
 HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -hd-art /project/workplace/hd-border-prototype.png`。參考畫格同目錄須有 `palette.bin`。試作圖只保存在本機；雛形檢查固定圖像身份後，僅替換兩側裝飾，不遮擋中間場景或資訊。缺圖、換場或色盤不符時保留原貌。這些選項與正式資產格式仍在試作階段。
 

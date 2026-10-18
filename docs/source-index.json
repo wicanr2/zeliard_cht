@@ -41,6 +41,18 @@
       "evidence": ["RESEARCH-LOG.md#片頭顯示區定位", "workplace/probe-intro-display/stdout.txt", "workplace/ida-intro-display-utf8/intro-evidence.json"]
     },
     {
+      "address": "0x33A0",
+      "level": "已證實",
+      "semantic": "本次首章顯示迴圈以 AND 9999h 保留目的背景位元；33A4 以 AND 6666h 選來源文字位元，33A6 OR 至視訊記憶體。只限已驗證首章 viewport，不外推其他美術層",
+      "evidence": ["RESEARCH-LOG.md#首章捲動中文試作", "workplace/ida-intro-display-indexed/intro-evidence.json", "workplace/intro-scroll-v2/receipt.json"]
+    },
+    {
+      "address": "0x33B6",
+      "level": "已證實",
+      "semantic": "sub_332C 的原始 retn，bytes C3；首章逐列 viewport 複製完成的唯讀觀察點，原版仍自行執行返回",
+      "evidence": ["RESEARCH-LOG.md#首章捲動中文試作", "workplace/ida-intro-display-indexed/intro-evidence.json", "workplace/intro-scroll-v2/receipt.json"]
+    },
+    {
       "address": "0x6358",
       "level": "強推論",
       "semantic": "片頭文字行的推進及顯示調度；完整控制碼未解",

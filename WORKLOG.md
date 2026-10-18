@@ -124,3 +124,21 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --hd-reference /proje
 - 最新二進位為 `1d4b472fb36fda44a59452040830205150add0890743613617a8a9f0f763ea0f`，Go metadata 記錄基底 `93b4dbd` 加未提交的本輪功能。收據另記來源檔指紋，不把此建置稱為正式版本或乾淨 tag 產物。
 - `find /project -user root -o -type d -name '*.md'` 沒有異常。依工作樹掛載檢查 Docker，執行中及已停止的相關容器均為空；沒有新映像或需要移除的被取代映像。
 - HD 功能提交 `7401bab8517e1c3dbbfeb045c7abc233fce45bd0` 已推送 `origin/main`。主機 gh API 回讀遠端 `main` 的 SHA 與本地一致，工作樹乾淨。此後只整理交接文件，沒有修改已驗證的程式或素材。
+
+## 2026-10-18：首章 30 行中文與國王正常操作
+
+- 路由命中復古 remake 技能、規格閘門、本地化顯示隔離、正常玩家路徑及文件職責。改首頁摘要前另讀 README 標準；索引重匯出沿用 IDA 9.4 技能與既有 py312-v1，不新增 image。
+- 新增首章捲動覆繪 prototype 及 UTF-8 TSV 試譯。來源限定本地 SAR 版本，原文不入 Git；唯讀觀察來源與逐列完成事件。正式版面、字級及專名尚待校訂，其餘章節保留原文。
+- 六項 Go 測試、go vet 及建置通過，沒有 skip。首章測試自然執行到 160m 指令，六個抽樣點的完整 1 MiB 記憶體、色號、色盤、CS:IP 與虛擬 cycles 均與無掛鉤原版相同。遮罩只改顯示，區外差異 0。
+- 修正首輪在 FF 結束碼過早移除中文的問題，保留舊收據。v2 確認結尾中文繼續捲出、換章移除。沒有改原版控制碼或時序。
+- 原版探針正常新局進城堡，等待國王首段文字。GUI 腳本新增 `--king`，以實際地名及對話文字核對進門結果；Space 後金額更新至 1000。首輪固定時間仍在門左側，分類為腳本時機問題，改用小步移動後乾淨重跑通過。
+- `gui-intro-scroll-v2`、`gui-king-v2` 分別驗首章多行中文及國王正常操作，均使用新二進位，原版唯讀、scratch 獨立。未把國王賞金確認稱為全對話結束，也未宣稱國王已中文化。
+- 新 Go 檔與 TSV 索引掛入 AGENTS；研究與收據沿用既有 `workplace/`。無新交付根目錄、Release 或正式封包。完整中文、場景／角色 HD、音效與實體手把仍待後續。
+
+### 重跑入口
+
+沿用前節 Docker 掛載及資源限制。首章測試環境增加 `ZELIARD_ORIG=/orig`、`ZELIARD_SCROLL_OUTPUT=/project/workplace/<新目錄>`，原版及字型唯讀；執行 `go test -p 2 ./internal/prototype/... -count=1 -v -timeout 95s`，其餘真實覆繪與 HD 環境沿用前節。缺少資料的 skip 不算通過。
+
+GUI 分別執行 `python3 tools/gui_smoke.py --intro-scroll --output /project/workplace/<新目錄>` 與 `python3 tools/gui_smoke.py --gameplay --king --output /project/workplace/<新目錄>`。腳本有界持有並回收 Xvfb、前端與子程序；只用 X11 正常按鍵操作。
+
+現行來源、輸入、二進位、IDA 索引與收據身份記在 `workplace/current-audit-scroll.json`。提交及 Docker 清理結果於收尾追加。

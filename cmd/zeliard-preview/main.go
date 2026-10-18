@@ -55,6 +55,7 @@ type game struct {
 	captured             bool
 	captureTail          int
 	intro                *xlate.Layer
+	scroll               *overlay.Scroll
 	hd                   *hd.Frame
 	hdEnabled, hdMatched bool
 	overlayPixels        []byte
@@ -363,6 +364,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 			draw.Draw(g.canvas, image.Rect(0, barHeight, width, barHeight+600), src, image.Point{}, draw.Over)
 		}
 	}
+	if g.scroll != nil && w == 320 && h == 200 {
+		g.scroll.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
+	}
 	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
 	hdLabel := "hd"
 	if g.hd != nil {
@@ -434,7 +438,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 			if g.intro != nil {
 				stamps = len(g.intro.Stamps)
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched})
+			rows, sources := 0, 0
+			if g.scroll != nil {
+				rows, sources = g.scroll.Rows, g.scroll.Sources
+			}
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -472,6 +480,7 @@ func main() {
 	panel := flag.Bool("show-controller", false, "GUI 測試啟動時展開手把頁")
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
 	introText := flag.String("intro-text", "text/intro-prototype.json", "片頭覆繪原型譯文")
+	introScroll := flag.String("intro-scroll", "", "可選：首章捲動中文試譯 TSV，取代單句 prototype")
 	hdRef := flag.String("hd-reference", "", "可選：本地城鎮 probe 的 screen.bin，同目錄須有 palette.bin")
 	hdArt := flag.String("hd-art", "", "可選：本輪手繪邊框 PNG，僅供 HD prototype")
 	flag.Parse()
@@ -530,7 +539,12 @@ func main() {
 			log.Printf("HD 試作未載入，保留原貌：%v", err)
 		}
 	}
-	if *introRef != "" {
+	if *introScroll != "" {
+		g.scroll, err = overlay.NewScroll(o, filepath.Join(root, "ZELRES1.SAR"), *introScroll, font)
+		if err != nil {
+			log.Printf("片頭捲動中文未載入，保留原文：%v", err)
+		}
+	} else if *introRef != "" {
 		g.intro, err = overlay.NewIntro(*introRef, *introText, font)
 		if err != nil {
 			log.Fatal(err)
