@@ -16,7 +16,7 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 首場交戰與基本動作驗證通過，洞窟HD來源研究已推進 | 25點完整原版狀態相同；出劍／第一寶石及交戰前跳／蹲分別有正常視窗證據。主入口a691不變，67來源含新增測試，洞窟HD尚未接入 |
+| 本輪工作 | 洞窟011 DRAFT與四張HD離線預覽完成 | 角色54＋13份、武器17＋5份色號重建零差；三素材及可重跑工具已具備。a691與67來源未改，洞窟HD尚未正式接入 |
 | HD | 手繪奇幻邊框、室內人物、完整遠山、Muralla前景／地面與主角八姿態prototype | 既有場景已驗切換、重讀、居民兩頁與入洞。主角已驗正常行走／重讀／切換及居民兩頁後恢復；phase4、居民與洞窟尚未HD，正式倍率／預設待確認 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -41,7 +41,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步閉合洞窟初始4192批次、伸出武器及動態下層，建立洞窟HD的DRAFT規格與離線合成，再依READY閘門接入。首場交戰／第一寶石及交戰前跳／蹲已完成限定驗證，不重新探索鍵序。[主角規格](docs/spec/010-town-player-hd.md)已限定CONFORMED，八鍵正常來源、下層／alpha與兩路GUI已驗。沿既有城鎮繪製批次、重讀來源及洞口導航，不重新探索。其後接其餘片頭與物品共用消費端、其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步依規格011補洞窟呈現生命週期、動態物件與美術映射審查，再進READY與正式接入。已列角色／武器下層與離線合成不重開；4192未在兩條正常鍵序執行，不當作必經初始批次。首場交戰／第一寶石及交戰前跳／蹲已完成限定驗證，不重新探索鍵序。[主角規格](docs/spec/010-town-player-hd.md)已限定CONFORMED，八鍵正常來源、下層／alpha與兩路GUI已驗。沿既有城鎮繪製批次、重讀來源及洞口導航，不重新探索。其後接其餘片頭與物品共用消費端、其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -51,9 +51,17 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 工具與本地證據入口
 
+- 本輪洞窟唯一索引為workplace/cave-hd-v1/research-index-v1.json，正常原版不變與CLI等價核對在capture-and-preview-audit-v1.json；現行收尾為current-audit-v1.json。美術／提示詞為art-index-v1.json，四圖目視為visual-review-v1.json，遠端同步為repository-sync-v1.json。previews-v2沿相同四圖，僅修正receipt的岩面包絡說明；原版零色色號不具通用透明語意。
+
+- 洞窟HD沿[規格011](docs/spec/011-cave-hd.md)，目前DRAFT。新研究集中`workplace/cave-hd-v1/`，與已封存首戰／移動收據分開；`frames_v1.go`及`frames-v1/`觀察初始／一般批次、主角下層與武器完成點，正式a691與67來源不改。
+- 洞窟地形美術研究同放`cave-hd-v1/`，`terrain-reference-v1.png`從正常原版圖塊解碼；`terrain-prompt-v1.txt`及`terrain-generation-v1.json`保存內建imagegen提示詞、參考身份、產物及權利分類。只作DRAFT離線研究，不接正式路徑。
+- 洞窟目前合成證據為同目錄`frames_v3.go`／`frames-v3/`、`decode_body_sources_v3.py`及`composition-proof-v3.json`。正常左向出劍補證使用`frames-left-v1.commands`／`frames-left-v1/`，仍冷F7與正常離門，不注入原版狀態。地形第二候選及完整提示詞沿`terrain-generation-v2.json`／`terrain-prompt-v2.txt`，離線圖沿`terrain-preview-v2.json`。
+- 連續岩面材質入口為同目錄`rock-material-generation-v1.json`／`rock-material-prompt-v1.txt`。目前地形離線研究沿`preview_terrain_v5.py`／`terrain-preview-v5.json`，以明示完成來源清除原版角色／武器、繪地形後再還原原貌角色，核對整張原版可重建及中文標籤來源。不當作正式接入或GUI驗收。
+- 可重用離線入口為[洞窟預覽工具](tools/cave_hd_preview.py)，參數為`--baseline /baseline --study /study --out /output`。研究輸入及素材唯讀掛載，空白輸出目錄另掛可寫；本輪輸出集中`workplace/cave-hd-v1/previews-v1/`，入口`receipt.json`。三份素材及完整提示詞由同根`art-index-v1.json`索引。
+
 - 移動GUI修正版`workplace/combat-v1/movement-v2/`同43055／65371退出0，原版已證離門鍵序、Up跳／落地／Down蹲／放開恢復、1000／0及五欄HUD已驗；500輸入及存檔mtime不變。根端五圖目視入口為`root-movement-review-v2.json`。首戰GUI保留自己的限定身份，補驗未重跑交戰。
 
-- 首場戰鬥目前來源身份固定於`workplace/combat-v1/current-identity-v1.json`，完整67份執行與測試來源另存`current-sources-v1/`。前端仍使用a691，新增一份測試與第15條鍵序。`pair-review-v1.json`核原版重播與中文配對的25點，`root-pair-review-v1.json`保存根端三張目視；`audit_combat_current_v1.py`及`current-audit-v1.json`用於本輪收尾，不沿用前輪105檔稽核。私人遠端與乾淨工作樹身份另記`repository-sync-v1.json`。
+- 首場戰鬥目前來源身份固定於`workplace/combat-v1/current-identity-v1.json`，完整67份執行與測試來源另存`current-sources-v1/`。前端仍使用a691，新增一份測試與第15條鍵序。`pair-review-v1.json`核原版重播與中文配對的25點，`root-pair-review-v1.json`保存根端三張目視；`audit_combat_current_v1.py`及`current-audit-v1.json`是首戰封存收尾，不重跑作本輪洞窟研究現況。私人遠端與乾淨工作樹身份另記`repository-sync-v1.json`。
 - 洞窟繪製的窄研究仍使用`workplace/combat-v1/`：`cave-entered.primary`取自正常當次1MiB的01B1段，`ida_cave_v3.py`及`ida-cave-v3.json`保存IDA9.4原始位址／bytes／xref。`cave_actor_v2.py`／`cave-actor-proof-v2.json`核本體與前後手臂，`cave_terrain_v1.py`／`cave-terrain-proof-v1.json`核靜態圖塊。完整身份入口為`cave-research-index-v1.json`。使用既有py312-v1映像，不重建工具鏈；v1匯出編碼失敗保留。本資料只供來源定位，不代表HD已接入。
 - 首戰GUI結果集中`workplace/combat-v1/gui-v1/`，29699／31475退出0。首劍、交戰、寶石0→1及五欄HUD已見；低生命後的Up／Down只有送鍵證據，截圖未能清楚辨認跳／蹲。補驗只做入洞後、交戰前的移動，不重跑首戰；工具使用同根的`movement-tools-v1/`，唯一結果使用`movement-v1/`，仍沿a691及目前67來源身份。
 - 洞窟完成點的唯讀探針為`workplace/combat-v1/frame_probe_v1.go`，輸出集中同根`frame-v1/`；只觀察IDA已定位的01B1:3123，不改原版。與固定v3鍵序的live狀態另作核對，完成來源不得冒稱當次live。

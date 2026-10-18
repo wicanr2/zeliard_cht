@@ -627,3 +627,17 @@ CONTEXT文件更新命令曾因引號處理遺失兩個路徑，立即以安全�
 移動修正版37PNG以24新圖逐張讀與13完整hash目視引用覆蓋，66ack／33按33放、最長0.082秒，19洞窟圖×5HUD共95ROI零差；首戰86ack加285ROI合計152ack／380ROI，兩路110圖。before-jump至恢復站姿的原生畫布零差；1000／0數字與生命條初末零差，raw比較採固定原版色盤。三筆movement事件source欄沿用combat.commands的舊字樣，後處理另列實際movement-original-v1.commands，原script/events保持固定身份。
 
 現行audit_combat_current_v1.py同容器驗證PASS_SCOPED_FIRST_COMBAT_AND_MOVEMENT，核107自有檔、57Go／67來源、15鍵序、25完整配對、兩份GUI及215相對文件連結。原件29／dosgolem快照882／字型／存檔mtime均不變；root-owned與md目錄自檢空，沒有新增／刪除工具映像。只提交九份自有測試、鍵序與文件；原版、圖面、手冊、字型、IDA與收據仍在ignored workplace。私人遠端同步身份另記repository-sync-v1.json，沒有tag／Release／正式封包。
+
+## 2026-10-19：洞窟HD離線合成
+
+前輪7cdf75b完成首戰與基本動作限定驗證，屬實質進展。本輪核工作樹乾淨與容器空，讀CONTEXT／WORKLIST、規格閘門及文件職責入口。新增011 DRAFT並掛AGENTS，研究集中workplace/cave-hd-v1；正式a691與67來源不改。
+
+frames-v1同68618退出0，尾段取樣會跨Run漏掉最近完成來源，不能把舊snapshot當當次live。frames-v2同51357退出0，改保留每次最新事件並加有界入口trace；frames-v3同10560退出0，在完成callback綁定underlay／body來源。三版25live點均與首戰完全相同。4192未觀測，不作必經初始化。
+
+composition-v1假定64色RGB一對一而停；原版RGB有重複，改以原始色號保留差異。v2全框重建發現攻擊前手表選錯、跳躍背手漏畫與武器模板列欄顛倒。回查IDA精確分支與4013..407E迴圈，只修DRAFT研究工具。v3核54角色及17武器來源全框零差。正常Left離門與兩次Space另以13111退出0，8共用前段相同，左向13角色／5武器零差。R011-composition與resolution-index回填護欄通過，舊資料保留；共用dosgolem與正式顯示未改。
+
+內建imagegen產生三份本地候選，完整實際提示詞與SHA由art-index-v1索引。兩逐格圖重複感強，連續材質改以地圖緩衝地址定位。原版黑點沒有透明語意，岩面包絡另列美術規則。v1..v5結果保留，素材與alpha不覆寫。四完成來源可完整重建原320×200，繪地形後還原原貌角色／武器；中文借五個已驗標籤且核原版位圖相同。原版資料、碰撞、輸入、存檔與時間不寫入。
+
+新增tools/cave_hd_preview.py，參數--baseline /baseline --study /study --out /output。用python:3.13-bookworm、UID1000、768MiB／1CPU／64PID／networknone、外層90秒，研究輸入唯讀、空白輸出另掛可寫。CLI權威2368退出0，四PNG與prototype逐byte相同，核角色／武器opaque及區外零差、五標籤相同；root另看四圖。沒有重跑未改的Go測試／a691建置，沒有新GUI。receipt內source_commit9381243是舊harness沿用欄位，不能作目前Git身份；本輪各Go檔SHA、命令與凍結來源清單識別實際觀測工具。
+
+收尾核109自有檔、57Go／67未改來源、220相對連結、原件29及dosgolem快照882，字型／存檔與mtime不變。CLI的material_mapping文字改為明示岩面包絡，previews-v2重跑核四圖與v1逐byte相同，沒有改繪圖規則。僅提交八份自有工具／規格／文件，生成素材與收據留本地。Docker自檢無root-owned檔與md目錄，本專案容器均已結束，工具映像未新增或刪除。私人遠端提交身份另記cave-hd-v1/repository-sync-v1.json；011仍為DRAFT，沒有tag／Release／正式封包。
