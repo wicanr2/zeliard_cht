@@ -147,6 +147,9 @@
 | [internal/prototype/overlay/scroll.go](internal/prototype/overlay/scroll.go) | 首章來源與逐列完成事件的唯讀覆繪；字級與版面仍為 prototype |
 | [tools/gui_smoke.py](tools/gui_smoke.py) | 有界 Xvfb 前端啟動與滑鼠開啟設定頁驗證 |
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |
+| [internal/prototype/hd/merchant.go](internal/prototype/hd/merchant.go) | 已觀察武器商人三畫格的HD覆繪與未知畫面退回 |
+| [internal/prototype/hd/merchant_test.go](internal/prototype/hd/merchant_test.go) | 商人三姿態、區外不寫入、原版不改動與素材缺失驗證 |
+| [tools/weapon-shop-no-purchase.commands](tools/weapon-shop-no-purchase.commands) | 冷新局到武器店未購物離店的正常配對鍵序 |
 | [internal/prototype/hd/frame.go](internal/prototype/hd/frame.go) | 手繪雙側邊框試作，完整色號／RGB 匹配與整組退回 |
 | [internal/prototype/hd/king.go](internal/prototype/hd/king.go) | 國王兩個已觀察姿態的手繪覆繪試作；未知姿態或色盤保留原貌 |
 | [internal/prototype/hd/sage.go](internal/prototype/hd/sage.go) | 長老兩個已觀察畫格的手繪覆繪試作；保留原版外框及四個動畫像素 |

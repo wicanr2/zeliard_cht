@@ -150,9 +150,21 @@ GUI 診斷可用 `-capture-request` 等待指定訊號檔，再走原有 Draw �
 
 ## 長老手繪肖像 prototype
 
+武器商人接入契約另見「武器商人三姿態手繪肖像」，不把長老四像素保留策略套用至商人。
+
 長老肖像 HD 仍為 DRAFT prototype。外框原生 `(56,23,96,64)`，僅替換內部 `(57,24,94,62)`。固定正常選單與保存訊息的兩個肖像色號雜湊核對後才套用，同時核對完整 RGB。兩個原版畫格有四個像素不同，HD 保留這四個原生像素各自的三倍畫面，不猜測動畫語意、不加新動畫時鐘。手繪圖直接合成到 288×192，缺圖、未知畫格或色盤變化保留原貌。此處僅驗長老肖像，不外推全遊戲 HD。
 
 本地手繪圖 `workplace/hd-sage-prototype.png` 為 1536×1024，SHA-256 `a1fa3b745422f59153239b903591db104c5c3fb320c18ee7f5181a247c33a5aa`。完整提示詞及構圖修正記在 `workplace/hd-sage-generation.json`，只留本機研究區。實際 X 視窗原貌→HD→原貌，內部 50,926 像素改變、區外 0、四個動畫像素不變，切回完整還原；暫停期間 steps／cycles 不變。
+
+## 武器商人三姿態手繪肖像
+
+此項仍為DRAFT顯示試作，使用 `-merchant-reference-a`、`-merchant-reference-b`、`-merchant-reference-c`、`-merchant-palette`、`-merchant-art-a`、`-merchant-art-b`與 `-merchant-art-c`。實作見 [merchant.go](../../internal/prototype/hd/merchant.go)。來源在本地 `workplace/merchant-hd-v1/source-mapping-v2.json`，三張1536×1024手繪圖與完整內建imagegen提示詞在同目錄，不入Git或發行包。
+
+- 原版外框為 `(56,23,96,64)`，只覆繪內部 `(57,24,94,62)`。迎客、購物後告別、未購物告別的完整外框色號雜湊依序為 `77dcc8e94e5125990656f7b33cc04ed7fa9a9719c20487b37424e3538a8a6baf`、`bc69c9d588c150a9ecc491afba4c064b327d2b8306eb0dd6f8eecaaedb52d4d8`、`cc24c5722e583f61aa229b2c3a18cba1fe365c170da7a42a8655ed761859a8e6`，同時逐像素核對完整RGB。黃色外框、選單、文字、商品、金額與輸入保持原版。
+- 第一輪冷新局六畫格中，迎客至交易後的肖像相同，購物後告別為交叉雙臂。新正常GUI的第二訪問報價也出現交叉雙臂，不以流程名稱硬綁姿態，不推測原因。未購物告別目視為曲臂、雙拳置於櫃台，來源也不同。這只證明三個已觀察姿態，不宣稱所有商人動畫或其他城鎮已涵蓋。
+- 三張HD圖各自核對固定雜湊與尺寸後，直接合成到282×186顯示圖面，不先降至原版解析度。姿態由原版畫格選擇，不加動畫時鐘、延遲或玩法分支；缺任一圖、錯誤來源、未知畫格、色盤淡入或短畫格時整組保留原貌。
+- 未購物告別另加試譯鍵 `zelres2.file.018a17`，來源SAR2檔案 `[0x18A17,0x18A57)`對應固定原版 `[01B1:B200,01B1:B240)`。沿既有逐字及控制碼觀察，不修改反斜線字元、FF控制碼或離店條件；來源證據為 `workplace/merchant-path-v1/no-purchase/source-evidence.json`，配對入口為 [未購物離店鍵序](../../tools/weapon-shop-no-purchase.commands)。
+- 中文沿既有對話與標籤層在HD後繪製。實際視窗須走正常冷讀檔至商店，在三姿態各驗原貌→HD→原貌，暫停時原版steps與cycles不變，遊戲畫布內框外像素0差及原貌完整還原。未購物末尾游標B23Eh、購物後B1FDh，各依來源確認後送Space離店，再核對商人HD未匹配；不以離線測試取代正常路徑。
 
 ## 驗證
 

@@ -33,10 +33,13 @@
 | HD 與原貌切換 | 通過，限雙側裝飾邊框試作 | `workplace/gui-hd-frame-v1/`，區內 172,017 像素不同、區外 0，原貌完整還原；完整左右失配、淡入色盤與短畫格退回測試通過 |
 | 國王 HD 肖像與口部姿態 | 通過，限兩個已觀察姿態 | `gui-dialogue-hd-v5/king-hd-region-comparison.json`；肖像內部 52,452 像素改變，外框及區外 0，原貌完整還原。兩個姿態只改口部圖面，未知姿態／淡入／缺圖退回測試通過 |
 | 長老 HD 肖像與動畫像素 | 通過，限兩個已觀察畫格 | `gui-sage-hd-v1/` 正常新局進房，同狀態切換內部 50,926 像素不同、區外 0、原貌完整還原；四個原版動畫像素不變、steps／cycles 不變。缺圖、未知畫格、色盤及短畫格退回測試通過 |
-| 武器商人 HD | 樣圖已生成，未接入 | `workplace/merchant-hd-v1/generation.json` 保存完整提示詞、來源及1536×1024圖面雜湊；未驗同狀態切換或原版動畫 |
+| 武器商人 HD | 通過，限三個已觀察姿態 | `merchant-hd-gui-v2/region-comparison.json`與獨立 `merchant-hd-v1/pixel-verification-v2.json`，三姿態52409／52396／52419像素改變，遊戲畫布內框外0差、原貌完整還原、暫停steps／cycles不變；原貌RGB與來源相同，HD與指定圖取樣相同。離店HD開啟但商人不匹配。來源、區外不寫入、缺圖／未知畫格／色盤／短畫格退回測試通過，不稱完整動畫 |
+| 武器店未購物離店中文 | 配對及實際視窗通過 | `merchant-hd-v1/no-purchase/receipt.json` 三點完整1MiB、色號、色盤、CS:IP、steps與cycles相同，區外0；18A17中文完整、金幣1000，離店整張覆繪差0。`merchant-hd-gui-v2/`驗B23E待鍵後離店1000，再正常進店交易及B1FD離店800。保留實際兩筆換場舊對話退回，不稱零失配 |
 | 其餘場景／角色 HD | 未實作 | B 手繪奇幻已選定，不把邊框與兩個人物外推為整個遊戲 HD |
 | 工具列與手把映射 | 部分通過，限雛形 | 實際滑鼠開啟設定頁；合併輸入／斷線釋放、軸中立與越界、設定存讀三項測試通過 |
 | USB／藍牙實機 | 未執行 | 不以合成事件代替 |
 | GitHub PRIVATE | 通過 | 主機 gh 登入成功，建立 `wicanr2/zeliard_cht` 並回讀 `visibility=PRIVATE` |
 
-前輪測試及不同建置的GUI保留原有身份，未改名為新收據。本輪裝備、長老及存讀檔三項測試通過，沒有具名skip；紀錄為 `inventory-overlay-v3/test.jsonl`及 `inventory-regression-v1/test.jsonl`。裝備11點、長老2點、存讀檔22點完整原版狀態相同、區外0；存檔兩側各自建立相同256-byte新檔並冷讀回。go vet及建置通過，最初 `3e0aa6f`候選後僅增唯讀觀測欄位，最新 `52826ff5`已通過冷讀檔裝備GUI並同步主入口。未重跑未改動的HD與手把測試。以上不計為完整中文、實體手把、完整遊玩或全場景HD完成。
+裝備輪的三項測試與35個配對抽樣點保留原有身份，紀錄為 `inventory-overlay-v3/test.jsonl`及 `inventory-regression-v1/test.jsonl`；該輪 `52826ff5`建置通過冷讀檔裝備GUI，不換名為本輪重跑。
+
+本輪商人三姿態及未購物離店兩項測試通過，沒有具名skip；紀錄為 `merchant-hd-v1/hd-test-v2.jsonl`與 `no-purchase-test-v2.jsonl`。未購物3點完整原版狀態相同、區外0，go vet及建置通過；最新48e9c0bc已通過三姿態GUI與兩條離店並同步主入口。未重跑未改動的其他人物HD與手把測試。以上不計為完整中文、實體手把、完整遊玩或全場景HD完成。

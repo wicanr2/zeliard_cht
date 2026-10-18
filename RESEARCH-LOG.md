@@ -408,3 +408,33 @@ IDA9.4／16-bit／binary base 0對應上述固定 `01B1` 段內偏移，不是EX
 實際X視窗 `shop-path-gui-inventory-v5/receipt.json` 使用固定 `52826ff520b8b5af184e02dbe3a76188d54f9a4f6d610766d12a623d16cb213a` 建置，腳本SHA-256 `6c75ffe8319f0734c59ad21a9eed2185ac4fd44e2909703b262d7757f6c30a49`。正常冷F7讀上述新存檔，初開與重開的九個中文ROI匹配既有覆繪參考，關閉後城鎮靜態區匹配本次讀回圖。三張圖逐張目視清楚、沒有關閉殘留；金幣1000、存檔不變、最後持鍵空，capture-tail正常終止碼0。此GUI沒有新交易、未開HD，只證明文字區及靜態區，不稱完整同狀態GUI對拍。
 
 原版配對的交易與800金幣、GUI冷讀檔的1000金幣是不同正常路徑，不混用。GUI按放由X11送入並觀察原版確認，三次裝備Return各至少500k原版指令；放開後分別前進1m／2m／1m。事件內固定source字串只適用裝備Return，F7與名稱按鍵實際來源為 [存讀鍵序](tools/save-load.commands)及本輪原版save-check。沒有從主機秒數推算按住長度，也沒有宣稱500k是最低需求。
+
+## 2026-10-18：武器商人兩姿態HD
+
+來源入口為 `workplace/merchant-hd-v1/source-mapping.json`。原始正常交易六畫格在 `inventory-source-v1/`，迎客至交易後肖像相同，告別畫格不同。以Python3.13讀取原版320×200色號，外框 `(56,23,96,64)`兩組雜湊為 `77dcc8e94e5125990656f7b33cc04ed7fa9a9719c20487b37424e3538a8a6baf`及 `bc69c9d588c150a9ecc491afba4c064b327d2b8306eb0dd6f8eecaaedb52d4d8`。原版色盤SHA-256 `6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c`；輸入完整畫格及RGB雜湊均保存在映射內。
+
+兩個原版畫格有1062個色號不同，差異包圍框原生 `[65,39,143,85)`。告別圖已目視為交叉雙臂，等級為已證實的畫面觀察；尚未證明全部動畫或其他城鎮。不能將長老四個動畫像素的保留策略套用至此姿態變化。
+
+內建imagegen沿既有迎客手繪圖產生交叉雙臂版，兩張1536×1024圖的SHA-256為 `2660fc7892f9a5229d4cee3723e992146992a460a1678197793cc890b0dfb59b`及 `90243f65aef8532303b12dbbc3e1ddd9bd06c03eb58e14548a2d15419892946f`。完整提示詞、參考角色與風格、輸入身份及本地權利分類在 `generation.json`與 `farewell-generation.json`，原版衍生素材不入Git。已目視同一禿頭紅鬍商人、藍背心及綠臂帶，未把畫風試作稱為原版像素一致。
+
+原版完整外框色號與RGB均匹配時，HD直接合成到內框282×186顯示圖面，黃色邊線及框外資訊不變。兩姿態由原版畫格選擇，不新增動畫時鐘或輸入規則；缺任一圖、錯誤來源、色盤淡入或未知畫格時保留原貌。候選身份在 `candidate-identity.json`，測試 `hd-test.jsonl`通過來源、兩姿態、區外0、原版輸入不改動與原子退回；此時尚待正常玩家路徑GUI。
+
+### 未購物分支與第三姿態補正
+
+首輪GUI `merchant-hd-gui-v1/`驗迎客成功，但預設Go outside未購物離店進入另一原文與姿態，沒有進入已購物的Thank you分支。先前兩組畫格只來自冷新局第一筆交易，不能外推所有離店。本輪保留exit1與全部輸入，未外部介入或調整執行中的程序。
+
+正常冷F7讀回先前新建SAVETEST，再往西進武器店的來源入口為 `merchant-path-v1/receipt.json`。未購物分支在同目錄 `no-purchase/source-evidence.json`，原版段SHA-256 `33124fa525ff59ed545ad63a3c64deba28a64943608bfff17fb73a347ead237d`。SAR2檔案 `[0x18A16,0x18A57)`與 dosgolem `[01B1:B1FF,01B1:B240)`共65 bytes相同，前導0C後正文從B200開始，末尾B23D為11、游標B23E。原文反斜線在畫面呈撇號，尾端含斜線及FF控制碼；只保存其bytes與實際結果，不推測控制碼內部語意。
+
+新增試譯鍵 `zelres2.file.018a17`，沿既有原版繪字觀察，保留原始文字、比較值與控制碼。對話TSV為15個靜態段及4個模板，共19筆。[未購物正常鍵序](tools/weapon-shop-no-purchase.commands)從冷新局領賞、進店、未購物離店，三點完整1MiB、色號、色盤、CS:IP、steps與cycles相同，區外0。告別中文11846像素改變，離店整張覆繪差0、金幣1000；保留一筆paragraph14／kind2／first_difference1換場安全退回。
+
+第三姿態外框色號SHA-256 `cc24c5722e583f61aa229b2c3a18cba1fe365c170da7a42a8655ed761859a8e6`，手繪圖SHA-256 `48f567a000f2d6c413f8090b72417763c7ff96a7a7a24b1dea059dc5fb2a0ec8`。完整內建imagegen提示詞與參考在 `merchant-hd-v1/no-purchase-generation.json`，三姿態映射在 `source-mapping-v2.json`。三組畫格的色號差異為1062／874／1341，RGB差異為1060／865／1325；少數色號對應相同RGB，不能把兩種比較值混用，也沒有因此推論新動畫變體。
+
+### 三姿態實際視窗與獨立像素核對
+
+`merchant-hd-gui-v2/receipt.json`固定建置SHA-256 `48e9c0bc900ce9e4b99f4e2feb1a0f752b30772d7b31ddeb62f1b9fc532fb970`，腳本SHA-256 `810ea7e7a0f8127219e00cbb54edcb75ba82ffabf5c177d67e65aa98cc0fdbbe`。正常冷F7載入自己新建存檔，進店未購物離店1000，再原地Up重進店買第一件武器，購後800並離店。粗段後實際門口已在角色錨點附近，沒有補短步；不冒稱與原版探索指令序列完全相同或整段同狀態對拍。
+
+迎客、未購物告別與購物後告別三組暫停原貌→HD→原貌，內框依序52409／52396／52419像素改變，遊戲畫布內框外0差、原貌完整還原，steps／cycles不變。獨立ImageMagick6.9.11-60分析 `merchant-hd-v1/pixel-verification-v2.json`另確認原貌肖像與原版RGB來源逐像素相同，HD與指定圖面的282×186取樣相同。比較空間為實際960×680視窗中的遊戲畫布 `(0,48,960,600)`，肖像內框 `(171,120,282,186)`；工具列按鈕狀態不混入HD差異。
+
+兩個原版末尾gate分別驗B23E與B1FD、旗標0及不同步數的兩個快照，再送Space。最後HD保持開啟，回城鎮商人不匹配、pose=-1、金幣800、持鍵空，capture-tail退出0，未另驗原版Ctrl+Q。84筆按放全部確認，最長0.19秒；原版29檔、來源及兩份新存檔複本、字型均未變。
+
+本次GUI保留paragraph14／kind2／first_difference290及paragraph12／kind2／first_difference422兩筆舊對話安全退回，與配對中的1分開記錄，不稱零失配。第二訪問報價也觀察交叉雙臂，原版姿態選擇的原因未追查；HD依完整畫格匹配，沒有依流程名稱硬綁。此收據只涵蓋三個已觀察姿態與正常兩種離店，不等於完整商人動畫、所有商店、完整HD或完整中文。

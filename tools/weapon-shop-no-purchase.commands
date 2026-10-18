@@ -1,0 +1,14 @@
+king
+key 0x4d 24000000
+run 1000000
+key 0x4d 3000000
+run 500000
+key 0x48 250000
+run 12000000
+shot greeting
+key 0x39 500000
+run 20000000
+shot no-purchase-farewell
+key 0x39 500000
+run 4000000
+shot outside

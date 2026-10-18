@@ -66,6 +66,9 @@ type game struct {
 	sageHD               *hd.Sage
 	sageHDMatched        bool
 	sageHDPose           int
+	merchantHD           *hd.Merchant
+	merchantHDMatched    bool
+	merchantHDPose       int
 	hdEnabled, hdMatched bool
 	overlayPixels        []byte
 	texture              *ebiten.Image
@@ -241,7 +244,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.kingHD != nil || g.sageHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -392,6 +395,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.sageHDMatched, g.sageHDPose = g.sageHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.sageHDMatched
 	}
+	g.merchantHDMatched, g.merchantHDPose = false, -1
+	if g.hdEnabled && g.merchantHD != nil && w == 320 && h == 200 {
+		g.merchantHDMatched, g.merchantHDPose = g.merchantHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.hdMatched = g.hdMatched || g.merchantHDMatched
+	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(g.o.Indexed(), rgb)
 		clear(g.overlayPixels)
@@ -414,7 +422,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.kingHD != nil || g.sageHD != nil {
+	if g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -495,7 +503,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 				dialogueRejections = g.dialogue.Rejections
 				quotation = g.dialogue.QuotationState()
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose})
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose,
+				"merchant_hd_matched": g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -547,6 +556,13 @@ func main() {
 	sageRefB := flag.String("sage-reference-b", "", "可選：本地原版長老畫格 B")
 	sagePalette := flag.String("sage-palette", "", "可選：本地原版長老色盤")
 	sageArt := flag.String("sage-art", "", "可選：本地手繪長老 PNG")
+	merchantRefA := flag.String("merchant-reference-a", "", "可選：武器商人原版迎客畫格")
+	merchantRefB := flag.String("merchant-reference-b", "", "可選：武器商人原版告別畫格")
+	merchantRefC := flag.String("merchant-reference-c", "", "可選：武器商人未購物告別原版畫格")
+	merchantPalette := flag.String("merchant-palette", "", "可選：武器商人原版色盤")
+	merchantArtA := flag.String("merchant-art-a", "", "可選：本地手繪武器商人迎客 PNG")
+	merchantArtB := flag.String("merchant-art-b", "", "可選：本地手繪武器商人告別 PNG")
+	merchantArtC := flag.String("merchant-art-c", "", "可選：本地手繪武器商人未購物告別 PNG")
 	flag.Parse()
 	if *orig == "" || *fontPath == "" || *userDir == "" || *cycles < 60 || *cycles > 10000 || *frames < 1 {
 		log.Fatal("須指定 -orig、-font、-user-dir；cycles 範圍 60–10000")
@@ -614,6 +630,12 @@ func main() {
 		g.sageHD, err = hd.NewSage(*sageRefA, *sageRefB, *sagePalette, *sageArt)
 		if err != nil {
 			log.Printf("長老 HD 圖面未載入，保留原貌：%v", err)
+		}
+	}
+	if *merchantRefA != "" || *merchantRefB != "" || *merchantRefC != "" || *merchantPalette != "" || *merchantArtA != "" || *merchantArtB != "" || *merchantArtC != "" {
+		g.merchantHD, err = hd.NewMerchant(*merchantRefA, *merchantRefB, *merchantRefC, *merchantPalette, *merchantArtA, *merchantArtB, *merchantArtC)
+		if err != nil {
+			log.Printf("武器商人 HD 圖組未載入，保留原貌：%v", err)
 		}
 	}
 	if *introScroll != "" {

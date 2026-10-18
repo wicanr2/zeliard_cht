@@ -36,6 +36,13 @@ func TestInventoryNormalPathReadOnly(t *testing.T) {
 	testWeaponShopNormalPath(t, "../../../tools/inventory.commands", 11)
 }
 
+func TestWeaponShopNoPurchaseDepartureReadOnly(t *testing.T) {
+	if out := os.Getenv("ZELIARD_SHOP_OUTPUT"); out != "" {
+		t.Setenv("ZELIARD_SHOP_OUTPUT", filepath.Join(out, "no-purchase"))
+	}
+	testWeaponShopNormalPath(t, "../../../tools/weapon-shop-no-purchase.commands", 3)
+}
+
 func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints int) {
 	t.Helper()
 	root, fontPath, out := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_FONT"), os.Getenv("ZELIARD_SHOP_OUTPUT")
@@ -262,6 +269,11 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if f[1] == "greeting" && (!drawn || key != "zelres2.file.0185ea" || labels != 5) {
 				t.Fatalf("初訪中文不完整：%v %s %v", drawn, key, keys)
 			}
+			if f[1] == "no-purchase-farewell" {
+				if !drawn || key != "zelres2.file.018a17" || d.visible != len(d.paragraphs[d.current].text) || b.Word(oracle.Far(0x01b1, 0x86)) != 1000 || b.Word(oracle.Far(0x01b1, 0xff4c)) != 0xb23e {
+					t.Fatalf("未購物離店來源、完整中文或原版金額不符：%v %s %d", drawn, key, d.visible)
+				}
+			}
 			if f[1] == "goods" {
 				if !drawn || key != "zelres2.file.01883e" || len(dialogueMasks) == 0 {
 					t.Fatalf("商品彈窗上方詢問未保留中文：%v %s", drawn, key)
@@ -344,6 +356,9 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if f[1] == "closed" && inside+outside != 0 {
 				t.Fatalf("關閉裝備後仍改動畫面：pixels=%d labels=%d keys=%v dialogue=%v", inside+outside, labels, keys, drawn)
 			}
+			if strings.Contains(commandPath, "no-purchase") && f[1] == "outside" && (inside+outside != 0 || b.Word(oracle.Far(0x01b1, 0x86)) != 1000) {
+				t.Fatal("未購物離店後有中文殘留或金額改動")
+			}
 			fp, e := os.Create(filepath.Join(out, f[1]+".png"))
 			if e != nil {
 				t.Fatal(e)
@@ -364,6 +379,9 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 	scope := "normal new game, reward, Chinese quotation with original price/trade glyphs, purchase, farewell, inventory"
 	if strings.Contains(commandPath, "insufficient") {
 		scope = "normal new game, reward, insufficient gold dialogue/pages, farewell and town; original gold remains1000"
+	}
+	if strings.Contains(commandPath, "no-purchase") {
+		scope = "normal new game, reward, weapon shop visit without purchase, distinct departure and town; original gold remains1000"
 	}
 	data, err := json.MarshalIndent(map[string]any{"commands_sha256": fmtHash(commands), "checkpoints": receipts, "dialogue_rejections": d.Rejections, "scope": scope}, "", "  ")
 	if err != nil {
