@@ -182,6 +182,7 @@ func TestSaveLoadOverlayNormalPath(t *testing.T) {
 			originalPixels := append([]byte(nil), dst.Pix...)
 			drawn := d.Draw(dst, raw, pal, image.Point{})
 			labels := l.Draw(dst, raw, pal, image.Point{})
+			assertLabelOcclusion(t, l, raw, pal, originalPixels)
 			var labelKeys []string
 			var labelBoxes []image.Rectangle
 			for _, stamp := range l.stamps {
@@ -200,14 +201,22 @@ func TestSaveLoadOverlayNormalPath(t *testing.T) {
 			if f[1] == "save-confirm-text" && (!drawn || sourceKey != "zelres2.file.01cc66" || d.visible != len(d.paragraphs[d.current].text)) {
 				t.Fatalf("存檔成功中文未完整顯示：%v %s", drawn, sourceKey)
 			}
-			if (f[1] == "name-before-keyup" || f[1] == "load-name" || f[1] == "quit-dialog" || f[1] == "load-list") && labels != 1 {
-				t.Fatalf("%s：提示中文未顯示，labels=%d", f[1], labels)
+			countKey := func(want string) int {
+				count := 0
+				for _, key := range labelKeys {
+					if key == want {
+						count++
+					}
+				}
+				return count
 			}
-			if f[1] == "save-confirm-text" && labels != 2 {
-				t.Fatalf("是／否未顯示，labels=%d", labels)
+			// 舊文字可在已證實彈窗外保留。新提示各須出現一次，
+			// 不再把所有其他標籤消失當成提示成功的必要條件。
+			if f[1] == "save-confirm-text" && (countKey("zelres1.file.00e3c8") != 1 || countKey("zelres1.file.00e3cc") != 1) {
+				t.Fatalf("是／否未顯示，keys=%v", labelKeys)
 			}
 			for name, want := range map[string]string{"name-before-keyup": "zelres2.file.01c1e2", "load-name": "zelres1.file.00e663", "quit-dialog": "stick.file.00060a", "load-list": "stick.file.000883", "speed-prompt": "stick.file.000745", "speed-digit": "stick.file.000745"} {
-				if f[1] == name && (len(labelKeys) != 1 || labelKeys[0] != want) {
+				if f[1] == name && countKey(want) != 1 {
 					t.Fatalf("%s：介面來源錯誤 %v", name, labelKeys)
 				}
 			}

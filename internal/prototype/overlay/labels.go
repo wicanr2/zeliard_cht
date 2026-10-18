@@ -27,11 +27,12 @@ type labelSource struct {
 	text   []rune
 }
 type labelStamp struct {
-	source  *labelSource
-	box     image.Rectangle
-	rows    []image.Rectangle
-	raw     []byte
-	palette [256][3]uint8
+	source      *labelSource
+	box         image.Rectangle
+	rows        []image.Rectangle
+	raw         []byte
+	palette     [256][3]uint8
+	paintSerial uint64
 }
 type listLabel struct {
 	source *labelSource
@@ -47,6 +48,7 @@ type Labels struct {
 	pending      *labelStamp
 	listPrepared *listLabel
 	Completed    int
+	paint        *paintHistory
 }
 
 func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels, error) {
@@ -87,7 +89,7 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 		}
 		files[id] = b
 	}
-	l := &Labels{font: font, sources: map[string]*labelSource{}}
+	l := &Labels{font: font, sources: map[string]*labelSource{}, paint: observePaint(o)}
 	tsv, err := os.ReadFile(catalog)
 	if err != nil {
 		return nil, err
@@ -320,6 +322,7 @@ func (l *Labels) finish(o *oracle.Oracle, charWidth int) {
 	l.pending = nil
 	s.raw = labelRowsCrop(o.Indexed(), s.rows)
 	s.palette = o.Palette()
+	s.paintSerial = l.paint.serial
 	if len(s.raw) == 0 {
 		return
 	}
@@ -346,7 +349,11 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 	kept := l.stamps[:0]
 	drawn := 0
 	for _, s := range l.stamps {
-		if pal != s.palette || !bytes.Equal(s.raw, labelRowsCrop(raw, s.rows)) {
+		if pal != s.palette {
+			continue
+		}
+		masks, known := l.paint.masks(s.paintSerial, raw)
+		if !known || !visibleRowsEqual(s.raw, raw, s.rows, masks) {
 			continue
 		}
 		kept = append(kept, s)
@@ -360,7 +367,7 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 		for _, row := range rows {
 			for y := row.Min.Y; y < row.Max.Y; y++ {
 				for x := row.Min.X; x < row.Max.X; x++ {
-					if image.Pt(x, y).In(dst.Bounds()) {
+					if image.Pt(x, y).In(dst.Bounds()) && visiblePixel(image.Pt(x, y), origin, masks) {
 						dst.SetRGBA(x, y, color.RGBA{bg[0], bg[1], bg[2], 255})
 					}
 				}
@@ -383,7 +390,7 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 					sx, sy := xx*2/3, yy*2/3
 					if g[sy*(w/8)+sx/8]&(0x80>>uint(sx%8)) != 0 {
 						p := image.Pt(x+xx, y+yy)
-						if p.In(rows[rowIndex]) && p.In(dst.Bounds()) {
+						if p.In(rows[rowIndex]) && p.In(dst.Bounds()) && visiblePixel(p, origin, masks) {
 							dst.SetRGBA(p.X, p.Y, color.RGBA{fg[0], fg[1], fg[2], 255})
 						}
 					}

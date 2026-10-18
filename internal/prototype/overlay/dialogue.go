@@ -34,6 +34,8 @@ type Dialogue struct {
 	current, visible            int
 	active, pending, prompt     bool
 	completed                   []byte
+	paint                       *paintHistory
+	paintSerial                 uint64
 	Glyphs, Paragraphs, Scrolls int
 	Rejections                  []map[string]int
 }
@@ -70,7 +72,7 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 		}
 		texts[record[0]] = record[1]
 	}
-	d := &Dialogue{font: font, current: -1}
+	d := &Dialogue{font: font, current: -1, paint: observePaint(o)}
 	// 檔案偏移與模組 payload 起點來自固定 SAR 及正常路徑傾印。
 	// 數值、控制碼與存檔動作仍由原版執行。
 	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}, {0x185ea, 0x18606, 0x17817}, {0x18607, 0x18633, 0x17817}, {0x18634, 0x18661, 0x17817}, {0x1883e, 0x1885d, 0x17817}, {0x18899, 0x188b8, 0x17817}, {0x189f6, 0x18a16, 0x17817}} {
@@ -194,6 +196,7 @@ func dialogueCrop(indexed []byte) []byte {
 }
 func (d *Dialogue) capture(o *oracle.Oracle) {
 	d.completed = dialogueCrop(o.Indexed())
+	d.paintSerial = d.paint.serial
 	d.pending = false
 }
 
@@ -251,7 +254,9 @@ func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, 
 	if !d.active || len(d.completed) != dialogueBox.Dx()*dialogueBox.Dy() {
 		return false
 	}
-	if !d.pending && !bytes.Equal(d.completed, dialogueCrop(indexed)) {
+	masks, known := d.paint.masks(d.paintSerial, indexed)
+	valid := known && visibleRowsEqual(d.completed, indexed, []image.Rectangle{dialogueBox}, masks)
+	if !d.pending && !valid {
 		if len(d.Rejections) < 16 {
 			actual := dialogueCrop(indexed)
 			first := -1
@@ -272,7 +277,7 @@ func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, 
 	for y := box.Min.Y; y < box.Max.Y; y++ {
 		for x := box.Min.X; x < box.Max.X; x++ {
 			p := image.Pt(x, y)
-			if p.In(dst.Bounds()) && (!d.prompt || !p.In(prompt)) {
+			if p.In(dst.Bounds()) && (!d.prompt || !p.In(prompt)) && visiblePixel(p, origin, masks) {
 				dst.SetRGBA(x, y, color.RGBA{bg[0], bg[1], bg[2], 255})
 			}
 		}
@@ -292,7 +297,7 @@ func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, 
 					for yy := 0; yy < 2; yy++ {
 						for xx := 0; xx < 2; xx++ {
 							point := image.Pt(at.X+x*2+xx, at.Y+y*2+yy)
-							if point.In(dst.Bounds()) {
+							if point.In(dst.Bounds()) && visiblePixel(point, origin, masks) {
 								dst.SetRGBA(point.X, point.Y, color.RGBA{fg[0], fg[1], fg[2], 255})
 							}
 						}

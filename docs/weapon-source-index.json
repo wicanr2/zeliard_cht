@@ -5,6 +5,40 @@
   "address_space": "IDA binary base 0; dosgolem 01B1 segment offsets in the fixed weapon-first-dialogue snapshot",
   "entries": [
     {
+      "address": "0x2046",
+      "semantic": "MCGA 矩形清除與邊框入口；X=BH*4、Y=BL、寬=CH*4、高=CL，AL=0清除、非0畫框",
+      "level": "已證實",
+      "evidence": [
+        "workplace/modal-evidence-v1/evidence.json",
+        "workplace/shop-path-modal-trace-v1/purchase-trace/modal-trace.jsonl",
+        "workplace/shop-path-modal-trace-v1/cancel-trace/modal-trace.jsonl"
+      ]
+    },
+    {
+      "address": "0x20b6",
+      "semantic": "矩形邊框的橫列繪製；20E7返回亦用於內部呼叫，不單獨代表整個畫框完成",
+      "level": "已證實",
+      "evidence": ["workplace/modal-evidence-v1/evidence.json"]
+    },
+    {
+      "address": "0x20e8",
+      "semantic": "VGA 黑色填滿矩形，內部邊框填底亦呼叫此函式",
+      "level": "已證實",
+      "evidence": ["workplace/modal-evidence-v1/evidence.json"]
+    },
+    {
+      "address": "0xa28c",
+      "semantic": "商品彈窗經 CS:2000 清框及畫框；正常矩形 X84、Y110、寬148、高36",
+      "level": "已證實",
+      "evidence": ["workplace/shop-path-modal-trace-v1/purchase-trace/modal-trace.jsonl"]
+    },
+    {
+      "address": "0xa3f1",
+      "semantic": "報價是／否框經 CS:2000 繪製；正常矩形 X188、Y43、寬48、高25",
+      "level": "已證實",
+      "evidence": ["workplace/shop-path-modal-trace-v1/purchase-trace/modal-trace.jsonl"]
+    },
+    {
       "address": "0xa2a8",
       "semantic": "武器店把商品名稱指標表 AD05h 傳給清單服務",
       "level": "已證實",

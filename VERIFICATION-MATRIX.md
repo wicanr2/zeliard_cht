@@ -19,7 +19,8 @@
 | 新存檔、退出與冷讀檔 | 通過，限此正常路徑 | `save-ui-v3/receipt.json` 22 點完整 1 MiB 記憶體、色號、色盤、CS:IP、steps、cycles 相同；兩側各自建立相同的 256-byte 新檔，再冷重開讀取。實際 X 視窗 `save-ui-gui-v2/` 通過 UIVIEW2 保存、退出碼 0、F7 讀回 Muralla Town／1000 金幣 |
 | 保存訊息中文與 UI 退回 | 通過，限已列來源 | 實際視窗 `record-saved.png` 及配對收據；原版名稱輸入框改變舊對話畫格時安全移除中文，保留一次 kind=2 診斷，不宣稱全程零失配 |
 | 存讀檔、退出與速度提示中文 | 通過，限 prototype | `save-ui-v3/receipt.json`：逐行前綴核對、數字區保留、22 點覆繪區外 0。`save-ui-gui-v2/` 名稱／是／否／退出；提示修正建置 `save-ui-modal-v2/` 完整 F7 兩行、F9／3／Enter／Right，角色實際移動且提示清除。其他商店九列與彈窗下舊對話中文待完成 |
-| 首次武器交易中文與裝備查看 | 部分通過，限已列正常路徑 | `weapon-overlay-v2/receipt.json` 九點完整原版狀態相同、區外 0；`shop-path-gui-cht-v1/` 實際中文五列、兩商品名、1000→800、告別及裝備查看通過。報價、裝備及部分模態下舊文字仍英文，保留兩筆失配診斷 |
+| 首次武器交易中文與裝備查看 | 部分通過，限已列正常路徑 | 最新 `modal-overlay-v2/receipt.json` 九點完整原版狀態相同、區外 0；`shop-path-gui-modal-v1/` 商品框上方及報價旁舊中文保留，確認框差異 0，1000→800、告別及裝備查看通過。報價與裝備仍英文，保留一筆離店舊對話退回 |
+| 原版清框與中文遮擋 | 通過，限 prototype | `shop-path-modal-trace-v1/` 購買9點／取消7點完整狀態相同；26次矩形操作完整返回、區外0。`modal-overlay-v2/` 驗舊中文未寫入彈窗，`modal-save-v2/` 驗來源鍵、遮擋及未知變化撤除。原版框仍可能遮掉部分中文字 |
 | 戰鬥 | 未驗證 | 後續正常玩家切片 |
 | 中文工具列與片頭單句 | 通過，限雛形 | 最新二進位重跑 `workplace/gui-smoke-v6/` 三條流程，原始色號仍相同。原文消失／不匹配／不改原圖測試通過 |
 | 原版／中文區域對拍 | 通過，限片頭單句 | `intro-region-comparison.json`，原生色號一致；覆繪區外差異 0 |
@@ -34,4 +35,4 @@
 | USB／藍牙實機 | 未執行 | 不以合成事件代替 |
 | GitHub PRIVATE | 通過 | 主機 gh 登入成功，建立 `wicanr2/zeliard_cht` 並回讀 `visibility=PRIVATE` |
 
-本輪十二項具名 Go 測試、建置與 go vet 通過，真實原版、字型及生成圖有掛載，無具名測試 skip。紀錄為 `test-weapon-rest-v1.jsonl` 的十一項，加 `test-weapon-v2.jsonl` 的商店一項；`bitmap` 套件沒有獨立測試。存讀檔回歸 `save-weapon-v1/` 的 22 點亦通過。長老 HD GUI 使用 `359bef32` 建置，商品覆繪加入後的 `5ad8556d` 建置另驗中文交易 GUI；兩者身份不混用。以上不計為實體手把、完整遊玩或全場景 HD 完成。
+前輪十二項具名測試與兩次不同建置的長老 HD／交易 GUI 保留原有身份，未改名為新收據。本輪只重驗受影響五項：國王、長老、遮擋與商店在 `modal-overlay-v2/test.jsonl` 通過；該檔保留存讀檔舊數量斷言失敗，更新為必要來源各一次與遮擋檢查後，`modal-save-v2/test.jsonl` 通過。新存讀檔22點完整狀態、新檔及冷讀回相同。離線五張圖另驗輸入框、是／否及速度3；`sage-outside.png` 仍為房內告別，不能當已回城鎮的證據。go vet與建置通過，最新實際交易GUI使用 `c355ade5`。以上不計為完整中文、實體手把、完整遊玩或全場景HD完成。

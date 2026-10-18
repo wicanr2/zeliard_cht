@@ -46,7 +46,7 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 
 國王 HD 肖像使用 `-king-reference-a`、`-king-reference-b`、`-king-art`、`-king-speaking-art` 載入本地兩個原版姿態及兩張手繪圖。它保留黃色外框，未知姿態退回原貌；完整參數與限制見[試作規格](docs/spec/001-runtime-overlay.md)。
 
-長老 HD 另用 `-sage-reference-a`、`-sage-reference-b`、`-sage-palette`、`-sage-art` 載入本地兩個原版畫格、色盤及手繪圖。它保留黃色外框與四個原版動畫像素。武器店目前已接初訪、交易後詢問、告別、五列選單與「練習劍／賢者之劍」試譯；動態報價、裝備頁及其他商品仍待中文化，價格與交易規則由原版處理。
+長老 HD 另用 `-sage-reference-a`、`-sage-reference-b`、`-sage-palette`、`-sage-art` 載入本地兩個原版畫格、色盤及手繪圖。它保留黃色外框與四個原版動畫像素。武器店目前已接初訪、交易後詢問、告別、五列選單與「練習劍／賢者之劍」試譯。商品框上方及確認框旁的舊中文可保留，原版彈窗仍會遮住部分字。動態報價、裝備頁及其他商品仍待中文化，價格與交易規則由原版處理。
 
 ## 授權
 

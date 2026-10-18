@@ -130,7 +130,43 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 			}
 			before := append([]byte(nil), dst.Pix...)
 			drawn := d.Draw(dst, raw, pal, image.Point{})
+			dialogueMasks, _ := d.paint.masks(d.paintSerial, raw)
+			if drawn {
+				for y := 0; y < 600; y++ {
+					for x := 0; x < 960; x++ {
+						i := dst.PixOffset(x, y)
+						if occluded(image.Pt(x/3, y/3), dialogueMasks) && !bytes.Equal(before[i:i+4], dst.Pix[i:i+4]) {
+							t.Fatalf("%s：對話覆蓋原版彈窗", f[1])
+						}
+					}
+				}
+			}
 			labels := l.Draw(dst, raw, pal, image.Point{})
+			maskedLabels := 0
+			for _, stamp := range l.stamps {
+				masks, _ := l.paint.masks(stamp.paintSerial, raw)
+				intersects := false
+				for _, mask := range masks {
+					intersects = intersects || mask.Overlaps(stamp.box)
+				}
+				if !intersects {
+					continue
+				}
+				maskedLabels++
+				isolated := *l
+				isolated.stamps = []labelStamp{stamp}
+				canvas := image.NewRGBA(dst.Bounds())
+				copy(canvas.Pix, before)
+				isolated.Draw(canvas, raw, pal, image.Point{})
+				for y := 0; y < 600; y++ {
+					for x := 0; x < 960; x++ {
+						i := canvas.PixOffset(x, y)
+						if occluded(image.Pt(x/3, y/3), masks) && !bytes.Equal(before[i:i+4], canvas.Pix[i:i+4]) {
+							t.Fatalf("%s：舊選單覆蓋原版彈窗", f[1])
+						}
+					}
+				}
+			}
 			var boxes []image.Rectangle
 			var keys []string
 			for _, stamp := range l.stamps {
@@ -150,6 +186,9 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 				t.Fatalf("初訪中文不完整：%v %s %v", drawn, key, keys)
 			}
 			if f[1] == "goods" {
+				if !drawn || key != "zelres2.file.01883e" || len(dialogueMasks) == 0 {
+					t.Fatalf("商品彈窗上方詢問未保留中文：%v %s", drawn, key)
+				}
 				for _, want := range []string{"zelres2.file.018534", "zelres2.file.018543"} {
 					found := false
 					for _, key := range keys {
@@ -158,6 +197,15 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 					if !found {
 						t.Fatal("缺少中文商品", want, keys)
 					}
+				}
+			}
+			if f[1] == "quote" {
+				found := false
+				for _, k := range keys {
+					found = found || k == "zelres2.file.0184ea"
+				}
+				if !found || maskedLabels == 0 {
+					t.Fatal("報價彈窗旁的舊選單中文已失效", keys)
 				}
 			}
 			if f[1] == "purchased" && (!drawn || key != "zelres2.file.018634" || b.Word(oracle.Far(0x01b1, 0x86)) != 800) {
@@ -194,7 +242,7 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 			if e != nil {
 				t.Fatal(e)
 			}
-			receipts = append(receipts, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "state_equal": true, "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "gold": b.Word(oracle.Far(0x01b1, 0x86)), "dialogue_rendered": drawn, "dialogue_key": key, "label_keys": keys, "inside_changed": inside, "outside_changed": outside, "held_keys": b.HeldKeys()})
+			receipts = append(receipts, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "state_equal": true, "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "gold": b.Word(oracle.Far(0x01b1, 0x86)), "dialogue_rendered": drawn, "dialogue_key": key, "dialogue_masks": dialogueMasks, "masked_labels": maskedLabels, "modal_pixels_changed": 0, "label_keys": keys, "inside_changed": inside, "outside_changed": outside, "held_keys": b.HeldKeys()})
 		default:
 			t.Fatalf("未知命令 %s", line)
 		}

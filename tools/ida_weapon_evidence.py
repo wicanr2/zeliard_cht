@@ -38,7 +38,7 @@ def main():
     ida_ida.inf_set_app_bitness(16)
     for address in idautils.Segments():
         assert ida_segment.set_segm_addressing(ida_segment.getseg(address), 0)
-    offsets = [0xA000, 0xA002] + list(range(0x6000, 0x601E, 2)) + [0x301A, 0x301C]
+    offsets = [0xA000, 0xA002, 0x2000] + list(range(0x6000, 0x601E, 2)) + [0x301A, 0x301C]
     seeds = [struct.unpack_from("<H", raw, off)[0] for off in offsets]
     for address in seeds:
         ida_ua.create_insn(address)
@@ -46,7 +46,7 @@ def main():
     ida_auto.auto_wait()
     functions = []
     for start in idautils.Functions():
-        if start not in (0xA10E, 0x7539, 0x3805, 0x383E, 0x3854, 0x37CC):
+        if start not in (0x2046, 0x20B6, 0x20E8, 0xA10E, 0x7539, 0x3805, 0x383E, 0x3854, 0x37CC):
             continue
         function = ida_funcs.get_func(start)
         instructions = [{"address": hex(a),
@@ -56,7 +56,7 @@ def main():
         functions.append({"original_name": idc.get_func_name(start), "start": hex(start),
                           "end": hex(function.end_ea), "semantic_index": annotation(start),
                           "instructions": instructions})
-    assert {f["start"] for f in functions} == {"0xa10e", "0x7539", "0x3805", "0x383e", "0x3854", "0x37cc"}
+    assert {f["start"] for f in functions} == {"0x2046", "0x20b6", "0x20e8", "0xa10e", "0x7539", "0x3805", "0x383e", "0x3854", "0x37cc"}
     result = {"schema": 1, "tool": "IDA " + ida_kernwin.get_kernel_version(), "bits": 16,
               "input_name": source.name, "input_sha256": hashlib.sha256(raw).hexdigest(),
               "source_index_sha256": hashlib.sha256(index_path.read_bytes()).hexdigest(),
