@@ -336,3 +336,4 @@ GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --k
 - 修正後同映像乾淨重跑七個頂層與十九個catalog子項全部PASS、無skip；新63點與舊首購32／銀行35／武器9點完整原版狀態相同，區外0、命名離店／關閉無覆繪。go vet及建置通過，固定70a3f8e3候選，43來源／9鍵序與51／43 catalog不變；HD及TSV未變。
 - 短GUI2同54233執行至權威exit0，初始Ken’ko／Magia、Down捲出Magia／刀劍油、油品兩頁／待續三角、續問否及正常離店1000通過。102筆按放均確認、最長0.303秒，10張實圖目視；285固定輸入、原29檔、字型、自建存檔與複本不變，持鍵空、容器空、擁有權異常0。此GUI關HD、沒有交易，不換名為六頁或HD重驗。保留kind2／paragraph18／first_difference242舊文字安全退回。
 - 主入口已同步70a3f8e3，dc2696ed及881ef8dd別名保留。README、現況、工作清單、規格與矩陣已更新；`item-hd-v1/scroll-fix-v1/current-audit-v2.json`通過73自有檔、29原件、882快照、147文件連結、43來源／9鍵序與兩份GUI共39張目視／254筆按放。素材、HD來源及TSV沿v1未變，沒有原版／圖面／字型入Git，未建立正式版號或發行包。
+- 功能提交 `1d26a8eb8806417328cd252e890ed037b1cf598b`已推送，主機gh回讀遠端main相同、儲存庫仍PRIVATE。以 `FEATURE_COMMIT=1d26a8eb8806417328cd252e890ed037b1cf598b`重跑同容器稽核，43來源及9鍵序逐檔符合功能commit，主入口與兩份不同範圍GUI稽核通過。完整中文／HD、音效、戰鬥及實體手把仍待完成或驗證；下一輪依工作清單推進，不重開已驗道具店鏈。
