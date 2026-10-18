@@ -569,3 +569,5 @@ player_underlay_v1.py只讀既有已驗scene proof與當次原版記憶體／色
 逐圖與像素後處理36361退出0，107PNG含88張本輪逐張讀圖與19個完整hash精確舊圖引用。22個暫停點及一個最終來源共82432原生RGB格、741888高清直接RGBA取樣零差，最終3584indexed地面格零差。nav19組聯集外0，角色樣本76770高清像素零差；其中17組同含主角與居民，兩組只涵蓋主角。main兩組暫停9351及最終4653角色像素零差、14336原生前景重建／26ROI／兩次triplet區外及還原0。本次兩頁框外0，前輪80差保留原身份。302有限移動取樣中77筆保留來源且前景／遠山HD匹配，但該串沒有地面旗標，不宣稱77筆地面全真。中途pause在35EE，只稱批次中途；洞窟可見名稱及C000模組確認，地面撤除且無presented副檔。最終彙總在gui-ground-v1/final-summary.json；兩初版audit另存，後處理缺/orig掛載及摘要欄位錯誤記postprocessing-environment-note，未重跑GUI。
 
 009限定CONFORMED，README補-town-ground-art與固定camera153完整參考入口；目前狀態與矩陣同步。根端最終稽核初版把兩個package pass算進40個test pass而退出1，修正為只數含Test欄位後以同容器／命令乾淨重跑，66830退出0，沒有重跑產品測試。ground-current-audit-v1.json核102自有檔、54Go／64來源、14鍵序、5圖、16完整配對及40內部test pass；623GUI輸入在收尾時全不變，後續只有009文件由READY改為限定CONFORMED，其原全文已另存。205連結、原29／snapshot882／字型／存檔與mtime及擁有權通過。主角僅研究候選，其他HD中文、音效、實體手把、平台與正式封包未完成。
+
+正式程式與文件提交3c5779271866086a2fbee84ba45d8618703da3ff已推送origin/main，主機git ls-remote回讀同值，host gh回讀PRIVATE。只提交11份自有程式／文件，原版與生成圖／手冊／字型／收據留本地ignored區。Docker find自檢沒有root-owned檔或md目錄，所有本專案容器已結束；沒有新增或刪除工具映像。此推送紀錄另作文件提交，最終乾淨HEAD與遠端身份記於coherent-frame-v1/repository-sync-ground-v1.json，不改已驗64執行來源。
