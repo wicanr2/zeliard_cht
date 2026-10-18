@@ -14,7 +14,7 @@
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 原版、中文覆繪配對及實際 X 視窗均通過；戰鬥未驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
-| 中文 | 工具列、首章、國王、長老、存讀提示與武器店 prototype | 商品框上方及報價框旁的舊中文已保留，遵守原版遮擋；動態報價、裝備頁與其餘文字待完成 |
+| 中文 | 工具列、首章、國王、長老、存讀提示與武器店 prototype | 第一筆報價配對及實際視窗通過，第二件資金不足配對通過。裝備頁與其餘文字待完成 |
 | HD | 手繪奇幻邊框、國王及長老 prototype | 長老切換內部 50,926 像素改變，區外 0、完整還原，四個動畫像素不變；其餘場景／角色及正式倍率待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -39,7 +39,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-依 [WORKLIST.md](WORKLIST.md) 先接武器店動態報價與裝備頁中文，再推進其他商店、片頭／對話及 HD 場景／角色。已有正常交易、報價字形及清框追蹤，不重新猜測商品繪字入口或彈窗幾何。正常存讀檔已完成，不重新開啟輸入時序研究。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+依 [WORKLIST.md](WORKLIST.md) 先接裝備頁與其他商店中文，再推進其餘片頭／對話及 HD 場景／角色。已有商品、報價片段、重用數字暫存及清框證據，不重新猜測這些入口。正常存讀檔已完成，不重新開啟輸入時序研究。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 ## 工具與本地證據入口
 
@@ -56,10 +56,10 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - HD 樣圖：`workplace/hd-style-preview.png`；使用者只選定 B 的畫風，未定稿構圖。新生成邊框、完整提示詞與來源為 `workplace/hd-border-prototype.png`、`workplace/hd-border-generation.json`，均只留本機研究區。
 - HD 實際切換：`workplace/gui-hd-frame-v1/receipt.json`、`hd-region-comparison.json`。兩側 172,017 像素改變，中間區域 0；切回原貌後完整畫格相同。它只驗證裝飾邊框，不代表全遊戲 HD。
 - 位址索引：[docs/source-index.json](docs/source-index.json)，IDA 匯出自動合併原始定位、證據等級與警示；首章增補匯出在 `workplace/ida-intro-scroll-indexed/`。動態定位收據為 `workplace/probe-intro-display/`。
-- 前輪 HD 與首章稽核：`workplace/current-audit-hd.json`、`current-audit-scroll.json`，保留各自來源與二進位身份。提示輪及長老／商品輪另保留 `current-audit-ui.json`、`current-audit-weapon-sage.json`；目前為 `workplace/modal-audit-v1/current-audit.json`。
+- 前輪 HD 與首章稽核：`workplace/current-audit-hd.json`、`current-audit-scroll.json`，保留各自來源與二進位身份。提示、長老／商品及彈窗輪另保留 `current-audit-ui.json`、`current-audit-weapon-sage.json`、`modal-audit-v1/current-audit.json`；目前為 `workplace/quote-audit-v1/current-audit.json`。
 - 同狀態區域比較：`workplace/gui-smoke-v4/intro-region-comparison.json`。原版色號完全相同，覆繪區內 3,655 個像素不同，區外 0。
 - 初始化工具身份：`workplace/gui-smoke-v4/provenance.json`，記錄當時 13 個來源檔、二進位、dosgolem 快照及映像 ID。該份舊收據沒有 Git 身份，現行程式以本儲存庫 HEAD 為準。
-- 最新前端二進位 SHA-256：`c355ade582ce540ccf98deeb77924e09b8981939dbb319ae422b3abb96eecd98`，主入口與 `zeliard-preview-modal` 相同。基於 `7b07af0` 加本輪遮擋修改，未稱正式版本；前輪 `zeliard-preview-weapon` 留作歷史身份。
+- 最新前端二進位 SHA-256：`55f458acb28e01354ed95e946f26dab5749a5edec8d63f2060b23d70debca5ce`，主入口與 `zeliard-preview-quote-heartbeat` 相同。基於 `5f40350` 加本輪報價及觀測修改，未稱正式版本；前輪 `zeliard-preview-modal` 留作歷史身份。
 - 首章中文最新重跑：`workplace/intro-scroll-v3/receipt.json`。30 個來源行、430 個完成列事件；10,729,940／14m／30m／65m／110m／160m 指令抽樣，完整 1 MiB 記憶體、畫面色號、色盤、CS:IP 與虛擬時間均與無掛鉤原版相同。覆繪區外差異 0；結尾捲出與換章移除已驗。
 - 首章實際 X 視窗：`workplace/gui-intro-scroll-v2/receipt.json` 與 `intro-scroll-window.png`。自然片頭擷取時已觀察 7 個來源行、62 個完成列。專名暫留原文，正式術語與字級尚未定稿。
 - 早期國王正常操作：`workplace/probe-door-up-70m/`、`probe-king-0-84m/` 及 `gui-king-v2/receipt.json`。探針使用既有六次 Space，再於 60m 按 Right 2m、64m 按 Up 250k。GUI 以畫面核對進入國王房間，首段文字與原版收據相符；空白鍵後 GOLD 更新至 1000。不把賞金確認稱為對話全部翻頁完成。
@@ -95,7 +95,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - 最新實際中文交易：`workplace/shop-path-gui-cht-v1/receipt.json`、`visual-review.json`。固定 `5ad8556d` 建置及 13／27 筆 catalog，冷新局領賞、購買練習劍、GOLD1000→800、中文告別、Space 出店、Return 查看 Training Sword 通過。最後持鍵空、退出碼 0、原版 29 檔不變。
 - 該輪 GUI 留有 kind=2 兩筆，paragraph=10／12、first_difference=2552／242。商品框上方詢問及報價旁舊選單退回的限制已由下節補正；動態報價、場景名稱與裝備中文仍未完成。
 
-## 本輪彈窗遮擋證據
+## 前輪彈窗遮擋證據
 
 - 本節取代上節的商品框上方／報價框旁退回限制，其餘缺口保留。`workplace/shop-path-modal-trace-v1/evidence-index.json` 為原版追蹤入口，購買 9 點、取消 7 點完整狀態相同；26 次矩形繪製均完整返回，改變像素區外 0。商品框 `(84,110,148,36)`、是／否框 `(188,43,48,25)` 已證實。
 - [位址索引](docs/weapon-source-index.json) 已回填清框入口與參數。`workplace/ida-modal-indexed-v1/weapon-evidence.json` 是最新 IDA 9.4／16-bit 九函式匯出，輸入仍為固定武器店段 `22c3e2d3…`，不與國王段混用。
@@ -105,3 +105,15 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - 最新實際 X 視窗：`workplace/shop-path-gui-modal-v1/receipt.json`、`visual-review.json`、`modal-box-comparison.json`，固定 `c355ade5` 建置。商品框上方中文完整，是／否框旁舊中文保留，確認框與前輪差異 0；1000→800、告別、裝備查看、持鍵空與退出 0 均通過。
 - 限制：原版確認框仍遮掉部分舊中文字，未重新排視窗；動態報價、裝備與場景名稱仍英文。GUI 留一筆離店舊對話退回 paragraph=12／kind=2／first_difference=422，不稱零失配。其餘 HD、音效、戰鬥與實體手把仍待完成或驗證。
 - 現行來源、收據、文件連結及擁有權稽核入口：`workplace/modal-audit-v1/current-audit.json`。原始遊戲、手冊、字型、圖像與完整收據維持本地忽略目錄。
+
+## 本輪報價與資金不足證據
+
+- 本節取代前輪第一筆報價仍英文的限制。對話TSV目前14個靜態段及4個報價模板，商品譯名共用原有27筆標籤來源，沒有另複製商品翻譯。
+- 來源入口 `workplace/shop-path-quote-source-v1/evidence-index.json`；BC33h數字以單一FF結束，不是NUL或FF00。售價及折抵依原版已完成字形分別保存，避免同一暫存區被後一筆覆用。[位址索引](docs/weapon-source-index.json)已回填，最新IDA9.4／16-bit十一函式匯出為 `ida-quote-indexed-v1/weapon-evidence.json`。
+- `workplace/quote-overlay-v2/receipt.json`購買9點與 `insufficient/receipt.json`不足11點，完整1MiB、色號、色盤、CS:IP、steps、cycles相同，區外與彈窗越寫0。400／200原版數字圖形完整，買後800；不足翻頁、告別及返回城鎮仍1000。
+- `quote-overlay-v2/test.jsonl`三個頂層測試及五個代入欄位／字型子測試通過。最早v1失敗為測試引用舊文字擁有的遮擋版本，已改核對目前報價版本，不放寬越寫檢查。HD、手把與存讀檔程式未改，沒有重跑未受影響測試。
+- 實際視窗v1在較慢更新率下耗盡舊56秒入口預算，沒有進店；v2按放已送達，但Draw可能跳過更新幀數60整倍數，觀測檔沒有心跳而被腳本中止。兩份失敗保留，不當成CPU停滯或報價缺陷。診斷觀測已改每次Draw原子寫入完整快照，不改原版cycles或輸入。
+- 實際視窗 `workplace/shop-path-gui-quote-v3/receipt.json`、`visual-review.json` 使用固定 `55f458ac` 建置。冷新局、國王兩段中文與領賞、完整中文報價400／200、購後800、告別、回城鎮及裝備查看通過。最後持鍵空，由既有capture-tail擷取流程正常終止前端，退出碼0；本輪沒有另按原版Ctrl+Q。原版裝備名稱仍為Training Sword。
+- 主入口已同步該固定建置。來源及收尾稽核入口為 `workplace/quote-audit-v1/current-audit.json`；不足分支只驗配對及離線圖，未冒充本次GUI路徑。
+- GUI未開HD。保留一筆離店舊對話退回，paragraph=12／kind=2／first_difference=422，與前輪相同；報價完成時沒有退回，不稱全程零失配。
+- 限制：報價按完成片段顯示，未完成時暫留白；數字隨中文排版移動。資金不足沿既有比例揭露，沒有宣稱逐詞同步。只驗第一筆購買與第二件不足，其他報價、裝備、其餘中文與HD、音效、戰鬥及實體手把仍待完成。

@@ -5,6 +5,60 @@
   "address_space": "IDA binary base 0; dosgolem 01B1 segment offsets in the fixed weapon-first-dialogue snapshot",
   "entries": [
     {
+      "address": "0xa2e0",
+      "semantic": "設定 B0DCh 報價開頭，之後從商品指標表取得目前選中名稱",
+      "level": "已證實",
+      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-quote-source-v1/source-evidence.json"]
+    },
+    {
+      "address": "0xa2ff",
+      "semantic": "以原始商品名稱指標呼叫 CS:6004h；正常第一件字形來源 AD1Dh..AD2Ah",
+      "level": "已證實",
+      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-glyph-v1/glyphs.jsonl"]
+    },
+    {
+      "address": "0xa32f",
+      "semantic": "資金檢查失敗時交回 AF54h 不足對話；第二件1500武器正常金幣1000時走此分支",
+      "level": "已證實",
+      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-insufficient-v1/run/glyphs.jsonl"]
+    },
+    {
+      "address": "0xa345",
+      "semantic": "售價前綴來源 B106h，實際數字另經 BC33h 字形來源輸出",
+      "level": "已證實",
+      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-glyph-v1/glyphs.jsonl"]
+    },
+    {
+      "address": "0xa35a",
+      "semantic": "呼叫 CS:6006h，把原版價格格式化到 DI=BC33h；本專案不重作此格式化或價格計算",
+      "level": "已證實",
+      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-quote-source-v1/source-evidence.json"]
+    },
+    {
+      "address": "0xa364",
+      "semantic": "FF4Ch 設為 BC33h，售價來源以 FF 結束，不能假定 NUL 或 FF00 結束",
+      "level": "已證實",
+      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-quote-source-v1/source-evidence.json"]
+    },
+    {
+      "address": "0xa3c9",
+      "semantic": "再次把 FF4Ch 設為 BC33h，覆用同一暫存區輸出舊武器折抵；須分別保存兩次已繪數字",
+      "level": "已證實",
+      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-glyph-v1/glyphs.jsonl"]
+    },
+    {
+      "address": "0xa3de",
+      "semantic": "最後設定 B0EDh 確認句，完成後才畫是／否框",
+      "level": "已證實",
+      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-glyph-v1/glyphs.jsonl"]
+    },
+    {
+      "address": "0x27e9",
+      "semantic": "對話八列字形直接寫入VGA；只寫墨跡，保留黑底，7120h觀察到字形完成",
+      "level": "已證實",
+      "evidence": ["workplace/ida-dialogue-indexed-v5/dialogue-evidence.json", "workplace/shop-path-quote-source-v1/source-evidence.json"]
+    },
+    {
       "address": "0x2046",
       "semantic": "MCGA 矩形清除與邊框入口；X=BH*4、Y=BL、寬=CH*4、高=CL，AL=0清除、非0畫框",
       "level": "已證實",

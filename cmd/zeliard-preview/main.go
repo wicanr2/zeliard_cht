@@ -346,13 +346,20 @@ func (g *game) button(box image.Rectangle, s string, active bool) {
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
-	if g.observePath != "" && g.frames%60 == 0 {
+	if g.observePath != "" {
+		held := g.o.HeldKeys()
 		var rejections []map[string]int
+		var quotation map[string]any
 		if g.dialogue != nil {
 			rejections = g.dialogue.Rejections
+			quotation = g.dialogue.QuotationState()
 		}
-		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections})
-		_ = os.WriteFile(g.observePath, append(data, '\n'), 0644)
+		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "held_keys": held, "frames": g.frames})
+		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。
+		// 先寫同目錄暫存檔再換名，觀察者只會讀到完整快照。
+		if err := os.WriteFile(g.observePath+".tmp", append(data, '\n'), 0644); err == nil {
+			_ = os.Rename(g.observePath+".tmp", g.observePath)
+		}
 	}
 	draw.Draw(g.canvas, g.canvas.Bounds(), &image.Uniform{color.RGBA{18, 23, 32, 255}}, image.Point{}, draw.Src)
 	w, h, rgb := g.o.ScreenRGB()
@@ -480,11 +487,13 @@ func (g *game) Draw(screen *ebiten.Image) {
 			}
 			dialogueGlyphs, dialogueParagraphs := 0, 0
 			var dialogueRejections []map[string]int
+			var quotation map[string]any
 			if g.dialogue != nil {
 				dialogueGlyphs, dialogueParagraphs = g.dialogue.Glyphs, g.dialogue.Paragraphs
 				dialogueRejections = g.dialogue.Rejections
+				quotation = g.dialogue.QuotationState()
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose})
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -524,7 +533,7 @@ func main() {
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
 	introText := flag.String("intro-text", "text/intro-prototype.json", "片頭覆繪原型譯文")
 	introScroll := flag.String("intro-scroll", "", "可選：首章捲動中文試譯 TSV，取代單句 prototype")
-	dialogueText := flag.String("dialogue-text", "", "可選：國王初訪對話試譯 TSV")
+	dialogueText := flag.String("dialogue-text", "", "可選：對話與報價試譯 TSV")
 	labelsText := flag.String("labels-text", "", "可選：城鎮選單標籤試譯 TSV")
 	hdRef := flag.String("hd-reference", "", "可選：本地城鎮 probe 的 screen.bin，同目錄須有 palette.bin")
 	hdArt := flag.String("hd-art", "", "可選：本輪手繪邊框 PNG，僅供 HD prototype")
@@ -620,7 +629,7 @@ func main() {
 	if *dialogueText != "" {
 		g.dialogue, err = overlay.NewDialogue(o, filepath.Join(root, "ZELRES2.SAR"), *dialogueText, font)
 		if err != nil {
-			log.Printf("國王對話試譯未載入，保留原文：%v", err)
+			log.Printf("對話試譯未載入，保留原文：%v", err)
 		}
 	}
 	if *labelsText != "" {
@@ -628,6 +637,9 @@ func main() {
 		if err != nil {
 			log.Printf("選單試譯未載入，保留原文：%v", err)
 		}
+	}
+	if g.dialogue != nil {
+		g.dialogue.UseLabels(g.menuLabels)
 	}
 	ebiten.SetWindowSize(width, height)
 	ebiten.SetWindowTitle(g.label("title"))

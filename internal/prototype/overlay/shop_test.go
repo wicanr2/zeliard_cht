@@ -19,6 +19,18 @@ import (
 )
 
 func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
+	testWeaponShopNormalPath(t, "../../../tools/weapon-shop.commands", 9)
+}
+
+func TestWeaponShopInsufficientGoldNormalPathReadOnly(t *testing.T) {
+	if out := os.Getenv("ZELIARD_SHOP_OUTPUT"); out != "" {
+		t.Setenv("ZELIARD_SHOP_OUTPUT", filepath.Join(out, "insufficient"))
+	}
+	testWeaponShopNormalPath(t, "../../../tools/weapon-insufficient.commands", 11)
+}
+
+func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints int) {
+	t.Helper()
 	root, fontPath, out := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_FONT"), os.Getenv("ZELIARD_SHOP_OUTPUT")
 	if root == "" || fontPath == "" || out == "" {
 		t.Skip("須掛載原版、字型與商店收據輸出目錄")
@@ -45,10 +57,11 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	d.UseLabels(l)
 	if err = os.MkdirAll(out, 0755); err != nil {
 		t.Fatal(err)
 	}
-	commands, err := os.ReadFile("../../../tools/weapon-shop.commands")
+	commands, err := os.ReadFile(commandPath)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -130,7 +143,11 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 			}
 			before := append([]byte(nil), dst.Pix...)
 			drawn := d.Draw(dst, raw, pal, image.Point{})
-			dialogueMasks, _ := d.paint.masks(d.paintSerial, raw)
+			paintSerial := d.paintSerial
+			if q := d.quotation; q != nil && q.active {
+				paintSerial = q.paintSerial
+			}
+			dialogueMasks, _ := d.paint.masks(paintSerial, raw)
 			if drawn {
 				for y := 0; y < 600; y++ {
 					for x := 0; x < 960; x++ {
@@ -200,6 +217,32 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 				}
 			}
 			if f[1] == "quote" {
+				q := d.quotation
+				if !drawn || q == nil || q.ready != 10 || string(q.price.raw) != "400\xff" || string(q.trade.raw) != "200\xff" || q.Completed != 1 {
+					t.Fatalf("報價中文或原版數字不符：%v %v", drawn, d.QuotationState())
+				}
+				positions, valid := quoteLayout(q.tokens())
+				if !valid {
+					t.Fatal("報價超出安全文字區")
+				}
+				copied := 0
+				for i, token := range q.tokens() {
+					if n := token.number; n != nil {
+						at := positions[i].Add(image.Pt(dialogueBox.Min.X*3, dialogueBox.Min.Y*3+4))
+						for y := 0; y < n.box.Dy()*3; y++ {
+							for x := 0; x < n.box.Dx()*3; x++ {
+								v := pal[n.pixels[y/3*n.box.Dx()+x/3]]
+								if dst.RGBAAt(at.X+x, at.Y+y) != (color.RGBA{v[0], v[1], v[2], 255}) {
+									t.Fatal("報價數字未保留原版字形")
+								}
+							}
+						}
+						copied++
+					}
+				}
+				if copied != 2 {
+					t.Fatal("未合成兩個獨立的原版數字")
+				}
 				found := false
 				for _, k := range keys {
 					found = found || k == "zelres2.file.0184ea"
@@ -210,6 +253,11 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 			}
 			if f[1] == "purchased" && (!drawn || key != "zelres2.file.018634" || b.Word(oracle.Far(0x01b1, 0x86)) != 800) {
 				t.Fatalf("交易後中文或原版金額不符：%v %s %d", drawn, key, b.Word(oracle.Far(0x01b1, 0x86)))
+			}
+			if f[1] == "insufficient-page1" || f[1] == "insufficient-page2" || f[1] == "insufficient-settled" {
+				if !drawn || key != "zelres2.file.01876b" || b.Word(oracle.Far(0x01b1, 0x86)) != 1000 || d.quotation.Completed != 0 {
+					t.Fatalf("資金不足分支中文、資金或報價狀態不符：%v %s %v", drawn, key, d.QuotationState())
+				}
 			}
 			inside, outside := 0, 0
 			for y := 0; y < 600; y++ {
@@ -242,20 +290,24 @@ func TestWeaponShopPurchaseNormalPathReadOnly(t *testing.T) {
 			if e != nil {
 				t.Fatal(e)
 			}
-			receipts = append(receipts, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "state_equal": true, "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "gold": b.Word(oracle.Far(0x01b1, 0x86)), "dialogue_rendered": drawn, "dialogue_key": key, "dialogue_masks": dialogueMasks, "masked_labels": maskedLabels, "modal_pixels_changed": 0, "label_keys": keys, "inside_changed": inside, "outside_changed": outside, "held_keys": b.HeldKeys()})
+			receipts = append(receipts, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "state_equal": true, "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "gold": b.Word(oracle.Far(0x01b1, 0x86)), "dialogue_rendered": drawn, "dialogue_key": key, "quotation": d.QuotationState(), "dialogue_masks": dialogueMasks, "masked_labels": maskedLabels, "modal_pixels_changed": 0, "label_keys": keys, "inside_changed": inside, "outside_changed": outside, "held_keys": b.HeldKeys()})
 		default:
 			t.Fatalf("未知命令 %s", line)
 		}
 	}
-	if len(receipts) != 9 || len(machines[1].HeldKeys()) != 0 {
+	if len(receipts) != wantCheckpoints || len(machines[1].HeldKeys()) != 0 {
 		t.Fatal("正常商店路徑未完整完成")
 	}
-	data, err := json.MarshalIndent(map[string]any{"commands_sha256": fmtHash(commands), "checkpoints": receipts, "dialogue_rejections": d.Rejections, "scope": "normal new game, reward, purchase, farewell, inventory; dynamic quotation remains original"}, "", "  ")
+	scope := "normal new game, reward, Chinese quotation with original price/trade glyphs, purchase, farewell, inventory"
+	if wantCheckpoints != 9 {
+		scope = "normal new game, reward, insufficient gold dialogue/pages, farewell and town; original gold remains1000"
+	}
+	data, err := json.MarshalIndent(map[string]any{"commands_sha256": fmtHash(commands), "checkpoints": receipts, "dialogue_rejections": d.Rejections, "scope": scope}, "", "  ")
 	if err != nil {
 		t.Fatal(err)
 	}
 	if err = os.WriteFile(filepath.Join(out, "receipt.json"), append(data, '\n'), 0644); err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println("正常武器店交易中文配對通過，原版金額800；動態報價尚保留原文")
+	fmt.Printf("武器店中文正常路徑配對通過，%d個抽樣點\n", len(receipts))
 }

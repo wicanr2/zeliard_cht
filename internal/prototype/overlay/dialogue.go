@@ -36,6 +36,7 @@ type Dialogue struct {
 	completed                   []byte
 	paint                       *paintHistory
 	paintSerial                 uint64
+	quotation                   *Quotation
 	Glyphs, Paragraphs, Scrolls int
 	Rejections                  []map[string]int
 }
@@ -75,7 +76,7 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 	d := &Dialogue{font: font, current: -1, paint: observePaint(o)}
 	// 檔案偏移與模組 payload 起點來自固定 SAR 及正常路徑傾印。
 	// 數值、控制碼與存檔動作仍由原版執行。
-	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}, {0x185ea, 0x18606, 0x17817}, {0x18607, 0x18633, 0x17817}, {0x18634, 0x18661, 0x17817}, {0x1883e, 0x1885d, 0x17817}, {0x18899, 0x188b8, 0x17817}, {0x189f6, 0x18a16, 0x17817}} {
+	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}, {0x185ea, 0x18606, 0x17817}, {0x18607, 0x18633, 0x17817}, {0x18634, 0x18661, 0x17817}, {0x1883e, 0x1885d, 0x17817}, {0x18899, 0x188b8, 0x17817}, {0x189f6, 0x18a16, 0x17817}, {0x1876b, 0x187c6, 0x17817}} {
 		key := fmt.Sprintf("zelres2.file.%06x", source[0])
 		text, ok := texts[key]
 		if !ok {
@@ -102,6 +103,10 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 			}
 		}
 		d.paragraphs = append(d.paragraphs, p)
+	}
+	d.quotation, err = newQuotation(o, data, texts, font, d.paint)
+	if err != nil {
+		return nil, err
 	}
 	if len(texts) != 0 {
 		return nil, fmt.Errorf("對話 catalog 含未知來源鍵")
@@ -248,9 +253,34 @@ func dialogueLayout(font bitmap.Font, text []rune) ([]image.Point, error) {
 	return points, nil
 }
 
-func (d *Dialogue) Active() bool { return d.active }
+func (d *Dialogue) Active() bool { return d.active || d.quotation != nil && d.quotation.active }
+
+// UseLabels 共用已驗證的商品來源與譯名，不複製另一份商品翻譯。
+func (d *Dialogue) UseLabels(l *Labels) {
+	if d.quotation != nil {
+		d.quotation.labels = l
+	}
+}
+
+func (d *Dialogue) QuotationState() map[string]any {
+	q := d.quotation
+	if q == nil {
+		return nil
+	}
+	price, trade := "", ""
+	if len(q.price.raw) > 0 {
+		price = string(q.price.raw[:len(q.price.raw)-1])
+	}
+	if len(q.trade.raw) > 0 {
+		trade = string(q.trade.raw[:len(q.trade.raw)-1])
+	}
+	return map[string]any{"active": q.active, "stage": q.stage, "ready": q.ready, "glyphs": q.Glyphs, "completed": q.Completed, "price": price, "trade": trade}
+}
 
 func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, origin image.Point) bool {
+	if d.quotation != nil && d.quotation.active {
+		return d.quotation.Draw(dst, indexed, palette, origin)
+	}
 	if !d.active || len(d.completed) != dialogueBox.Dx()*dialogueBox.Dy() {
 		return false
 	}

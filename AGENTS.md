@@ -131,10 +131,13 @@
 | [internal/prototype/overlay/labels.go](internal/prototype/overlay/labels.go) | 核對 SAR1、SAR2、STICK 來源的提示與商品暫存列覆繪；保留輸入值及價格區 |
 | [internal/prototype/overlay/occlusion.go](internal/prototype/overlay/occlusion.go) | 觀察固定 MCGA 清框事件，依繪製先後裁切舊中文；整框原圖還原後解除遮擋 |
 | [internal/prototype/overlay/occlusion_test.go](internal/prototype/overlay/occlusion_test.go) | 多層遮擋、完整還原、未知變化與歷史淘汰的退回驗證 |
+| [internal/prototype/overlay/quotation.go](internal/prototype/overlay/quotation.go) | 已核對來源順序的武器報價覆繪；商品譯名共用來源，價格與折抵保留原版數字圖形 |
+| [internal/prototype/overlay/quotation_test.go](internal/prototype/overlay/quotation_test.go) | placeholder／字型／數字圖形合成與未知畫面退回驗證；合成數字不當原版行為證據 |
 | [internal/prototype/overlay/labels_test.go](internal/prototype/overlay/labels_test.go) | 冷新局走到長老選單的完整原版狀態與覆繪區域比較 |
 | [internal/prototype/overlay/save_load_test.go](internal/prototype/overlay/save_load_test.go) | 中文覆繪開／關的新存檔、退出與冷讀檔完整原版狀態比較 |
 | [tools/save-load.commands](tools/save-load.commands) | 上述測試的正常玩家鍵序，不含存檔或注入狀態 |
 | [tools/weapon-shop.commands](tools/weapon-shop.commands) | 正常領賞、武器交易、告別與裝備查看鍵序 |
+| [tools/weapon-insufficient.commands](tools/weapon-insufficient.commands) | 正常領賞後選第二把武器，走資金不足翻頁、告別及回城鎮的鍵序 |
 | [internal/prototype/overlay/shop_test.go](internal/prototype/overlay/shop_test.go) | 武器店中文覆繪與完整原版狀態、金額及區域配對 |
 | [text/labels-prototype.tsv](text/labels-prototype.tsv) | 27 筆選單、存讀檔、速度提示及兩個商品名試譯；未走過分支與正式術語待校訂 |
 | [internal/prototype/overlay/scroll.go](internal/prototype/overlay/scroll.go) | 首章來源與逐列完成事件的唯讀覆繪；字級與版面仍為 prototype |
