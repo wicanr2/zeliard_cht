@@ -170,3 +170,10 @@ GUI 分別執行 `python3 tools/gui_smoke.py --intro-scroll --output /project/wo
 GUI 容器內執行 `python3 tools/gui_smoke.py --gameplay --king --dialogue --king-hd --hd-reference /project/workplace/probe-newgame-60m/screen.bin --hd-art /project/workplace/hd-border-prototype.png --output /project/workplace/<新目錄>`。Xvfb／前端由腳本有界持有，只有實際 X 按鍵及工具列操作；啟動前後核對二進位身份，避免測試中途被替換。
 
 本輪現行稽核為 `workplace/current-audit-dialogue-hd.json`。提交、遠端 SHA 與 Docker 清理結果於收尾追加。
+
+### 本輪收尾
+
+- 國王中文與手繪肖像功能提交 `18728aa` 已推送 `origin/main`，主機 gh 回讀儲存庫仍為 private。沒有原版檔案、掃描、生成圖或本地收據入 Git。
+- 現行稽核核對 37 個自有來源檔、29 個原版檔案、882 個 dosgolem 快照檔案及 55 個文件連結。原始 ZIP／RAR、LICENSE、IDA 輸入與索引身份均不變或符合既有記錄。
+- 最新二進位為 `507b368ee2d41516bc02b87012b9bb4607229dd7687e11f2a6bc10cfa699427d`；metadata 記錄基底 `9c4590d` 加修改來源。正式 Go 來源在功能提交中固定，未宣稱乾淨 tag 或發行版。
+- 八項具名 Go 測試與完整國王 X 視窗流程通過。容器依工作樹掛載檢查為空，`find /project -user root -o -type d -name '*.md'` 無異常；沿用既有 image，沒有新增或全域清理映像。
