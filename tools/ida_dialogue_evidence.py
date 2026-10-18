@@ -39,13 +39,14 @@ def main():
     assert not ida_ida.inf_is_32bit_exactly() and not ida_ida.inf_is_64bit()
     entries = [int.from_bytes(raw[off:off+2], "little") for off in (0xA000, 0xA002, 0x6004, 0x2010, 0x2022)]
     assert entries == [0xA004, 0xA302, 0x706C, 0x22CD, 0x27E9]
+    entries.append(0x291A)
     for address in entries:
         ida_ua.create_insn(address)
         ida_funcs.add_func(address)
     ida_auto.auto_wait()
     functions = []
     for start in idautils.Functions():
-        if not (start in (0x22CD,0x2345,0x27E9) or 0x7000 <= start < 0x7300 or 0xA004 <= start < 0xA40F):
+        if not (start in (0x22CD,0x2345,0x27E9,0x291A) or 0x7000 <= start < 0x7300 or 0xA004 <= start < 0xA40F):
             continue
         function = ida_funcs.get_func(start)
         instructions = [{"address":hex(a), "bytes":(ida_bytes.get_bytes(a, idc.get_item_size(a)) or b"").hex(),

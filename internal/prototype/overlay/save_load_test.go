@@ -179,14 +179,59 @@ func TestSaveLoadOverlayNormalPath(t *testing.T) {
 					dst.SetRGBA(x, y, color.RGBA{rgb[i], rgb[i+1], rgb[i+2], 255})
 				}
 			}
+			originalPixels := append([]byte(nil), dst.Pix...)
 			drawn := d.Draw(dst, raw, pal, image.Point{})
 			labels := l.Draw(dst, raw, pal, image.Point{})
+			var labelKeys []string
+			var labelBoxes []image.Rectangle
+			for _, stamp := range l.stamps {
+				labelBoxes = append(labelBoxes, stamp.rows...)
+				for key, source := range l.sources {
+					if source == stamp.source {
+						labelKeys = append(labelKeys, key)
+					}
+				}
+			}
+			sort.Strings(labelKeys)
 			sourceKey := ""
 			if d.current >= 0 {
 				sourceKey = d.paragraphs[d.current].key
 			}
 			if f[1] == "save-confirm-text" && (!drawn || sourceKey != "zelres2.file.01cc66" || d.visible != len(d.paragraphs[d.current].text)) {
 				t.Fatalf("存檔成功中文未完整顯示：%v %s", drawn, sourceKey)
+			}
+			if (f[1] == "name-before-keyup" || f[1] == "load-name" || f[1] == "quit-dialog" || f[1] == "load-list") && labels != 1 {
+				t.Fatalf("%s：提示中文未顯示，labels=%d", f[1], labels)
+			}
+			if f[1] == "save-confirm-text" && labels != 2 {
+				t.Fatalf("是／否未顯示，labels=%d", labels)
+			}
+			for name, want := range map[string]string{"name-before-keyup": "zelres2.file.01c1e2", "load-name": "zelres1.file.00e663", "quit-dialog": "stick.file.00060a", "load-list": "stick.file.000883", "speed-prompt": "stick.file.000745", "speed-digit": "stick.file.000745"} {
+				if f[1] == name && (len(labelKeys) != 1 || labelKeys[0] != want) {
+					t.Fatalf("%s：介面來源錯誤 %v", name, labelKeys)
+				}
+			}
+			inside, outside := 0, 0
+			for y := 0; y < 600; y++ {
+				for x := 0; x < 960; x++ {
+					i := dst.PixOffset(x, y)
+					if bytes.Equal(originalPixels[i:i+4], dst.Pix[i:i+4]) {
+						continue
+					}
+					p := image.Pt(x/3, y/3)
+					allowed := drawn && p.In(image.Rect(54, 98, 264, 150))
+					for _, box := range labelBoxes {
+						allowed = allowed || p.In(box)
+					}
+					if allowed {
+						inside++
+					} else {
+						outside++
+					}
+				}
+			}
+			if outside != 0 {
+				t.Fatalf("%s：中文改寫文字區外 %d 像素", f[1], outside)
 			}
 			if !bytes.Equal(raw, b.Indexed()) || !bytes.Equal(mem, b.Bytes(oracle.Far(0, 0), 1<<20)) {
 				t.Fatal("Draw 改寫原版")
@@ -200,7 +245,7 @@ func TestSaveLoadOverlayNormalPath(t *testing.T) {
 			if e != nil {
 				t.Fatal(e)
 			}
-			receipts = append(receipts, map[string]any{"name": f[1], "boot": boot, "steps": b.Steps(), "cycles": b.Cycles(), "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "state_equal": true, "dialogue_rendered": drawn, "dialogue_key": sourceKey, "dialogue_glyphs": d.Glyphs, "dialogue_rejections": d.Rejections, "labels": labels, "wrote": b.Wrote(), "held_keys": b.HeldKeys()})
+			receipts = append(receipts, map[string]any{"name": f[1], "boot": boot, "steps": b.Steps(), "cycles": b.Cycles(), "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "state_equal": true, "dialogue_rendered": drawn, "dialogue_key": sourceKey, "dialogue_glyphs": d.Glyphs, "dialogue_rejections": d.Rejections, "labels": labels, "label_keys": labelKeys, "label_boxes": labelBoxes, "inside_changed": inside, "outside_changed": outside, "wrote": b.Wrote(), "held_keys": b.HeldKeys()})
 			seen[f[1]] = true
 		default:
 			t.Fatalf("未知命令：%s", line)

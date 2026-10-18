@@ -158,6 +158,61 @@
         "workplace/labels-sage-v3/receipt.json",
         "workplace/sage-source-mapping.json"
       ]
+    },
+    {
+      "address": "0x291A",
+      "level": "已證實",
+      "semantic": "MCGA 的 FF 結尾多行文字入口，BX 為原生 X、CL 為 Y、DS:SI 為來源；正常保存名稱提示來源 A51Ch，字形返回位址294Dh",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/ui-font-probe/events.jsonl",
+        "workplace/ui-source-mapping.json",
+        "workplace/save-ui-v2/receipt.json"
+      ]
+    },
+    {
+      "address": "0x2934",
+      "level": "已證實",
+      "semantic": "FF 字串 consumer 的 LODSB；正常 Input name: 來源依序 A51Ch..A526h，原版逐字執行",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/ui-font-probe/events.jsonl",
+        "workplace/ui-source-mapping.json",
+        "workplace/save-ui-v2/receipt.json"
+      ]
+    },
+    {
+      "address": "0x2939",
+      "level": "已證實",
+      "semantic": "讀到 FFh 時返回；名稱、退出及讀檔提示由此完成後唯讀擷取",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/ui-font-probe/events.jsonl",
+        "workplace/ui-source-mapping.json",
+        "workplace/save-ui-v2/receipt.json"
+      ]
+    },
+    {
+      "address": "0x2950",
+      "level": "已證實",
+      "semantic": "完成原版字形後 add bx,8；文字每字推進八個原生像素",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/ui-font-probe/events.jsonl",
+        "workplace/ui-source-mapping.json",
+        "workplace/save-ui-v2/receipt.json"
+      ]
+    },
+    {
+      "address": "0x2955",
+      "level": "已證實",
+      "semantic": "原版 CR 換行將2CC2h加8，再恢復初始X；兩行確認提示保持原版行數",
+      "evidence": [
+        "workplace/ida-king-v2/query.json",
+        "workplace/ui-font-probe/events.jsonl",
+        "workplace/ui-source-mapping.json",
+        "workplace/save-ui-v2/receipt.json"
+      ]
     }
   ]
 }

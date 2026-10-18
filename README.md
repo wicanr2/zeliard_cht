@@ -42,7 +42,7 @@ workplace/bin/zeliard-preview \
 
 HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -hd-art /project/workplace/hd-border-prototype.png`。參考畫格同目錄須有 `palette.bin`。試作圖只保存在本機；雛形檢查固定圖像身份後，僅替換兩側裝飾，不遮擋中間場景或資訊。缺圖、換場或色盤不符時保留原貌。這些選項與正式資產格式仍在試作階段。
 
-國王與長老對話中文另加 `-dialogue-text /project/text/dialogue-prototype.tsv`，長老選單加 `-labels-text /project/text/labels-prototype.tsv`。出字、等待按鍵、賞金與存讀檔仍由原版處理。存檔到長老房屋選「記錄歷程」，讀檔使用 F7；名稱輸入框與 Yes/No 尚保留英文。商店選項已有試譯，尚未逐店驗證。
+國王與長老對話中文另加 `-dialogue-text /project/text/dialogue-prototype.tsv`，選單及提示加 `-labels-text /project/text/labels-prototype.tsv`。出字、等待按鍵、賞金與存讀檔仍由原版處理。存檔到長老房屋選「記錄歷程」，讀檔使用 F7；名稱輸入提示、是／否、退出與讀取確認已有中文試譯，檔名及 `Re-Start` 保留原值。商店選項已有試譯，尚未逐店驗證。
 
 國王 HD 肖像使用 `-king-reference-a`、`-king-reference-b`、`-king-art`、`-king-speaking-art` 載入本地兩個原版姿態及兩張手繪圖。它保留黃色外框，未知姿態退回原貌；完整參數與限制見[試作規格](docs/spec/001-runtime-overlay.md)。
 

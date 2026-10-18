@@ -143,4 +143,15 @@ run 6000000
 shot load-result
 run 10000000
 shot restored
+key 0x43 500000
+run 2000000
+shot speed-prompt
+key 0x04 100000
+run 1000000
+shot speed-digit
+key 0x1c 100000
+run 1000000
+key 0x4d 500000
+run 1000000
+shot speed-after-right
 quit

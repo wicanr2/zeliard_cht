@@ -15,9 +15,10 @@
 | 正常新局／城鎮右移／放開 | 通過，限此切片 | `workplace/gui-town-v2/`，X11 實際視窗按鍵；狀態列完整相符後才右移，放開後錨點不再平移且持鍵集合為空 |
 | 國王初訪兩段中文與結束 | 通過，限此切片 | `dialogue-v3/receipt.json` 與 `gui-dialogue-hd-v5/`；兩段中文、241 原文字形、1000 賞金與正常返回城鎮，未注入狀態 |
 | 對話顯示與語意隔離 | 通過，限國王初訪 | 九個抽樣點的完整 1 MiB 記憶體、色號、色盤、CS:IP 及 cycles 與無覆繪原版相同；未知來源退回，CL 座標回歸通過 |
-| 長老初訪中文與四列選單 | 通過，限 prototype | `labels-sage-v3/receipt.json` 與 `save-path-gui-v1/`；初訪 114 字形，四列標籤與對話區外差異 0，完整原版狀態相同 |
-| 新存檔、退出與冷讀檔 | 通過，限此正常路徑 | `save-overlay-v1/receipt.json` 十九點完整 1 MiB 記憶體、色號、色盤、CS:IP、steps、cycles 相同；兩側各自建立相同的 256-byte 新檔，再冷重開讀取。實際 X 視窗 `save-path-gui-v1/` 通過 XVIEW1 保存、退出碼 0、F7 讀回 Muralla Town／1000 金幣 |
+| 長老初訪中文與四列選單 | 通過，限 prototype | `labels-ui-v2/receipt.json` 與 `save-ui-gui-v2/`；初訪 114 字形，四列標籤與對話區外差異 0，完整原版狀態相同 |
+| 新存檔、退出與冷讀檔 | 通過，限此正常路徑 | `save-ui-v3/receipt.json` 22 點完整 1 MiB 記憶體、色號、色盤、CS:IP、steps、cycles 相同；兩側各自建立相同的 256-byte 新檔，再冷重開讀取。實際 X 視窗 `save-ui-gui-v2/` 通過 UIVIEW2 保存、退出碼 0、F7 讀回 Muralla Town／1000 金幣 |
 | 保存訊息中文與 UI 退回 | 通過，限已列來源 | 實際視窗 `record-saved.png` 及配對收據；原版名稱輸入框改變舊對話畫格時安全移除中文，保留一次 kind=2 診斷，不宣稱全程零失配 |
+| 存讀檔、退出與速度提示中文 | 通過，限 prototype | `save-ui-v3/receipt.json`：逐行前綴核對、數字區保留、22 點覆繪區外 0。`save-ui-gui-v2/` 名稱／是／否／退出；最新建置 `save-ui-modal-v2/` 完整 F7 兩行、F9／3／Enter／Right，角色實際移動且提示清除。商店十四筆與彈窗下舊對話中文待完成 |
 | 戰鬥 | 未驗證 | 後續正常玩家切片 |
 | 中文工具列與片頭單句 | 通過，限雛形 | 最新二進位重跑 `workplace/gui-smoke-v6/` 三條流程，原始色號仍相同。原文消失／不匹配／不改原圖測試通過 |
 | 原版／中文區域對拍 | 通過，限片頭單句 | `intro-region-comparison.json`，原生色號一致；覆繪區外差異 0 |
@@ -31,4 +32,4 @@
 | USB／藍牙實機 | 未執行 | 不以合成事件代替 |
 | GitHub PRIVATE | 通過 | 主機 gh 登入成功，建立 `wicanr2/zeliard_cht` 並回讀 `visibility=PRIVATE` |
 
-本輪十項具名 Go 測試、建置與 go vet 通過，真實原版、字型及生成圖有掛載，無具名測試 skip。紀錄為 `test-sage-full-v1.jsonl` 的九項，加 `test-save-overlay-v1.jsonl` 的存讀檔一項；`bitmap` 套件沒有獨立測試。新建置完成長老中文與正常存讀檔的實際 X 視窗驗證，本次存讀流程未開 HD。前輪 HD 收據保留原二進位身份。以上不計為實體手把、完整遊玩或全場景 HD 完成。
+本輪十項具名 Go 測試、建置與 go vet 通過，真實原版、字型及生成圖有掛載，無具名測試 skip。紀錄為 `test-ui-rest-v2.jsonl` 的九項，加 `test-save-ui-v3.jsonl` 的存讀檔一項；`bitmap` 套件沒有獨立測試。完整存讀 GUI 使用 `a678bbbb` 建置，逐行修正後 `fb93dc06` 建置另驗短提示／移動 GUI 與 22 點原版配對，兩者身份不混用。本次未開 HD；前輪 HD 收據保留原二進位身份。以上不計為實體手把、完整遊玩或全場景 HD 完成。

@@ -234,3 +234,36 @@ IDA 9.4、metapc、16 位元，從上述唯讀段傾印新建一次性 `.i64`。
 - `workplace/save-path-gui-v1/receipt.json` 以實際 X 鍵盤走相同玩家流程，新檔 XVIEW1.usr 256 bytes，SHA-256 `ac9c392c1dc1a0767e50edbd28aee396c1cfeedefaa77604cceafb193d7806f4`。正常退出碼 0；冷重開的新局先見金額 0，再 F7 讀回 Muralla Town／1000 金幣。新檔讀後不變、持鍵空、原始 29 檔不變。
 - 目視 `record-selected.png`、`record-name-entered.png`、`record-saved.png`、`restored-window.png`，長老初訪、四列及保存訊息中文可讀。名稱輸入框、檔案列表、Yes/No 與 F7 提示仍為英文；本次存讀流程未開 HD，不延伸成 HD 驗收。
 - 名稱輸入框切換讓舊對話畫格失效。GUI 保留 kind=2、glyphs=355、paragraph=6、visible=34、first_difference=148，見 `observe-before-restart.json`。顯示層安全移除舊中文，再由保存訊息的來源事件接回。配對測試也出現同類退回，完整原版狀態始終相同；此診斷屬既有 UI 切換邊界。
+
+## 2026-10-18：存讀檔、退出與速度提示中文
+
+本節只擴充顯示適配。原版資料、dosgolem 快照及遊戲規則不變。來源映射在 `workplace/ui-source-mapping.json`，入口仍為 [對話位址索引](docs/dialogue-source-index.json)。
+
+| 來源檔案偏移 | dosgolem 01B1 段內偏移 | 用途與等級 |
+|---|---|---|
+| SAR1 `0xE3C8`、`0xE3CC` | `7513h`、`7517h` | 已證實：是／否，ASCIIZ |
+| SAR1 `0xE663` | `77AEh` | 已證實：讀檔名稱提示，FF 結束 |
+| SAR2 `0x1C1E2` | `A51Ch` | 已證實：長老存檔名稱提示，FF 結束 |
+| STICK `0x60A` | `070Ah` | 已證實：退出兩行提示 |
+| STICK `0x745` | `0845h` | 已證實：速度兩行提示 |
+| STICK `0x883` | `0983h` | 已證實：讀取兩行提示 |
+
+- SAR1 SHA-256 `56a73b59e952dab47fb0171a3fb1cdb7d641baceafa97e2826057f877a590eb0`；40 項目錄中 payload `0xCEB5`、7293 bytes 對應 `01B1:6000`。SAR2 SHA-256 `bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1`，長老 payload `0x1BCC6` 對應 A000h。STICK SHA-256 `3255d2a0f1f3d5c4a603e61fa8bca57dcf2130a44d8c37ed7e1df63c6ea7f8a9`，檔案起點對應段內 0100h。這些是逐檔／逐模組映射。
+- 正常存檔名稱提示段傾印為 `save-path-verified/name-before-keyup.segment`，65536 bytes，SHA-256 `7fdeaf5ba642d54686cfa6c49c5ac41f11477e03dc05746dcbfb3d477754c3a5`。原版繪字追蹤 `ui-font-probe/events.jsonl` SHA-256 `66041678775c2e039f6c7dbf37b4a88aaef25045ca1aa07604500adad2702a0f`。來源 bytes 及各模組前 64 bytes 逐項核對。
+- 已證實：FF 多行繪字在段內 `291Ah` 保存 BX／CL，`2934h` 的 `lodsb` 讀來源，`2939h` 在 FF 後返回；`294Ah` 呼叫 `27E9h`，`2950h` 每字增加 BX 八，CR 在 `2955h` 增加 Y 八並還原行首 X。IDA 9.4 的 binary base 0 對應此段內偏移；原始位址、bytes 與運算元保留，不覆寫函式名。
+- 最新 IDA 匯出 `ida-dialogue-indexed-v5/dialogue-evidence.json` 仍使用原 84m 國王段 SHA-256 `06b74a1ea26f25d7e81de50ecb9f9ece1e1851d9429b469c59cf6a80bbb1d156`，設定 16-bit 後分析。沒有把長老段或動態追蹤稱為同一份 IDA 輸入。
+- 原版名稱提示首字在第 312365355 指令為 AX=0149h、BX=003Ch、CX=006Ch、SI=A51Dh，對應 X=60、Y=108。是／否在 X=204、Y=47／57；兩類使用不同座標契約。
+
+### 速度輸入範圍勘誤
+
+舊版以最長原文行寬核對整個兩行矩形。正常 F9 後輸入 3，第二行末尾的原版數字落入該矩形，導致整張中文提示失配，退回英文。`save-ui-modal-v1/` 保留實際視窗證據；這是顯示層範圍錯誤。
+
+修正後逐行只核對及清除原有文字前綴。速度兩行的原生範圍分別為 `(116,82)..(212,90)` 與 `(116,90)..(204,98)`，右側數字完全保留原版像素。譯文亦限制在對應行寬。來源缺失、畫面或色盤改變仍安全退回原貌。
+
+`save-ui-v3/receipt.json` 由正常 [玩家鍵序](tools/save-load.commands) 重生，22 點完整 1 MiB 記憶體、色號、色盤、CS:IP、steps、cycles 均與無掛鉤原版相同。每點覆繪區外差異 0。速度提示輸入 3 前後，中文各改變 4002 顯示像素，數字區未改；Enter 加 Right 後提示消除。該點畫格與讀回後一致，只證明清除，尚不單獨證明移動。
+
+兩側各自建立 256-byte SAVETEST.usr，SHA-256 均為 `78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb`，退出後冷重開並各自讀回。完整 GUI `save-ui-gui-v2/` 另建立 UIVIEW2、退出碼 0、冷讀回 Muralla Town／1000；使用修正前 `a678bbbb` 建置，不能冒充最新 `fb93dc06` 的全程 GUI 重跑。
+
+最新建置的 `save-ui-modal-v2/` 實際 X 視窗補足繼續操作：F7 兩行中文完整、N 取消；F9／3 後中文與數字均保留，Enter 後 Right 持兩秒／放開，提示消失，角色由原生 x 約 136 移至 184。`movement-comparison.json` 顯示原位置紅像素 45→0、新位置 0→55，城堡靜態錨點不變。這只輔證位移，不稱為全域同狀態對拍。Enter 單獨沒有清除舊提示，不推定其他返回鍵契約。
+
+仍有中文覆蓋限制：彈窗改變舊對話矩形時整段退回，彈窗下可能顯示英文。完整中文仍需原版清框／還原事件證據。檔名與 Re-Start 保留原值；未驗商店十四筆、其他片頭與遊戲文字不算完成。
