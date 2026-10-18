@@ -181,6 +181,11 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if d.itemPurchase != nil && d.itemPurchase.active {
 				paintSerial = d.itemPurchase.paintSerial
 			}
+			for _, q := range []*itemPurchase{d.itemSale, d.itemExplanation} {
+				if q != nil && q.active {
+					paintSerial = q.paintSerial
+				}
+			}
 			dialogueMasks, _ := d.paint.masks(paintSerial, raw)
 			if drawn {
 				for y := 0; y < 600; y++ {
@@ -192,6 +197,7 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 					}
 				}
 			}
+			l.ObserveFrame(raw, pal)
 			labels := l.Draw(dst, raw, pal, image.Point{})
 			maskedLabels := 0
 			for _, stamp := range l.stamps {
@@ -293,7 +299,11 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 				assertBankCheckpoint(t, f[1], d, l, b, dst, drawn)
 			}
 			if strings.Contains(commandPath, "item-shop") {
-				assertItemCheckpoint(t, f[1], d, l, b, dst, drawn)
+				if strings.Contains(commandPath, "branches") {
+					assertItemBranchCheckpoint(t, f[1], d, l, b, dst, drawn)
+				} else {
+					assertItemCheckpoint(t, f[1], d, l, b, dst, drawn)
+				}
 			}
 			if strings.Contains(commandPath, "weapon-shop-no-purchase") && f[1] == "no-purchase-farewell" {
 				if !drawn || key != "zelres2.file.018a17" || d.visible != len(d.paragraphs[d.current].text) || b.Word(oracle.Far(0x01b1, 0x86)) != 1000 || b.Word(oracle.Far(0x01b1, 0xff4c)) != 0xb23e {
@@ -397,7 +407,7 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if e != nil {
 				t.Fatal(e)
 			}
-			receipts = append(receipts, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "state_equal": true, "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "gold": b.Word(oracle.Far(0x01b1, 0x86)), "dialogue_rendered": drawn, "dialogue_key": key, "quotation": d.QuotationState(), "bank_dialogue": d.BankState(), "item_purchase": d.ItemPurchaseState(), "dialogue_masks": dialogueMasks, "masked_labels": maskedLabels, "modal_pixels_changed": 0, "label_keys": keys, "inside_changed": inside, "outside_changed": outside, "held_keys": b.HeldKeys()})
+			receipts = append(receipts, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "state_equal": true, "raw_sha256": fmtHash(raw), "memory_sha256": fmtHash(mem), "gold": b.Word(oracle.Far(0x01b1, 0x86)), "dialogue_rendered": drawn, "dialogue_key": key, "quotation": d.QuotationState(), "bank_dialogue": d.BankState(), "item_purchase": d.ItemPurchaseState(), "item_sale": d.ItemSaleState(), "item_explanation": d.ItemExplanationState(), "dialogue_lead": string(d.lead), "dialogue_masks": dialogueMasks, "masked_labels": maskedLabels, "modal_pixels_changed": 0, "label_keys": keys, "inside_changed": inside, "outside_changed": outside, "held_keys": b.HeldKeys()})
 		default:
 			t.Fatalf("未知命令 %s", line)
 		}
@@ -420,6 +430,9 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 	}
 	if strings.Contains(commandPath, "bank-no-purchase") {
 		scope = "normal cold F7 own save, bank greeting, no transaction farewell and outside1000; full original state equal"
+	}
+	if strings.Contains(commandPath, "branches") {
+		scope = "normal cold F7 own save, three item descriptions/pages, empty sell, prerequisite purchase50, sale confirmation25 and result975, departure and inventory removal; full original state equal"
 	}
 	data, err := json.MarshalIndent(map[string]any{"commands_sha256": fmtHash(commands), "checkpoints": receipts, "dialogue_rejections": d.Rejections, "scope": scope}, "", "  ")
 	if err != nil {

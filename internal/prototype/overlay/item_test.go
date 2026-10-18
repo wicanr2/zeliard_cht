@@ -2,10 +2,12 @@ package overlay
 
 import (
 	"bytes"
+	"encoding/csv"
 	"image"
 	"image/color"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/wicanr2/dosgolem/oracle"
@@ -163,5 +165,240 @@ func TestItemPurchaseCatalogValidation(t *testing.T) {
 	}
 	if q, err := newItemPurchase(o, data, map[string]string{}, font, &paintHistory{}); err != nil || q != nil {
 		t.Fatal("舊catalog應保留道具店原文")
+	}
+}
+
+func TestItemShopDescriptionsAndSaleNormalPathReadOnly(t *testing.T) {
+	if os.Getenv("ZELIARD_ITEM_SAVE") == "" {
+		t.Skip("須掛載正常建立的起始存檔")
+	}
+	if out := os.Getenv("ZELIARD_SHOP_OUTPUT"); out != "" {
+		t.Setenv("ZELIARD_SHOP_OUTPUT", filepath.Join(out, "item-branches"))
+	}
+	testWeaponShopNormalPath(t, "../../../tools/item-shop-branches.commands", 63)
+}
+
+func assertItemBranchCheckpoint(t *testing.T, name string, d *Dialogue, l *Labels, o *oracle.Oracle, dst *image.RGBA, drawn bool) {
+	t.Helper()
+	if name == "description-list-third-attempt" || name == "description-oil-selected" {
+		var rows []labelStamp
+		for _, s := range l.stamps {
+			if s.listViewport {
+				rows = append(rows, s)
+			}
+		}
+		if len(rows) != 2 {
+			t.Fatal("捲動清單未辨識完整兩列", name, len(rows))
+		}
+		for _, want := range []struct {
+			key string
+			y   int
+		}{{"zelres2.file.01b65c", 124}, {"zelres2.file.01b67c", 134}} {
+			found := false
+			for _, s := range rows {
+				found = found || s.source == l.sources[want.key] && s.box.Min == image.Pt(112, want.y)
+			}
+			if !found {
+				t.Fatal("捲動商品譯名／位置不符", name, want.key)
+			}
+		}
+		completed := l.Completed
+		l.ObserveFrame(o.Indexed(), o.Palette())
+		l.Draw(image.NewRGBA(dst.Bounds()), o.Indexed(), o.Palette(), image.Point{})
+		if l.Completed != completed {
+			t.Fatal("同一畫格重複建立清單來源")
+		}
+		for _, bad := range []string{"border", "glyph", "palette", "missing-cache", "source"} {
+			isolated := *l
+			isolated.stamps = append([]labelStamp(nil), rows...)
+			isolated.itemListCache = map[int]*listLabel{}
+			for key, value := range l.itemListCache {
+				isolated.itemListCache[key] = value
+			}
+			raw, pal := append([]byte(nil), o.Indexed()...), o.Palette()
+			switch bad {
+			case "border":
+				raw[122*320+92] ^= 128
+			case "glyph":
+				raw[124*320+112] ^= 128
+			case "palette":
+				pal[9][0] ^= 1
+			case "missing-cache":
+				delete(isolated.itemListCache, 0x10f4)
+			case "source":
+				isolated.itemListPrefix = append([]byte(nil), l.itemListPrefix...)
+				isolated.itemListPrefix[0] ^= 1
+			}
+			canvas := image.NewRGBA(dst.Bounds())
+			before := append([]byte(nil), canvas.Pix...)
+			if isolated.Draw(canvas, raw, pal, image.Point{}) != 0 || !bytes.Equal(before, canvas.Pix) {
+				t.Fatal("捲動清單未知來源未原子退回", bad)
+			}
+		}
+	}
+	q := d.itemExplanation
+	for _, kind := range []string{"kenko", "stone", "oil"} {
+		if !strings.HasPrefix(name, "description-"+kind+"-page") {
+			continue
+		}
+		wantReady := 4
+		if strings.Contains(name, "page2") {
+			wantReady = 5
+		}
+		key := map[string]string{"kenko": "zelres2.file.01b622", "stone": "zelres2.file.01b65c", "oil": "zelres2.file.01b67c"}[kind]
+		if !drawn || q == nil || !q.active || q.ready != wantReady || q.item != l.sources[key] {
+			t.Fatalf("商品介紹來源或中文不完整：%s drawn=%v %v", name, drawn, d.ItemExplanationState())
+		}
+		if _, ok := quoteLayout(q.tokens()); !ok {
+			t.Fatal("商品介紹超出三行安全區", name)
+		}
+		if wantReady == 4 {
+			if !q.prompt {
+				t.Fatal("商品介紹第一頁遺失待續狀態", name)
+			}
+			_, _, rgb := o.ScreenRGB()
+			for y := dialoguePrompt.Min.Y * 3; y < dialoguePrompt.Max.Y*3; y++ {
+				for x := dialoguePrompt.Min.X * 3; x < dialoguePrompt.Max.X*3; x++ {
+					i := (y/3*320 + x/3) * 3
+					if dst.RGBAAt(x, y) != (color.RGBA{rgb[i], rgb[i+1], rgb[i+2], 255}) {
+						t.Fatal("紅色待續三角遭覆寫", name)
+					}
+				}
+			}
+		}
+	}
+	wants := map[string]string{"description-list": "zelres2.file.01b02f", "description-kenko-followup": "zelres2.file.01b072", "description-stone-followup": "zelres2.file.01b072", "description-oil-followup": "zelres2.file.01b072", "empty-sell-message": "zelres2.file.01b002", "sell-potion-list": "zelres2.file.01af16", "sell-potion-result": "zelres2.file.01aeee", "sell-done-farewell": "zelres2.file.01b099", "sell-done-farewell-ready": "zelres2.file.01b099"}
+	if key, ok := wants[name]; ok {
+		if !drawn || d.current < 0 || d.paragraphs[d.current].key != key || d.visible != len(d.paragraphs[d.current].text) {
+			t.Fatalf("商品介紹／出售靜態中文缺漏：%s %v", name, drawn)
+		}
+	}
+	if name == "sell-potion-quote" || name == "sell-potion-quote-ready" {
+		s := d.itemSale
+		if !drawn || s == nil || !s.active || s.ready != 7 || s.Completed != 1 || string(s.price.raw) != "25\xff" || s.item != l.sources["zelres2.file.01b622"] || o.Word(oracle.Far(0x01b1, 0x86)) != 950 {
+			t.Fatalf("出售確認前金額／來源／中文不符：%v", d.ItemSaleState())
+		}
+		points, ok := quoteLayout(s.tokens())
+		if !ok {
+			t.Fatal("出售確認超寬")
+		}
+		copied := 0
+		for i, token := range s.tokens() {
+			if n := token.number; n != nil {
+				copied++
+				at := points[i].Add(image.Pt(dialogueBox.Min.X*3, dialogueBox.Min.Y*3+4))
+				pal := o.Palette()
+				if n.box != image.Rect(138, 119, 153, 127) {
+					t.Fatal("出售數字來源幾何不符", n.box)
+				}
+				for y := 0; y < n.box.Dy()*3; y++ {
+					for x := 0; x < n.box.Dx()*3; x++ {
+						v := pal[n.pixels[y/3*n.box.Dx()+x/3]]
+						if dst.RGBAAt(at.X+x, at.Y+y) != (color.RGBA{v[0], v[1], v[2], 255}) {
+							t.Fatal("出售25的原版字形被改寫")
+						}
+					}
+				}
+			}
+		}
+		if copied != 1 {
+			t.Fatal("出售數字缺漏")
+		}
+		for _, bad := range []string{"pixel", "palette", "number"} {
+			isolated := *s
+			raw, pal := append([]byte(nil), o.Indexed()...), o.Palette()
+			canvas := image.NewRGBA(dst.Bounds())
+			before := append([]byte(nil), canvas.Pix...)
+			switch bad {
+			case "pixel":
+				raw[100*320+55] ^= 128
+			case "palette":
+				pal[9][0] ^= 1
+			case "number":
+				isolated.price.pixels = nil
+			}
+			if isolated.Draw(canvas, raw, pal, image.Point{}) || isolated.active || !bytes.Equal(before, canvas.Pix) {
+				t.Fatal("出售未知來源未原子退回", bad)
+			}
+		}
+	}
+	if name == "sell-potion-result" && (o.Word(oracle.Far(0x01b1, 0x86)) != 975 || string(d.lead) != "非常感謝。") {
+		t.Fatal("出售結果或謝詞遺失", string(d.lead))
+	}
+	if name == "sell-done-outside" || name == "sold-inventory-closed" {
+		if drawn || d.Active() || o.Word(oracle.Far(0x01b1, 0x86)) != 975 {
+			t.Fatal("離店殘留或售後金額不符", name)
+		}
+	}
+	if name == "sold-inventory-empty" {
+		found := false
+		for _, stamp := range l.stamps {
+			found = found || stamp.source == l.sources["zelres2.file.004ab0"]
+		}
+		if !found || o.Word(oracle.Far(0x01b1, 0x86)) != 975 {
+			t.Fatal("售後無物品標籤或金額不符")
+		}
+	}
+}
+
+func TestItemServiceCatalogValidation(t *testing.T) {
+	root, fontPath := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_FONT")
+	if root == "" || fontPath == "" {
+		t.Skip("須掛載原版與字型")
+	}
+	font, err := bitmap.Load(fontPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(filepath.Join(root, "ZELRES2.SAR"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog, err := os.ReadFile("../../../text/dialogue-prototype.tsv")
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := csv.NewReader(bytes.NewReader(catalog))
+	r.Comma = '\t'
+	records, err := r.ReadAll()
+	if err != nil {
+		t.Fatal(err)
+	}
+	o, err := oracle.Load(filepath.Join(root, "ZELIARD.EXE"), root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer o.Close()
+	for _, service := range []string{"sale", "explanation"} {
+		newChain := newItemSale
+		key, last := "zelres2.file.01ae60", "zelres2.file.01af6d"
+		if service == "explanation" {
+			newChain = newItemExplanation
+			key, last = "zelres2.file.01b053", "zelres2.file.01b504"
+		}
+		for _, bad := range []string{"missing-item", "unknown", "incomplete", "font"} {
+			t.Run(service+"/"+bad, func(t *testing.T) {
+				texts := map[string]string{}
+				for _, record := range records[1:] {
+					texts[record[0]] = record[1]
+				}
+				switch bad {
+				case "missing-item":
+					texts[key] = strings.ReplaceAll(texts[key], "{item}", "")
+				case "unknown":
+					texts[key] += "{other}"
+				case "incomplete":
+					delete(texts, last)
+				case "font":
+					texts[last] = string(rune(0x10ffff))
+				}
+				if _, err := newChain(o, data, texts, font, &paintHistory{}); err == nil {
+					t.Fatal("新道具服務不相容catalog未拒絕")
+				}
+			})
+		}
+		if q, err := newChain(o, data, map[string]string{}, font, &paintHistory{}); err != nil || q != nil {
+			t.Fatal("舊catalog須保留原貌", service)
+		}
 	}
 }

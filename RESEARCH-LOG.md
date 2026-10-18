@@ -506,3 +506,27 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 道具店GUI v1在導航主動停止，未進店或購買，失敗收據保留。來源補證 `workplace/item-overlay-v1/navigation-v2/receipt.json` SHA-256 `41478c5d7355a138147142d2cd00929a297b28f7b511619529e7e5527b9223f1`證實實圖門中心144、左向角色位置下，正常Up可進MAGIC，與既有初訪完整indexed相同、色盤相同。只修harness接受已證實136及144兩點，不推廣碰撞容差；新版GUI實際遇到136，不宣稱GUI另測144。
 - 道具店GUI v2收據 `workplace/item-overlay-v1/gui-v2/receipt.json` SHA-256 `98a4b392db04a5f1d0441ddae624414dd66cbfc61c9fc72fcae709616513b9d4`，目視紀錄SHA-256 `80c6076c5af9bae4837cf12454eafd417fdb825c41367398c32c5793e7b69cb2`。88筆按放確認、最長0.223秒，購買後78字形／ready7／completed1／price50；原版50的45×24圖形在三倍遊戲畫布 `(552,302)`RGB差0，六個金額／清單價格／藥水圖示區域也相同。11張實圖已逐張目視，續購否、告別、離店950、物品頁及關閉完整，持鍵空、capture-tail退出0。保留離店paragraph18／kind2／first_difference422舊文字退回，不稱零失配。
 - 兩次正常GUI固定輸入、候選、41來源與8鍵序、原29檔、自建存檔與複本及字型均不變，所有相關容器已回收，擁有權異常0。主入口已同步dc2696ed，原fc797237別名保留。NO USE、其餘HUD／場景、其他物品與藥水使用仍未翻譯或驗證；沒有新存檔持久性、實體手把、完整遊戲或正式平台包聲明。
+
+## 2026-10-18：道具店介紹、出售與四組HD畫格
+
+原版入口為 `workplace/item-branches-v1/receipt.json`，SHA-256 `ce132fe7f07ff3fe29e7e8324dbbfd68f2de04b82727613022be42b18bb309a1`；文字映射 `source-evidence.json`為 `0779bbc09c60b7b47527943ee06e1b4a3a4fa9eb301461feeb9c8caa09386077`。使用既有explore-v4、自建SAVETEST、3000 cycles與固定882來源，Go1.24.13。窄探針程式SHA-256 `55b433c75f0e2351698d86eddc400060f5b0c70db1d0dc8ac4c6608e8bb4c13b`、二進位 `dfcea1460d7b617e5e4674ffa2e417cdd039208cb6a4a9e85e75ce0cfe240250`，只觀察已指定八個入口。
+
+- 63個檢查點的色號、色盤、64KiB段、FileOps及含KeyReads收據逐byte相同。最終482.8msteps／489124421cycles、金幣975。原版鍵序SHA-256 `7294e3ce8e21c1d5ebc0985b0e60c67287ea7ac2294604a9640950c1c54045a1`；正式測試鍵序刪除探針專用quit命令，遊戲輸入與預算不變。
+- 已證實文字對應，位址基準分別為dosgolem實模式與SAR2檔案偏移：Ken’ko `[01B1:AB4A,ABC5)`對應 `[0x1B0D2,0x1B14D)`；Magia `[01B1:ADFD,AEA6)`對應 `[0x1B385,0x1B42E)`；刀劍油 `[01B1:AF3D,AFD3)`對應 `[0x1B4C5,0x1B55B)`。這只證實說明文字與正常選取，不證明效果規則。
+- 第一頁待續游標依序AB86h、AE34h、AF7Ch，旗標0。刀劍油第一頁在句中等待，第二頁才接增強劍攻擊與末句；不能依斜線單獨推定頁界。介紹清單是兩列viewport，正常Down可捲到第三件，不是只有兩件商品。
+- 出售數字來源 `01B1:B21E`為 `32 35 FF`，原版711Bh兩字BX=138／145、CL=119，原始CX高位保留於trace。確認前金幣950，接受Yes後975，謝詞接四列主選單詢問；沒有觀察到續賣Yes／No。正常離店後USE:NOTHING、藥水圖示消失，未使用道具。
+- HD來源入口 `workplace/item-hd-v1/source-groups.json`、`artwork-manifest.json`及 `generation.json`。十個已知室內抽樣歸四組；人物原生局部差異界為 `[18,8,48,63)`，蒸氣為 `[48,1,95,48)`，相對96×64外框。選定1536×1024圖直接合成至282×186內框，共用底圖，差異只限上述區域。前兩張右手越界稿保留並拒用；四組不是完整動畫。
+- 素材是原版構圖衍生，只留本機；所有原29檔與自建存檔不變。原版探針與離線HD測試不稱正常X視窗或完整中文化完成。拒絕售價、多物品續賣、物品效果與其他城鎮仍未驗。
+- 中文配對收據 `workplace/item-hd-v1/pair-v3/item-branches/receipt.json` SHA-256 `b96f132d3b65c45bf1b3b223a1a29100d4d7e2e5ad334699b9fd19909bf7c3fc`，63點完整1MiB、色號、色盤、CS:IP、steps／cycles相同，區外0。介紹完成三次538字形，購買一次78字形，出售一次90字形；離店與關閉物品頁覆繪差0，持鍵空、金幣975。保留離店paragraph18／kind2／first_difference1舊文字安全退回，不稱零失配。
+- 固定候選 `881ef8dd27ec6f28ee880e27f557c135f1d40531ea43be589103a64d29951eef`，身份與來源入口 `workplace/item-hd-v1/candidate-identity-v1.json`及 `source-audit.json`。Go1.24.13／Ebitengine2.9.9，43來源與9鍵序，51筆對話及43筆標籤。新分支、舊首購32點／銀行35點／武器9點及HD共八個頂層、十九個catalog拒絕子項全部通過，無skip；go vet／建置通過。GUI另驗，不把配對PNG當成實際視窗。
+
+### 實際視窗與捲動清單勘誤
+
+- 881ef8dd的正常GUI收據 `workplace/item-hd-v1/gui-v1/receipt.json` SHA-256為 `3e3f028988e44dd5d98be0377125ef1c8745ed5ae8006cca5a062be87a7f659a`；目視紀錄為 `16c0ec52f878624aeb691272db7878aeb919d74bb776b4060a30ea22dd852727`。六頁介紹、原版待續三角、空出售、買50、售前950、以25出售後975、離店與物品移除通過。152筆按放回執、29張目視、權威退出0。HD實遇0／1／3，內框52406／52405／52384像素改變、區外0、完整還原0，暫停steps／cycles不變；pose2未在GUI遇到。
+- 同份GUI目視發現捲動後Magia Stone／Sabre Oil兩列仍英文。舊配對參考也保留英文，ROI相同不能證明中文完成。舊收據保留此限制，沒有換名為修正後驗證。
+- 窄顯示證據在 `workplace/item-hd-v1/scroll-fix-v1/pixel-source-evidence.json`。SAR2 SHA-256仍為 `bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1`。dosgolem實模式來源Magia `01B1:B0D4`與Sabre `01B1:B0F4`分別對應SAR2檔案偏移 `0x1B65C`與 `0x1B67C`。此時trace只見383Eh／384Ah，沒有再走37CCh／3804h或22DBh／2308h；刷新consumer仍標「未知」。
+- 已證實顯示條件為兩列viewport `(92,120,132,26)`，名稱起點 `(112,124)`／`(112,134)`，每列含黑色尾端的完整65×8色號圖形。viewport固定部分SHA-256為 `ac575320f6b3ef26a3208535c532847f7ccbd8bfb9f42cc349d4633804d79e2e`。原版buffer `01B1:3D4F`以160步距保存八列；只讀取已觀察來源，不推測搬移常式。
+- `ObserveFrame`只在模組前綴、完整原文、色盤、固定框、唯一已知箭頭及兩列bitmap全部相符時記錄當前列，順序只接受Ken’ko／Magia或Magia／Sabre。`Draw`重新驗證並只繪製既有記錄，避免隔離繪製舊標籤時建立無關的新列。失配撤除，原版buffer、記憶體、輸入及捲動邏輯不變。
+- 修正候選70a3f8e3的完整SHA-256及43來源／9鍵序身份見 `scroll-fix-v1/candidate-identity-v2.json`。配對收據 `pair-v2/item-branches/receipt.json` SHA-256為 `495ecfcc5dfb8bb890541201411dacf79f0537c91aabaa87cbb5c66d85729b23`，63點完整原版狀態相同、區外0、售後975、離店及關閉覆繪差0。首購32／銀行35／武器9點回歸也通過；七個頂層與十九個catalog子項PASS，無skip或fail。另驗兩列中文與位置、重複畫格及五類失配退回。HD與TSV沿881相同來源，沒有冒充新候選重跑HD視窗。
+- 短GUI收據 `workplace/item-hd-v1/gui-v2/receipt.json` SHA-256為 `2f16bb16dcf0bbb8a5b04154d270770d8c92a2421a847252ca61255186d66655`；目視紀錄為 `99609619565d43cd3a11d04f6cc5d68ce1334cb3fe9e1d93490ebc5d6e1c878f`。同54233執行至權威exit0，初始兩列中文、Down捲至第三件、油品兩頁／三角／續問否與正常離店1000通過。102筆按放、10張目視、285固定輸入、原件／字型／自建存檔不變，持鍵空、容器清理、擁有權異常0。HD關閉、購買與出售完成次數0；不稱重驗交易或HD。最後保留kind2／paragraph18／first_difference242舊文字安全退回。
+- 主入口已同步70a3f8e3，整合稽核 `scroll-fix-v1/current-audit-v2.json`同時核對兩份不同候選與範圍GUI、完整配對及素材未變。v1英文捲動限制仍可回查，v2修正另有收據。原版、圖面與字型留在本機，物品使用、效果、其餘場景、音效、戰鬥與實體手把仍未完成或未驗。

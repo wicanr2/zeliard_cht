@@ -32,6 +32,7 @@ type Dialogue struct {
 	font                        bitmap.Font
 	paragraphs                  []dialogueParagraph
 	current, visible            int
+	lead                        []rune
 	active, pending, prompt     bool
 	completed                   []byte
 	paint                       *paintHistory
@@ -39,6 +40,8 @@ type Dialogue struct {
 	quotation                   *Quotation
 	bank                        *bankDialogue
 	itemPurchase                *itemPurchase
+	itemSale                    *itemPurchase
+	itemExplanation             *itemPurchase
 	Glyphs, Paragraphs, Scrolls int
 	Rejections                  []map[string]int
 }
@@ -78,7 +81,7 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 	d := &Dialogue{font: font, current: -1, paint: observePaint(o)}
 	// 檔案偏移與模組 payload 起點來自固定 SAR 及正常路徑傾印。
 	// 數值、控制碼與存檔動作仍由原版執行。
-	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}, {0x185ea, 0x18606, 0x17817}, {0x18607, 0x18633, 0x17817}, {0x18634, 0x18661, 0x17817}, {0x1883e, 0x1885d, 0x17817}, {0x18899, 0x188b8, 0x17817}, {0x189f6, 0x18a16, 0x17817}, {0x1876b, 0x187c6, 0x17817}, {0x18a17, 0x18a57, 0x17817}, {0x1adf3, 0x1ae11, 0x1a588}, {0x1ae15, 0x1ae2e, 0x1a588}, {0x1aeee, 0x1af12, 0x1a588}, {0x1b099, 0x1b0bd, 0x1a588}, {0x1a0bd, 0x1a0ff, 0x19462}} {
+	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}, {0x185ea, 0x18606, 0x17817}, {0x18607, 0x18633, 0x17817}, {0x18634, 0x18661, 0x17817}, {0x1883e, 0x1885d, 0x17817}, {0x18899, 0x188b8, 0x17817}, {0x189f6, 0x18a16, 0x17817}, {0x1876b, 0x187c6, 0x17817}, {0x18a17, 0x18a57, 0x17817}, {0x1adf3, 0x1ae11, 0x1a588}, {0x1ae15, 0x1ae2e, 0x1a588}, {0x1aeee, 0x1af12, 0x1a588}, {0x1b099, 0x1b0bd, 0x1a588}, {0x1a0bd, 0x1a0ff, 0x19462}, {0x1b02f, 0x1b04f, 0x1a588}, {0x1b072, 0x1b096, 0x1a588}, {0x1b002, 0x1b02e, 0x1a588}, {0x1af16, 0x1af36, 0x1a588}, {0x1af36, 0x1af4c, 0x1a588}} {
 		key := fmt.Sprintf("zelres2.file.%06x", source[0])
 		text, ok := texts[key]
 		if !ok {
@@ -115,6 +118,14 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 		return nil, err
 	}
 	d.itemPurchase, err = newItemPurchase(o, data, texts, font, d.paint)
+	if err != nil {
+		return nil, err
+	}
+	d.itemSale, err = newItemSale(o, data, texts, font, d.paint)
+	if err != nil {
+		return nil, err
+	}
+	d.itemExplanation, err = newItemExplanation(o, data, texts, font, d.paint)
 	if err != nil {
 		return nil, err
 	}
@@ -167,6 +178,7 @@ func (d *Dialogue) reset() {
 	d.completed = nil
 	d.current = -1
 	d.visible = 0
+	d.lead = nil
 }
 func (d *Dialogue) beginGlyph(o *oracle.Oracle) {
 	pos := o.Word(oracle.Far(0x01b1, 0xff4c)) - 1
@@ -189,6 +201,11 @@ func (d *Dialogue) beginGlyph(o *oracle.Oracle) {
 		return
 	}
 	if d.current != idx {
+		if d.current >= 0 && d.paragraphs[d.current].key == "zelres2.file.01af36" && d.paragraphs[idx].key == "zelres2.file.01aeee" {
+			d.lead = append([]rune(nil), d.paragraphs[d.current].text...)
+		} else {
+			d.lead = nil
+		}
 		d.Paragraphs++
 		d.current = idx
 		d.prompt = false
@@ -264,7 +281,7 @@ func dialogueLayout(font bitmap.Font, text []rune) ([]image.Point, error) {
 }
 
 func (d *Dialogue) Active() bool {
-	return d.active || d.quotation != nil && d.quotation.active || d.bank != nil && d.bank.active || d.itemPurchase != nil && d.itemPurchase.active
+	return d.active || d.quotation != nil && d.quotation.active || d.bank != nil && d.bank.active || d.itemPurchase != nil && d.itemPurchase.active || d.itemSale != nil && d.itemSale.active || d.itemExplanation != nil && d.itemExplanation.active
 }
 
 // UseLabels 共用已驗證的商品來源與譯名，不複製另一份商品翻譯。
@@ -274,6 +291,12 @@ func (d *Dialogue) UseLabels(l *Labels) {
 	}
 	if d.itemPurchase != nil {
 		d.itemPurchase.labels = l
+	}
+	if d.itemSale != nil {
+		d.itemSale.labels = l
+	}
+	if d.itemExplanation != nil {
+		d.itemExplanation.labels = l
 	}
 }
 
@@ -313,6 +336,12 @@ func (d *Dialogue) BankState() map[string]any {
 }
 
 func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, origin image.Point) bool {
+	if d.itemExplanation != nil && d.itemExplanation.active {
+		return d.itemExplanation.Draw(dst, indexed, palette, origin)
+	}
+	if d.itemSale != nil && d.itemSale.active {
+		return d.itemSale.Draw(dst, indexed, palette, origin)
+	}
 	if d.itemPurchase != nil && d.itemPurchase.active {
 		return d.itemPurchase.Draw(dst, indexed, palette, origin)
 	}
@@ -342,6 +371,13 @@ func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, 
 		d.reset()
 		return false
 	}
+	p := d.paragraphs[d.current]
+	text := append(append([]rune(nil), d.lead...), p.text...)
+	positions, err := dialogueLayout(d.font, text)
+	if err != nil {
+		d.reset()
+		return false
+	}
 	box := image.Rect(origin.X+dialogueBox.Min.X*3, origin.Y+dialogueBox.Min.Y*3, origin.X+dialogueBox.Max.X*3, origin.Y+dialogueBox.Max.Y*3)
 	prompt := image.Rect(origin.X+dialoguePrompt.Min.X*3, origin.Y+dialoguePrompt.Min.Y*3, origin.X+dialoguePrompt.Max.X*3, origin.Y+dialoguePrompt.Max.Y*3)
 	bg, fg := palette[0], palette[9]
@@ -353,10 +389,8 @@ func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, 
 			}
 		}
 	}
-	p := d.paragraphs[d.current]
-	positions, _ := dialogueLayout(d.font, p.text)
-	for i, ch := range p.text {
-		if i >= d.visible {
+	for i, ch := range text {
+		if i >= len(d.lead)+d.visible {
 			break
 		}
 		g := d.font[ch]
@@ -381,7 +415,13 @@ func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, 
 }
 
 func (d *Dialogue) ItemPurchaseState() map[string]any {
-	q := d.itemPurchase
+	return itemChainState(d.itemPurchase)
+}
+
+func (d *Dialogue) ItemSaleState() map[string]any        { return itemChainState(d.itemSale) }
+func (d *Dialogue) ItemExplanationState() map[string]any { return itemChainState(d.itemExplanation) }
+
+func itemChainState(q *itemPurchase) map[string]any {
 	if q == nil {
 		return nil
 	}
@@ -389,5 +429,9 @@ func (d *Dialogue) ItemPurchaseState() map[string]any {
 	if len(q.price.raw) > 0 {
 		price = string(q.price.raw[:len(q.price.raw)-1])
 	}
-	return map[string]any{"active": q.active, "stage": q.stage, "ready": q.ready, "glyphs": q.Glyphs, "completed": q.Completed, "price": price}
+	item := ""
+	if q.item != nil {
+		item = string(q.item.text)
+	}
+	return map[string]any{"active": q.active, "stage": q.stage, "ready": q.ready, "glyphs": q.Glyphs, "completed": q.Completed, "price": price, "item": item, "prompt": q.prompt}
 }

@@ -150,11 +150,14 @@
 | [internal/prototype/overlay/scroll.go](internal/prototype/overlay/scroll.go) | 首章來源與逐列完成事件的唯讀覆繪；字級與版面仍為 prototype |
 | [tools/gui_smoke.py](tools/gui_smoke.py) | 有界 Xvfb 前端啟動與滑鼠開啟設定頁驗證 |
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |
+| [internal/prototype/hd/item_shop.go](internal/prototype/hd/item_shop.go) | 道具店四組已觀察畫格與局部動畫覆繪 |
+| [internal/prototype/hd/item_shop_test.go](internal/prototype/hd/item_shop_test.go) | 道具店HD來源、動畫範圍、原子退回及區外不寫入驗證 |
+| [tools/item-shop-branches.commands](tools/item-shop-branches.commands) | 三件商品介紹、空賣、首瓶出售與售後物品頁的正常鍵序 |
 | [internal/prototype/hd/bank.go](internal/prototype/hd/bank.go) | 銀行三個已觀察畫格的 HD 辨識、合成與安全退回 |
 | [internal/prototype/hd/bank_test.go](internal/prototype/hd/bank_test.go) | 銀行 HD 邊界、來源不變及失配退回測試 |
-| [internal/prototype/overlay/item_purchase.go](internal/prototype/overlay/item_purchase.go) | 道具店購買後的商品、數字圖形與續購中文試作 |
+| [internal/prototype/overlay/item_purchase.go](internal/prototype/overlay/item_purchase.go) | 道具店購買、出售確認與三件商品說明的唯讀顯示鏈 |
 | [internal/prototype/overlay/item_title.go](internal/prototype/overlay/item_title.go) | 魔法物品店標題的來源、幾何與色彩核對 |
-| [internal/prototype/overlay/item_test.go](internal/prototype/overlay/item_test.go) | 道具店正常購買配對與顯示失配退回驗證 |
+| [internal/prototype/overlay/item_test.go](internal/prototype/overlay/item_test.go) | 道具店正常購買／介紹／出售配對、原版字形與顯示失配退回驗證 |
 | [tools/item-shop.commands](tools/item-shop.commands) | 冷讀自建存檔到道具店購買、離店及物品頁的原版鍵序 |
 | [tools/bank-no-purchase.commands](tools/bank-no-purchase.commands) | 冷讀自建存檔到銀行未交易告別及正常離店的原版鍵序 |
 | [internal/prototype/hd/merchant.go](internal/prototype/hd/merchant.go) | 已觀察武器商人三畫格的HD覆繪與未知畫面退回 |

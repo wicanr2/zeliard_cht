@@ -1,0 +1,232 @@
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+shot cold-town
+key 0x41 500000
+run 2000000
+shot load-list
+key 0x15 150000
+run 1500000
+shot load-name
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+shot load-name-entered
+key 0x1c 100000
+run 16000000
+shot restored
+key 0x4b 8000000
+run 1000000
+key 0x4b 4000000
+run 1000000
+shot item-nav0
+key 0x4b 250000
+run 250000
+shot item-fine-1
+key 0x4b 250000
+run 250000
+shot item-fine-2
+key 0x4b 250000
+run 250000
+shot item-fine-3
+key 0x4b 250000
+run 250000
+shot item-fine-4
+key 0x4b 250000
+run 250000
+shot item-fine-5
+key 0x4b 250000
+run 250000
+shot item-fine-6
+key 0x4b 250000
+run 250000
+shot item-fine-7
+key 0x4b 250000
+run 250000
+shot item-fine-8
+key 0x4b 250000
+run 250000
+shot item-fine-9
+key 0x4b 250000
+run 250000
+shot item-fine-10
+key 0x4b 250000
+run 250000
+shot item-fine-11
+key 0x4b 250000
+run 250000
+shot item-fine-12
+key 0x4b 250000
+run 250000
+shot item-fine-13
+key 0x48 250000
+run 20000000
+shot item-greeting
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+shot description-selected
+key 0x39 500000
+run 12000000
+shot description-list
+key 0x39 500000
+run 20000000
+shot description-kenko-page1
+run 1000000
+shot description-kenko-page1-ready
+key 0x39 500000
+run 20000000
+shot description-kenko-page2
+run 1000000
+shot description-kenko-page2-ready
+key 0x39 500000
+run 16000000
+shot description-kenko-followup
+key 0x39 500000
+run 10000000
+shot description-list-again
+key 0x50 100000
+run 1500000
+shot description-list-second
+key 0x50 100000
+run 1500000
+shot description-list-third-attempt
+key 0x48 100000
+run 1500000
+shot description-stone-selected
+key 0x39 500000
+run 20000000
+shot description-stone-page1
+run 1000000
+shot description-stone-page1-ready
+key 0x39 500000
+run 20000000
+shot description-stone-page2
+run 1000000
+shot description-stone-page2-ready
+key 0x39 500000
+run 12000000
+shot description-stone-followup
+key 0x39 500000
+run 10000000
+shot description-list-for-oil
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+shot description-oil-selected
+key 0x39 500000
+run 20000000
+shot description-oil-page1
+run 1000000
+shot description-oil-page1-ready
+key 0x39 500000
+run 20000000
+shot description-oil-page2
+run 1000000
+shot description-oil-page2-ready
+key 0x39 500000
+run 12000000
+shot description-oil-followup
+key 0x50 100000
+run 1500000
+shot description-oil-followup-no
+key 0x39 500000
+run 8000000
+shot description-finished
+key 0x48 100000
+run 1500000
+shot empty-sell-selected
+key 0x39 500000
+run 12000000
+shot empty-sell-message
+key 0x48 100000
+run 1500000
+shot buy-prerequisite-selected
+key 0x39 500000
+run 12000000
+shot buy-prerequisite-list
+key 0x39 500000
+run 16000000
+shot buy-prerequisite-complete
+key 0x50 100000
+run 1500000
+shot buy-prerequisite-no
+key 0x39 500000
+run 8000000
+shot buy-prerequisite-finished
+key 0x50 100000
+run 1500000
+shot sell-potion-selected
+key 0x39 500000
+run 12000000
+shot sell-potion-list
+key 0x39 500000
+run 20000000
+shot sell-potion-quote
+run 1000000
+shot sell-potion-quote-ready
+key 0x39 500000
+run 16000000
+shot sell-potion-result
+key 0x48 100000
+run 1500000
+key 0x48 100000
+run 1500000
+shot sell-done-outside-selected
+key 0x39 500000
+run 10000000
+shot sell-done-farewell
+run 1000000
+shot sell-done-farewell-ready
+key 0x39 500000
+run 4000000
+shot sell-done-outside
+key 0x1c 500000
+run 1000000
+shot sold-inventory-empty
+key 0x1c 500000
+run 2000000
+shot sold-inventory-closed

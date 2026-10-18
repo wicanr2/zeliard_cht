@@ -38,10 +38,12 @@ type labelStamp struct {
 	paintSerial                    uint64
 	foreground, shadow, background uint8
 	shadowOffset                   *image.Point
+	listViewport                   bool
 }
 type listLabel struct {
-	source *labelSource
-	pixels []byte
+	source  *labelSource
+	pixels  []byte
+	palette [256][3]uint8
 }
 
 // Labels 只觀察已知 MCGA 繪字入口，來源與完成畫面不符時保留原貌。
@@ -58,6 +60,9 @@ type Labels struct {
 	inventoryIndex   int
 	bankTitlePending *labelStamp
 	itemTitlePending *labelStamp
+	original         *oracle.Oracle
+	itemListPrefix   []byte
+	itemListCache    map[int]*listLabel
 }
 
 func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels, error) {
@@ -98,7 +103,7 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 		}
 		files[id] = b
 	}
-	l := &Labels{font: font, sources: map[string]*labelSource{}, paint: observePaint(o)}
+	l := &Labels{font: font, sources: map[string]*labelSource{}, paint: observePaint(o), original: o, itemListPrefix: append([]byte(nil), files["zelres2"].data[0x1a588:0x1a5c8]...), itemListCache: map[int]*listLabel{}}
 	tsv, err := os.ReadFile(catalog)
 	if err != nil {
 		return nil, err
@@ -270,6 +275,11 @@ func (l *Labels) captureListSource(o *oracle.Oracle) {
 		}
 	}
 	l.listPrepared.pixels = pixels
+	l.listPrepared.palette = o.Palette()
+	if l.isItemListSource(l.listPrepared.source) && len(pixels) > 0 {
+		cached := *l.listPrepared
+		l.itemListCache[cached.source.offset] = &cached
+	}
 }
 func (l *Labels) beginListRow(o *oracle.Oracle) {
 	l.pending = nil
@@ -388,9 +398,13 @@ func (l *Labels) store(s labelStamp) {
 	l.Completed++
 }
 func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin image.Point) int {
+	_, viewport := l.itemListFrame(raw, pal)
 	kept := l.stamps[:0]
 	drawn := 0
 	for _, s := range l.stamps {
+		if s.listViewport && !viewport {
+			continue
+		}
 		if pal != s.palette {
 			continue
 		}
@@ -454,4 +468,104 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 	}
 	l.stamps = kept
 	return drawn
+}
+
+func (l *Labels) isItemListSource(s *labelSource) bool {
+	return s != nil && s.base == 0xa000 && s.width == 5 && bytes.Equal(s.prefix, l.itemListPrefix) && (s.offset == 0x109a || s.offset == 0x10d4 || s.offset == 0x10f4)
+}
+
+// itemListFrame 辨識正常捲動未再走37CC/3804的兩列顯示。
+// 只接受已觀察383E/384A產生的完整字形、固定viewport及兩種商品順序。
+// 位址與bitmap證據見 CONTEXT 的 scroll-fix-v1，不推定未知copy routine語意。
+func (l *Labels) itemListFrame(raw []byte, pal [256][3]uint8) ([2]*listLabel, bool) {
+	o := l.original
+	if o == nil || len(raw) != 64000 || o.VideoMode() != 0x13 || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0xa000), 64), l.itemListPrefix) {
+		return [2]*listLabel{}, false
+	}
+	var fixed []byte
+	for y := 120; y < 146; y++ {
+		for x := 92; x < 224; x++ {
+			if (y >= 124 && y < 132 || y >= 134 && y < 142) && x >= 104 && x < 177 {
+				continue
+			}
+			fixed = append(fixed, raw[y*320+x])
+		}
+	}
+	if fmt.Sprintf("%x", sha256.Sum256(fixed)) != "ac575320f6b3ef26a3208535c532847f7ccbd8bfb9f42cc349d4633804d79e2e" {
+		return [2]*listLabel{}, false
+	}
+	selected := 0
+	var found [2]*listLabel
+	for row, y := range []int{124, 134} {
+		arrow := fmt.Sprintf("%x", sha256.Sum256(labelCrop(raw, image.Rect(104, y, 112, y+8))))
+		switch arrow {
+		case "7d5fb6dffdb75d8d0fbdd85c03ccc0574528d4302b919d73be048e6cbdf06a0e":
+			selected++
+		case "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b":
+		default:
+			return [2]*listLabel{}, false
+		}
+		actual := labelCrop(raw, image.Rect(112, y, 177, y+8))
+		for _, cached := range l.itemListCache {
+			s := cached.source
+			w := (len(s.raw) - 1) * 5
+			if !l.isItemListSource(s) || cached.palette != pal || w > 65 || w < 1 || len(cached.pixels) != w*8 || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, uint16(0xa000+s.offset)), len(s.raw)), s.raw) {
+				continue
+			}
+			padded := make([]byte, 65*8)
+			for j := 0; j < 8; j++ {
+				copy(padded[j*65:j*65+w], cached.pixels[j*w:(j+1)*w])
+			}
+			if bytes.Equal(actual, padded) {
+				found[row] = cached
+				break
+			}
+		}
+		if found[row] == nil {
+			return [2]*listLabel{}, false
+		}
+	}
+	if selected != 1 || !(found[0].source.offset == 0x109a && found[1].source.offset == 0x10d4 || found[0].source.offset == 0x10d4 && found[1].source.offset == 0x10f4) {
+		return [2]*listLabel{}, false
+	}
+	return found, true
+}
+
+// ObserveFrame 在繪製前記錄已確認的新兩列，Draw 只繪製現有記錄。
+// 單一舊標籤的隔離繪製不會順帶建立其他標籤。
+func (l *Labels) ObserveFrame(raw []byte, pal [256][3]uint8) {
+	o := l.original
+	if o == nil || o.VideoMode() != 0x13 || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0xa000), 64), l.itemListPrefix) {
+		if len(l.itemListCache) > 0 {
+			l.itemListCache = map[int]*listLabel{}
+		}
+		return
+	}
+	found, valid := l.itemListFrame(raw, pal)
+	if !valid {
+		return
+	}
+	for row, cached := range found {
+		y, w := 124+row*10, (len(cached.source.raw)-1)*5
+		box := image.Rect(112, y, 112+w, y+8)
+		current := false
+		for _, stamp := range l.stamps {
+			if stamp.listViewport && stamp.source == cached.source && stamp.box == box && stamp.palette == pal && bytes.Equal(stamp.raw, cached.pixels) {
+				current = true
+				break
+			}
+		}
+		if current {
+			continue
+		}
+		kept := l.stamps[:0]
+		for _, stamp := range l.stamps {
+			if l.isItemListSource(stamp.source) && stamp.box.Min == box.Min {
+				continue
+			}
+			kept = append(kept, stamp)
+		}
+		l.stamps = kept
+		l.store(labelStamp{source: cached.source, box: box, rows: []image.Rectangle{box}, raw: append([]byte(nil), cached.pixels...), palette: pal, paintSerial: l.paint.serial, foreground: 9, listViewport: true})
+	}
 }

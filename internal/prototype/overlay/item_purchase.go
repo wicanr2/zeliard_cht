@@ -11,8 +11,8 @@ import (
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
 )
 
-// itemPurchase 只觀察已購物後的商品、原版金額與繼續購物詢問。
-// 金額已由原版扣除；此顯示層不建立購買前確認或改變交易。
+// itemPurchase 共用道具店購買後訊息、出售確認與商品說明的唯讀顯示鏈。
+// 三種來源分開配對；原版決定交易、翻頁與等待輸入。
 type itemPurchase struct {
 	font                bitmap.Font
 	paint               *paintHistory
@@ -29,14 +29,51 @@ type itemPurchase struct {
 	palette             [256][3]uint8
 	paintSerial         uint64
 	Glyphs, Completed   int
+	start               uint16
+	terminal            int
+	thresholds          [3]int
+	explanation, prompt bool
+	details             map[uint16][2]string
 }
 
 func newItemPurchase(o *oracle.Oracle, data []byte, texts map[string]string, font bitmap.Font, paint *paintHistory) (*itemPurchase, error) {
-	keys := [3]string{"zelres2.file.01ae4d", "zelres2.file.01ae7a", "zelres2.file.01ae92"}
-	placeholders := [3]string{"item", "price", ""}
-	q := &itemPurchase{font: font, paint: paint, fragments: map[int]quoteFragment{}, prefix: append([]byte(nil), data[0x1a588:0x1a5c8]...)}
+	return newItemChain(o, data, texts, font, paint, itemChainSpec{
+		keys: []string{"zelres2.file.01ae4d", "zelres2.file.01ae7a", "zelres2.file.01ae92"}, placeholders: []string{"item", "price", ""},
+		start: 0xa8c5, terminal: 7, thresholds: [3]int{3, 6, 7},
+		bindings: [][3]int{{0, 0xa8c5, 0xa8d4}, {2, 0xa8d4, 0xa8d8}, {3, 0xa8f2, 0xa901}, {5, 0xa901, 0xa90a}, {6, 0xa90a, 0xa929}},
+	})
+}
+
+type itemChainSpec struct {
+	keys, placeholders []string
+	start              uint16
+	terminal           int
+	thresholds         [3]int
+	bindings           [][3]int
+	explanation        bool
+}
+
+func newItemSale(o *oracle.Oracle, data []byte, texts map[string]string, font bitmap.Font, paint *paintHistory) (*itemPurchase, error) {
+	return newItemChain(o, data, texts, font, paint, itemChainSpec{
+		keys: []string{"zelres2.file.01ae60", "zelres2.file.01af4c", "zelres2.file.01af6d"}, placeholders: []string{"item", "price", ""},
+		start: 0xa8d8, terminal: 7, thresholds: [3]int{3, 6, 7},
+		bindings: [][3]int{{0, 0xa8d8, 0xa8ef}, {2, 0xa8ef, 0xa8f2}, {3, 0xa9c4, 0xa9d4}, {5, 0xa9d4, 0xa9e5}, {6, 0xa9e5, 0xa9fe}},
+	})
+}
+
+func newItemExplanation(o *oracle.Oracle, data []byte, texts map[string]string, font bitmap.Font, paint *paintHistory) (*itemPurchase, error) {
+	return newItemChain(o, data, texts, font, paint, itemChainSpec{
+		keys: []string{"zelres2.file.01b053", "zelres2.file.01b0d2", "zelres2.file.01b10e", "zelres2.file.01b385", "zelres2.file.01b3bc", "zelres2.file.01b4c5", "zelres2.file.01b504"}, placeholders: []string{"item", "", "", "", "", "", ""},
+		start: 0xaacb, terminal: 5, thresholds: [3]int{3, 4, 5}, explanation: true,
+		bindings: [][3]int{{0, 0xaacb, 0xaae6}, {2, 0xaae6, 0xaaea}, {0xab4a, 0xab4a, 0xab86}, {0xab86, 0xab86, 0xabc5}, {0xadfd, 0xadfd, 0xae34}, {0xae34, 0xae34, 0xaea6}, {0xaf3d, 0xaf3d, 0xaf7c}, {0xaf7c, 0xaf7c, 0xafd3}},
+	})
+}
+
+func newItemChain(o *oracle.Oracle, data []byte, texts map[string]string, font bitmap.Font, paint *paintHistory, spec itemChainSpec) (*itemPurchase, error) {
+	q := &itemPurchase{font: font, paint: paint, fragments: map[int]quoteFragment{}, prefix: append([]byte(nil), data[0x1a588:0x1a5c8]...), start: spec.start, terminal: spec.terminal, thresholds: spec.thresholds, explanation: spec.explanation, details: map[uint16][2]string{}}
+	translated := make([]string, len(spec.keys))
 	found := 0
-	for i, key := range keys {
+	for i, key := range spec.keys {
 		text, ok := texts[key]
 		if !ok {
 			continue
@@ -47,8 +84,8 @@ func newItemPurchase(o *oracle.Oracle, data []byte, texts map[string]string, fon
 			return nil, fmt.Errorf("道具店購物試譯不可內嵌換行")
 		}
 		plain := text
-		if placeholders[i] != "" {
-			placeholder := "{" + placeholders[i] + "}"
+		if spec.placeholders[i] != "" {
+			placeholder := "{" + spec.placeholders[i] + "}"
 			if strings.Count(text, placeholder) != 1 {
 				return nil, fmt.Errorf("道具店購物 placeholder 不符：%s", key)
 			}
@@ -62,15 +99,23 @@ func newItemPurchase(o *oracle.Oracle, data []byte, texts map[string]string, fon
 				return nil, fmt.Errorf("道具店購物字型缺字：%U", ch)
 			}
 		}
-		q.texts[i] = text
+		translated[i] = text
 	}
 	if found == 0 {
 		return nil, nil
 	}
-	if found != 3 {
-		return nil, fmt.Errorf("道具店購物試譯須完整提供三個片段")
+	if found != len(spec.keys) {
+		return nil, fmt.Errorf("道具店試譯須完整提供此來源鏈的%d個片段", len(spec.keys))
 	}
-	for _, binding := range [][3]int{{0, 0xa8c5, 0xa8d4}, {2, 0xa8d4, 0xa8d8}, {3, 0xa8f2, 0xa901}, {5, 0xa901, 0xa90a}, {6, 0xa90a, 0xa929}} {
+	if spec.explanation {
+		q.texts[0] = translated[0]
+		for i, address := range []uint16{0xb09a, 0xb0d4, 0xb0f4} {
+			q.details[address] = [2]string{translated[1+i*2], translated[2+i*2]}
+		}
+	} else {
+		copy(q.texts[:], translated)
+	}
+	for _, binding := range spec.bindings {
 		start, end := binding[1], binding[2]
 		raw := append([]byte(nil), data[0x1a588+start-0xa000:0x1a588+end-0xa000]...)
 		fragment := quoteFragment{start: uint16(start), raw: raw}
@@ -88,6 +133,30 @@ func newItemPurchase(o *oracle.Oracle, data []byte, texts map[string]string, fon
 	o.OnCall(oracle.Far(0x01b1, 0x711b), q.begin)
 	o.OnCall(oracle.Far(0x01b1, 0x7120), q.capture)
 	o.OnCall(oracle.Far(0x01b1, 0x7205), func(*oracle.Oracle) { q.reset() })
+	if spec.explanation {
+		o.OnCall(oracle.Far(0x01b1, 0x71a7), func(*oracle.Oracle) {
+			if q.active {
+				q.pending = true
+			}
+		})
+		o.OnCall(oracle.Far(0x01b1, 0x71ac), func(o *oracle.Oracle) {
+			if q.active {
+				q.captureFrame(o)
+			}
+		})
+		o.OnCall(oracle.Far(0x01b1, 0x71c9), func(o *oracle.Oracle) {
+			if q.active {
+				q.prompt = true
+				q.captureFrame(o)
+			}
+		})
+		o.OnCall(oracle.Far(0x01b1, 0x71d9), func(o *oracle.Oracle) {
+			if q.active {
+				q.prompt = false
+				q.captureFrame(o)
+			}
+		})
+	}
 	return q, nil
 }
 
@@ -98,78 +167,105 @@ func (q *itemPurchase) reset() {
 	q.price = quoteNumber{}
 	q.pendingNumber = nil
 	q.completed = nil
+	q.prompt = false
 }
 
 func (q *itemPurchase) begin(o *oracle.Oracle) {
 	pos := o.Word(oracle.Far(0x01b1, 0xff4c)) - 1
 	if !q.active {
-		if pos != 0xa8c5 || q.labels == nil {
+		if pos != q.start || q.labels == nil {
 			return
 		}
 		q.reset()
 		q.active = true
 	}
-	if q.stage >= 7 || o.DSReg() != 0x01b1 || o.AX()>>8 != 1 || int(o.BX()) < 54 || int(o.BX())+8 > 264 || o.CX()&255 < 99 || o.CX()&255 > 139 || byte(o.AX()) != o.Byte(oracle.Far(0x01b1, pos)) || !bytes.Equal(q.prefix, o.Bytes(oracle.Far(0x01b1, 0xa000), len(q.prefix))) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x711b), 5), []byte{0x2e, 0xff, 0x16, 0x22, 0x20}) {
+	// 介紹中的商品名在BX=258畫空白後換行，不能用八像素包圍盒拒絕可變字距文字。
+	// 數字仍保留完整八列／八像素字形的邊界檢查。
+	if q.stage >= q.terminal || o.DSReg() != 0x01b1 || o.AX()>>8 != 1 || int(o.BX()) < 54 || int(o.BX()) >= 264 || !q.explanation && int(o.BX())+8 > 264 || o.CX()&255 < 99 || o.CX()&255 > 139 || byte(o.AX()) != o.Byte(oracle.Far(0x01b1, pos)) || !bytes.Equal(q.prefix, o.Bytes(oracle.Far(0x01b1, 0xa000), len(q.prefix))) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x711b), 5), []byte{0x2e, 0xff, 0x16, 0x22, 0x20}) {
 		q.reset()
 		return
 	}
 	var fragment quoteFragment
 	q.pendingNumber = nil
-	switch q.stage {
-	case 1:
+	if q.explanation && q.stage >= 3 {
 		if q.item == nil {
-			if pos != 0xb09a && pos != 0xb0d4 && pos != 0xb0f4 {
-				q.reset()
-				return
-			}
-			for _, s := range q.labels.sources {
-				if s.base == 0xa000 && s.width == 5 && int(pos) == int(s.base)+s.offset && bytes.Equal(s.prefix, q.prefix) && bytes.Equal(s.raw, o.Bytes(oracle.Far(0x01b1, pos), len(s.raw))) {
-					q.item = s
-					break
+			q.reset()
+			return
+		}
+		address := uint16(int(q.item.base) + q.item.offset)
+		ranges := map[uint16][3]uint16{0xb09a: {0xab4a, 0xab86, 0xabc5}, 0xb0d4: {0xadfd, 0xae34, 0xaea6}, 0xb0f4: {0xaf3d, 0xaf7c, 0xafd3}}
+		bounds, ok := ranges[address]
+		if !ok {
+			q.reset()
+			return
+		}
+		start, end := bounds[q.stage-3], bounds[q.stage-2]
+		fragment = quoteFragment{start: start, raw: o.Bytes(oracle.Far(0x01b1, start), int(end-start))}
+		// 原始來源必須與固定 SAR 的對應片段完全相同，不能只接受執行中任意字串。
+		if !bytes.Equal(fragment.raw, q.fragments[int(start)].raw) {
+			q.reset()
+			return
+		}
+		fragment.positions = q.fragments[int(start)].positions
+		detail := q.details[address]
+		q.texts[1], q.texts[2] = detail[0], detail[1]
+	} else {
+		switch q.stage {
+		case 1:
+			if q.item == nil {
+				if pos != 0xb09a && pos != 0xb0d4 && pos != 0xb0f4 {
+					q.reset()
+					return
+				}
+				for _, s := range q.labels.sources {
+					if s.base == 0xa000 && s.width == 5 && int(pos) == int(s.base)+s.offset && bytes.Equal(s.prefix, q.prefix) && bytes.Equal(s.raw, o.Bytes(oracle.Far(0x01b1, pos), len(s.raw))) {
+						q.item = s
+						break
+					}
 				}
 			}
-		}
-		if q.item == nil {
-			q.reset()
-			return
-		}
-		fragment.start = uint16(int(q.item.base) + q.item.offset)
-		fragment.raw = q.item.raw
-		for i := 0; i < len(fragment.raw)-1; i++ {
-			fragment.positions = append(fragment.positions, fragment.start+uint16(i))
-		}
-	case 4:
-		number := &q.price
-		if q.index == 0 {
-			if pos != 0xb21e {
+			if q.item == nil {
 				q.reset()
 				return
 			}
-			raw := o.Bytes(oracle.Far(0x01b1, pos), 10)
-			end := 0
-			for end < len(raw) && raw[end] >= '0' && raw[end] <= '9' {
-				end++
+			fragment.start = uint16(int(q.item.base) + q.item.offset)
+			fragment.raw = q.item.raw
+			for i := 0; i < len(fragment.raw)-1; i++ {
+				fragment.positions = append(fragment.positions, fragment.start+uint16(i))
 			}
-			if end < 1 || end > 8 || end >= len(raw) || raw[end] != 0xff {
+		case 4:
+			number := &q.price
+			if q.index == 0 {
+				if pos != 0xb21e {
+					q.reset()
+					return
+				}
+				raw := o.Bytes(oracle.Far(0x01b1, pos), 10)
+				end := 0
+				for end < len(raw) && raw[end] >= '0' && raw[end] <= '9' {
+					end++
+				}
+				if end < 1 || end > 8 || end >= len(raw) || raw[end] != 0xff {
+					q.reset()
+					return
+				}
+				number.raw = append([]byte(nil), raw[:end+1]...)
+				number.box = image.Rect(int(o.BX()), int(o.CX()&255), int(o.BX())+8, int(o.CX()&255)+8)
+			}
+			if int(o.CX()&255) != number.box.Min.Y || int(o.BX()) < number.box.Min.X || int(o.BX()) > number.box.Max.X {
 				q.reset()
 				return
 			}
-			number.raw = append([]byte(nil), raw[:end+1]...)
-			number.box = image.Rect(int(o.BX()), int(o.CX()&255), int(o.BX())+8, int(o.CX()&255)+8)
+			number.box.Max.X = int(o.BX()) + 8
+			fragment.start = 0xb21e
+			fragment.raw = number.raw
+			for i := 0; i < len(number.raw)-1; i++ {
+				fragment.positions = append(fragment.positions, 0xb21e+uint16(i))
+			}
+			q.pendingNumber = number
+		default:
+			fragment = q.fragments[q.stage]
 		}
-		if int(o.CX()&255) != number.box.Min.Y || int(o.BX()) < number.box.Min.X || int(o.BX()) > number.box.Max.X {
-			q.reset()
-			return
-		}
-		number.box.Max.X = int(o.BX()) + 8
-		fragment.start = 0xb21e
-		fragment.raw = number.raw
-		for i := 0; i < len(number.raw)-1; i++ {
-			fragment.positions = append(fragment.positions, 0xb21e+uint16(i))
-		}
-		q.pendingNumber = number
-	default:
-		fragment = q.fragments[q.stage]
 	}
 	if q.index >= len(fragment.positions) || pos != fragment.positions[q.index] || !bytes.Equal(fragment.raw, o.Bytes(oracle.Far(0x01b1, fragment.start), len(fragment.raw))) {
 		q.reset()
@@ -197,21 +293,25 @@ func (q *itemPurchase) capture(o *oracle.Oracle) {
 			}
 		}
 	}
-	q.completed = dialogueCrop(raw)
-	q.palette = o.Palette()
-	q.paintSerial = q.paint.serial
-	q.pending = false
+	q.captureFrame(o)
 	q.pendingNumber = nil
 	q.ready = q.stage
 	q.Glyphs++
-	if q.ready == 7 {
+	if q.ready == q.terminal {
 		q.Completed++
 	}
 }
 
+func (q *itemPurchase) captureFrame(o *oracle.Oracle) {
+	q.completed = dialogueCrop(o.Indexed())
+	q.palette = o.Palette()
+	q.paintSerial = q.paint.serial
+	q.pending = false
+}
+
 func (q *itemPurchase) tokens() []quoteToken {
 	var tokens []quoteToken
-	for i, stage := range []int{3, 6, 7} {
+	for i, stage := range q.thresholds {
 		if q.ready < stage {
 			break
 		}
@@ -266,8 +366,9 @@ func (q *itemPurchase) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, orig
 	}
 	bg, fg := pal[0], pal[9]
 	box := image.Rect(origin.X+dialogueBox.Min.X*3, origin.Y+dialogueBox.Min.Y*3, origin.X+dialogueBox.Max.X*3, origin.Y+dialogueBox.Max.Y*3)
+	prompt := image.Rectangle{Min: dialoguePrompt.Min.Mul(3), Max: dialoguePrompt.Max.Mul(3)}.Add(origin)
 	put := func(p image.Point, c [3]uint8) {
-		if p.In(dst.Bounds()) && visiblePixel(p, origin, masks) {
+		if p.In(dst.Bounds()) && (!q.prompt || !p.In(prompt)) && visiblePixel(p, origin, masks) {
 			dst.SetRGBA(p.X, p.Y, color.RGBA{c[0], c[1], c[2], 255})
 		}
 	}

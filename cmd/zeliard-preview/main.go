@@ -72,6 +72,9 @@ type game struct {
 	bankHD               *hd.Bank
 	bankHDMatched        bool
 	bankHDPose           int
+	itemShopHD           *hd.ItemShop
+	itemShopHDMatched    bool
+	itemShopHDPose       int
 	hdEnabled, hdMatched bool
 	overlayPixels        []byte
 	texture              *ebiten.Image
@@ -247,7 +250,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -355,14 +358,16 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.observePath != "" {
 		held := g.o.HeldKeys()
 		var rejections []map[string]int
-		var quotation, bankDialogue, itemPurchase map[string]any
+		var quotation, bankDialogue, itemPurchase, itemSale, itemExplanation map[string]any
 		if g.dialogue != nil {
 			rejections = g.dialogue.Rejections
 			quotation = g.dialogue.QuotationState()
 			bankDialogue = g.dialogue.BankState()
 			itemPurchase = g.dialogue.ItemPurchaseState()
+			itemSale = g.dialogue.ItemSaleState()
+			itemExplanation = g.dialogue.ItemExplanationState()
 		}
-		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "held_keys": held, "frames": g.frames,
+		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "held_keys": held, "frames": g.frames,
 			"text_cursor":         g.o.Word(oracle.Far(0x01b1, 0xff4c)),
 			"advance_input_flags": int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
 		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。
@@ -410,6 +415,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.bankHDMatched, g.bankHDPose = g.bankHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.bankHDMatched
 	}
+	g.itemShopHDMatched, g.itemShopHDPose = false, -1
+	if g.hdEnabled && g.itemShopHD != nil && w == 320 && h == 200 {
+		g.itemShopHDMatched, g.itemShopHDPose = g.itemShopHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.hdMatched = g.hdMatched || g.itemShopHDMatched
+	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(g.o.Indexed(), rgb)
 		clear(g.overlayPixels)
@@ -425,6 +435,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.dialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
 	if g.menuLabels != nil && w == 320 && h == 200 {
+		g.menuLabels.ObserveFrame(g.o.Indexed(), g.o.Palette())
 		g.menuLabels.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
 	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
@@ -432,7 +443,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil {
+	if g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -507,17 +518,20 @@ func (g *game) Draw(screen *ebiten.Image) {
 			}
 			dialogueGlyphs, dialogueParagraphs := 0, 0
 			var dialogueRejections []map[string]int
-			var quotation, bankDialogue, itemPurchase map[string]any
+			var quotation, bankDialogue, itemPurchase, itemSale, itemExplanation map[string]any
 			if g.dialogue != nil {
 				dialogueGlyphs, dialogueParagraphs = g.dialogue.Glyphs, g.dialogue.Paragraphs
 				dialogueRejections = g.dialogue.Rejections
 				quotation = g.dialogue.QuotationState()
 				bankDialogue = g.dialogue.BankState()
 				itemPurchase = g.dialogue.ItemPurchaseState()
+				itemSale = g.dialogue.ItemSaleState()
+				itemExplanation = g.dialogue.ItemExplanationState()
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose,
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose,
 				"merchant_hd_matched": g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose,
-				"bank_hd_matched": g.bankHDMatched, "bank_hd_pose": g.bankHDPose})
+				"bank_hd_matched": g.bankHDMatched, "bank_hd_pose": g.bankHDPose,
+				"item_shop_hd_matched": g.itemShopHDMatched, "item_shop_hd_pose": g.itemShopHDPose})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -583,6 +597,12 @@ func main() {
 	bankArtA := flag.String("bank-art-a", "", "可選：本地手繪銀行畫格 A PNG")
 	bankArtB := flag.String("bank-art-b", "", "可選：本地手繪銀行畫格 B PNG")
 	bankArtC := flag.String("bank-art-c", "", "可選：本地手繪銀行畫格 C PNG")
+	var itemRefs, itemArts [4]*string
+	for i := range itemRefs {
+		itemRefs[i] = flag.String(fmt.Sprintf("item-reference-%d", i), "", "可選：道具店已核對原版畫格")
+		itemArts[i] = flag.String(fmt.Sprintf("item-art-%d", i), "", "可選：道具店圖組，依序基準／蒸氣B／抬手／蒸氣C")
+	}
+	itemPalette := flag.String("item-palette", "", "可選：道具店原版色盤")
 	flag.Parse()
 	if *orig == "" || *fontPath == "" || *userDir == "" || *cycles < 60 || *cycles > 10000 || *frames < 1 {
 		log.Fatal("須指定 -orig、-font、-user-dir；cycles 範圍 60–10000")
@@ -662,6 +682,18 @@ func main() {
 		g.bankHD, err = hd.NewBank(*bankRefA, *bankRefB, *bankRefC, *bankPalette, *bankArtA, *bankArtB, *bankArtC)
 		if err != nil {
 			log.Printf("銀行 HD 圖組未載入，保留原貌：%v", err)
+		}
+	}
+	var itemReferencePaths, itemArtworkPaths [4]string
+	itemRequested := *itemPalette != ""
+	for i := range itemRefs {
+		itemReferencePaths[i], itemArtworkPaths[i] = *itemRefs[i], *itemArts[i]
+		itemRequested = itemRequested || *itemRefs[i] != "" || *itemArts[i] != ""
+	}
+	if itemRequested {
+		g.itemShopHD, err = hd.NewItemShop(itemReferencePaths, *itemPalette, itemArtworkPaths)
+		if err != nil {
+			log.Printf("道具店 HD 圖組未載入，保留原貌：%v", err)
 		}
 	}
 	if *introScroll != "" {
