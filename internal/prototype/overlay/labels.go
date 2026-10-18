@@ -39,6 +39,7 @@ type labelStamp struct {
 	foreground, shadow, background uint8
 	shadowOffset                   *image.Point
 	listViewport                   bool
+	noUseIcon                      bool
 }
 type listLabel struct {
 	source  *labelSource
@@ -183,7 +184,7 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 			return nil, fmt.Errorf("介面來源須以 NUL 或 FF 結束：%s", row[0])
 		}
 		charWidth := 5
-		inventory := parts[0] == "zelres2" && module == 0x401e && (off == 0x4a1d || off == 0x4a2e || off == 0x4a37 || off == 0x4a3f || off == 0x4ab0)
+		inventory := parts[0] == "zelres2" && module == 0x401e && (off == 0x4a1d || off == 0x4a2e || off == 0x4a37 || off == 0x4a3f || off == 0x4ab0 || off == 0x4ab8 || off == 0x4aca || off == 0x4b90 || off == 0x4c62 || off == 0x4c69)
 		if inventory {
 			charWidth = 8
 		}
@@ -402,6 +403,9 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 	kept := l.stamps[:0]
 	drawn := 0
 	for _, s := range l.stamps {
+		if s.noUseIcon && !l.inventoryIconFrame(raw, pal) {
+			continue
+		}
 		if s.listViewport && !viewport {
 			continue
 		}
@@ -431,7 +435,17 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 		}
 		x, y := box.Min.X, box.Min.Y
 		rowIndex := 0
-		for _, ch := range s.source.text {
+		size := 24
+		if s.noUseIcon {
+			size = 18
+			x += (box.Dx() - size) / 2
+			y += (box.Dy() - size*len(s.source.text)) / 2
+		}
+		for index, ch := range s.source.text {
+			if s.noUseIcon && index > 0 {
+				x = box.Min.X + (box.Dx()-size)/2
+				y += size
+			}
 			if ch == '\n' {
 				x = box.Min.X
 				y += 24
@@ -440,10 +454,10 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 			}
 			g := l.font[ch]
 			w := len(g) / 16 * 8
-			dw := w * 3 / 2
-			for yy := 0; yy < 24; yy++ {
+			dw := w * size / 16
+			for yy := 0; yy < size; yy++ {
 				for xx := 0; xx < dw; xx++ {
-					sx, sy := xx*2/3, yy*2/3
+					sx, sy := xx*16/size, yy*16/size
 					if g[sy*(w/8)+sx/8]&(0x80>>uint(sx%8)) != 0 {
 						if s.shadow != 0 {
 							offset := image.Pt(3, 3)
@@ -534,6 +548,7 @@ func (l *Labels) itemListFrame(raw []byte, pal [256][3]uint8) ([2]*listLabel, bo
 // ObserveFrame 在繪製前記錄已確認的新兩列，Draw 只繪製現有記錄。
 // 單一舊標籤的隔離繪製不會順帶建立其他標籤。
 func (l *Labels) ObserveFrame(raw []byte, pal [256][3]uint8) {
+	l.observeInventoryIcon(raw, pal)
 	o := l.original
 	if o == nil || o.VideoMode() != 0x13 || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0xa000), 64), l.itemListPrefix) {
 		if len(l.itemListCache) > 0 {

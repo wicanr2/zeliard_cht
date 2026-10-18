@@ -163,6 +163,71 @@
         "workplace/inventory-source-v1/label-trace.jsonl",
         "workplace/inventory-ida-v1/evidence.json"
       ]
+    },
+    {
+      "address": "0xaa9a",
+      "kind": "ASCIIZ data",
+      "level": "已證實",
+      "semantic": "裝備頁NO USE大字來源；小圖示另由完整圖面辨識",
+      "source_sha256": "224f8b24990ea81af826fd3985d4560ba56858a0fd71484338f8223be0af7262",
+      "sar2_file_offset": "0x4ab8",
+      "evidence": [
+        "workplace/item-use-v1/source-evidence.json",
+        "workplace/item-use-v1/trace-v2/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xaaac",
+      "kind": "ASCIIZ data",
+      "level": "已證實",
+      "semantic": "道具消耗後I have used訊息來源，白字AH=1",
+      "source_sha256": "7287377c5855345fea97a4b2841f885f6eaa901d26e072b6a2f4de1f2c1ba97f",
+      "sar2_file_offset": "0x4aca",
+      "evidence": [
+        "workplace/item-use-v1/source-evidence.json",
+        "workplace/item-use-v1/trace-v2/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xab72",
+      "kind": "ASCIIZ data",
+      "level": "已證實",
+      "semantic": "首瓶藥水消耗後的名稱句來源，白字AH=1",
+      "source_sha256": "ef059db317db743789fd2b5a060fff386a1f88ae268b9fbb70ae2d4dc74be699",
+      "sar2_file_offset": "0x4b90",
+      "evidence": [
+        "workplace/item-use-v1/source-evidence.json",
+        "workplace/item-use-v1/trace-v2/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xac44",
+      "kind": "ASCIIZ data",
+      "level": "已證實",
+      "semantic": "首瓶藥水選取名稱第一行，白字AH=1",
+      "source_sha256": "b0266b1ad26188e879ab77480bda307fd5b87dbe32af823d12af1cb2c606bbbf",
+      "sar2_file_offset": "0x4c62",
+      "evidence": [
+        "workplace/item-use-v1/source-evidence.json",
+        "workplace/item-use-v1/trace-v2/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xac4b",
+      "kind": "ASCIIZ data",
+      "level": "已證實",
+      "semantic": "首瓶藥水選取名稱第二行，保留前導空格來源",
+      "source_sha256": "143a1a42bb8255908cea3a44b3c717505eb39641fcf5524af111585e4a7f2a28",
+      "sar2_file_offset": "0x4c69",
+      "evidence": [
+        "workplace/item-use-v1/source-evidence.json",
+        "workplace/item-use-v1/trace-v2/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
     }
   ]
 }

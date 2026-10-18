@@ -73,6 +73,13 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if e = os.WriteFile(filepath.Join(scratch, "SAVETEST.usr"), save, 0644); e != nil {
 				t.Fatal(e)
 			}
+			info, e := os.Stat(savePath)
+			if e != nil {
+				t.Fatal(e)
+			}
+			if e = os.Chtimes(filepath.Join(scratch, "SAVETEST.usr"), info.ModTime(), info.ModTime()); e != nil {
+				t.Fatal(e)
+			}
 		}
 		machines[i].SetScratch(scratch)
 		defer machines[i].Close()
@@ -303,6 +310,9 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 					assertItemBranchCheckpoint(t, f[1], d, l, b, dst, drawn)
 				} else {
 					assertItemCheckpoint(t, f[1], d, l, b, dst, drawn)
+				}
+				if strings.Contains(commandPath, "-use.") {
+					assertItemUseCheckpoint(t, f[1], l, b, dst, drawn)
 				}
 			}
 			if strings.Contains(commandPath, "weapon-shop-no-purchase") && f[1] == "no-purchase-farewell" {

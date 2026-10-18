@@ -119,7 +119,7 @@
 | [tools/ida_intro_evidence.py](tools/ida_intro_evidence.py) | IDA 9.4 的片頭段輸入雜湊、原始交叉參照與函式證據匯出 |
 | [docs/inventory-source-index.json](docs/inventory-source-index.json) | 裝備頁彩色標題與兩行物品名稱的原始位址、證據等級及來源 |
 | [tools/ida_inventory_evidence.py](tools/ida_inventory_evidence.py) | IDA 9.4 裝備頁五函式證據重生，自動合併分級索引 |
-| [internal/prototype/overlay/inventory.go](internal/prototype/overlay/inventory.go) | 已驗來源的裝備標題、顏色與陰影觀察；操作由原版處理 |
+| [internal/prototype/overlay/inventory.go](internal/prototype/overlay/inventory.go) | 裝備標題、物品使用白字與已驗NO USE圖示覆繪；操作由原版處理 |
 | [tools/inventory.commands](tools/inventory.commands) | 冷新局交易後開啟、關閉及重開裝備頁的正常鍵序 |
 | [tools/ida_dialogue_evidence.py](tools/ida_dialogue_evidence.py) | IDA 9.4 的正常國王初訪段證據，合併對話位址索引及未證實警示 |
 | [docs/dialogue-source-index.json](docs/dialogue-source-index.json) | 固定國王段傾印的原始定位、語意等級與證據，不與片頭段混用 |
@@ -153,6 +153,7 @@
 | [internal/prototype/hd/item_shop.go](internal/prototype/hd/item_shop.go) | 道具店四組已觀察畫格與局部動畫覆繪 |
 | [internal/prototype/hd/item_shop_test.go](internal/prototype/hd/item_shop_test.go) | 道具店HD來源、動畫範圍、原子退回及區外不寫入驗證 |
 | [tools/item-shop-branches.commands](tools/item-shop-branches.commands) | 三件商品介紹、空賣、首瓶出售與售後物品頁的正常鍵序 |
+| [tools/item-shop-use.commands](tools/item-shop-use.commands) | 首瓶購買、城鎮物品頁、正常入洞窟、使用藥水與重開／關閉的鍵序 |
 | [internal/prototype/hd/bank.go](internal/prototype/hd/bank.go) | 銀行三個已觀察畫格的 HD 辨識、合成與安全退回 |
 | [internal/prototype/hd/bank_test.go](internal/prototype/hd/bank_test.go) | 銀行 HD 邊界、來源不變及失配退回測試 |
 | [internal/prototype/overlay/item_purchase.go](internal/prototype/overlay/item_purchase.go) | 道具店購買、出售確認與三件商品說明的唯讀顯示鏈 |

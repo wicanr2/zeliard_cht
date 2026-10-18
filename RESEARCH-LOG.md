@@ -530,3 +530,18 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 修正候選70a3f8e3的完整SHA-256及43來源／9鍵序身份見 `scroll-fix-v1/candidate-identity-v2.json`。配對收據 `pair-v2/item-branches/receipt.json` SHA-256為 `495ecfcc5dfb8bb890541201411dacf79f0537c91aabaa87cbb5c66d85729b23`，63點完整原版狀態相同、區外0、售後975、離店及關閉覆繪差0。首購32／銀行35／武器9點回歸也通過；七個頂層與十九個catalog子項PASS，無skip或fail。另驗兩列中文與位置、重複畫格及五類失配退回。HD與TSV沿881相同來源，沒有冒充新候選重跑HD視窗。
 - 短GUI收據 `workplace/item-hd-v1/gui-v2/receipt.json` SHA-256為 `2f16bb16dcf0bbb8a5b04154d270770d8c92a2421a847252ca61255186d66655`；目視紀錄為 `99609619565d43cd3a11d04f6cc5d68ce1334cb3fe9e1d93490ebc5d6e1c878f`。同54233執行至權威exit0，初始兩列中文、Down捲至第三件、油品兩頁／三角／續問否與正常離店1000通過。102筆按放、10張目視、285固定輸入、原件／字型／自建存檔不變，持鍵空、容器清理、擁有權異常0。HD關閉、購買與出售完成次數0；不稱重驗交易或HD。最後保留kind2／paragraph18／first_difference242舊文字安全退回。
 - 主入口已同步70a3f8e3，整合稽核 `scroll-fix-v1/current-audit-v2.json`同時核對兩份不同候選與範圍GUI、完整配對及素材未變。v1英文捲動限制仍可回查，v2修正另有收據。原版、圖面與字型留在本機，物品使用、效果、其餘場景、音效、戰鬥與實體手把仍未完成或未驗。
+
+## 2026-10-18：城鎮與洞窟的道具使用顯示
+
+來源入口 `workplace/item-use-v1/source-evidence.json` SHA-256為 `4c0284727b50cf87ab336ac28d82eb4310da71c21d4464b79029dbf7bc12f571`。原版EXE與SAR2分別沿用 `fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341`與 `bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1`。Go1.24.13、3000 cycles，固定dosgolem882快照；原版explore-v4為f4a17bb5，窄trace程式為58d8ccbe、二進位7de96845，完整身份保存在證據檔。
+
+48點中文配對在同目錄 `pair-v4/item-use/receipt.json`，完整1MiB、色號、色盤、CS:IP、steps／cycles相同，文字區外0。五個新白字來源及小圖示均驗實際可見像素，關閉與返回城鎮整張畫面差0。根端另目視使用訊息、重開空欄及關閉三圖，記在 `pair-visual-review-v4.json`；它們是配對合成圖，不是實際視窗。最新五項回歸為 `regression-v3.jsonl`，銀行35／首購32／介紹出售63／武器9／裝備11點均通過，無skip。實際視窗驗證另記收據，不由上述結果推定通過。
+
+實際視窗入口 `workplace/item-use-v1/gui-v3/receipt.json` SHA-256為 `9ea846be928c497ccb6da771eb610ced710629669fb180b472f8c4a0663ade77`，目視紀錄 `bb06a74c3f412dc3da6eaf3ee6b5249278de97f1a7e483cacbaa534cba6c52cf`。固定b8c1be29正常入洞、選藥水、Space消耗、重開空欄與返回950，capture-tail退出0；最終294918786steps／301946427cycles、持鍵空、HD關。14圖目視、26原版ROI零差、116筆按放確認、389固定輸入與原件不變。滿生命80不證明受傷恢復量，離店保留paragraph18／kind2／first_difference242安全退回。GUI1／2失敗未改；根因及原版放開補證見同目錄上層 `navigation-v3/receipt.json`與 `gui-tools-v3/preparation.json`，沒有把持鍵搬移中間畫格當成輸入就緒。主入口已同步，原貌HUD仍原文，後續候選字面位置只供研究。
+
+- 已證實玩家可見差異：城鎮Enter物品頁的USE為綠字，持有藥水仍不能移動該區選框；正常經右側石門進Cavern of Ialicia後，USE紅字，可用Right選首瓶、Space消耗。使用後出現訊息，關閉／重開時藥水圖示移除，原版返回Muralla Town仍950。此次生命80且上限80，不當作受傷恢復量證據。
+- 原始控制定位保留於既有IDA9.4匯出 `workplace/inventory-ida-v1/evidence.json`，SHA-256 `9c742b9daa9ad5890ce81a958cecab6f2ec82821e147125fbf6323af28f39266`。輸入 `equipment-held.segment`為 `2ecedadb544f1d089612ca19b1f42379fa83866c447121b131c61435fcdf7e3e`，位址為IDA base0段內偏移，對應dosgolem實模式01B1，並非EXE偏移。A004h與A00Bh分別寫ADF8為0與FF；A09Eh、A698h及後續選用分支讀它。此次兩種正常物品頁觀測值相符，沒有改名、改寫欄位或重新解硬體輸入。
+- 裝備模組SAR2檔案payload `0x401E`載入A000h。新ASCIIZ來源AA9Ah／AAACh／AB72h／AC44h／AC4Bh分別對應檔案 `0x4AB8`／`0x4ACA`／`0x4B90`／`0x4C62`／`0x4C69`。完整原文、AH=1、每字位置與AA30h完成事件已核對，分級為已證實；五筆新增索引附來源雜湊與證據，不覆蓋原始定位。
+- NO USE小圖示不假定走文字入口。四張正常圖的完整16×16圖示SHA-256同為 `1eee9c14d388ec401a73b41898b6b9cfc7497315a292fd1b6828ae293c7278a3`，原生範圍 `(58,131,16,16)`。覆繪僅用內框 `(59,132,14,14)`，保留圖示框及原版紅／橙選框。原版色盤、兩組已驗無魔法頂部面板、模組前綴及完整文字來源也須相符，未知畫面退回；後續其他魔法配置沒有冒稱已覆蓋。
+- 窄trace-v1嚴格64KiB比較差2bytes於01B1:0A6F／0A70。兩值分別為27563與27766，精確對應各自存檔複本UTC修改時間13:29:23與13:35:44的DOS編碼。差異紀錄SHA-256為 `b73d519d8569fbcdf9ad7c8bf0202498339d5e7851bc4e98a030321c5c7aaad5`。trace-v2執行前保留原版複本mtime，55點色號、色盤、64KiB段、FileOps及含KeyReads收據全部相同，沒有遮罩。此探針不稱完整1MiB或實際視窗驗收。
+- 正式正常鍵序為 [item-shop-use.commands](tools/item-shop-use.commands)，SHA-256 `0c7ef14432a52850db25ce9e8859f3cf5e94868b0c9dbbc3e9b3d0bb6c4f18c4`。原版48點在 `workplace/item-use-v1/normal-v3/`，279200000steps／286064030cycles、950、持鍵空、沒有寫檔。導航來源 `navigation-v1/receipt.json`另記石門實圖與對齊，保留第4個非必要粗段，不宣稱最短鍵序或碰撞容差。中文完整配對及實際視窗另驗。

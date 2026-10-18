@@ -24,6 +24,150 @@ func TestItemShopPurchaseNormalPathReadOnly(t *testing.T) {
 	testWeaponShopNormalPath(t, "../../../tools/item-shop.commands", 32)
 }
 
+func TestItemUseCavernNormalPathReadOnly(t *testing.T) {
+	if os.Getenv("ZELIARD_ITEM_SAVE") == "" {
+		t.Skip("須掛載正常建立的起始存檔")
+	}
+	if out := os.Getenv("ZELIARD_SHOP_OUTPUT"); out != "" {
+		t.Setenv("ZELIARD_SHOP_OUTPUT", filepath.Join(out, "item-use"))
+	}
+	testWeaponShopNormalPath(t, "../../../tools/item-shop-use.commands", 48)
+}
+
+func assertItemUseCheckpoint(t *testing.T, name string, l *Labels, o *oracle.Oracle, dst *image.RGBA, drawn bool) {
+	t.Helper()
+	wants := map[string][]string{
+		"cave-item-inventory":  {"zelres2.file.004ab8"},
+		"cave-potion-selected": {"zelres2.file.004c62", "zelres2.file.004c69"},
+		"cave-potion-used":     {"zelres2.file.004aca", "zelres2.file.004b90", "zelres2.file.004ab8"},
+		"cave-inventory-empty": {"zelres2.file.004ab0"},
+	}
+	for _, key := range wants[name] {
+		found := false
+		for _, stamp := range l.stamps {
+			if stamp.noUseIcon || stamp.source != l.sources[key] {
+				continue
+			}
+			isolated := *l
+			isolated.stamps = []labelStamp{stamp}
+			canvas := inventoryOriginalCanvas(o)
+			before := append([]byte(nil), canvas.Pix...)
+			isolated.Draw(canvas, o.Indexed(), o.Palette(), image.Point{})
+			found = found || !bytes.Equal(before, canvas.Pix)
+		}
+		if !found {
+			t.Fatal("道具使用完整中文缺漏", name, key)
+		}
+	}
+	if name == "item-inventory" || name == "cave-item-inventory" || name == "cave-potion-selected" || name == "cave-potion-used" {
+		icons := 0
+		for _, stamp := range l.stamps {
+			if !stamp.noUseIcon {
+				continue
+			}
+			icons++
+			if string(stamp.source.text) != "不用" || stamp.box != image.Rect(59, 132, 73, 146) {
+				t.Fatal("NO USE中文來源或安全區不符")
+			}
+			isolated := *l
+			isolated.stamps = []labelStamp{stamp}
+			for _, bad := range []string{"tile", "panel", "palette", "source", "text"} {
+				copyL := isolated
+				copyS := *stamp.source
+				copyL.sources = map[string]*labelSource{"zelres2.file.004ab8": &copyS}
+				raw, pal := append([]byte(nil), o.Indexed()...), o.Palette()
+				switch bad {
+				case "tile":
+					raw[133*320+61] ^= 128
+				case "panel":
+					raw[12*320+47] ^= 128
+				case "palette":
+					pal[9][0] ^= 1
+				case "source":
+					copyS.prefix = append([]byte(nil), copyS.prefix...)
+					copyS.prefix[0] ^= 1
+				case "text":
+					copyS.text = []rune("不使用")
+				}
+				canvas := image.NewRGBA(dst.Bounds())
+				before := append([]byte(nil), canvas.Pix...)
+				if copyL.Draw(canvas, raw, pal, image.Point{}) != 0 || !bytes.Equal(before, canvas.Pix) {
+					t.Fatal("NO USE未知來源未原子退回", bad)
+				}
+			}
+			canvas := image.NewRGBA(dst.Bounds())
+			before := append([]byte(nil), canvas.Pix...)
+			if isolated.Draw(canvas, o.Indexed(), o.Palette(), image.Point{}) != 1 {
+				t.Fatal("NO USE獨立繪製失敗")
+			}
+			changed := 0
+			for y := 0; y < 600; y++ {
+				for x := 0; x < 960; x++ {
+					i := canvas.PixOffset(x, y)
+					if bytes.Equal(before[i:i+4], canvas.Pix[i:i+4]) {
+						continue
+					}
+					changed++
+					if !image.Pt(x/3, y/3).In(stamp.box) {
+						t.Fatal("NO USE字模或背景越界")
+					}
+				}
+			}
+			if changed == 0 {
+				masks, known := l.paint.masks(stamp.paintSerial, o.Indexed())
+				t.Fatal("NO USE未產生中文字模", name, stamp.paintSerial, l.paint.serial, masks, known)
+			}
+		}
+		if icons != 1 {
+			t.Fatal("NO USE圖示缺漏或重複", name, icons)
+		}
+		completed := l.Completed
+		l.ObserveFrame(o.Indexed(), o.Palette())
+		if l.Completed != completed {
+			t.Fatal("穩定物品圖示重複建立")
+		}
+	}
+	if name == "cave-potion-used" || name == "cave-inventory-empty" {
+		if o.Byte(oracle.Far(0x01b1, 0xa6)) != 0 || o.Word(oracle.Far(0x01b1, 0x90)) != 80 {
+			t.Fatal("滿生命的藥水消耗與原版證據不符")
+		}
+	}
+	if name == "cave-inventory-empty" {
+		for _, stamp := range l.stamps {
+			if stamp.noUseIcon {
+				t.Fatal("藥水移除後殘留NO USE圖示")
+			}
+		}
+	}
+	if name == "cave-item-inventory" {
+		if o.Byte(oracle.Far(0x01b1, 0xadf8)) != 0 {
+			t.Fatal("洞窟裝備頁未走可使用分支")
+		}
+		for _, stamp := range l.stamps {
+			if stamp.source == l.sources["zelres2.file.004a37"] && (stamp.foreground != 18 || stamp.shadow != 45) {
+				t.Fatal("使用區原版紅字或陰影遺失")
+			}
+		}
+	}
+	if name == "cave-use-closed" || name == "cave-inventory-closed" || name == "use-return-town" {
+		if !bytes.Equal(dst.Pix, inventoryOriginalCanvas(o).Pix) || o.Word(oracle.Far(0x01b1, 0x86)) != 950 {
+			t.Fatal("使用後關閉或返回城鎮有殘留或改變金幣", name)
+		}
+	}
+}
+
+func inventoryOriginalCanvas(o *oracle.Oracle) *image.RGBA {
+	_, _, rgb := o.ScreenRGB()
+	canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
+	for y := 0; y < 600; y++ {
+		for x := 0; x < 960; x++ {
+			i := (y/3*320 + x/3) * 3
+			canvas.SetRGBA(x, y, color.RGBA{rgb[i], rgb[i+1], rgb[i+2], 255})
+		}
+	}
+	return canvas
+}
+
 func assertItemCheckpoint(t *testing.T, name string, d *Dialogue, l *Labels, o *oracle.Oracle, dst *image.RGBA, drawn bool) {
 	t.Helper()
 	wants := map[string]string{"item-greeting": "zelres2.file.01adf3", "item-list": "zelres2.file.01ae15", "after-buy-no": "zelres2.file.01aeee", "item-farewell": "zelres2.file.01b099", "item-farewell-ready": "zelres2.file.01b099"}

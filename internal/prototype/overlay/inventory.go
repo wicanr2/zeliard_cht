@@ -2,6 +2,8 @@ package overlay
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"fmt"
 	"image"
 
 	"github.com/wicanr2/dosgolem/oracle"
@@ -25,7 +27,8 @@ func (l *Labels) beginInventory(o *oracle.Oracle) {
 				continue
 			}
 			ah := uint8(o.AX() >> 8)
-			if s.offset == 0xa92 && ah != 1 || s.offset != 0xa92 && ah != 2 && ah != 3 {
+			white := s.offset == 0xa92 || s.offset == 0xa9a || s.offset == 0xaac || s.offset == 0xb72 || s.offset == 0xc44 || s.offset == 0xc4b
+			if white && ah != 1 || !white && ah != 2 && ah != 3 {
 				return
 			}
 			h := 8
@@ -59,6 +62,48 @@ func (l *Labels) beginInventory(o *oracle.Oracle) {
 	if s.raw[l.inventoryIndex] != 0 {
 		l.inventoryIndex++
 	}
+}
+
+// inventoryIconFrame 只接受本輪正常路徑的完整面板、零物品圖示與來源。
+// 原版NO USE圖示並非AA2B繪字事件，證據見CONTEXT的item-use-v1入口。
+func (l *Labels) inventoryIconFrame(raw []byte, pal [256][3]uint8) bool {
+	s := l.sources["zelres2.file.004ab8"]
+	o := l.original
+	if s == nil || o == nil || len(raw) != 64000 || o.VideoMode() != 0x13 || !s.inventory || len(s.text) != 2 ||
+		!bytes.Equal(o.Bytes(oracle.Far(0x01b1, s.base), len(s.prefix)), s.prefix) ||
+		!bytes.Equal(o.Bytes(oracle.Far(0x01b1, uint16(int(s.base)+s.offset)), len(s.raw)), s.raw) {
+		return false
+	}
+	for _, ch := range s.text {
+		if len(l.font[ch]) != 32 {
+			return false
+		}
+	}
+	var palette []byte
+	for _, c := range pal {
+		palette = append(palette, c[:]...)
+	}
+	if fmt.Sprintf("%x", sha256.Sum256(palette)) != "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c" ||
+		fmt.Sprintf("%x", sha256.Sum256(labelCrop(raw, image.Rect(58, 131, 74, 147)))) != "1eee9c14d388ec401a73b41898b6b9cfc7497315a292fd1b6828ae293c7278a3" {
+		return false
+	}
+	top := fmt.Sprintf("%x", sha256.Sum256(labelCrop(raw, image.Rect(47, 12, 272, 63))))
+	return top == "8e9944c44008748fdc0780a518f123327fd04830882fcbc9a001af54cf95c6d7" || top == "a2bec73d332b999c8094fd6a6df45e379ecf278c1173a5541bf756685e74a672"
+}
+
+func (l *Labels) observeInventoryIcon(raw []byte, pal [256][3]uint8) {
+	if !l.inventoryIconFrame(raw, pal) {
+		return
+	}
+	box := image.Rect(59, 132, 73, 146)
+	s := l.sources["zelres2.file.004ab8"]
+	for _, stamp := range l.stamps {
+		if stamp.noUseIcon && stamp.source == s && stamp.box == box && stamp.palette == pal && stamp.paintSerial == l.paint.serial && bytes.Equal(stamp.raw, labelCrop(raw, box)) {
+			return
+		}
+	}
+	l.store(labelStamp{source: s, box: box, rows: []image.Rectangle{box}, raw: labelCrop(raw, box), palette: pal,
+		paintSerial: l.paint.serial, foreground: 9, noUseIcon: true})
 }
 
 func (l *Labels) finishInventory(o *oracle.Oracle) {
