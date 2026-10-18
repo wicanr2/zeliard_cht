@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "input_name": "workplace/shop-path-oracle-v1/weapon-first-dialogue.segment",
+  "input_sha256": "22c3e2d3f0f9beff133f5bd5737f3e662429aba5c74b198bb707fe8d33315817",
+  "address_space": "IDA binary base 0; dosgolem 01B1 segment offsets in the fixed weapon-first-dialogue snapshot",
+  "entries": [
+    {
+      "address": "0xa2a8",
+      "semantic": "武器店把商品名稱指標表 AD05h 傳給清單服務",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0xa2b7",
+      "semantic": "呼叫 CS:6012h，對應 sub_7539",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x7539",
+      "semantic": "依商品索引先準備一列，再依 BX 座標搬到畫面",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x7543",
+      "semantic": "經 CS:301Ah 呼叫 sub_3805 準備商品列",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x7560",
+      "semantic": "經 CS:301Ch 呼叫 sub_37CC 搬移完整列",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x3805",
+      "semantic": "依 SI 名稱指標表及 AL 索引準備段內 3CAFh 暫存列",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x383e",
+      "semantic": "ASCIIZ 商品名入口，正常兩筆 SI=AD1Dh/AD2Ch",
+      "level": "已證實",
+      "evidence": [
+        "workplace/shop-path-buffer-trace-v1/buffer-trace.jsonl"
+      ]
+    },
+    {
+      "address": "0x384a",
+      "semantic": "ASCIIZ NUL 後返回，名稱暫存像素已完成",
+      "level": "已證實",
+      "evidence": [
+        "workplace/shop-path-buffer-trace-v1/buffer-trace.jsonl"
+      ]
+    },
+    {
+      "address": "0x3854",
+      "semantic": "四像素墨跡、八列字模，畫入 stride=160 暫存列",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x388a",
+      "semantic": "字形完成後 DI 增加五，供下一個來源字元",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x37cc",
+      "semantic": "把 3CAFh 起九列搬到 VGA，X=BH*4、Y=BL；名稱在 Y+1",
+      "level": "已證實",
+      "evidence": [
+        "workplace/shop-path-buffer-trace-v1/buffer-trace.jsonl"
+      ]
+    },
+    {
+      "address": "0x3804",
+      "semantic": "完整九列搬移後返回，正常兩筆 BX=1871h/187Bh",
+      "level": "已證實",
+      "evidence": [
+        "workplace/shop-path-buffer-trace-v1/buffer-trace.jsonl"
+      ]
+    }
+  ]
+}

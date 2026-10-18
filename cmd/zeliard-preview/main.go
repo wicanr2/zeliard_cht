@@ -63,6 +63,9 @@ type game struct {
 	kingHD               *hd.King
 	kingHDMatched        bool
 	kingHDPose           int
+	sageHD               *hd.Sage
+	sageHDMatched        bool
+	sageHDPose           int
 	hdEnabled, hdMatched bool
 	overlayPixels        []byte
 	texture              *ebiten.Image
@@ -238,7 +241,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.kingHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.kingHD != nil || g.sageHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -375,6 +378,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.kingHDMatched, g.kingHDPose = g.kingHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.kingHDMatched
 	}
+	g.sageHDMatched, g.sageHDPose = false, -1
+	if g.hdEnabled && g.sageHD != nil && w == 320 && h == 200 {
+		g.sageHDMatched, g.sageHDPose = g.sageHD.Draw(g.canvas, g.o.Indexed(), rgb, image.Pt(0, barHeight))
+		g.hdMatched = g.hdMatched || g.sageHDMatched
+	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(g.o.Indexed(), rgb)
 		clear(g.overlayPixels)
@@ -397,7 +405,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.kingHD != nil {
+	if g.kingHD != nil || g.sageHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -476,7 +484,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				dialogueGlyphs, dialogueParagraphs = g.dialogue.Glyphs, g.dialogue.Paragraphs
 				dialogueRejections = g.dialogue.Rejections
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose})
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -524,6 +532,10 @@ func main() {
 	kingRefB := flag.String("king-reference-b", "", "可選：本地原版國王姿態 B 的 screen.bin")
 	kingArt := flag.String("king-art", "", "可選：本地手繪國王閉口 PNG")
 	kingSpeakingArt := flag.String("king-speaking-art", "", "可選：本地手繪國王說話 PNG")
+	sageRefA := flag.String("sage-reference-a", "", "可選：本地原版長老畫格 A")
+	sageRefB := flag.String("sage-reference-b", "", "可選：本地原版長老畫格 B")
+	sagePalette := flag.String("sage-palette", "", "可選：本地原版長老色盤")
+	sageArt := flag.String("sage-art", "", "可選：本地手繪長老 PNG")
 	flag.Parse()
 	if *orig == "" || *fontPath == "" || *userDir == "" || *cycles < 60 || *cycles > 10000 || *frames < 1 {
 		log.Fatal("須指定 -orig、-font、-user-dir；cycles 範圍 60–10000")
@@ -585,6 +597,12 @@ func main() {
 		g.kingHD, err = hd.NewKing(*kingRefA, *kingRefB, filepath.Join(filepath.Dir(*kingRefA), "palette.bin"), *kingArt, *kingSpeakingArt)
 		if err != nil {
 			log.Printf("國王 HD 圖組未載入，保留原貌：%v", err)
+		}
+	}
+	if *sageRefA != "" || *sageRefB != "" || *sagePalette != "" || *sageArt != "" {
+		g.sageHD, err = hd.NewSage(*sageRefA, *sageRefB, *sagePalette, *sageArt)
+		if err != nil {
+			log.Printf("長老 HD 圖面未載入，保留原貌：%v", err)
 		}
 	}
 	if *introScroll != "" {

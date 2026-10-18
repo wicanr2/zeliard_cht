@@ -27,7 +27,7 @@ type dialogueParagraph struct {
 	prefix, script []byte
 }
 
-// Dialogue 是已核對國王與長老來源的唯讀顯示試作。原版處理按鍵、捲頁與存檔。
+// Dialogue 是已核對來源的唯讀顯示試作。原版處理按鍵、捲頁、交易與存檔。
 type Dialogue struct {
 	font                        bitmap.Font
 	paragraphs                  []dialogueParagraph
@@ -73,7 +73,7 @@ func NewDialogue(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Dial
 	d := &Dialogue{font: font, current: -1}
 	// 檔案偏移與模組 payload 起點來自固定 SAR 及正常路徑傾印。
 	// 數值、控制碼與存檔動作仍由原版執行。
-	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}} {
+	for _, source := range [][3]int{{0x17250, 0x172b2, 0x16e1a}, {0x172bb, 0x17351, 0x16e1a}, {0x1ca64, 0x1ca83, 0x1bcc6}, {0x1ca86, 0x1caaf, 0x1bcc6}, {0x1cc43, 0x1cc64, 0x1bcc6}, {0x1cc66, 0x1cca0, 0x1bcc6}, {0x1ce7e, 0x1cef1, 0x1bcc6}, {0x185ea, 0x18606, 0x17817}, {0x18607, 0x18633, 0x17817}, {0x18634, 0x18661, 0x17817}, {0x1883e, 0x1885d, 0x17817}, {0x18899, 0x188b8, 0x17817}, {0x189f6, 0x18a16, 0x17817}} {
 		key := fmt.Sprintf("zelres2.file.%06x", source[0])
 		text, ok := texts[key]
 		if !ok {

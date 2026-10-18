@@ -1,0 +1,38 @@
+king
+key 0x4d 24000000
+run 1000000
+key 0x4d 3000000
+run 500000
+key 0x48 250000
+run 12000000
+shot greeting
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+shot buy-selected
+key 0x39 500000
+run 8000000
+shot goods
+key 0x39 500000
+run 16000000
+shot quote
+key 0x39 500000
+run 10000000
+shot purchased
+key 0x48 100000
+run 1500000
+key 0x48 100000
+run 1500000
+key 0x39 500000
+run 10000000
+shot farewell
+key 0x39 500000
+run 4000000
+shot outside
+down 0x1c
+run 500000
+shot inventory
+up 0x1c
+run 1000000
+shot released

@@ -267,3 +267,48 @@ IDA 9.4、metapc、16 位元，從上述唯讀段傾印新建一次性 `.i64`。
 最新建置的 `save-ui-modal-v2/` 實際 X 視窗補足繼續操作：F7 兩行中文完整、N 取消；F9／3 後中文與數字均保留，Enter 後 Right 持兩秒／放開，提示消失，角色由原生 x 約 136 移至 184。`movement-comparison.json` 顯示原位置紅像素 45→0、新位置 0→55，城堡靜態錨點不變。這只輔證位移，不稱為全域同狀態對拍。Enter 單獨沒有清除舊提示，不推定其他返回鍵契約。
 
 仍有中文覆蓋限制：彈窗改變舊對話矩形時整段退回，彈窗下可能顯示英文。完整中文仍需原版清框／還原事件證據。檔名與 Re-Start 保留原值；未驗商店十四筆、其他片頭與遊戲文字不算完成。
+
+## 2026-10-18：長老手繪肖像與武器店交易
+
+### 長老 HD
+
+| 項目 | 固定來源與結果 |
+|---|---|
+| 原版畫格 | `save-path-verified/sage-menu.indexed`、`save-confirm-text.indexed`，正常存讀路徑取得 |
+| 肖像外框／內框 | 原生 `(56,23,96,64)`／`(57,24,94,62)` |
+| 兩個肖像色號 SHA-256 | `bbc79b87bc9d9b3bb59a049d5acd8206a7b9dfb287d557b71437672544d3f16c`／`0762364b30958db2e1948f850d449ff042a8f736ea5b62d8674be9296c90a66a` |
+| 動畫差異 | 相對 `(59,28)`、`(59,29)`、`(57,30)`、`(58,30)` 四點；語意未知 |
+| 手繪圖 | `workplace/hd-sage-prototype.png`，1536×1024；SHA-256 `a1fa3b745422f59153239b903591db104c5c3fb320c18ee7f5181a247c33a5aa` |
+
+來源及差異表在 `workplace/sage-hd-source-mapping.json`。內建 imagegen 依原版肖像與國王試作畫風生成，第一張頭部比例過大，經一次構圖修正選定第二張。完整提示詞組、來源、兩次產物路徑與權利分類在 `hd-sage-generation.json`；手繪圖仍屬本地衍生試作，不加入 Git 或發行包。
+
+HD 直接合成到 288×192，保留黃色外框。四個原版變動像素各自的三倍顯示區保持原樣，不猜成嘴、眼或魔法，也不加動畫時鐘。色號與 RGB 均須完整匹配兩個已觀察畫格；缺圖、短畫格、色盤改變或未知畫格整組退回。
+
+`gui-sage-hd-v1/` 從冷新局領賞並進入長老房屋，在原版暫停的同一狀態切原貌→HD→原貌。內部 50,926 像素不同、區外 0、動畫像素不變，切回完整還原；steps／cycles 不變。使用 `359bef32` 建置；後續商品覆繪加入後的 `5ad8556d` 不冒充此輪 GUI 身份，長老繪製器另由最終測試集驗證。
+
+### 商品名的實際消費端
+
+固定 SAR2 SHA-256 仍為 `bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1`。payload `0x17817`、7239 bytes 對應原版 `01B1:A000`；正常武器店段 `shop-path-oracle-v1/weapon-first-dialogue.segment` SHA-256 `22c3e2d3f0f9beff133f5bd5737f3e662429aba5c74b198bb707fe8d33315817`。來源映射在 `weapon-source-mapping.json`。
+
+| 原始定位 | 已證實語意與證據 |
+|---|---|
+| SAR `0x18534`／`0x18543` | ASCIIZ 兩個商品名，對應段內 AD1Dh／AD2Ch |
+| A2B7h → CS:6012h → 7539h | 商品表與索引送入列準備／搬移服務 |
+| 7539h → CS:301Ah → 3805h → 383Eh | 讀取名稱指標；四像素墨跡、五像素步距、八列字模烘到 3D4Fh，stride=160 |
+| 384Ah | 名稱 NUL 後返回，名稱暫存像素完成 |
+| 7539h → CS:301Ch → 37CCh | 從 3CAFh 搬九列到 VGA，X=BH×4、Y=BL；名稱位於 Y+1 |
+| 3804h | 完整搬移後返回；正常兩列 BX=1871h／187Bh，名稱 X=96、Y=114／124 |
+
+位址基準為 IDA binary base 0，對應此固定段內偏移。索引 [docs/weapon-source-index.json](docs/weapon-source-index.json) 與 [匯出工具](tools/ida_weapon_evidence.py) 保留原始函式名、位址、bytes、運算元及等級。`ida-weapon-indexed-v1/weapon-evidence.json` 為 IDA 9.4／16-bit 的六個必要函式匯出，自動合併索引，未證實指令附 warning。
+
+初次沿用 ASCIIZ 掛鉤時商品名未顯示，`test-weapon-v1.jsonl` 保留失敗。正常清單階段的 22DB／22CD 入口均為零事件；2345 的 108 筆、24F2 的 11 筆只屬前段已知 UI，沒有商品名。這些有效排除結果保存在 `shop-path-*trace*`，未當成工具故障。從武器店實際間接呼叫表追到 7539h，再追出暫存像素搬移鏈後停止。
+
+`shop-path-buffer-trace-v1/buffer-trace.jsonl` 有八筆，383E／384A／37CC／3804 各兩筆。來源 SI=AD1Dh／AD2Ch、準備返回 3822h、搬移返回 7565h，原版抽樣不變。適配層只記錄名稱來源與完成的暫存名稱像素，搬移前再核對一次，完成後擷取 VGA 名稱前綴。價格區與原版資料均不改寫。
+
+### 正常交易與剩餘中文
+
+- [固定鍵序](tools/weapon-shop.commands) 從冷新局領賞，正常走入武器店，選第一項、確認購買、告別、Space 回城鎮並查看裝備。原版售價 400、折抵 200，GOLD1000→800；未載來源附帶存檔或注入狀態。
+- `weapon-overlay-v2/receipt.json` 九點完整 1 MiB 記憶體、色號、色盤、CS:IP、steps、cycles 相同，文字區外差異 0。初訪、五列選單、兩個商品名、交易後與告別已接中文；六個靜態對話試譯中，未走過的詢問分支仍未驗。
+- `shop-path-gui-cht-v1/` 以固定 `5ad8556d` 建置及 13／27 筆 catalog 完成實際 X 交易與裝備查看。原價 400／1500、報價 400／200 仍可見；買後 800、中文告別及 Training Sword 裝備頁均目視，最後持鍵空、退出 0、原版 29 檔不變。
+- 商品清單上方詢問、報價模態下部分舊選單仍會退回英文。GUI 保留 kind=2 兩筆，paragraph=10／12、first_difference=2552／242；動態報價、場景名稱與裝備頁仍英文，不能宣稱武器店完整中文。
+- 動態報價追蹤 `shop-path-glyph-v1/glyphs.jsonl` 共 225 字形，保存來源指標、SI、AX／BX／CX 與數字的實際順序。16 點色號／色盤／64 KiB 段、cycles、IP 與未掛鉤原版相同，不稱為全域記憶體對拍。後續中文須逐段保留數字與模態遮蔽，不能清掉價格來取得完整中文畫面。

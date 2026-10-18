@@ -2,7 +2,7 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-目前前端雛形包含片頭首章 30 行、國王與長老對話中文、長老四列中文選單、手繪 HD 邊框與國王肖像，以及中文手把設定頁。已從正常新局領取 1000 金幣，到長老房屋建立新存檔，退出並冷重開讀回；實際視窗與原版狀態對照均通過。其餘中文、場景與角色 HD、實體手把及戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+目前前端雛形包含片頭首章 30 行、國王與長老對話中文、存讀提示、武器店選單與兩個商品名，以及手繪 HD 邊框、國王與長老肖像。手把設定頁可選裝置並綁定按鍵。正常領賞、長老存讀檔與第一筆武器交易已有原版對照；其餘中文、場景與角色 HD、實體手把及戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 ## 故事背景
 
@@ -45,6 +45,8 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 國王與長老對話中文另加 `-dialogue-text /project/text/dialogue-prototype.tsv`，選單及提示加 `-labels-text /project/text/labels-prototype.tsv`。出字、等待按鍵、賞金與存讀檔仍由原版處理。存檔到長老房屋選「記錄歷程」，讀檔使用 F7；名稱輸入提示、是／否、退出與讀取確認已有中文試譯，檔名及 `Re-Start` 保留原值。商店選項已有試譯，尚未逐店驗證。
 
 國王 HD 肖像使用 `-king-reference-a`、`-king-reference-b`、`-king-art`、`-king-speaking-art` 載入本地兩個原版姿態及兩張手繪圖。它保留黃色外框，未知姿態退回原貌；完整參數與限制見[試作規格](docs/spec/001-runtime-overlay.md)。
+
+長老 HD 另用 `-sage-reference-a`、`-sage-reference-b`、`-sage-palette`、`-sage-art` 載入本地兩個原版畫格、色盤及手繪圖。它保留黃色外框與四個原版動畫像素。武器店目前已接初訪、交易後詢問、告別、五列選單與「練習劍／賢者之劍」試譯；動態報價、裝備頁及其他商品仍待中文化，價格與交易規則由原版處理。
 
 ## 授權
 

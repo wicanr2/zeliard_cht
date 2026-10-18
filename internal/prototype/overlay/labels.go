@@ -33,15 +33,20 @@ type labelStamp struct {
 	raw     []byte
 	palette [256][3]uint8
 }
+type listLabel struct {
+	source *labelSource
+	pixels []byte
+}
 
 // Labels 只觀察已知 MCGA 繪字入口，來源與完成畫面不符時保留原貌。
 // 選單選擇、金額、存檔名稱及原版輸入完全由原版處理。
 type Labels struct {
-	font      bitmap.Font
-	sources   map[string]*labelSource
-	stamps    []labelStamp
-	pending   *labelStamp
-	Completed int
+	font         bitmap.Font
+	sources      map[string]*labelSource
+	stamps       []labelStamp
+	pending      *labelStamp
+	listPrepared *listLabel
+	Completed    int
 }
 
 func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels, error) {
@@ -182,7 +187,68 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 	o.OnCall(oracle.Far(0x01b1, 0x2308), func(q *oracle.Oracle) { l.finish(q, 5) })
 	o.OnCall(oracle.Far(0x01b1, 0x291a), func(q *oracle.Oracle) { l.begin(q, 8) })
 	o.OnCall(oracle.Far(0x01b1, 0x2939), func(q *oracle.Oracle) { l.finish(q, 8) })
+	o.OnCall(oracle.Far(0x01b1, 0x383e), l.prepareListSource)
+	o.OnCall(oracle.Far(0x01b1, 0x384a), l.captureListSource)
+	o.OnCall(oracle.Far(0x01b1, 0x37cc), l.beginListRow)
+	o.OnCall(oracle.Far(0x01b1, 0x3804), func(q *oracle.Oracle) { l.finish(q, 5) })
 	return l, nil
+}
+
+// 商品名先以五像素步距烘到 stride=160 的原版 buffer，之後才搬到 VGA。
+// 只記錄已知來源的名稱前綴，價格及其他欄位完全保留原版。
+func (l *Labels) prepareListSource(o *oracle.Oracle) {
+	l.listPrepared = nil
+	if o.VideoMode() != 0x13 || o.DSReg() != 0x01b1 || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x383e), 7), []byte{0x0e, 0x07, 0xbf, 0x4f, 0x3d, 0x32, 0xdb}) {
+		return
+	}
+	for _, s := range l.sources {
+		if s.width == 5 && int(s.base)+s.offset == int(o.SI()) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, s.base), len(s.prefix)), s.prefix) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, o.SI()), len(s.raw)), s.raw) {
+			l.listPrepared = &listLabel{source: s}
+			return
+		}
+	}
+}
+func listNameCrop(o *oracle.Oracle, s *labelSource) []byte {
+	w := (len(s.raw) - 1) * 5
+	if w <= 0 || w > 160 {
+		return nil
+	}
+	var pixels []byte
+	for y := 0; y < 8; y++ {
+		pixels = append(pixels, o.Bytes(oracle.Far(0x01b1, uint16(0x3d4f+y*160)), w)...)
+	}
+	return pixels
+}
+func (l *Labels) captureListSource(o *oracle.Oracle) {
+	if l.listPrepared == nil {
+		return
+	}
+	pixels := listNameCrop(o, l.listPrepared.source)
+	for _, v := range pixels {
+		if v != 0 && v != 9 {
+			l.listPrepared = nil
+			return
+		}
+	}
+	l.listPrepared.pixels = pixels
+}
+func (l *Labels) beginListRow(o *oracle.Oracle) {
+	l.pending = nil
+	p := l.listPrepared
+	l.listPrepared = nil
+	if p == nil || len(p.pixels) == 0 || o.DSReg() != 0x01b1 || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x37cc), 6), []byte{0x33, 0xc0, 0x8a, 0xc7, 0x8a, 0xfc}) || !bytes.Equal(p.pixels, listNameCrop(o, p.source)) {
+		return
+	}
+	w := (len(p.source.raw) - 1) * 5
+	if int(o.Word(oracle.Far(0x01b1, 0xff6a)))*4 < w {
+		return
+	}
+	x, y := int(o.BX()>>8)*4, int(o.BX()&255)+1
+	box := image.Rect(x, y, x+w, y+8)
+	if !box.In(image.Rect(0, 0, 320, 200)) {
+		return
+	}
+	l.pending = &labelStamp{source: p.source, box: box, rows: []image.Rectangle{box}}
 }
 
 func (l *Labels) begin(o *oracle.Oracle, charWidth int) {

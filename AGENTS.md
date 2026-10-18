@@ -119,6 +119,8 @@
 | [tools/ida_intro_evidence.py](tools/ida_intro_evidence.py) | IDA 9.4 的片頭段輸入雜湊、原始交叉參照與函式證據匯出 |
 | [tools/ida_dialogue_evidence.py](tools/ida_dialogue_evidence.py) | IDA 9.4 的正常國王初訪段證據，合併對話位址索引及未證實警示 |
 | [docs/dialogue-source-index.json](docs/dialogue-source-index.json) | 固定國王段傾印的原始定位、語意等級與證據，不與片頭段混用 |
+| [docs/weapon-source-index.json](docs/weapon-source-index.json) | 固定武器店段的商品名稱暫存與完整搬移鏈，保留原始定位及證據等級 |
+| [tools/ida_weapon_evidence.py](tools/ida_weapon_evidence.py) | IDA 9.4 武器店來源證據匯出，自動合併分級索引及未證實警示 |
 | [docs/source-index.json](docs/source-index.json) | 固定輸入的位址語意、推論等級與證據索引；IDA 匯出自動合併，未證實項附警示 |
 | [docs/spec/001-runtime-overlay.md](docs/spec/001-runtime-overlay.md) | 使用者選定架構與前端雛形邊界 |
 | [text/host.json](text/host.json) | 前端雛形的可見中文 |
@@ -126,16 +128,20 @@
 | [text/intro-scroll-prototype.tsv](text/intro-scroll-prototype.tsv) | 首章 30 行試譯，鍵為本地 SAR 的檔案偏移；專名尚待手冊校訂 |
 | [text/dialogue-prototype.tsv](text/dialogue-prototype.tsv) | 國王初訪與長老初訪／存檔試譯；原文與控制碼仍留在本地遊戲資料 |
 | [internal/prototype/overlay/dialogue.go](internal/prototype/overlay/dialogue.go) | 國王與長老對話逐字、捲動與待續標記的唯讀覆繪試作 |
-| [internal/prototype/overlay/labels.go](internal/prototype/overlay/labels.go) | 核對 SAR1、SAR2、STICK 來源的 ASCIIZ／FF 多行提示覆繪試作；逐行保留輸入區 |
+| [internal/prototype/overlay/labels.go](internal/prototype/overlay/labels.go) | 核對 SAR1、SAR2、STICK 來源的提示與商品暫存列覆繪；保留輸入值及價格區 |
 | [internal/prototype/overlay/labels_test.go](internal/prototype/overlay/labels_test.go) | 冷新局走到長老選單的完整原版狀態與覆繪區域比較 |
 | [internal/prototype/overlay/save_load_test.go](internal/prototype/overlay/save_load_test.go) | 中文覆繪開／關的新存檔、退出與冷讀檔完整原版狀態比較 |
 | [tools/save-load.commands](tools/save-load.commands) | 上述測試的正常玩家鍵序，不含存檔或注入狀態 |
-| [text/labels-prototype.tsv](text/labels-prototype.tsv) | 25 筆選單、存讀檔與速度提示試譯；商店正常路徑與正式術語待校訂 |
+| [tools/weapon-shop.commands](tools/weapon-shop.commands) | 正常領賞、武器交易、告別與裝備查看鍵序 |
+| [internal/prototype/overlay/shop_test.go](internal/prototype/overlay/shop_test.go) | 武器店中文覆繪與完整原版狀態、金額及區域配對 |
+| [text/labels-prototype.tsv](text/labels-prototype.tsv) | 27 筆選單、存讀檔、速度提示及兩個商品名試譯；未走過分支與正式術語待校訂 |
 | [internal/prototype/overlay/scroll.go](internal/prototype/overlay/scroll.go) | 首章來源與逐列完成事件的唯讀覆繪；字級與版面仍為 prototype |
 | [tools/gui_smoke.py](tools/gui_smoke.py) | 有界 Xvfb 前端啟動與滑鼠開啟設定頁驗證 |
 | [cmd/zeliard-preview/main.go](cmd/zeliard-preview/main.go) | 直接執行原版的可撤回前端入口 |
 | [internal/prototype/hd/frame.go](internal/prototype/hd/frame.go) | 手繪雙側邊框試作，完整色號／RGB 匹配與整組退回 |
 | [internal/prototype/hd/king.go](internal/prototype/hd/king.go) | 國王兩個已觀察姿態的手繪覆繪試作；未知姿態或色盤保留原貌 |
+| [internal/prototype/hd/sage.go](internal/prototype/hd/sage.go) | 長老兩個已觀察畫格的手繪覆繪試作；保留原版外框及四個動畫像素 |
+| [internal/prototype/hd/sage_test.go](internal/prototype/hd/sage_test.go) | 實際長老兩畫格、動畫像素保留、區域邊界與未知素材退回驗證 |
 
 新增研究文件須同輪掛進本索引或 CONTEXT 的證據入口。不得將暫存、舊待辦或綠色單元測試當作原版一致證據。
 
