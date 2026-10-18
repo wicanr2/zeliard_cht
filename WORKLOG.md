@@ -595,3 +595,5 @@ player_underlay_v1.py只讀既有已驗scene proof與當次原版記憶體／色
 NAV20組暫停點核live與完成來源時鐘一致、主角位置及框外居民47079高清像素／聯集外零差，實遇兩方向phase1／3四鍵。第二F7後正常洞口位置240→232→216→232→224，以四組既有50k短按／250k放開對齊，再Up入Malicia，主角HD撤除。MAIN居民兩頁、兩triplet區外／還原0、最終14336原生重建／3456主角高清合成／2889框外居民高清像素零差；當次居民重疊0，不冒稱離線94重疊已在GUI出現。26區域記錄保留異camera框角18／9／27原始差，只有同源角點、中文／marker／HUD及兩頁框外為0。315有限移動樣本的81保留來源只存遠山／前景旗標，沒有主角旗標，不宣稱81筆全真或全程無閃爍。
 
 原件29、字型、自建存檔與copy2 mtime、882份dosgolem來源快照及擁有權均通過，兩專案容器已結束清除。沒有新建或刪除工具映像。主入口同步a6917c83，舊19ac保留ground-v1，見mainalias-sync-player-v1.json。010改限定CONFORMED，READY全文保留。現行player-current-audit-v1.json同37736退出0，核105自有檔、56Go／66執行來源、14鍵序、13圖、68內部pass、28完整原版點、693GUI輸入、107PNG及211文件連結。README／CONTEXT／WORKLIST／矩陣同步，下一步首場戰鬥原版操作與顯示來源；phase4、其他HD中文、音效、實體手把、平台與正式封包仍未完成。host gh已登入並回讀PRIVATE。
+
+自有程式及文件共11份提交7260d594d126fa5596a26d8182e5301b2ddf3098已推送origin/main，git ls-remote回讀相同，host gh回讀PRIVATE。原版／生成圖／手冊／字型／收據均留在ignored workplace，不加入Git。此推送紀錄另作文件提交；最後乾淨HEAD、遠端與主入口身份存於coherent-frame-v1/repository-sync-player-v1.json，不改已驗66執行來源。
