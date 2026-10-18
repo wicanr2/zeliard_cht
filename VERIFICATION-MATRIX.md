@@ -12,6 +12,7 @@
 | 固定輸入重播 | 通過，限 200 萬指令 | 畫面色號、色盤、PNG 與末端軌跡相同；`workplace/startup-replay-comparison.json` |
 | 城鎮右移重播 | 通過，限 6600 萬指令 | 冷開機、3000 cycles、固定 IRQ1 序列；畫面色號、色盤、PNG 與末端軌跡相同；`workplace/town-replay-comparison.json` |
 | 前端建置及 go vet | 通過 | Go 1.24.13、Ebitengine 2.9.9、本地 dosgolem 快照；GOMAXPROCS=2 |
+| 城堡／Muralla上方遠景HD | 通過，限54列prototype | `workplace/town-hd-v1/`兩項測試無skip、9點完整原版配對、五靜態來源及八類拒絕通過；GUI2兩組暫停切換各108862遠景像素／172017側框像素改變，時間不變、區外0、還原0、直接高解析度取樣相同。冷F7／走路／居民兩頁及結束退出0，184輸入不變、58按放、held空。GUI1腳本點錯暫停位置保留exit1；前景未HD、水平接縫可見，跳躍／戰鬥未驗 |
 | 正常新局／城鎮右移／放開 | 通過，限此切片 | `workplace/gui-town-v2/`，X11 實際視窗按鍵；狀態列完整相符後才右移，放開後錨點不再平移且持鍵集合為空 |
 | 國王初訪兩段中文與結束 | 通過，限此切片 | `dialogue-v3/receipt.json` 與 `gui-dialogue-hd-v5/`；兩段中文、241 原文字形、1000 賞金與正常返回城鎮，未注入狀態 |
 | 對話顯示與語意隔離 | 通過，限國王初訪 | 九個抽樣點的完整 1 MiB 記憶體、色號、色盤、CS:IP 及 cycles 與無覆繪原版相同；未知來源退回，CL 座標回歸通過 |

@@ -598,3 +598,12 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - GUI3同35191權威exit0，正常F7自建存檔、兩頁中文44／63字及Space結束，1000、持鍵空、rejected0、HD關閉。163輸入／58按放確認及24圖目視，20區域、頁間區外與同GUI背景還原零差；根端另讀三張實際X圖。最終raw採固定來源palette對照，未獨立擷取色盤，不宣稱整段GUI同狀態。
 - GUI2下框3點在兩條原版near→page均保留進框前背景；換同navigation-v1的原版參考後352像素零差，見 `frame-corner-comparison.json`。GUI3三角點與本次pre-talk背景相同，未新增任意遮罩。
 - 5個混合入口中03F291、03F294、03F346共用FF結束區間；85／87會重新分派63C5及BL=4／5。六種handler原始bytes與位址在 `mixed-control-notes.json`，只證實底層跳轉與寫入，不替byte_4／34／9A及6AED猜玩法名稱。此補證未加譯文或runtime。
+
+## 2026-10-19：城堡與Muralla共用遠山天空
+
+- 證據入口為 `workplace/town-hd-v1/layer-evidence.json`。輸入EXE SHA-256 `fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341`，SAR2 `bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1`；dosgolem摘要 `2a5ad11a6c67b1e1d8a16d61830d8565f262ab38566f49d6ff076a721be58ada`、Go1.24.13／Ebitengine2.9.9、cycles3000。
+- 已證實：正常城堡、冷F7讀回、兩個步行位置及對話結束的原生矩形(48,24)-(272,78)色號全部相同，224×54 SHA-256 `22fb614b02b3d9ac436c85b7d56c62ce9004d1254f6c52160de2cf62edeb7cf9`。較大矩形從castle y78／town y80混入移動前景，不能宣稱整張背景靜態。
+- 已證實：SAR2檔案payload偏移038A1A、0392DC對應執行期01B1:C000兩個模組前綴，64-byte SHA分別 `968819bb6c4906514b4fce3e2ce99764b73cfa003f48d7d57d4cf8b12da8ffb6`、`025bf2982660c942cbefed303ccdd0523ff824756a0fe0bb2587b99e0931e7ec`。檔案偏移、段內位址與VGA座標分開記錄。遠景producer、跳躍遮擋及其他城鎮適用性未知，不追硬體driver。
+- 內建image_gen依原版構圖產生手繪圖，完整實際提示詞與來源／權利分類在同研究區。實際PNG1973×797，SHA `275f14de1b18ea6dea297999cdf76e2574bcdc9a4a975782d5c01901480058de`；畫帶(0,207)-(1973,589)直接取樣到672×162。這是顯示差異與本地研究素材，不是原版像素一致或可公開資產。
+- `pair-v1/receipt.json`正常9點完整原版1MiB、顯示、CPU時間、檔案與輸入相同。GUI2實際走冷F7、步行、中文兩頁、結束，權威exit0；兩組暫停HD切換的時間與持鍵不變、兩層聯集外0、原貌還原0。最後raw比對採固定來源palette，不稱當次獨立色盤。GUI1腳本點錯按鈕的exit1保留，不列為產品失敗。
+- 此層只完成上方54列。手繪與原版下層的水平接縫可見；樹木、建物、角色及完整城鎮HD仍待完成。規格與證據索引見 [遠景規格](docs/spec/005-town-skyline-hd.md)及 [CONTEXT](CONTEXT.md)。

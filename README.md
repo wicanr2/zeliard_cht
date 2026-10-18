@@ -66,6 +66,8 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 
 城鎮居民試譯另加 `-town-text /project/text/town-prototype.tsv`。已接113筆純文字來源，已以Muralla鎮一位居民完成原版配對及正常視窗的完整交談、續頁與結束；其餘來源待正常抽樣，含特殊控制碼的5筆保留原文。對話框沿原版行數變化，續頁箭頭及Space操作不變，來源或畫面不符時保留原文。試作邊界見[居民對話規格](docs/spec/004-town-dialogue.md)。
 
+城堡與Muralla鎮上方遠景 HD 使用 `-town-sky-reference`、`-town-sky-palette`、`-town-sky-art`載入本地原版畫格、色盤與手繪圖。只覆繪已驗的天空與遠山上層，對話或未知畫面保留原貌；正常走路、居民中文及原貌切換已驗。樹木、建物與角色仍為原貌，下緣接縫尚待完整背景接入，見[遠景覆繪規格](docs/spec/005-town-skyline-hd.md)。
+
 ## 授權
 
 自有程式與文件採 [RRSAL-1.0](LICENSE)，屬 source-available 專案。非商業用途免費，允許實況與影片分潤，商業使用另洽。原版遊戲、手冊、音樂、美術及字型不在此授權範圍內。第三方元件依各自授權使用。

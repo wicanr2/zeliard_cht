@@ -7,7 +7,7 @@
 | 項目 | 現況 | 證據與限制 |
 |---|---|---|
 | 使用者目標 | dosgolem、繁中、HD、工具列手把綁定 | 已授權開工；規則見 [AGENTS.md](AGENTS.md) |
-| GitHub | 已建立並推送 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 主機gh回讀PRIVATE，居民中文功能提交70f5444已推送並核對遠端main；50來源／10既有鍵序逐檔符合固定候選及功能commit，town鍵序另存本地固定雜湊 |
+| GitHub | 已建立並推送 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 主機gh回讀PRIVATE；前輪居民提交70f5444已推送，本輪遠景52來源／10既有鍵序已固定，推送收據見WORKLOG及本地稽核 |
 | 本地 Git | 已初始化 `main`，設定 `origin` | 環境 placeholder 已不存在；使用 GitHub noreply 信箱作本儲存庫提交身份 |
 | 遊戲包 | 已安全解包與逐檔盤點 | 30 個壓縮項目，含目錄；29 個檔案，清單在本地 `workplace/source-manifest.json` |
 | 中文手冊 | RAR 已列目錄，17 張 JPG | 已人工讀第 1、5–8、10、13 頁；另含封面、地圖等掃描，17 張不等於 17 頁 |
@@ -16,8 +16,8 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 居民中文兩頁及正常結束已驗，修正捲字中途呈現，主入口同步08b3309 | 正常9點完整配對、30個原版捲動子步、3種寫入前呈現及GUI3通過；163固定輸入、20區域及背景還原零差。113來源中112未正常走過，5混合保留原文，兩次GUI失敗保留 |
-| HD | 手繪奇幻邊框、國王、長老、武器商人、銀行與道具店 prototype | 道具店四組抽樣來源測試通過，GUI實遇0／1／3各52406／52405／52384像素改變、區外0、完整還原；未遇pose2，不稱完整動畫。其餘場景／角色及正式倍率待完成 |
+| 本輪工作 | 城堡／Muralla共用遠景HD已驗，主入口同步28ea8cc | 正常9點完整原版配對與GUI2冷F7／走路／居民兩頁／結束通過；兩組暫停HD切換時間不變、區外0、還原0。只覆繪上方54列，下緣接縫與前景仍待完成 |
+| HD | 手繪奇幻邊框、國王、長老、武器商人、銀行、道具店及城鎮遠景 prototype | 遠景五來源、八類拒絕及直接HD取樣已驗；GUI兩組各108862遠景／172017側框像素改變，區外0。人物HD限前輪已驗姿態，其他場景／完整前景與正式倍率待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -50,6 +50,8 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 城鎮遠景HD集中在 `workplace/town-hd-v1/`，原版入口 `prepare.py`／`source-inventory.json`／`layer-evidence.json`。內建image_gen圖面、完整實際提示詞與權利分類為 `skyline-handpaint-v1.png`／`generation-prompt.txt`／`generation-record.json`，只留本地。固定候選 `candidate-identity-v1.json`為28ea8cc、52來源／10既有鍵序；`test-v1.jsonl`兩項無skip、`pair-v1/receipt.json`9點完整1MiB相同，四點遠景各108862像素且區外0，兩頁中文保留。`gui-tools-v2/`／`gui-v2/`正常冷F7／走路／中文／結束退出0，184固定輸入、58按放確認、30圖目視；兩組暫停HD／側框切換、原貌還原與直接取樣均通過。`gui-v1/`保留腳本暫停點錯的exit1，沒有執行HD切換。根端另讀配對及實際視窗圖的入口為 `root-pair-review-v1.json`／`root-gui-review-v2.json`；`audit.py`／`source-audit.json`與 `current-audit.json`合併現況，READY規格另存 `ready-spec-v1.md`。此層只驗上方54列，前景、角色、完整城鎮及水平接縫仍待完成，跳躍／戰鬥未驗；見 [遠景規格](docs/spec/005-town-skyline-hd.md)。
 
 - 居民中文及控制碼集中在 `workplace/prose-v1/`，原版入口 `consumer-evidence.json`、`ida-town-evidence-v2.json`、`world-script-inventory.json`。最新 `candidate-identity-v2.json`固定08b3309、50來源／10既有鍵序及town鍵序；`pair-v5/receipt.json`／`pair-test-v5.jsonl`驗9點完整1MiB、30捲動子步及3種原版寫入前呈現，go vet／build-v3通過。`gui-tools-v3/`／`gui-v3/`正常F7兩頁及結束，163輸入／58按放確認／24圖目視，20區域、頁間區外與還原0差；固定參考palette的限制保留。`root-gui-review-v3.json`根端另讀三張actualX圖，`current-audit.json`為整合入口。原06b候選及50來源存於 `candidate-v1-sources/`，GUI1導航與GUI2捲動退回失敗保留。`navigation-v1/verification.json`及兩份相位／圓角比較解釋導航及不同camera差異；`mutation-baseline.jsonl`證實6513中途退回真因。`mixed-control-notes.json`保存5混合入口與6種handler原始定位，不進runtime。113居民中112仍未正常走過，見 [居民規格](docs/spec/004-town-dialogue.md)。
 - 其餘場景名稱的共用消費端與來源研究集中在 `workplace/scene-v1/`，入口為 `prepare.py`、`prepare_observer.py`、`analyze_v2.py`與 `consumer-evidence-v2.json`。沿既有國王／武器及長老正常路徑補header證據，21個完成header及10點64KiB配對相同，不重新解交易或存檔規則。44筆擴充候選及字形推導在 `source_contract.py`／`source-contract.json`；新層須當次入口唯一驗來源，不以字面直接覆繪。完整配對入口 `prepare_pair_commands.py`／`pair-commands.json`／`pair-test-v1.jsonl`；正常視窗首輪工具／部分結果在 `gui-tools-v1/`／`gui-v1/`，Marid補驗在 `gui-tools-v2/`／`gui-v2/`。未走過名稱仍保留候選等級。
