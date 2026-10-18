@@ -5,60 +5,6 @@
   "address_space": "IDA binary base 0; dosgolem 01B1 segment offsets in the fixed weapon-first-dialogue snapshot",
   "entries": [
     {
-      "address": "0xa2e0",
-      "semantic": "設定 B0DCh 報價開頭，之後從商品指標表取得目前選中名稱",
-      "level": "已證實",
-      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-quote-source-v1/source-evidence.json"]
-    },
-    {
-      "address": "0xa2ff",
-      "semantic": "以原始商品名稱指標呼叫 CS:6004h；正常第一件字形來源 AD1Dh..AD2Ah",
-      "level": "已證實",
-      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-glyph-v1/glyphs.jsonl"]
-    },
-    {
-      "address": "0xa32f",
-      "semantic": "資金檢查失敗時交回 AF54h 不足對話；第二件1500武器正常金幣1000時走此分支",
-      "level": "已證實",
-      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-insufficient-v1/run/glyphs.jsonl"]
-    },
-    {
-      "address": "0xa345",
-      "semantic": "售價前綴來源 B106h，實際數字另經 BC33h 字形來源輸出",
-      "level": "已證實",
-      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-glyph-v1/glyphs.jsonl"]
-    },
-    {
-      "address": "0xa35a",
-      "semantic": "呼叫 CS:6006h，把原版價格格式化到 DI=BC33h；本專案不重作此格式化或價格計算",
-      "level": "已證實",
-      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-quote-source-v1/source-evidence.json"]
-    },
-    {
-      "address": "0xa364",
-      "semantic": "FF4Ch 設為 BC33h，售價來源以 FF 結束，不能假定 NUL 或 FF00 結束",
-      "level": "已證實",
-      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-quote-source-v1/source-evidence.json"]
-    },
-    {
-      "address": "0xa3c9",
-      "semantic": "再次把 FF4Ch 設為 BC33h，覆用同一暫存區輸出舊武器折抵；須分別保存兩次已繪數字",
-      "level": "已證實",
-      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-glyph-v1/glyphs.jsonl"]
-    },
-    {
-      "address": "0xa3de",
-      "semantic": "最後設定 B0EDh 確認句，完成後才畫是／否框",
-      "level": "已證實",
-      "evidence": ["workplace/ida-weapon-v3/weapon-evidence.json", "workplace/shop-path-glyph-v1/glyphs.jsonl"]
-    },
-    {
-      "address": "0x27e9",
-      "semantic": "對話八列字形直接寫入VGA；只寫墨跡，保留黑底，7120h觀察到字形完成",
-      "level": "已證實",
-      "evidence": ["workplace/ida-dialogue-indexed-v5/dialogue-evidence.json", "workplace/shop-path-quote-source-v1/source-evidence.json"]
-    },
-    {
       "address": "0x2046",
       "semantic": "MCGA 矩形清除與邊框入口；X=BH*4、Y=BL、寬=CH*4、高=CL，AL=0清除、非0畫框",
       "level": "已證實",
@@ -72,64 +18,41 @@
       "address": "0x20b6",
       "semantic": "矩形邊框的橫列繪製；20E7返回亦用於內部呼叫，不單獨代表整個畫框完成",
       "level": "已證實",
-      "evidence": ["workplace/modal-evidence-v1/evidence.json"]
+      "evidence": [
+        "workplace/modal-evidence-v1/evidence.json"
+      ]
     },
     {
       "address": "0x20e8",
       "semantic": "VGA 黑色填滿矩形，內部邊框填底亦呼叫此函式",
       "level": "已證實",
-      "evidence": ["workplace/modal-evidence-v1/evidence.json"]
-    },
-    {
-      "address": "0xa28c",
-      "semantic": "商品彈窗經 CS:2000 清框及畫框；正常矩形 X84、Y110、寬148、高36",
-      "level": "已證實",
-      "evidence": ["workplace/shop-path-modal-trace-v1/purchase-trace/modal-trace.jsonl"]
-    },
-    {
-      "address": "0xa3f1",
-      "semantic": "報價是／否框經 CS:2000 繪製；正常矩形 X188、Y43、寬48、高25",
-      "level": "已證實",
-      "evidence": ["workplace/shop-path-modal-trace-v1/purchase-trace/modal-trace.jsonl"]
-    },
-    {
-      "address": "0xa2a8",
-      "semantic": "武器店把商品名稱指標表 AD05h 傳給清單服務",
-      "level": "已證實",
       "evidence": [
-        "workplace/ida-weapon-v3/weapon-evidence.json"
+        "workplace/modal-evidence-v1/evidence.json"
       ]
     },
     {
-      "address": "0xa2b7",
-      "semantic": "呼叫 CS:6012h，對應 sub_7539",
+      "address": "0x27e9",
+      "semantic": "對話八列字形直接寫入VGA；只寫墨跡，保留黑底，7120h觀察到字形完成",
       "level": "已證實",
       "evidence": [
-        "workplace/ida-weapon-v3/weapon-evidence.json"
+        "workplace/ida-dialogue-indexed-v5/dialogue-evidence.json",
+        "workplace/shop-path-quote-source-v1/source-evidence.json"
       ]
     },
     {
-      "address": "0x7539",
-      "semantic": "依商品索引先準備一列，再依 BX 座標搬到畫面",
+      "address": "0x37cc",
+      "semantic": "把 3CAFh 起九列搬到 VGA，X=BH*4、Y=BL；名稱在 Y+1",
       "level": "已證實",
       "evidence": [
-        "workplace/ida-weapon-v3/weapon-evidence.json"
+        "workplace/shop-path-buffer-trace-v1/buffer-trace.jsonl"
       ]
     },
     {
-      "address": "0x7543",
-      "semantic": "經 CS:301Ah 呼叫 sub_3805 準備商品列",
+      "address": "0x3804",
+      "semantic": "完整九列搬移後返回，正常兩筆 BX=1871h/187Bh",
       "level": "已證實",
       "evidence": [
-        "workplace/ida-weapon-v3/weapon-evidence.json"
-      ]
-    },
-    {
-      "address": "0x7560",
-      "semantic": "經 CS:301Ch 呼叫 sub_37CC 搬移完整列",
-      "level": "已證實",
-      "evidence": [
-        "workplace/ida-weapon-v3/weapon-evidence.json"
+        "workplace/shop-path-buffer-trace-v1/buffer-trace.jsonl"
       ]
     },
     {
@@ -173,19 +96,221 @@
       ]
     },
     {
-      "address": "0x37cc",
-      "semantic": "把 3CAFh 起九列搬到 VGA，X=BH*4、Y=BL；名稱在 Y+1",
+      "address": "0x7042",
       "level": "已證實",
+      "semantic": "共用輪詢服務呼叫，保存SI與DI；不把IP位於其子程式當作文字完成證據",
       "evidence": [
-        "workplace/shop-path-buffer-trace-v1/buffer-trace.jsonl"
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
       ]
     },
     {
-      "address": "0x3804",
-      "semantic": "完整九列搬移後返回，正常兩筆 BX=1871h/187Bh",
+      "address": "0x71df",
+      "level": "已證實",
+      "semantic": "原版文字待續入口，先清除FF1D與FF1E再輪詢",
+      "evidence": [
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
+      ]
+    },
+    {
+      "address": "0x71e9",
+      "level": "已證實",
+      "semantic": "呼叫7042h輪詢服務",
+      "evidence": [
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
+      ]
+    },
+    {
+      "address": "0x71ec",
+      "level": "已證實",
+      "semantic": "讀取待續旗標FF1D",
+      "evidence": [
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
+      ]
+    },
+    {
+      "address": "0x71ef",
+      "level": "已證實",
+      "semantic": "合併待續旗標FF1E",
+      "evidence": [
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
+      ]
+    },
+    {
+      "address": "0x71f3",
+      "level": "已證實",
+      "semantic": "兩旗標均零時繼續輪詢",
+      "evidence": [
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
+      ]
+    },
+    {
+      "address": "0x71f5",
+      "level": "已證實",
+      "semantic": "離開等待前清除FF1D",
+      "evidence": [
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
+      ]
+    },
+    {
+      "address": "0x71fa",
+      "level": "已證實",
+      "semantic": "離開等待前清除FF1E",
+      "evidence": [
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
+      ]
+    },
+    {
+      "address": "0x7204",
+      "level": "已證實",
+      "semantic": "文字待續函式返回",
+      "evidence": [
+        "workplace/inventory-ida-v1/wait-evidence.json",
+        "workplace/inventory-source-v1/farewell.segment",
+        "workplace/shop-path-gui-inventory-v1/farewell-readiness-review.json"
+      ]
+    },
+    {
+      "address": "0x7539",
+      "semantic": "依商品索引先準備一列，再依 BX 座標搬到畫面",
       "level": "已證實",
       "evidence": [
-        "workplace/shop-path-buffer-trace-v1/buffer-trace.jsonl"
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x7543",
+      "semantic": "經 CS:301Ah 呼叫 sub_3805 準備商品列",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0x7560",
+      "semantic": "經 CS:301Ch 呼叫 sub_37CC 搬移完整列",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0xa28c",
+      "semantic": "商品彈窗經 CS:2000 清框及畫框；正常矩形 X84、Y110、寬148、高36",
+      "level": "已證實",
+      "evidence": [
+        "workplace/shop-path-modal-trace-v1/purchase-trace/modal-trace.jsonl"
+      ]
+    },
+    {
+      "address": "0xa2a8",
+      "semantic": "武器店把商品名稱指標表 AD05h 傳給清單服務",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0xa2b7",
+      "semantic": "呼叫 CS:6012h，對應 sub_7539",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json"
+      ]
+    },
+    {
+      "address": "0xa2e0",
+      "semantic": "設定 B0DCh 報價開頭，之後從商品指標表取得目前選中名稱",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json",
+        "workplace/shop-path-quote-source-v1/source-evidence.json"
+      ]
+    },
+    {
+      "address": "0xa2ff",
+      "semantic": "以原始商品名稱指標呼叫 CS:6004h；正常第一件字形來源 AD1Dh..AD2Ah",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json",
+        "workplace/shop-path-glyph-v1/glyphs.jsonl"
+      ]
+    },
+    {
+      "address": "0xa32f",
+      "semantic": "資金檢查失敗時交回 AF54h 不足對話；第二件1500武器正常金幣1000時走此分支",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json",
+        "workplace/shop-path-insufficient-v1/run/glyphs.jsonl"
+      ]
+    },
+    {
+      "address": "0xa345",
+      "semantic": "售價前綴來源 B106h，實際數字另經 BC33h 字形來源輸出",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json",
+        "workplace/shop-path-glyph-v1/glyphs.jsonl"
+      ]
+    },
+    {
+      "address": "0xa35a",
+      "semantic": "呼叫 CS:6006h，把原版價格格式化到 DI=BC33h；本專案不重作此格式化或價格計算",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json",
+        "workplace/shop-path-quote-source-v1/source-evidence.json"
+      ]
+    },
+    {
+      "address": "0xa364",
+      "semantic": "FF4Ch 設為 BC33h，售價來源以 FF 結束，不能假定 NUL 或 FF00 結束",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json",
+        "workplace/shop-path-quote-source-v1/source-evidence.json"
+      ]
+    },
+    {
+      "address": "0xa3c9",
+      "semantic": "再次把 FF4Ch 設為 BC33h，覆用同一暫存區輸出舊武器折抵；須分別保存兩次已繪數字",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json",
+        "workplace/shop-path-glyph-v1/glyphs.jsonl"
+      ]
+    },
+    {
+      "address": "0xa3de",
+      "semantic": "最後設定 B0EDh 確認句，完成後才畫是／否框",
+      "level": "已證實",
+      "evidence": [
+        "workplace/ida-weapon-v3/weapon-evidence.json",
+        "workplace/shop-path-glyph-v1/glyphs.jsonl"
+      ]
+    },
+    {
+      "address": "0xa3f1",
+      "semantic": "報價是／否框經 CS:2000 繪製；正常矩形 X188、Y43、寬48、高25",
+      "level": "已證實",
+      "evidence": [
+        "workplace/shop-path-modal-trace-v1/purchase-trace/modal-trace.jsonl"
       ]
     }
   ]

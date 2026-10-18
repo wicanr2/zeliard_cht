@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "input_name": "equipment-held.segment",
+  "input_sha256": "2ecedadb544f1d089612ca19b1f42379fa83866c447121b131c61435fcdf7e3e",
+  "address_space": "IDA binary base 0 = dosgolem 01B1 段內偏移；不是 EXE 檔案偏移",
+  "entries": [
+    {
+      "address": "0x22db",
+      "level": "已證實",
+      "semantic": "小字 ASCIIZ 繪製入口，固定原版色號9",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0x2308",
+      "level": "已證實",
+      "semantic": "小字 ASCIIZ 已讀到NUL，整段繪製完成",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0x27ef",
+      "level": "已證實",
+      "semantic": "字形 AH 作為 24EAh 色號表索引",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0x2809",
+      "level": "已證實",
+      "semantic": "保存本次字形原版色號",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xa752",
+      "level": "已證實",
+      "semantic": "裝備頁物品顯示路徑；首件武器名稱分兩段ASCIIZ",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xa772",
+      "level": "已證實",
+      "semantic": "Training第一行送入原版小字入口",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xa77c",
+      "level": "已證實",
+      "semantic": "Sword第二行座標準備",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xa781",
+      "level": "已證實",
+      "semantic": "第二行ASCIIZ送入原版小字入口",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xa9d5",
+      "level": "已證實",
+      "semantic": "四個裝備分類標題迴圈，來源結構包含X、Y與ASCIIZ",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xa9ed",
+      "level": "已證實",
+      "semantic": "未選分類使用AH=3",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xa9f3",
+      "level": "已證實",
+      "semantic": "目前分類使用AH=2",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xaa2b",
+      "level": "已證實",
+      "semantic": "裝備大字ASCIIZ每字迴圈入口",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xaa30",
+      "level": "已證實",
+      "semantic": "裝備大字ASCIIZ已讀NUL，整段完成",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xaa3f",
+      "level": "已證實",
+      "semantic": "分類標題先以AH=5畫右下各一原生像素的陰影",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xaa4a",
+      "level": "已證實",
+      "semantic": "以原AH畫主字形，間接呼叫CS:2022",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    },
+    {
+      "address": "0xaa53",
+      "level": "已證實",
+      "semantic": "下一字X增加8原生像素",
+      "evidence": [
+        "workplace/inventory-title-trace-v1/label-trace.jsonl",
+        "workplace/inventory-source-v1/label-trace.jsonl",
+        "workplace/inventory-ida-v1/evidence.json"
+      ]
+    }
+  ]
+}

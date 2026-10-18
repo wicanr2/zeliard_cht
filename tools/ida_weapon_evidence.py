@@ -46,7 +46,7 @@ def main():
     ida_auto.auto_wait()
     functions = []
     for start in idautils.Functions():
-        if start not in (0x2046, 0x20B6, 0x20E8, 0x27E9, 0x706C, 0xA10E, 0x7539, 0x3805, 0x383E, 0x3854, 0x37CC):
+        if start not in (0x2046, 0x20B6, 0x20E8, 0x27E9, 0x7042, 0x706C, 0x71DF, 0xA10E, 0x7539, 0x3805, 0x383E, 0x3854, 0x37CC):
             continue
         function = ida_funcs.get_func(start)
         instructions = [{"address": hex(a),
@@ -56,7 +56,7 @@ def main():
         functions.append({"original_name": idc.get_func_name(start), "start": hex(start),
                           "end": hex(function.end_ea), "semantic_index": annotation(start),
                           "instructions": instructions})
-    assert {f["start"] for f in functions} == {"0x2046", "0x20b6", "0x20e8", "0x27e9", "0x706c", "0xa10e", "0x7539", "0x3805", "0x383e", "0x3854", "0x37cc"}
+    assert {f["start"] for f in functions} == {"0x2046", "0x20b6", "0x20e8", "0x27e9", "0x7042", "0x706c", "0x71df", "0xa10e", "0x7539", "0x3805", "0x383e", "0x3854", "0x37cc"}
     result = {"schema": 1, "tool": "IDA " + ida_kernwin.get_kernel_version(), "bits": 16,
               "input_name": source.name, "input_sha256": hashlib.sha256(raw).hexdigest(),
               "source_index_sha256": hashlib.sha256(index_path.read_bytes()).hexdigest(),

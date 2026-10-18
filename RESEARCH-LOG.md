@@ -368,3 +368,43 @@ BC33h 的數字以單一 FF 結尾。最後快照的200後為 `FF 02`，不能�
 較早GUI v1未在舊入口預算內進城，v2因觀測檔缺少心跳而中止。Ebitengine的Draw可能跨過多個Update，不能用幀數是否為60整倍數判斷進度。觀測改為每次Draw寫完整快照，再以同目錄換名原子更新；未更動原版輸入或cycles。兩次失敗原樣保留，沒有據此推論CPU停滯或報價缺陷。
 
 本次GUI未開HD，最後保留一筆離店舊對話退回，paragraph=12／kind=2／first_difference=422。完整報價當下沒有退回，不能據此宣稱全程零失配。
+
+## 2026-10-18：裝備頁彩色標題與兩行名稱
+
+來源入口為 `workplace/inventory-source-v1/mapping.json`，SHA-256 `7958c33a466a5993aff8307f3aa5a3042f9132efb9ccff8395d3807a9877071c`。固定IDA輸入為 `shop-path-oracle-v1/equipment-held.segment`，65536 bytes，SHA-256 `2ecedadb544f1d089612ca19b1f42379fa83866c447121b131c61435fcdf7e3e`。SAR2 payload檔案偏移 `0x401E`、3613 bytes載入原版 `01B1:A000`；前綴與七個完整ASCIIZ來源均相符。
+
+| SAR2檔案偏移 | dosgolem段內偏移 | 原文及已觀察路徑 |
+|---|---|---|
+| 0x4A1D | 01B1:A9FF | SELECT-MAGIC:，X=52、Y=18，AH=2 |
+| 0x4A2E | 01B1:AA10 | WEAR:，X=52、Y=67，AH=3 |
+| 0x4A37 | 01B1:AA19 | USE:，X=52、Y=113，AH=3 |
+| 0x4A3F | 01B1:AA21 | INVENTORY，X=184、Y=67，AH=3 |
+| 0x4AB0 | 01B1:AA92 | NOTHING，三次，AH=1 |
+| 0x4D03 | 01B1:ACE5 | Training，五像素小字第一行 |
+| 0x4D0C | 01B1:ACEE | 五個空格與Sword，五像素小字第二行 |
+
+`inventory-source-v1/label-trace.jsonl`六筆既有入口事件確認物品兩行及後續Esc暫停；名稱不是單一Training Sword ASCIIZ。另一次正常冷新局 `inventory-title-trace-v1/` 的340筆事件確認AA2Bh逐字、AA30h NUL完成及AA4Ah字形呼叫。這些探索收據沒有宣稱完整1MiB配對。
+
+IDA9.4／16-bit／binary base 0對應上述固定 `01B1` 段內偏移，不是EXE檔案偏移。AA2Bh保存AH後經CS:2022呼叫27E9h字形入口，24EAh表為0／9／18／27／36／45／54／63。AH=1白字9、AH=2紅字18、AH=3綠字27；分類標題另外以AH=5、色號45在右下各一像素畫陰影，X每字增加8。來源、正常呼叫與bytes相符，等級為已證實。五個必要函式重生於 `inventory-ida-indexed-v1/evidence.json`，由 [裝備來源索引](docs/inventory-source-index.json) 合併證據等級與未知警示，保留原名與原始定位。
+
+中文試作只接四標題、三個「無」與練習劍兩行。原版物品識別、持有數、裝備效果與按鍵完全不改；其他物品、魔法、道具使用及裝備切換尚未驗。
+
+[正常裝備鍵序](tools/inventory.commands)由冷新局領賞、交易、出店，再Return開啟、放開、Return關閉及重開。`workplace/inventory-overlay-v3/inventory/receipt.json`十一點完整1MiB、色號、色盤、CS:IP、steps及cycles均相同，區外與彈窗越寫0。初開、放開及重開的九個新文字區各17359像素改變，關閉整張覆繪差0；原版金幣800。每個被遮擋舊標籤獨立繪製時差0，未知可見像素會撤除該譯文。
+
+最早v1把隱藏舊標籤計入目前數量，v2以內部記錄數判斷關閉殘留，兩次測試失敗保留。v3核對七鍵九次出現，逐一證明舊標籤沒有可見寫入，關閉改以整張原版畫格的實際像素差驗證。這些檢查不放寬原版狀態一致或區外不可改寫要求。
+
+共用標籤儲存與繪製另由 `inventory-regression-v1/test.jsonl`重驗長老及存讀檔。兩項通過，長老2點、存讀檔22點完整原版狀態相同且區外0；各自新存檔256 bytes、SHA-256 `78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb`相同，兩次冷啟動及新檔讀回均確認。沒有把前輪存讀檔收據改名成新結果。
+
+初次裝備GUI `shop-path-gui-inventory-v1/failure.json`在完整中文告別停留，按放已送達，90秒畫面預算結束；尚未到裝備。`farewell-readiness-review.json`證實八列ROI已相同時，完整十一列仍差4像素，後續完整中文圖才差0。原文29個可見字形的比例揭露在27字時即可顯示完整10字中文；完整中文不是原版待續階段證據。
+
+末尾等待的IDA9.4輸入仍為固定武器店段 `22c3e2d3…`，位址基準同本節前述規則。71DFh先清FF1D／FF1E，71E9h呼叫7042h輪詢，71ECh與71EFh合併旗標，71F3h為零時繼續，7204h返回。這些控制流已證實並回填[武器店索引](docs/weapon-source-index.json)，十三函式匯出在 `inventory-wait-indexed-v1/evidence.json`。072Ah位於共用服務，單一IP不能證明文字就緒；沒有深入其硬體或ISR。
+
+正常冷新局 `inventory-source-v1/farewell.segment` SHA-256 `08ec86394a4a819caf06f21047406bc844a3894257c88afa5239de26a0be2472`，末尾文字游標FF4C=B1FDh。失敗GUI送鍵前IP06B2h，按下ack為A91Eh，放開ack為71ECh；舊觀測沒有文字游標，按鍵是否在末尾清旗標前到達仍是強推論。新的唯讀觀測提供文字游標及旗標，腳本同時要求完整中文、B1FDh、旗標零及不同虛擬步數的兩個穩定快照，再送正常Space。沒有據此改寫原版等待或輸入規則。
+
+`shop-path-gui-inventory-v3/farewell-ready.json`兩個快照均為游標45565、旗標0，步數分別203,149,613及203,799,613，後續Space已回城鎮。Return按住期間的送達快照由209,493,344至209,593,344，只涵蓋約十萬指令；沒有開啟裝備。這支持以原版步數取代主機秒數控制驗證輸入，未證明裝備鍵的最低時間。v4末尾改500k指令，但前段牆鐘微移已走過國王城門，沒有抵達本次目標；不能拿Up送達事件證明進房。
+
+替代正常入口為先前長老新建的 `save-path-verified/scratch/SAVETEST.usr`，256 bytes，SHA-256 `78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb`。`shop-path-inventory-save-check-v1/`由既有原版探針正常冷啟動、F7／Y／輸名／Enter載入，回到Muralla Town、1000金幣，再Return開／關／重開。原版圖及段內ACE5h／ACEEh核對初始武器同為Training與Sword，沒有因圖示猜名稱。來源存檔不變、沒有寫檔。此原版核對只建立後續GUI入口，不冒充覆繪配對或實際視窗通過。
+
+實際X視窗 `shop-path-gui-inventory-v5/receipt.json` 使用固定 `52826ff520b8b5af184e02dbe3a76188d54f9a4f6d610766d12a623d16cb213a` 建置，腳本SHA-256 `6c75ffe8319f0734c59ad21a9eed2185ac4fd44e2909703b262d7757f6c30a49`。正常冷F7讀上述新存檔，初開與重開的九個中文ROI匹配既有覆繪參考，關閉後城鎮靜態區匹配本次讀回圖。三張圖逐張目視清楚、沒有關閉殘留；金幣1000、存檔不變、最後持鍵空，capture-tail正常終止碼0。此GUI沒有新交易、未開HD，只證明文字區及靜態區，不稱完整同狀態GUI對拍。
+
+原版配對的交易與800金幣、GUI冷讀檔的1000金幣是不同正常路徑，不混用。GUI按放由X11送入並觀察原版確認，三次裝備Return各至少500k原版指令；放開後分別前進1m／2m／1m。事件內固定source字串只適用裝備Return，F7與名稱按鍵實際來源為 [存讀鍵序](tools/save-load.commands)及本輪原版save-check。沒有從主機秒數推算按住長度，也沒有宣稱500k是最低需求。

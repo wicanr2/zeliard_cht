@@ -14,7 +14,7 @@
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 原版、中文覆繪配對及實際 X 視窗均通過；戰鬥未驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
-| 中文 | 工具列、首章、國王、長老、存讀提示與武器店 prototype | 第一筆報價配對及實際視窗通過，第二件資金不足配對通過。裝備頁與其餘文字待完成 |
+| 中文 | 工具列、首章、國王、長老、存讀提示、武器店與裝備 prototype | 報價、裝備分類開關的配對與實際視窗通過；資金不足限配對。其餘物品與文字待完成 |
 | HD | 手繪奇幻邊框、國王及長老 prototype | 長老切換內部 50,926 像素改變，區外 0、完整還原，四個動畫像素不變；其餘場景／角色及正式倍率待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -39,7 +39,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-依 [WORKLIST.md](WORKLIST.md) 先接裝備頁與其他商店中文，再推進其餘片頭／對話及 HD 場景／角色。已有商品、報價片段、重用數字暫存及清框證據，不重新猜測這些入口。正常存讀檔已完成，不重新開啟輸入時序研究。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+依 [WORKLIST.md](WORKLIST.md) 接武器商人HD與其他商店中文，再推進其餘物品、片頭／對話及場景／角色。已有商品、報價片段、重用數字暫存、清框及裝備繪字證據，不重新猜測這些入口。正常存讀檔已完成，不重新開啟輸入時序研究。正式字級、術語及素材待校訂。證據入口為 [RESEARCH-LOG.md](RESEARCH-LOG.md)，驗證狀態見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 ## 工具與本地證據入口
 
@@ -56,10 +56,10 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - HD 樣圖：`workplace/hd-style-preview.png`；使用者只選定 B 的畫風，未定稿構圖。新生成邊框、完整提示詞與來源為 `workplace/hd-border-prototype.png`、`workplace/hd-border-generation.json`，均只留本機研究區。
 - HD 實際切換：`workplace/gui-hd-frame-v1/receipt.json`、`hd-region-comparison.json`。兩側 172,017 像素改變，中間區域 0；切回原貌後完整畫格相同。它只驗證裝飾邊框，不代表全遊戲 HD。
 - 位址索引：[docs/source-index.json](docs/source-index.json)，IDA 匯出自動合併原始定位、證據等級與警示；首章增補匯出在 `workplace/ida-intro-scroll-indexed/`。動態定位收據為 `workplace/probe-intro-display/`。
-- 前輪 HD 與首章稽核：`workplace/current-audit-hd.json`、`current-audit-scroll.json`，保留各自來源與二進位身份。提示、長老／商品及彈窗輪另保留 `current-audit-ui.json`、`current-audit-weapon-sage.json`、`modal-audit-v1/current-audit.json`；目前為 `workplace/quote-audit-v1/current-audit.json`。
+- 前輪 HD 與首章稽核：`workplace/current-audit-hd.json`、`current-audit-scroll.json`，保留各自來源與二進位身份。提示、長老／商品、彈窗及報價輪另保留 `current-audit-ui.json`、`current-audit-weapon-sage.json`、`modal-audit-v1/current-audit.json`、`quote-audit-v1/current-audit.json`；目前為 `workplace/inventory-audit-v1/current-audit.json`。
 - 同狀態區域比較：`workplace/gui-smoke-v4/intro-region-comparison.json`。原版色號完全相同，覆繪區內 3,655 個像素不同，區外 0。
 - 初始化工具身份：`workplace/gui-smoke-v4/provenance.json`，記錄當時 13 個來源檔、二進位、dosgolem 快照及映像 ID。該份舊收據沒有 Git 身份，現行程式以本儲存庫 HEAD 為準。
-- 最新前端二進位 SHA-256：`55f458acb28e01354ed95e946f26dab5749a5edec8d63f2060b23d70debca5ce`，主入口與 `zeliard-preview-quote-heartbeat` 相同。基於 `5f40350` 加本輪報價及觀測修改，未稱正式版本；前輪 `zeliard-preview-modal` 留作歷史身份。
+- 最新前端二進位 SHA-256：`52826ff520b8b5af184e02dbe3a76188d54f9a4f6d610766d12a623d16cb213a`，主入口與 `zeliard-preview-inventory-observe` 相同。基於報價功能加裝備覆繪及唯讀觀測欄位，未稱正式版本；前輪 `zeliard-preview-quote-heartbeat` 保留歷史身份。
 - 首章中文最新重跑：`workplace/intro-scroll-v3/receipt.json`。30 個來源行、430 個完成列事件；10,729,940／14m／30m／65m／110m／160m 指令抽樣，完整 1 MiB 記憶體、畫面色號、色盤、CS:IP 與虛擬時間均與無掛鉤原版相同。覆繪區外差異 0；結尾捲出與換章移除已驗。
 - 首章實際 X 視窗：`workplace/gui-intro-scroll-v2/receipt.json` 與 `intro-scroll-window.png`。自然片頭擷取時已觀察 7 個來源行、62 個完成列。專名暫留原文，正式術語與字級尚未定稿。
 - 早期國王正常操作：`workplace/probe-door-up-70m/`、`probe-king-0-84m/` 及 `gui-king-v2/receipt.json`。探針使用既有六次 Space，再於 60m 按 Right 2m、64m 按 Up 250k。GUI 以畫面核對進入國王房間，首段文字與原版收據相符；空白鍵後 GOLD 更新至 1000。不把賞金確認稱為對話全部翻頁完成。
@@ -118,3 +118,20 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - GUI未開HD。保留一筆離店舊對話退回，paragraph=12／kind=2／first_difference=422，與前輪相同；報價完成時沒有退回，不稱全程零失配。
 - 收尾稽核核對53個自有檔案、29個原版、882個執行器快照、100個文件連結及全部正式Go來源符合功能提交。458筆按放均有送達確認，擁有權無異常，本專案容器已回收。
 - 限制：報價按完成片段顯示，未完成時暫留白；數字隨中文排版移動。資金不足沿既有比例揭露，沒有宣稱逐詞同步。只驗第一筆購買與第二件不足，其他報價、裝備、其餘中文與HD、音效、戰鬥及實體手把仍待完成。
+
+## 本輪裝備頁證據
+
+- 本節補正練習劍裝備頁仍英文的限制。來源入口 `workplace/inventory-source-v1/mapping.json`，七個來源均核對SAR2、固定段與正常呼叫。固定段SHA-256 `2ecedadb544f1d089612ca19b1f42379fa83866c447121b131c61435fcdf7e3e`；[裝備索引](docs/inventory-source-index.json)及五函式IDA9.4匯出 `inventory-ida-indexed-v1/evidence.json` 保留原始定位與分級。
+- 選單TSV共34筆，新增四分類標題、「無」及練習劍兩行來源。大字逐字AA2Bh、完成AA30h；保留AH對應色號及右下陰影，小字沿既有入口。不改物品識別、效果或輸入。
+- `workplace/inventory-overlay-v3/inventory/receipt.json` 11點完整1MiB、色號、色盤、CS:IP、steps與cycles相同，區外及彈窗越寫0。初開、放開、重開各九個新文字區，17359個像素改變；關閉整張覆繪差0。每個被遮擋舊標籤獨立繪製差0，未知像素撤除通過。
+- v1及v2測試分別把隱藏舊標籤計入目前標籤數、把內部記錄誤作關閉殘留。已改核對七鍵九次出現、每個舊標籤零可見像素及關閉完整畫格差0，沒有放寬完整原版狀態或區外檢查。
+- 初次實際視窗 `shop-path-gui-inventory-v1` 使用 `3e0aa6f` 候選，完成交易但止於完整告別，尚未到裝備；按放均送達，90秒畫面等待結束後正常回收。未執行的補Space沒有計入輸入。失敗及事件保留，不當作裝備GUI通過或原版CPU停滯。
+- 原版末尾等待的最小IDA證據為 `workplace/inventory-ida-v1/wait-evidence.json`。告別完整中文可能早於末尾控制碼；診斷新增唯讀文字游標及待續旗標，驗證腳本須核對原版末尾狀態再送Space。v3已核對兩個穩定末尾快照並回城鎮，裝備GUI另用下列冷讀檔入口驗證。
+- 新診斷候選 `workplace/bin/zeliard-preview-inventory-observe` SHA-256 `52826ff520b8b5af184e02dbe3a76188d54f9a4f6d610766d12a623d16cb213a`，只有觀測JSON新增兩個唯讀欄位，覆繪及遊戲輸入未變。最新武器店IDA十三函式匯出在 `inventory-wait-indexed-v1/evidence.json`，合併[分級索引](docs/weapon-source-index.json)。
+- v2在120秒入口上限耗盡時仍前進，末端40,597,431指令／42,587,957cycles，城鎮HUD尚未畫完。v3改180秒入口後完成交易及原版末尾游標檢查，回城鎮的Return只持約十萬指令，未開裝備。v4將尾段按放改原版步數，但較快吞吐使舊牆鐘城門微移走過入口，未見國王。四份失敗均保留，詳見WORKLOG；不當作CPU停滯或裝備通過。
+- 實際視窗 `workplace/shop-path-gui-inventory-v5/receipt.json` 使用自己正常建立的 `save-path-verified/scratch/SAVETEST.usr` 冷F7讀回，雜湊 `78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb`。初始武器同為Training／Sword；開啟、關閉及重開通過，初開與重開九個中文ROI相符，關閉城鎮靜態區相符。金幣1000、存檔不變、持鍵空、capture-tail正常終止碼0。此GUI沒有新交易、未開HD，不稱全畫面同狀態對拍。輸入沿已驗原版步數及畫面同步，不注入位置或記憶體。
+- 共用標籤回歸 `workplace/inventory-regression-v1/test.jsonl` 長老與存讀檔兩項通過。長老2點及存讀檔22點完整狀態相同、區外0；兩側獨立建立相同256-byte新檔並冷讀回。最新go vet及重建通過，重建二進位與候選逐位元相同，未重跑未改動的HD／手把測試。
+- 限制：配對只驗購得練習劍後的顯示及開關，GUI只驗自己新建存檔冷載入後的相同初始武器。其他物品、使用、魔法與裝備切換未驗；完整中文、其餘HD、音效、戰鬥與實體手把仍待完成或驗證。
+- 後續銀行及道具店的字面候選為 `workplace/inventory-source-v1/next-shop-candidates.json`，只證實SAR2檔案偏移與字面，尚未驗runtime映射或行為。可沿本輪已驗正常存檔的冷讀回路徑開始新商店試玩，不重做已完成的存讀檔研究。
+- 武器商人HD的原版候選為 `workplace/inventory-source-v1/merchant-pose-candidates.json`，保存六個正常路徑畫格的內框色號、RGB及來源雜湊分組。這只供後續美術接入定位，未驗收新HD，不把雜湊分組當作動畫語意。
+- 武器商人手繪樣圖為 `workplace/merchant-hd-v1/merchant-prototype.png`，1536×1024，SHA-256 `2660fc7892f9a5229d4cee3723e992146992a460a1678197793cc890b0dfb59b`。完整內建imagegen提示詞、構圖與風格參考及本地權利分類在同目錄 `generation.json`。已目視禿頭、紅鬍、藍背心、綠臂帶及櫃台構圖，尚未接入或驗收HD；原版衍生圖不入Git。

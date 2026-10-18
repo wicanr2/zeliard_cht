@@ -19,20 +19,22 @@ import (
 )
 
 type labelSource struct {
-	offset int
-	base   uint16
-	prefix []byte
-	width  int
-	raw    []byte
-	text   []rune
+	offset    int
+	base      uint16
+	prefix    []byte
+	width     int
+	raw       []byte
+	text      []rune
+	inventory bool
 }
 type labelStamp struct {
-	source      *labelSource
-	box         image.Rectangle
-	rows        []image.Rectangle
-	raw         []byte
-	palette     [256][3]uint8
-	paintSerial uint64
+	source             *labelSource
+	box                image.Rectangle
+	rows               []image.Rectangle
+	raw                []byte
+	palette            [256][3]uint8
+	paintSerial        uint64
+	foreground, shadow uint8
 }
 type listLabel struct {
 	source *labelSource
@@ -42,13 +44,15 @@ type listLabel struct {
 // Labels 只觀察已知 MCGA 繪字入口，來源與完成畫面不符時保留原貌。
 // 選單選擇、金額、存檔名稱及原版輸入完全由原版處理。
 type Labels struct {
-	font         bitmap.Font
-	sources      map[string]*labelSource
-	stamps       []labelStamp
-	pending      *labelStamp
-	listPrepared *listLabel
-	Completed    int
-	paint        *paintHistory
+	font             bitmap.Font
+	sources          map[string]*labelSource
+	stamps           []labelStamp
+	pending          *labelStamp
+	listPrepared     *listLabel
+	Completed        int
+	paint            *paintHistory
+	inventoryPending *labelStamp
+	inventoryIndex   int
 }
 
 func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels, error) {
@@ -155,6 +159,10 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 			return nil, fmt.Errorf("介面來源須以 NUL 或 FF 結束：%s", row[0])
 		}
 		charWidth := 5
+		inventory := parts[0] == "zelres2" && module == 0x401e && (off == 0x4a1d || off == 0x4a2e || off == 0x4a37 || off == 0x4a3f || off == 0x4ab0)
+		if inventory {
+			charWidth = 8
+		}
 		if data[end] == 255 {
 			charWidth = 8
 		}
@@ -183,7 +191,7 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 				return nil, fmt.Errorf("選單譯文超出原文安全寬度：%s", row[0])
 			}
 		}
-		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:end+1]...), text: []rune(text)}
+		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:end+1]...), text: []rune(text), inventory: inventory}
 	}
 	o.OnCall(oracle.Far(0x01b1, 0x22db), func(q *oracle.Oracle) { l.begin(q, 5) })
 	o.OnCall(oracle.Far(0x01b1, 0x2308), func(q *oracle.Oracle) { l.finish(q, 5) })
@@ -193,6 +201,8 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 	o.OnCall(oracle.Far(0x01b1, 0x384a), l.captureListSource)
 	o.OnCall(oracle.Far(0x01b1, 0x37cc), l.beginListRow)
 	o.OnCall(oracle.Far(0x01b1, 0x3804), func(q *oracle.Oracle) { l.finish(q, 5) })
+	o.OnCall(oracle.Far(0x01b1, 0xaa2b), l.beginInventory)
+	o.OnCall(oracle.Far(0x01b1, 0xaa30), l.finishInventory)
 	return l, nil
 }
 
@@ -264,7 +274,7 @@ func (l *Labels) begin(o *oracle.Oracle, charWidth int) {
 	}
 	pos := int(o.SI())
 	for _, s := range l.sources {
-		if s.width != charWidth || s.offset+int(s.base) != pos {
+		if s.inventory || s.width != charWidth || s.offset+int(s.base) != pos {
 			continue
 		}
 		// 模組固定前綴與完整來源字串均須相符，不能只靠當次 SI 認出文字。
@@ -331,6 +341,11 @@ func (l *Labels) finish(o *oracle.Oracle, charWidth int) {
 			return
 		}
 	}
+	s.foreground = 9
+	l.store(s)
+}
+
+func (l *Labels) store(s labelStamp) {
 	// 重繪同一位置時取代舊標籤，不累積過期選單。
 	for i := range l.stamps {
 		if l.stamps[i].box == s.box {
@@ -359,7 +374,7 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 		kept = append(kept, s)
 		drawn++
 		box := image.Rect(origin.X+s.box.Min.X*3, origin.Y+s.box.Min.Y*3, origin.X+s.box.Max.X*3, origin.Y+s.box.Max.Y*3)
-		bg, fg := pal[0], pal[9]
+		bg, fg := pal[0], pal[s.foreground]
 		var rows []image.Rectangle
 		for _, row := range s.rows {
 			rows = append(rows, image.Rect(origin.X+row.Min.X*3, origin.Y+row.Min.Y*3, origin.X+row.Max.X*3, origin.Y+row.Max.Y*3))
@@ -389,6 +404,13 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 				for xx := 0; xx < dw; xx++ {
 					sx, sy := xx*2/3, yy*2/3
 					if g[sy*(w/8)+sx/8]&(0x80>>uint(sx%8)) != 0 {
+						if s.shadow != 0 {
+							p := image.Pt(x+xx+3, y+yy+3)
+							if p.In(rows[rowIndex]) && p.In(dst.Bounds()) && visiblePixel(p, origin, masks) {
+								c := pal[s.shadow]
+								dst.SetRGBA(p.X, p.Y, color.RGBA{c[0], c[1], c[2], 255})
+							}
+						}
 						p := image.Pt(x+xx, y+yy)
 						if p.In(rows[rowIndex]) && p.In(dst.Bounds()) && visiblePixel(p, origin, masks) {
 							dst.SetRGBA(p.X, p.Y, color.RGBA{fg[0], fg[1], fg[2], 255})

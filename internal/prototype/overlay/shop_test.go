@@ -29,6 +29,13 @@ func TestWeaponShopInsufficientGoldNormalPathReadOnly(t *testing.T) {
 	testWeaponShopNormalPath(t, "../../../tools/weapon-insufficient.commands", 11)
 }
 
+func TestInventoryNormalPathReadOnly(t *testing.T) {
+	if out := os.Getenv("ZELIARD_SHOP_OUTPUT"); out != "" {
+		t.Setenv("ZELIARD_SHOP_OUTPUT", filepath.Join(out, "inventory"))
+	}
+	testWeaponShopNormalPath(t, "../../../tools/inventory.commands", 11)
+}
+
 func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints int) {
 	t.Helper()
 	root, fontPath, out := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_FONT"), os.Getenv("ZELIARD_SHOP_OUTPUT")
@@ -195,6 +202,59 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 				}
 			}
 			sort.Strings(keys)
+			if !strings.Contains(commandPath, "insufficient") && (f[1] == "inventory" || f[1] == "released" || f[1] == "reopened") {
+				want := map[string]int{"zelres2.file.004a1d": 1, "zelres2.file.004a2e": 1, "zelres2.file.004a37": 1, "zelres2.file.004a3f": 1, "zelres2.file.004ab0": 3, "zelres2.file.004d03": 1, "zelres2.file.004d0c": 1}
+				got := map[string]int{}
+				inventorySources := map[*labelSource]bool{}
+				for k := range want {
+					inventorySources[l.sources[k]] = true
+				}
+				for _, k := range keys {
+					if _, ok := want[k]; ok {
+						got[k]++
+					}
+				}
+				if labels < 9 || len(got) != len(want) {
+					t.Fatalf("裝備中文標籤缺漏：%d %v", labels, got)
+				}
+				for k, n := range want {
+					if got[k] != n {
+						t.Fatalf("裝備中文來源數量不符：%s %d", k, got[k])
+					}
+				}
+				for _, stamp := range l.stamps {
+					if !inventorySources[stamp.source] {
+						isolated := *l
+						isolated.stamps = []labelStamp{stamp}
+						canvas := image.NewRGBA(dst.Bounds())
+						copy(canvas.Pix, before)
+						isolated.Draw(canvas, raw, pal, image.Point{})
+						if !bytes.Equal(canvas.Pix, before) {
+							t.Fatal("裝備頁透出舊選單中文")
+						}
+						continue
+					}
+					if stamp.source.inventory {
+						wantColor := uint8(27)
+						if stamp.source.offset == 0x9ff {
+							wantColor = 18
+						}
+						if stamp.source.offset == 0xa92 {
+							wantColor = 9
+						}
+						if stamp.foreground != wantColor || (wantColor != 9 && (stamp.shadow != 45 || stamp.box.Dy() != 9)) {
+							t.Fatal("裝備原版標題色彩或陰影遺失")
+						}
+					}
+					unknown := append([]byte(nil), raw...)
+					unknown[stamp.box.Min.Y*320+stamp.box.Min.X] ^= 0x80
+					isolated := *l
+					isolated.stamps = []labelStamp{stamp}
+					if isolated.Draw(image.NewRGBA(dst.Bounds()), unknown, pal, image.Point{}) != 0 {
+						t.Fatal("裝備未知像素沒有退回原版")
+					}
+				}
+			}
 			key := ""
 			if d.current >= 0 {
 				key = d.paragraphs[d.current].key
@@ -281,6 +341,9 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if outside != 0 || !bytes.Equal(mem, b.Bytes(oracle.Far(0, 0), 1<<20)) || !bytes.Equal(raw, b.Indexed()) {
 				t.Fatalf("%s：覆繪越界或改寫原版", f[1])
 			}
+			if f[1] == "closed" && inside+outside != 0 {
+				t.Fatalf("關閉裝備後仍改動畫面：pixels=%d labels=%d keys=%v dialogue=%v", inside+outside, labels, keys, drawn)
+			}
 			fp, e := os.Create(filepath.Join(out, f[1]+".png"))
 			if e != nil {
 				t.Fatal(e)
@@ -299,7 +362,7 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 		t.Fatal("正常商店路徑未完整完成")
 	}
 	scope := "normal new game, reward, Chinese quotation with original price/trade glyphs, purchase, farewell, inventory"
-	if wantCheckpoints != 9 {
+	if strings.Contains(commandPath, "insufficient") {
 		scope = "normal new game, reward, insufficient gold dialogue/pages, farewell and town; original gold remains1000"
 	}
 	data, err := json.MarshalIndent(map[string]any{"commands_sha256": fmtHash(commands), "checkpoints": receipts, "dialogue_rejections": d.Rejections, "scope": scope}, "", "  ")

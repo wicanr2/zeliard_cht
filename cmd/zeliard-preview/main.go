@@ -354,7 +354,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 			rejections = g.dialogue.Rejections
 			quotation = g.dialogue.QuotationState()
 		}
-		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "held_keys": held, "frames": g.frames})
+		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "held_keys": held, "frames": g.frames,
+			"text_cursor":         g.o.Word(oracle.Far(0x01b1, 0xff4c)),
+			"advance_input_flags": int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
 		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。
 		// 先寫同目錄暫存檔再換名，觀察者只會讀到完整快照。
 		if err := os.WriteFile(g.observePath+".tmp", append(data, '\n'), 0644); err == nil {
