@@ -11,8 +11,23 @@ import (
 )
 
 type CaveTerrain struct {
-	tiles    [15][]color.NRGBA
-	material []color.NRGBA
+	tiles       [15][]color.NRGBA
+	material    []color.NRGBA
+	player      *CavePlayer
+	playerState map[string]any
+}
+
+func (s *CaveTerrain) SetPlayer(player *CavePlayer) { s.player = player; s.playerState = nil }
+
+func (s *CaveTerrain) PlayerState() map[string]any {
+	if s == nil || s.playerState == nil {
+		return nil
+	}
+	state := make(map[string]any, len(s.playerState))
+	for key, value := range s.playerState {
+		state[key] = value
+	}
+	return state
 }
 
 func caveArtwork(path, sha string) (image.Image, error) {
@@ -82,6 +97,12 @@ func NewCaveTerrain(dir string) (*CaveTerrain, error) {
 
 // Draw的守衛全部先完成，再交換地形。其餘圖層依原版遮罩回畫。
 func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Point) bool {
+	if s != nil {
+		s.playerState = nil
+		if s.player != nil {
+			s.playerState = map[string]any{"loaded": true, "matched": false, "occluded": false}
+		}
+	}
 	box := image.Rect(144, 42, 816, 474).Add(origin)
 	if s == nil || dst == nil || f == nil || !box.In(dst.Bounds()) || len(s.material) != 432*768 || len(f.Indexed) != 64000 || len(f.RGB) != 192000 || !caveFrameSource(caveFrameInput{mode: 0x13, memory: f.Memory, palette: f.Palette}) {
 		return false
@@ -149,6 +170,27 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			}
 		}
 	}
+	var playerPose *cavePlayerPose
+	if s.player != nil {
+		key, pose, hidden := s.player.selectPose(d)
+		playerPose = pose
+		s.playerState = map[string]any{"loaded": true, "matched": pose != nil, "occluded": hidden, "source_key": key, "source_steps": f.Steps, "body_steps": f.BodySteps}
+		if pose != nil {
+			s.playerState["pose"] = pose.number
+			// 先移除原版角色及武器，留下已驗的當次下層，再做高清合成。
+			for y := 14; y < 158; y++ {
+				for x := 48; x < 272; x++ {
+					v := int(d.Background[y*320+x]) * 3
+					c := color.RGBA{f.Palette[v], f.Palette[v+1], f.Palette[v+2], 255}
+					for dy := 0; dy < 3; dy++ {
+						for dx := 0; dx < 3; dx++ {
+							dst.SetRGBA(x*3+dx+origin.X, y*3+dy+origin.Y, c)
+						}
+					}
+				}
+			}
+		}
+	}
 	for _, cell := range d.Cells {
 		id := int(cell.ID)
 		if id == 0 || id >= 15 {
@@ -179,7 +221,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			}
 		}
 	}
-	for _, layer := range [][]cavePixel{d.Dynamic, d.Actor, d.Weapon} {
+	paintNative := func(layer []cavePixel) {
 		for _, v := range layer {
 			c := color.RGBA{f.Palette[int(v.Color)*3], f.Palette[int(v.Color)*3+1], f.Palette[int(v.Color)*3+2], 255}
 			for y := 0; y < 3; y++ {
@@ -189,5 +231,12 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			}
 		}
 	}
+	paintNative(d.Dynamic)
+	if playerPose != nil {
+		playerPose.draw(dst, d, f.Paints, origin)
+	} else {
+		paintNative(d.Actor)
+	}
+	paintNative(d.Weapon)
 	return true
 }

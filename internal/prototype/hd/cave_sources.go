@@ -66,6 +66,8 @@ type caveObject struct {
 type caveDecoded struct {
 	Background             []byte
 	Actor, Weapon, Dynamic []cavePixel
+	ActorRaster            [576]byte
+	ActorX, ActorY         int
 	Cells                  []caveCell
 	Objects                []caveObject
 	Differences            int
@@ -383,6 +385,13 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 	}
 	pos := caveWord(bp, 0x4fed)
 	bx, by := pos%320, pos/320
+	out.ActorX, out.ActorY = bx, by
+	for i := range out.ActorRaster {
+		out.ActorRaster[i] = 255
+		if opaque[i] {
+			out.ActorRaster[i] = actor[i]
+		}
+	}
 	for y := 0; y < 24; y++ {
 		for x := 0; x < 24; x++ {
 			erased := false

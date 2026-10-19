@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-共用物品文字已按原版指標表分類，新增60筆候選；Magia石的買入、選用、使用及空欄已通過原版配對、實際視窗及獨立像素，主入口同步4766810c。片頭、Malicia地形與回城成果保持已驗來源身份；全遊戲中文與HD仍在開發。
+洞窟主角25姿態HD已接入，正常首戰／回城、固定GUI日誌、實際視窗與獨立像素通過，主入口同步c0e66326。原版配色提示、武器及動態物件保留原貌。共用物品與片頭中文、Malicia地形及回城成果保持原有來源身份；全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -18,9 +18,9 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 共用物品016限定CONFORMED | 72來源分類、60新候選，Magia49點全部原版狀態相同；5616呈現、五張中文288萬像素零差，GUI v2五面板1484820像素零差。舊藥水48點／裝備11點回歸、五頂層及十二子項通過；原件與存檔不變。候選4766810c／85來源，主入口已同步；收尾沿item-use-v1/shared-current-audit-v1.json |
-| 接續工作 | 洞窟角色／物件HD及其餘正常中文路徑 | Sabre1,200高於起始1,000，v1只驗資金不足；正常第一寶石的銀行報價6，未取得Sabre，不改金額或猜效果。其他未走過的物品與法術來源仍是候選 |
-| HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形已接入 | 洞窟地形1..14可選覆繪，主角／武器／動態物件仍原貌。未知角色分支安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
+| 本輪工作 | 洞窟主角017限定CONFORMED | 25來源姿態／三圖原子載入，93具名測試無skip；22份完整遊戲區6386688像素零差。正常35點全部原版相同，183個完成來源皆有素材；同一份3099筆GUI日誌206完成來源零拒絕，原兩缺圖已補、配色變化保留原貌。三路GUI與半空Y78補拍通過，兩幅洞窟及回城地面612864像素零差。c0e66326／86來源、137自有檔，入口為cave-hd-v1/player-current-audit-v1.json；非全遊戲完成 |
+| 接續工作 | 洞窟武器／動態物件HD及其餘正常中文路徑 | 主角其他來源、配色效果的HD與其他洞窟仍待擴充。Sabre1,200高於起始1,000，v1只驗資金不足；正常第一寶石的銀行報價6，未取得Sabre，不改金額或猜效果。其他未走過的物品與法術來源仍是候選 |
+| HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形及洞窟主角25姿態已接入 | 地形1..14與主角可選覆繪；原版配色提示、武器及動態物件仍原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -44,7 +44,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步推洞窟角色／物件HD，並沿正常探索取得其他物品、校驗候選中文。共用文字分類與Magia垂直鏈已依[規格016](docs/spec/016-shared-inventory-text.md)閉合，不重開指標表或首瓶藥水研究。Sabre正常使用先滿足金幣條件；不可改金額或把資金不足當使用驗收。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步推洞窟武器／動態物件HD，並沿正常探索取得其他物品、校驗候選中文。主角25姿態沿[017](docs/spec/017-cave-player-hd.md)限定閉合，已驗來源與三圖保持身份，不重開14／15補圖勘誤。共用文字分類與Magia垂直鏈已依[規格016](docs/spec/016-shared-inventory-text.md)閉合，不重開指標表或首瓶藥水研究。Sabre正常使用先滿足金幣條件；不可改金額或把資金不足當使用驗收。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -55,6 +55,34 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 ## 工具與本地證據入口
 
 以下按研究版本保留證據入口。舊候選與舊失敗保持原身份；目前主入口與下一步以上方狀態表為準。
+
+- 洞窟主角HD沿既有`workplace/cave-hd-v1/`接續，來源盤點為`player_inventory_v1.py`／`player-source-index-v1.json`與`player-source-v1/`。規格為[017](docs/spec/017-cave-player-hd.md)，先沿既有67份完整重建及已驗特殊圖像分支整理完整姿態，不重開011／012的來源或生命週期研究。生成素材與完整提示詞沿`player-art-index-v1.json`及`player-*-handpaint-v1.png`，只留本地；未READY不接前端。
+- 上述盤點最初的隔離Python命名空間及收據範圍錯誤保留於`player-inventory-preflight-v1.json`與兩份`player_inventory_v1.failed*.txt`。完整合成證明的54／13份不含3AA9繪製前來源，不能把completed-receipt全部73／18份當同一範圍。修正後67份角色下層至24×24暫存區獨立相同，加六份特殊／GUI全畫格來源共73份、14個完整姿態。美術圖集參考另用`player_art_reference_v1.py`及`player-source-v1/reference-atlas.png`，只用解碼資料排版，不改原始圖像。
+- 單一14姿態透明圖集使用內建imagegen生成，完整提示詞為`player-atlas-prompt-v1.txt`，產物`player-atlas-handpaint-v1.png`已複製到本工作區，原始輸出仍保留。透明度、格界、原版包絡及直接72×72取樣審查沿`player_art_review_v1.py`／`player-art-review-v1.json`與`player-art-preview-v1/`；未審查不接前端。
+- 圖集v1的等分格界審查失敗：格界有alpha1–2的黑色殘留，第四姿態下一行的腳底另跨等分界線數像素。原PNG不修改；`player_art_review_v2.py`／`player-art-review-v2.json`與`player-art-preview-v2/`改按各欄可見主體的分離列群登錄固定裁切，保留裁切內全部原alpha。空格不取樣，主體裁切必須互不相交且包含完整可見墨跡；這是美術登錄，不放寬原版來源或遮擋驗證。
+- 主角／地形／後畫遮擋的獨立離線合成沿`player_preview_v1.py`／`player-composition-preview-v1/`，使用既有Python全畫格解碼與取樣，再按原始來源鍵取14姿態。未有素材的來源明示原貌退回，不把未知來源換成相似姿態。
+- 十份離線來源中七份有14姿態素材，三份真實原版後畫遮擋來源共同缺一個新姿態。擴充盤點沿`player_inventory_v2.py`／`player-source-index-v2.json`與`player-source-v2/`，包含該三份既有來源；只為新增的第15姿態生成獨立透明PNG，索引沿`player-art-index-v2.json`，提示詞`player-pose14-prompt-v1.txt`。不以相似姿態替代，也不縮減後畫遮擋驗收。
+- 單姿態首次生成未遵守前手抬高位置，未採用，來源與拒絕原因記`player-pose14-generation-rejected-v1.json`。改以既有圖集為編輯目標，在原空格14補該姿態，提示詞`player-extra-atlas-prompt-v1.txt`、產物`player-atlas-extra-handpaint-v1.png`。只取新增格，原14姿態仍取舊圖集，不以再生成的其他格取代已審美術。
+- 第15姿態的固定裁切及全部15項登錄沿`player_register_extra_v1.py`／`player-art-review-v3.json`與`player-art-preview-v3/`；兩張PNG原子載入的接入契約先記017。十份含後畫遮擋的全幅離線合成重跑沿`player_preview_v2.py`／`player-composition-preview-v2/`，原v1七張成功及三張缺圖保持身份。
+- 後續核對`native-paints-proof-v1.json`：上述三份角色可見像素均為0，新鍵0bd51c6d只有底部八列且已被九次原版後畫完全覆蓋。v2的三張「有素材」其實可見HD改動也是0，不能計為新增可見姿態驗收。017正式規則先判定可見性；完全被覆蓋時不畫主角，無須選素材。新增第15張及第二圖集均不採用，14姿態主圖集保持原身份。裁切／合成審查及原判斷勘誤沿`player-ready-review-v1.json`，不推論E8的玩法名稱。
+- 017的READY全文保存於`player-ready-spec-v1.md`；正式實作為`internal/prototype/hd/cave_player.go`與測試。來源登錄只取14姿態主圖集。14個取樣與七張可見／三張完全遮擋的獨立圖面用於正式對照，其他未正常走過姿態仍回退原貌，不冒充全遊戲HD完成。
+- 主角正式像素、可見性及退回測試集中`player-unit-v1/`，日誌為同目錄`test.jsonl`，輸入／美術唯讀。正常原版配對及新增姿態覆蓋盤點另沿後續player-pair入口，不能由本項離線測試取代。
+- 主角測試第一輪尚未執行：舊cave-hd-v1/go.work只列早期/probe模組，當前掛載無該路徑。保留v1環境錯誤，使用獨立`player-build.work`列/project與唯讀/dosgolem，正式重跑輸出`player-unit-v2/`。未另建重複映像或改共享執行器。
+- v2的14直接取樣、十張獨立全幅及既有來源／地形回歸通過；最後的純局部遮擋測試誤用全部九筆原版呼叫，實際覆蓋整個24×24，因此沒有可見側。保留v2及`player-failed-mask-test-v2.go.txt`；該純合成測試改取真實中央8×8單次呼叫，完整原版來源仍用九筆不改，乾淨重跑`player-unit-v3/`。
+- 正常兩原版冷F7、首場交戰與回城配對及實際姿態覆蓋盤點沿`player-pair-v1/`。除完整狀態外，逐個完成來源記已知姿態／完全遮擋／缺少可見素材；缺素材另存原始來源供補圖，不以測試綠色稱完整角色動畫已完成。此輪FileOps明示啟用記錄，並核對各可寫存檔副本與mtime。
+- 主角候選前端建置沿`player-preview-v1`、`player-build-v1.log`及`player-vet-v1.log`。主入口仍為已驗4766810c，未通過正常路徑與視窗前不覆寫它。
+- 正常配對v1的回城10點通過；首戰在tools/combat.commands的down／up事件停下，舊測試工具僅接受key／keys。補完整持鍵邊沿支援，不改遊戲前端或原鍵序，沿`player-pair-v2/`重跑。v1部分來源與回城收據保留，不當整批通過。
+- v2正常首戰25點／回城10點完整原版相同，存檔不變。首戰174個完成來源中102已知、72可見來源缺九個唯一素材鍵；回城九個完成來源全已知。接續來源盤點沿`player_missing_inventory_v1.py`／`player-missing-v1/`，獨立重建各缺圖來源，先核是否與既有圖面來源具有逐像素相同的平移／鏡射，再決定補圖，不能從相似外觀猜姿態。
+- 九個新可見姿態均已獨立核完整原版遊戲區相同，與原14姿態沒有完整576bytes的平移／鏡射等價，須補新美術。補圖沿`player-motion-atlas-prompt-v1.txt`、`player-motion-atlas-handpaint-v1.png`及`player-motion-art-index-v1.json`，以九來源3×3圖集作姿態目標，只以已採用主圖集參考造型。017補圖增量仍DRAFT，審查後才擴正式圖組。
+- 九格初圖底列朝向不符，保留`player-motion-atlas-rejected-v1.png`，內建imagegen局部修正的完整提示詞為`player-motion-atlas-edit-prompt-v1.txt`。採用圖的固定登錄與23姿態獨立取樣沿`player_motion_register_v1.py`／`player-motion-preview-v1/`；全幅增量合成沿`player_preview_v3.py`／`player-composition-preview-v3/`。後續驗證分別沿`player-unit-v4/`、`player-pair-v3/`、`player-preview-v2`及`player-build-v2.log`／`player-vet-v2.log`，不覆寫原失敗或舊來源身份。
+- 23姿態READY全文另存`player-motion-ready-spec-v1.md`。候選凍結與正常視窗沿`player_gui_prepare_v1.py`、`player-candidate-identity-v1.json`／`player-candidate-sources-v1/`、`player-tools-v1/`及`player-gui-movement-v1/`、`player-gui-combat-v1/`、`player-gui-return-v1/`。GUI像素核對沿`player_gui_pixels_v1.py`／`player-gui-pixels-v1/`，收尾身份另沿`player-current-audit-v1.json`、`player-mainalias-sync-v1.json`及`player-repository-sync-v1.json`。
+- GUI v1跳蹲及回城通過；交戰時出現新可見鍵2b975f19而安全回退，嚴格HD檢查停止。該次冷啟動輸入原生日誌及失敗收據保留，固定日誌配對與缺圖盤點另沿`player-gui-replay-v1/`及`player-gui-replay-test-v1.jsonl`。自有檔案入口為`player-owned-files-v1.list`；未完整通過前主入口保持4766810c。
+- GUI增量來源分類及原生逐像素／幾何核對沿`player_gui_missing_v1.py`／`player-gui-missing-v1/`。先判定是否為已驗姿態的精確顏色變化，再決定補圖；不以相似外觀合併來源鍵。
+- 固定3099筆GUI日誌、206完成來源及519次高清繪製原版相同，零來源拒絕。三個缺圖鍵中，兩個確為新肢體姿態；2b975f19與既有站姿完整576透明／幾何相同，但配色不同，保留原版配色提示，不推論受傷或無敵語意。補圖沿`player-gui-atlas-prompt-v1.txt`／`player-gui-atlas-handpaint-v1.png`，固定登錄沿`player_gui_register_v1.py`／`player-gui-art-preview-v1/`；增量獨立合成沿`player_preview_v4.py`／`player-composition-preview-v4/`。
+- 25姿態及原版配色保留READY全文為`player-gui-ready-spec-v1.md`，後續單元沿`player-unit-v5/`，建置／vet為`player-preview-v3`、`player-build-v3.log`／`player-vet-v3.log`。新候選凍結／正常GUI沿`player_gui_prepare_v2.py`、`player-candidate-identity-v2.json`／`player-candidate-sources-v2/`、`player-tools-v2/`及三個`player-gui-*-v2/`。像素沿`player_gui_pixels_v2.py`／`player-gui-pixels-v2/`，不覆寫23姿態候選或GUI v1失敗。
+- 25姿態的固定原版35點重跑沿`player-pair-v4/`；同一份失敗GUI日誌重播沿`player-gui-replay-v2/`／`player-gui-replay-test-v2.jsonl`。來源及藝術完整身份與收尾沿`player-art-final-index-v1.json`、`player_audit_v1.py`／`player-current-audit-v1.json`，主入口只在驗證通過後同步。
+- GUI v2三路已通過；第一張jump-held截圖過早仍是站姿，雖日誌已有pose5／原生Y78，不能稱該圖驗了半空外觀。同候選補拍工具沿`player_gui_movement_prepare_v3.py`、`player_gui_movement_v3.py`／`player-movement-identity-v3.json`與`player-gui-movement-v3/`，在正常Up放開後以工具列暫停半空來源再切換，程式及86來源不變。獨立腳本首次啟動缺helper搜尋路徑，遊戲尚未啟動、輸出仍空；同命令補PYTHONPATH指向唯讀player-tools-v2後重跑。根端實際目視身份記`player-root-visual-review-v1.json`。
+- 本輪最終為017限25姿態CONFORMED，c0e66326／86來源；`player-current-audit-v1.json`核137自有檔、93具名測試及全部已列收據，`player-mainalias-sync-v1.json`記主入口已同步。舊4766810c另存`player-previous-main-4766810c`。完整三圖路徑、SHA與四份完整提示詞存`player-art-final-index-v1.json`，均只本地。GUI像素工具先誤用cycles欄名而未出圖，後按main契約elapsed_cycles重跑；最終兩洞窟加回城地面612864像素零差。收據及歷史版本保持原身份；目前工作以上方狀態表及WORKLIST為準。
 
 - 共用物品文字沿既有`workplace/item-use-v1/`接續，來源盤點為`shared-inventory-source-v1.py`／`shared-inventory-source-v1.json`。正常原版工具為`shared-probe-v1.go`，鍵序及輸出分別為`shared-magia-v1.commands`／`shared-magia-v1/`與`shared-sabre-v1.commands`／`shared-sabre-v1/`；譯表與正式接入須依[規格016](docs/spec/016-shared-inventory-text.md)審查。
 - 共用物品的手冊研究沿同根`shared-manual-v1.py`／`shared-manual-v1/`，逐檔對RAR原始大小與CRC核既有掃描副本，掃描只供本地術語核對，不入Git。既有7z映像缺RAR codec，已找到所需既有副本，不重試舊unar選檔。原生字形與完成區驗證另沿`shared-glyph-proof-v1.py`／`shared-glyph-proof-v1.json`。

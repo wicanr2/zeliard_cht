@@ -159,6 +159,8 @@
 | [docs/spec/014-intro-story.md](docs/spec/014-intro-story.md) | 完整故事的58片段、52清框與唯讀中文生命週期 |
 | [docs/spec/015-intro-scroll-blocks.md](docs/spec/015-intro-scroll-blocks.md) | 首章、製作名單與六行收尾的來源、視窗與捲動生命週期 |
 | [docs/spec/016-shared-inventory-text.md](docs/spec/016-shared-inventory-text.md) | 物品、裝備及使用訊息的共用來源分類與顯示閘門 |
+| [docs/spec/017-cave-player-hd.md](docs/spec/017-cave-player-hd.md) | 洞窟主角完整姿態來源、高清透明素材與原版後畫遮擋契約 |
+| [internal/prototype/hd/cave_player.go](internal/prototype/hd/cave_player.go)、[測試](internal/prototype/hd/cave_player_test.go) | 規格017的14姿態登錄、完整遮擋、直接高清合成與原貌退回 |
 | [internal/prototype/overlay/inventory_sources.go](internal/prototype/overlay/inventory_sources.go)、[測試](internal/prototype/overlay/inventory_sources_test.go) | 規格016的指標表字型分類、來源拒絕及正常物品中文配對 |
 | [tools/item-shop-magia.commands](tools/item-shop-magia.commands) | 自建存檔冷F7、正常買入Magia Stone、選用、移除及回城鍵序 |
 | [text/intro-credits-prototype.tsv](text/intro-credits-prototype.tsv) | 製作名單51行來源鍵與試譯，保留人名及空白行 |

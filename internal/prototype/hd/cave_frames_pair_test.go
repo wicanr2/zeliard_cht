@@ -3,6 +3,7 @@ package hd
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"image"
 	"image/png"
 	"os"
@@ -42,7 +43,12 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 		}
 		return b
 	}
-	data := read(filepath.Join(study, "gui-current-combat-v6/guest-inputs.jsonl"))
+	guiDir := os.Getenv("ZELIARD_CAVE_GUI_REPLAY")
+	customGUI := guiDir != ""
+	if !customGUI {
+		guiDir = filepath.Join(study, "gui-current-combat-v6")
+	}
+	data := read(filepath.Join(guiDir, "guest-inputs.jsonl"))
 	type journalRecord struct {
 		Kind          string      `json:"kind"`
 		CyclesPerMS   uint64      `json:"cycles_per_ms"`
@@ -104,6 +110,20 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
+	var player *CavePlayer
+	if playerDir := os.Getenv("ZELIARD_CAVE_PLAYER_ART"); playerDir != "" {
+		player, e = NewCavePlayer(playerDir)
+		if e != nil {
+			t.Fatal(e)
+		}
+		art.SetPlayer(player)
+	}
+	if e = os.Mkdir(out, 0755); e != nil {
+		t.Fatal(e)
+	}
+	var missingSources []map[string]any
+	seenSources := map[uint64]bool{}
+	seenMissing := map[string]bool{}
 	draws, paintFrames := 0, 0
 	for index, line := range lines[1:] {
 		var r journalRecord
@@ -147,6 +167,27 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 			_, _, rgb := b.ScreenRGB()
 			selected := frames.Present(b.Indexed(), rgb, false)
 			if selected != nil {
+				if player != nil && !seenSources[selected.Steps] {
+					seenSources[selected.Steps] = true
+					key, pose, hidden := player.selectPose(selected.Decoded)
+					if pose == nil && !hidden && !seenMissing[key] {
+						seenMissing[key] = true
+						stem := fmt.Sprintf("player-missing-%02d", len(missingSources))
+						for ext, value := range map[string][]byte{"memory": selected.Memory, "body.memory": selected.BodyMemory, "indexed": selected.SourceIndexed, "palette": selected.Palette} {
+							if e = os.WriteFile(filepath.Join(out, stem+"."+ext), value, 0644); e != nil {
+								t.Fatal(e)
+							}
+						}
+						value, err := json.Marshal(selected.Paints)
+						if err != nil {
+							t.Fatal(err)
+						}
+						if e = os.WriteFile(filepath.Join(out, stem+".paints.json"), value, 0644); e != nil {
+							t.Fatal(e)
+						}
+						missingSources = append(missingSources, map[string]any{"key": key, "file": stem, "steps": selected.Steps, "body_steps": selected.BodySteps, "visible_actor_pixels": len(selected.Decoded.Actor), "memory_sha256": townBackgroundHash(selected.Memory), "body_memory_sha256": townBackgroundHash(selected.BodyMemory), "indexed_sha256": townBackgroundHash(selected.SourceIndexed)})
+					}
+				}
 				draws++
 				if len(selected.Paints) > 0 {
 					paintFrames++
@@ -160,19 +201,18 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 			t.Fatal("adapter changed original", index+2)
 		}
 	}
-	if frames.refused != 0 || frames.captured != 267 || draws == 0 || paintFrames == 0 {
+	if frames.refused != 0 || (!customGUI && (frames.captured != 267 || paintFrames == 0)) || draws == 0 {
 		t.Fatal("recorded path incomplete", frames.captured, frames.refused, draws, paintFrames, frames.lastRefusal)
 	}
-	if !bytes.Equal(b.Bytes(oracle.Far(0, 0), 1<<20), read(filepath.Join(study, "gui-current-combat-v6/town-final.png.memory"))) || !bytes.Equal(b.Indexed(), read(filepath.Join(study, "gui-current-combat-v6/town-final.png.indexed"))) {
+	if !bytes.Equal(b.Bytes(oracle.Far(0, 0), 1<<20), read(filepath.Join(guiDir, "town-final.png.memory"))) || !bytes.Equal(b.Indexed(), read(filepath.Join(guiDir, "town-final.png.indexed"))) {
 		t.Fatal("final GUI original differs")
 	}
 	if !reflect.DeepEqual(a.FileOps(), b.FileOps()) || !reflect.DeepEqual(a.KeyReads(), b.KeyReads()) || len(b.Wrote()) != 0 || len(b.HeldKeys()) != 0 {
 		t.Fatal("file/input parity")
 	}
-	if e = os.Mkdir(out, 0755); e != nil {
-		t.Fatal(e)
-	}
 	receipt := map[string]any{"status": "ORIGINAL_GUI_JOURNAL_PAIR_EQUAL", "records": len(lines), "completed_frames": frames.captured, "refused": frames.refused, "HD_draws": draws, "native_paint_draws": paintFrames, "full_RAM_and_regs_each_record_equal": true, "original_GUI_final_RAM_and_indexed_equal": true, "input_journal_sha256": townBackgroundHash(data), "final": frames.State(), "state_injection": false}
+	receipt["player_sources"] = len(seenSources)
+	receipt["player_missing_sources"] = missingSources
 	encoded, e := json.MarshalIndent(receipt, "", "  ")
 	if e != nil {
 		t.Fatal(e)
@@ -194,16 +234,19 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		t.Fatal(e)
 	}
 	var machines [2]*oracle.Oracle
+	var scratchSaves [2]string
 	for i := range machines {
 		o, e := oracle.Load(filepath.Join(root, "ZELIARD.EXE"), root)
 		if e != nil {
 			t.Fatal(e)
 		}
 		machines[i] = o
+		o.TraceFiles()
 		defer o.Close()
 		o.SetDOSBoxCycles(3000)
 		scratch := t.TempDir()
 		p := filepath.Join(scratch, "SAVETEST.usr")
+		scratchSaves[i] = p
 		if e = os.WriteFile(p, save, 0644); e != nil {
 			t.Fatal(e)
 		}
@@ -238,6 +281,21 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 			t.Fatal(e)
 		}
 	}
+	if dir := os.Getenv("ZELIARD_CAVE_PLAYER_ART"); dir != "" {
+		if art == nil {
+			t.Fatal("主角HD須搭配已驗地形")
+		}
+		player, err := NewCavePlayer(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		art.SetPlayer(player)
+	}
+	seenPlayerFrames := map[uint64]bool{}
+	seenPlayerKeys := map[string]int{}
+	var missingPlayerSources []map[string]any
+	missingPlayerKeys := map[string]bool{}
+	playerKnown, playerHidden, playerMissing := 0, 0, 0
 	hdDraws := 0
 	equal := func(name string) {
 		if !bytes.Equal(a.Bytes(oracle.Far(0, 0), 1<<20), b.Bytes(oracle.Far(0, 0), 1<<20)) || a.Regs() != b.Regs() || !bytes.Equal(a.Indexed(), b.Indexed()) || a.Palette() != b.Palette() || a.Steps() != b.Steps() || a.Cycles() != b.Cycles() || !reflect.DeepEqual(a.FileOps(), b.FileOps()) || !reflect.DeepEqual(a.KeyReads(), b.KeyReads()) || !bytes.Equal(a.HeldKeys(), b.HeldKeys()) {
@@ -260,6 +318,36 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 			return
 		}
 		used++
+		if art != nil && art.player != nil && !seenPlayerFrames[selected.Steps] {
+			seenPlayerFrames[selected.Steps] = true
+			key, pose, hidden := art.player.selectPose(selected.Decoded)
+			seenPlayerKeys[key]++
+			switch {
+			case hidden:
+				playerHidden++
+			case pose != nil:
+				playerKnown++
+			default:
+				playerMissing++
+				if !missingPlayerKeys[key] {
+					missingPlayerKeys[key] = true
+					stem := fmt.Sprintf("player-missing-%02d", len(missingPlayerSources))
+					for suffix, data := range map[string][]byte{"memory": selected.Memory, "body.memory": selected.BodyMemory, "indexed": selected.SourceIndexed, "palette": selected.Palette} {
+						if e := os.WriteFile(filepath.Join(out, stem+"."+suffix), data, 0644); e != nil {
+							t.Fatal(e)
+						}
+					}
+					encoded, e := json.Marshal(selected.Paints)
+					if e != nil {
+						t.Fatal(e)
+					}
+					if e = os.WriteFile(filepath.Join(out, stem+".paints.json"), encoded, 0644); e != nil {
+						t.Fatal(e)
+					}
+					missingPlayerSources = append(missingPlayerSources, map[string]any{"key": key, "file": stem, "steps": selected.Steps, "cycles": selected.Cycles, "body_steps": selected.BodySteps, "body_cycles": selected.BodyCycles, "visible_actor_pixels": len(selected.Decoded.Actor), "memory_sha256": townBackgroundHash(selected.Memory), "body_memory_sha256": townBackgroundHash(selected.BodyMemory), "indexed_sha256": townBackgroundHash(selected.SourceIndexed), "native_paints": selected.Paints})
+				}
+			}
+		}
 		if !caveFrameEqual(raw, selected.SourceIndexed) {
 			held++
 		}
@@ -334,6 +422,18 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 					o.KeyUp(s)
 				}
 			}
+		case "down", "up":
+			scan := num(f[1])
+			if scan > 255 {
+				t.Fatal("掃描碼越界")
+			}
+			for _, o := range machines {
+				if f[0] == "down" {
+					o.KeyDown(uint8(scan))
+				} else {
+					o.KeyUp(uint8(scan))
+				}
+			}
 		case "shot":
 			equal(f[1])
 			before := b.Bytes(oracle.Far(0, 0), 1<<20)
@@ -383,6 +483,9 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 						t.Fatal(err)
 					}
 					point["terrain_hd_drawn"] = true
+					if art.player != nil {
+						point["player_hd"] = art.PlayerState()
+					}
 					point["Chinese_overwrites_game_pixels"] = 0
 				} else {
 					canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
@@ -407,7 +510,18 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 	if frames.captured == 0 || used == 0 || len(b.Unimplemented()) != 0 || len(b.HeldKeys()) != 0 || len(b.Wrote()) != 0 {
 		t.Fatal("正常路徑不完整", frames.captured, used, b.Unimplemented(), b.HeldKeys(), b.Wrote())
 	}
-	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
+	for _, p := range scratchSaves {
+		data, err := os.ReadFile(p)
+		if err != nil || !bytes.Equal(data, save) {
+			t.Fatal("主角覆繪路徑改寫存檔", err)
+		}
+		fi, err := os.Stat(p)
+		if err != nil || !fi.ModTime().Equal(info.ModTime()) {
+			t.Fatal("主角覆繪路徑改寫存檔mtime", err)
+		}
+	}
+	playerCoverage := map[string]any{"source_frames": len(seenPlayerFrames), "known_frames": playerKnown, "fully_occluded_frames": playerHidden, "missing_visible_frames": playerMissing, "keys": seenPlayerKeys, "missing_sources": missingPlayerSources, "scope": "正常完成來源盤點；缺素材保留原貌，未稱全動畫HD"}
+	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "save_unchanged": true, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
 	if e != nil {
 		t.Fatal(e)
 	}
