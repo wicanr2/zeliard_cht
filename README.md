@@ -101,7 +101,7 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 
 狀態列中文另加 `-hud-text /project/text/hud-prototype.tsv`。已驗四欄、Felishika城堡、Muralla鎮、Malicia洞窟，以及國王、武器防具店、小屋、Marid長老名稱，保留原版數字、生命條與圖示。53筆來源中，其餘40筆新增名稱仍待正常路徑抽樣；只有實際入口、模組、原文與完成字形都相符才覆繪。專名保留原文，譯文仍待校訂，見[狀態列規格](docs/spec/001-runtime-overlay.md#場景來源擴充契約)。
 
-城鎮居民試譯另加 `-town-text /project/text/town-prototype.tsv`。已接113筆純文字來源，已以Muralla鎮一位居民完成原版配對及正常視窗的完整交談、續頁與結束；其餘來源待正常抽樣，含特殊控制碼的5筆保留原文。對話框沿原版行數變化，續頁箭頭及Space操作不變，來源或畫面不符時保留原文。試作邊界見[居民對話規格](docs/spec/004-town-dialogue.md)。
+城鎮居民試譯另加 `-town-text /project/text/town-prototype.tsv`。已接113筆純文字來源，其中Muralla鎮七筆來源的完整交談、續頁與結束已通過原版配對及正常視窗驗證。其餘106筆待正常抽樣，含特殊控制碼的5筆保留原文。來源筆數不等於獨立居民人數。對話框沿原版行數變化，續頁箭頭及Space操作不變，來源或畫面不符時保留原文。試作邊界見[居民對話規格](docs/spec/004-town-dialogue.md)。
 
 城堡與Muralla鎮的完整遠山 HD 使用 `-town-sky-reference`、`-town-sky-palette`、`-town-background-memory`、`-town-background-art`載入本地原版畫格、色盤、正常記憶體及手繪圖。背景依原版樹梢遮罩合成，保留前景輪廓；正常走路、居民中文及原貌切換已驗，矩形切口已消除，見[完整背景規格](docs/spec/006-town-background-mask.md)。舊 `-town-sky-art`可單獨重現上方54列的[前輪試作](docs/spec/005-town-skyline-hd.md)。
 

@@ -2,7 +2,7 @@
 
 更新日期：2026-10-20，Asia/Taipei。
 
-主入口cea16753，112份Go、測試、譯表與依賴檔固定。031來源等待／短讀及50毫秒預填已實作，候選37d86d66／113來源；11具名與原版配對通過，但正常視窗節奏失敗，尚未CONFORMED，不升主入口。030以整列複製加速既有三倍底圖，3264000個實際原版像素及721筆正常視窗日誌通過；音效仍有欠載／滿載，穩定播放未完成。029已接入可選音效播放，格式／隔離／生命週期與虛擬裝置限定驗收通過；即時節奏仍因大量欠載而未完成。[028持盾離洞](docs/spec/028-cave-shield-transition-hd.md)已限定CONFORMED，累計55個主角姿態。補上雙朝向共用的背面持盾，修正呈現器在原版批次開始前清掉新主體的問題。舊呈現仍撤除，未知來源仍拒絕。既有027及其他收據保持原身份，全遊戲中文與HD仍在開發。
+主入口cea16753，沿030的112份Go、測試、譯表與依賴檔固定。本輪新增六筆居民來源的九頁正常視窗驗證，累計七來源十一頁；其餘106筆純文字來源待正常路徑。當前114份來源較031多一份回歸測試，執行期程式與譯表不變。032實時排程仍DRAFT，待使用者取捨，不升主入口。031來源等待／短讀及50毫秒預填已實作，候選37d86d66／113來源；11具名與原版配對通過，但正常視窗節奏失敗，尚未CONFORMED，不升主入口。030以整列複製加速既有三倍底圖，3264000個實際原版像素及721筆正常視窗日誌通過；音效仍有欠載／滿載，穩定播放未完成。029已接入可選音效播放，格式／隔離／生命週期與虛擬裝置限定驗收通過；即時節奏仍因大量欠載而未完成。[028持盾離洞](docs/spec/028-cave-shield-transition-hd.md)已限定CONFORMED，累計55個主角姿態。補上雙朝向共用的背面持盾，修正呈現器在原版批次開始前清掉新主體的問題。舊呈現仍撤除，未知來源仍拒絕。既有027及其他收據保持原身份，全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -18,10 +18,10 @@
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 首場交戰／第一寶石及跳／蹲另已通過原版、中文配對與正常視窗；不代表全遊戲已驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；可選音效已接入，穩定節奏未完成 |
-| 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
+| 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113筆居民純文字試譯，七筆來源的十一頁及續頁／還原已驗。其他106筆居民來源與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 031 READY已實作，正常節奏失敗，候選37d86d66／113來源未升主入口 | 11具名、698完整配對及兩條正常日誌／完整源WAV相同。來源預取不再補假靜音，預填取消／關閉喚醒通過；實際正常節奏仍失敗，見[031](docs/spec/031-audio-stream-scheduling.md)。030及舊收據保持原身份 |
-| 接續工作 | 音效欠載量測與修正、其他未驗組合、其餘中文與場景HD | FF3A持盾及新主體生命週期已由028閉合，不重開同一問題。E8／FF39及其他裝備組合、其餘居民／場景／物品文字與洞窟美術仍待正常路徑；實體手把與正式設計待完成 |
+| 本輪工作 | 004新增六來源九頁，既有顯示契約限定CONFORMED；032排程DRAFT | 新增一具名測試，19完整原版配對；實際4510日誌、16點與9216000像素通過。執行期程式不改，主入口cea16753保持；032試音與100毫秒上限待確認 |
+| 接續工作 | 其餘中文、混合控制腳本與場景HD；排程選擇待確認 | FF3A持盾及新主體生命週期已由028閉合，不重開同一問題。E8／FF39及其他裝備組合、其餘居民／場景／物品文字與洞窟美術仍待正常路徑；實體手把與正式設計待完成 |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角55姿態，包含17個一般持盾及1個雙朝向共用的離洞姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -40,13 +40,13 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 ## 有效決策與待確認
 
 - 已確認：參考 `softworld_san` 工具列、參考 `psychic-war` 覆繪、以 dosgolem 直接執行原版、繁中＋HD、藍牙／USB 手把綁定、私人 GitHub、README 手冊故事背景。HD 畫風已選定比較圖 B「手繪奇幻」。
-- 待確認：HD 正式倍率／預設／構圖、正式前端版面與手把預設動作配置、正式翻譯 catalog 規格、平台與發行方式。現有 JSON 只供 prototype 使用；正式翻譯來源依本地化契約採 UTF-8 TSV，鍵與版面尚未審查。
+- 待確認：032實時排程及100毫秒試驗追趕上限，已有試音比較供選擇；HD 正式倍率／預設／構圖、正式前端版面與手把預設動作配置、正式翻譯 catalog 規格、平台與發行方式。現有 JSON 只供 prototype 使用；正式翻譯來源依本地化契約採 UTF-8 TSV，鍵與版面尚未審查。
 - 可繼續：來源盤點、手冊核對、原版啟動探針、能力缺口定位、可撤回顯示與輸入 prototype。
 - 不沿用參考專案的 MSC 編譯器結論、Big5 編碼、固定畫布、AI 強化或 Esc 工具列快捷鍵。
 
 ## 下一步
 
-031修正平台預取造成的前端假靜音，50毫秒預填、來源短讀與關閉喚醒已驗。但兩條正常視窗仍將約0.8秒訊號拉長到3至4秒，不能用前端補零／丟棄0稱完成。正常鍵序CPU剖析中RunCycles52.68%、Draw14.37%；關閉垂直同步研究版加快流程卻遺失120非零音框，不進正式路徑。下一步量測原版送樣時刻、顯示等待及更新節拍，先分清平台限制與調度原因，再以READY規格修正。主入口cea16753保持，候選37d86d66不升格。不得用改取樣率、隱藏丟樣或額外原版執行掩蓋。028雙朝向持盾離洞及新主體生命週期已閉合，不重做既有驗收。其餘未驗特殊組合、居民／混合控制腳本／場景與物品文字，以及洞窟美術繼續保留。正式字級、術語、HD倍率／預設、音訊及實體USB／藍牙手把仍待完成；未驗項不當成完成。
+居民擴充已閉合本輪六筆來源九頁，不重做同一驗收。接續可推其餘106筆純文字來源、五筆混合控制腳本、40個場景名與其餘物品文字，並保留洞窟／角色HD工作。032已用可撤回試作比較真實時間排程，使用者尚未確認是否採用100毫秒追趕上限；依賴該選擇的正式實作先不進行。試作只達平台近似時序，不為逐音框一致深入硬體driver。031候選37d86d66不升主入口，030主入口cea16753保持。正式字級、術語、HD倍率／預設、人耳及實體USB／藍牙手把仍待完成；未驗項不當成完成。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -55,6 +55,10 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 居民擴充沿[004既有來源契約](docs/spec/004-town-dialogue.md)，只驗原版正常冷讀自建SAVETEST、左右移動與Space交談，不改位址、腳本或座標。`workplace/prose-v1/residents_probe_v1.go`／`residents-build-v1/`及`residents-source-v1/`保存新接觸來源、每頁原版與中文畫面、動作日誌及限制；原始自建USR沿`npc-normal-v2/scratch/SAVETEST.usr`的78359e36與既有mtime。本輪六筆新來源九頁已完成，累計七來源十一頁，其餘106筆仍未驗；此項與032節奏選擇相互獨立。`residents_pair_v1.go`及`residents-pair-v1/ERRATUM.json`保留JSON欄位序誤判，`confirmation.json`由v2與獨立像素確認工具原因；`residents_pair_v2.go`／`residents-pair-v2/`驗6472筆及19完整原版配對。`residents_pixels_v1.py`／`residents-pixels-v1/`獨立核10944000像素。`residents_gui_v1.py`／`residents-gui-v1/`沿cea16753實際視窗，`residents_gui_replay_v1.go`／`residents-gui-pair-v1/`重播4510筆與16點，`residents-gui-pixels-v1/`核9216000像素，均零差。持續回歸入口為[七來源測試](internal/prototype/overlay/town_residents_test.go)與[正常鍵序](tools/residents-muralla.commands)，`residents-unit-v1/`保存測試、vet、來源稽核、根端目視及Git／Docker收尾；`residents-candidate-identity-v1.json`／`residents-candidate-sources-v1/`固定114份當前來源，只有新增測試，未重建二進位。文件與稽核工具為`residents_finalize_v1.py`／`residents_audit_v1.py`。
+
+- [032顯示與原版時鐘](docs/spec/032-presentation-clock.md)先DRAFT，只做可撤回比較。`workplace/prose-v1/pace_trace_prepare_v1.py`／`pace-trace-build-v1/`沿正式113來源作研究覆寫，以真實時間與原版累計cycles回饋，暫停不追趕；100毫秒是試驗上限，尚未定稿。`pace-trace-gui-v1/`及`pace-trace-pair-v1/`保存正常鍵序、送樣／繪製時間、原版重播與監聽。研究版68e805d4退出0，180筆原生日誌與525015取樣完整重播相同；實際色盤未另擷取。訊號跨度47317對48652音框，即1.073對1.103秒，非零順序相同但整段精確驗收仍FAIL；只記近似，不換名成功。試音片段及範圍在兩個GUI目錄的`timing-sample.wav/json`，按鍵時刻不同，不能稱同時刻盲測。032正式選擇仍待使用者回覆。正式主入口與031候選保持原身份，不把prototype當正式節奏。
 
 - [031串流排程](docs/spec/031-audio-stream-scheduling.md)接續030必要的播放品質，已READY並實作來源等待／短讀及預填；正常視窗節奏尚未通過，不稱CONFORMED。工具`workplace/prose-v1/reader_trace_prepare_v1.py`以Go來源覆寫記讀取與送樣；輸出`reader-trace-build-v1/`及`reader-trace-device-v1/`。候選37d86d66與113來源見`stream-candidate-identity-v1.json`／`stream-candidate-sources-v1/`，主入口cea16753仍保持。`stream-unit-v1/`為測試、698完整配對及建置，`stream_prepare_v1.py`固定來源；`stream-device-build-v1/`及`stream-device-v1/`使用正式audio.go與原版PCM，整段39120音框通過。`stream_gui_v1.py`／`stream-gui-v1/`正常生命周期、`stream-gui-pair-v1/`708筆與519279取樣相同；`stream_normal_gui_v1.py`／`stream-normal-gui-v1/`不用重度觀察，`stream_unobserved_replay_v1.go`／`stream-normal-pair-v1/`707筆與518450取樣相同。`stream_signal_verify_v1.py`將完整訊號與非零總數分開；兩條真實視窗均時間軸失敗，即使音框全送達也不稱品質完成。接續`stream_profile_prepare_v1.py`／`stream-profile-build-v1/`及`stream-profile-gui-v1/`以正常Space鍵序作CPU剖析，不只量無按鍵冷開機。預填未完成取消的測試在`cmd/zeliard-preview/audio_test.go`。`stream_signal_verify_v1.py`保留整段失敗，`stream_timing_diagnostic_v1.py`只量訊號跨度及非零順序，不能抵銷失敗。CPU剖析`stream_profile_prepare_v1.py`／`stream-profile-build-v1/`及`stream_profile_gui_v1.py`／`stream-profile-gui-v1/`只供研究；v2另以研究來源覆寫關閉垂直同步，`stream_profile_gui_v2.py`／`stream-profile-gui-v2/`及`stream-profile-pair-v2/`核709筆／520014取樣，仍遺失120非零音框。正常色盤未另擷取的範圍明列，不外推完整原版狀態。`stream_finalize_v1.py`／`stream_audit_v1.py`整理現況；來源、擁有權、連結、根端目視及Git收尾在`stream-unit-v1/current-audit.json`、`root-visual-review.json`及`repository-sync.json`。原始PCM、錄音與完整收據僅留本機。
 

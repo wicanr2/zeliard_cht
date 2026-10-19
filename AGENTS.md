@@ -115,6 +115,8 @@
 
 | 文件 | 唯一職責 |
 |---|---|
+| [tools/residents-muralla.commands](tools/residents-muralla.commands)、[internal/prototype/overlay/town_residents_test.go](internal/prototype/overlay/town_residents_test.go) | 七筆Muralla居民來源的正常冷讀、移動、交談與關閉，以及19點原版只讀配對；不含原版資料 |
+| [docs/spec/032-presentation-clock.md](docs/spec/032-presentation-clock.md) | 顯示更新與原版執行時鐘的可撤回比較，未定正式追趕與節奏 |
 | [docs/spec/031-audio-stream-scheduling.md](docs/spec/031-audio-stream-scheduling.md)、[預填取消測試](cmd/zeliard-preview/audio_test.go) | 原版串流的後端預取、送樣、等待與暫停生命週期；不改原版時鐘 |
 | [docs/spec/030-native-rgb-presentation.md](docs/spec/030-native-rgb-presentation.md)、[internal/prototype/bitmap/rgb.go](internal/prototype/bitmap/rgb.go)、[整幅比較測試](internal/prototype/bitmap/rgb_test.go) | 原版三倍RGB底圖的逐像素等價加速，不改HD與中文順序 |
 | [.gitattributes](.gitattributes) | 保留製作名單TSV空欄的分隔Tab；欄數、空白來源與字型由捲字譯表驗證器檢查 |
