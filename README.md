@@ -4,6 +4,8 @@
 
 目前前端雛形包含片頭首章 30 行與魔王三行宣言、國王與長老對話中文、存讀提示、武器店、銀行存提款、道具店買賣與三種商品介紹，以及部分裝備名稱、藥水使用訊息與居民交談。生命、寶石、金幣、地點四個狀態欄，以及城堡、城鎮、洞窟、國王、武器店、小屋與Marid長老名稱也已接入。手繪 HD 包含邊框、國王、長老、武器商人、銀行與道具店肖像、城堡／Muralla鎮的完整遠山，以及Muralla樹木、建物與岩壁前景試作。Muralla地面與主角八個行走姿態也已接入，居民保留原貌；武器、魔法與銀行招牌可顯示中文。手把設定頁可選裝置並綁定按鍵。正常領賞、存讀檔、首筆武器交易、裝備開關、銀行存提款、首瓶藥水買賣與使用、六頁商品介紹及狀態列切片已有原版對照及正常視窗驗證，HD 切換只驗已觀察姿態。首場交戰、第一顆寶石及洞窟中文狀態列也已通過正常視窗驗證。其餘中文、場景與角色 HD、音效、實體手把及後續戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
+故事正文也已加入58片段、47頁中文，正常播完與Space跳過均通過原版冷重跑及實際視窗核對。故事後六行與製作名單仍待中文化，故事美術保留原貌。
+
 ## 故事背景
 
 公主被邪惡的魔龍化為石像，王國的繁榮也受到威脅。為了拯救公主，玩家接受邪靈的挑戰，帶著人民的期待與神靈的祝福，踏入未知的地下迷宮。城鎮裡的人們會提供消息，商店則讓旅人補充裝備與魔法，為接下來的探索作準備。
@@ -40,7 +42,7 @@ workplace/bin/zeliard-preview \
 
 `/orig` 須唯讀掛載完整原版資料，`/fonts` 為使用者提供的字型目錄。原版存檔另落在使用者目錄下的 `game/`，手把設定獨立保存。雛形尚未接音效輸出。
 
-首章捲動中文試作加上 `-intro-scroll /project/text/intro-scroll-prototype.tsv`，會沿原版事件顯示 30 行試譯。專名與正式字級尚待校訂，魔王三行宣言另加 `-intro-threat /project/text/intro-threat-prototype.tsv`，沿原版逐字完成與淡出顯示，進標題後撤除。方法見[其餘片頭規格](docs/spec/013-intro-narration.md)。完整故事、製作名單及其餘遊戲文字仍待完成。舊單句試作仍可用 `-intro-reference` 指向本地重生的原版畫格。方法及限制見[架構與試作規格](docs/spec/001-runtime-overlay.md)。
+首章捲動中文試作加上 `-intro-scroll /project/text/intro-scroll-prototype.tsv`，會沿原版事件顯示 30 行試譯。魔王三行宣言另加 `-intro-threat /project/text/intro-threat-prototype.tsv`，沿原版逐字完成與淡出顯示，進標題後撤除，方法見[其餘片頭規格](docs/spec/013-intro-narration.md)。故事正文另加 `-intro-story /project/text/intro-story-prototype.tsv`，涵蓋58片段、47個有文字的頁面，保留原版字色、逐字進度、清框及Space跳過。方法見[故事覆繪規格](docs/spec/014-intro-story.md)。專名與正式字級仍待校訂，製作名單、故事後六行捲字及其餘遊戲文字尚未完成。舊單句試作仍可用 `-intro-reference` 指向本地重生的原版畫格，方法及限制見[架構與試作規格](docs/spec/001-runtime-overlay.md)。
 
 HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -hd-art /project/workplace/hd-border-prototype.png`。參考畫格同目錄須有 `palette.bin`。試作圖只保存在本機；雛形檢查固定圖像身份後，僅替換兩側裝飾，不遮擋中間場景或資訊。缺圖、換場或色盤不符時保留原貌。這些選項與正式資產格式仍在試作階段。
 

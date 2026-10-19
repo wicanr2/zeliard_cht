@@ -44,7 +44,8 @@
 | 首章 30 行捲動中文 | 通過，限 prototype | `intro-scroll-v2/receipt.json`，160m 自然片頭六點抽樣的 1 MiB 記憶體、CS:IP、cycles、色號及色盤均與無掛鉤原版相同；覆繪區外 0，結尾及換章移除通過 |
 | 多行中文實際視窗 | 通過，限首章 | `gui-intro-scroll-v2/receipt.json` 與 `intro-scroll-window.png`；冷開機自然片頭，擷取時 7 來源行／62 完成列；正式字級與術語待校訂 |
 | 魔王三行宣言中文 | 正常原版配對、實際視窗及獨立像素通過 | `intro-narration-v1/threat-pair-v2/receipt.json`88字形完成點及200m標題完整原版相同，88陰影途中呈現、區外不寫入與未知像素退回通過；九具名測試無skip／fail，vet／build通過。`gui-threat-v1/`正常冷啟動、三行、暫停重複及標題撤除退出0；`gui-original-pair-v1/`另冷重跑，GUI末端完整RAM／Regs／VGA相同。`gui-pixels-v1.json`獨立字模及原版來源核兩張actualX各576000像素零差。候選f733，不代表完整片頭中文 |
-| 完整故事來源盤點 | 5083原文字元正常消費已證實，中文未接入 | `intro-narration-v1/story-source-v1.json`逐字核SAR偏移、SI與原字元，5083唯一位置、無漏字或重複，374原文字面片段。控制碼與段落生命週期待接入；末端Indexed黑圖不當作正常UI結束證據 |
+| 完整故事來源盤點 | 5083字形三階段、52清框及58片段已證實 | `intro-narration-v1/story-flow-proof-v1.json`核5786bytes依序讀取，原字形前圖／陰影／完整圖15249次全區雜湊相同；47頁有正文，初始P不可見。374字面片段不稱374段劇情；故事後六行與51行名單是其他來源 |
+| 故事正文中文 | 正常原版、47頁視窗、跳過與獨立像素通過 | `intro-narration-v1/story-pair-v1/`163點完整原版相同，5083字形／52清框／58片段零拒絕，58陰影與46清框途中呈現通過；11具名測試無skip／fail，vet／build通過。`gui-story-v1/`與`gui-story-skip-v1/`退出0，冷重跑42895／9917筆原生日誌每筆Regs／時間及末端完整RAM／VGA相同。`story-gui-pixels-v1.json`與`story-skip-gui-pixels-v1.json`共核50張actualX遊戲畫布28800000像素零差；人工抽10圖。Space跳過保留一筆原版淡出改寫造成的安全撤除。主入口574094bc，80來源；六行收尾、51行名單與故事美術HD未完成 |
 | 居民專用中文與原版續頁 | 完整配對及正常X視窗通過，限039fff | `prose-v1/pair-v5/receipt.json`9點完整1MiB、色號／色盤／CS:IP／steps／cycles／FileOps／KeyReads相同，30個真實捲動子步與3種寫入前Draw通過。`gui-v3/`兩頁44／63字、marker及結束還原正常，20區域、頁間區外與還原0差，163固定輸入／58按放確認／24圖目視、持鍵空、權威exit0。候選08b3309；最終色盤採固定參考，未獨立擷取。GUI1與GUI2失敗保留，其餘112不計正常驗收 |
 | 居民113純文字來源與字型容量 | 通過，限固定版本候選與條件閘門 | 十模組118腳本中113純文字、5混合控制碼不覆繪。獨立按原版192-byte字寬表與6609行數驗全部試譯適合實際動態框，驗缺字、超長、重鍵、漏譯、孤兒與UTF-8拒絕；不宣稱全城鎮可達或遊戲完成 |
 | 完整中文顯示與換頁 | 未完成 | 正式字串來源與其餘場景待 Z04 |

@@ -155,7 +155,12 @@
 | [internal/prototype/overlay/hud_scene_test.go](internal/prototype/overlay/hud_scene_test.go) | 正常室內名稱配對及候選來源的唯一匹配／失配退回測試 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
 | [docs/spec/013-intro-narration.md](docs/spec/013-intro-narration.md) | 其餘片頭顯示來源與魔王三行宣言的試作閘門 |
+| [docs/spec/014-intro-story.md](docs/spec/014-intro-story.md) | 完整故事的58片段、52清框與唯讀中文生命週期 |
 | [text/intro-threat-prototype.tsv](text/intro-threat-prototype.tsv) | 魔王三行宣言的來源鍵與中文試譯，控制碼仍由原版消費 |
+| [text/intro-story-prototype.tsv](text/intro-story-prototype.tsv) | 完整故事58個文字／字色片段的來源鍵與中文試譯 |
+| [internal/prototype/overlay/intro_story.go](internal/prototype/overlay/intro_story.go) | 規格014的原版字形、清框與唯讀中文生命週期 |
+| [internal/prototype/overlay/intro_story_layout.go](internal/prototype/overlay/intro_story_layout.go) | 故事固定來源分段、譯表及有界排版 |
+| [internal/prototype/overlay/intro_story_test.go](internal/prototype/overlay/intro_story_test.go) | 完整原版故事配對、47頁獨立排版與途中／退回驗證 |
 | [internal/prototype/overlay/intro_threat.go](internal/prototype/overlay/intro_threat.go) | 規格013的唯讀逐字來源、完整畫面守衛與三行中文 |
 | [internal/prototype/overlay/intro_threat_test.go](internal/prototype/overlay/intro_threat_test.go) | 正常冷啟動完整原版配對、字形途中與失配退回驗證 |
 | [text/intro-scroll-prototype.tsv](text/intro-scroll-prototype.tsv) | 首章 30 行試譯，鍵為本地 SAR 的檔案偏移；專名尚待手冊校訂 |

@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-魔王三行宣言中文已通過正常原版配對、實際視窗及獨立像素核對。完整故事5083原文字元已核正常消費來源，尚未中文覆繪。Malicia地形與回城成果保持已驗身份；全遊戲中文與HD仍在開發。
+故事正文58片段、47頁中文已通過正常原版配對、實際視窗及獨立像素核對，主入口已同步574094bc。故事後六行及51行製作名單仍待中文化。Malicia地形與回城成果保持已驗身份；全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -16,9 +16,9 @@
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 首場交戰／第一寶石及跳／蹲另已通過原版、中文配對與正常視窗；不代表全遊戲已驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
-| 中文 | 工具列、首章、魔王三行宣言、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 魔王宣言88字形與標題撤除已驗，完整故事仍待接入。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
+| 中文 | 工具列、首章、魔王宣言、故事正文、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 故事58片段、47頁正常播放與Space跳過已驗。六行收尾及51行名單仍待接入。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 魔王三行中文限定驗收通過 | 88字形完成點與200m標題完整原版相同，88次陰影途中呈現通過。正常GUI及獨立原版重跑通過，宣言／標題各576000遊戲像素零差。主入口已同步f733、76來源；收尾入口為intro-narration-v1/current-audit-v1.json |
+| 本輪工作 | 故事正文中文限定CONFORMED | 58片段、5083字形、52清框與163完整原版點相同。47頁正常視窗及Space跳過另以42895／9917筆實際日誌冷重跑，末端全部RAM／Regs／VGA相同。50張actualX遊戲畫布共28800000像素零差，人工只抽10圖。主入口574094bc、80來源；收尾入口為intro-narration-v1/story-current-audit-v1.json |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形已接入 | 洞窟地形1..14可選覆繪，主角／武器／動態物件仍原貌。未知角色分支安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -43,7 +43,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步依完整故事5083字元的正常來源接6A75敘事消費端與製作名單中文，再接物品共用消費端、洞窟角色／物件HD。魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步依32C9正常來源接51行製作名單及六行收尾中文。收尾由sub_6D04設Y20／高160，不能套用首章與名單的Y32／高120。其後接物品共用消費端、洞窟角色／物件HD。故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -66,8 +66,18 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - 首輪測試錯把185m當作標題，但原版宣言仍在。保留`threat-failed-test-v1.go.txt`及失敗紀錄，改用原版200m標題收據驗撤除，輸出`threat-pair-v2/`／`threat-test-v2.jsonl`，不改覆繪接受條件。
 - 宣言候選的76份來源保存於`candidate-identity-v1.json`／`candidate-sources-v1/`。正常視窗工具為`gui_threat_v1.py`，輸出`gui-threat-v1/`；原版全劇情觀測只證明已讀到的來源，末尾等待尚未作玩家路徑結束驗收。
 - 完整故事文字盤點為`inventory_story_v1.py`／`story-source-v1.json`，核對SAR原始偏移與正常6A75字形消費，不把劇情中的文字敘述當作玩法規則。
+- 故事清框、字形與字色的完整流程觀測沿同根`probe_story_flow_v1.go`／`original-story-flow-v1/`。先核每個完整字形與FE清框，再定譯文段落；未審查不接正式前端。
+- 故事字色／換行分段草案沿`story_segments_v1.py`／`story-segments-v1.json`。試譯在`text/intro-story-prototype.tsv`，只保存58個正文來源；最初P與控制碼不當作待翻譯敘事。
+- 故事原生字形與58片段的獨立驗證沿`prove_story_flow_v1.py`／`story-flow-proof-v1.json`。中文容量及47頁離線圖沿`preview_story_pages_v1.py`／`preview-story-pages-v1/`，不冒充正式前端或GUI收據。
+- 故事接入契約見`docs/spec/014-intro-story.md`；審查保存為同研究根`ready-story-review-v1.json`。原始控制碼仍由原版執行，前端僅保存完整文字區與中文進度。
+- 規格014的READY全文另存`ready-story-spec-v1.md`，七張根端離線目視清單存`story-draft-visual-review-v1.json`；與後續正式來源、GUI及收尾身份分開。
+- 故事正式接入測試沿`story-test-v1.jsonl`／`story-pair-v1/`，前端候選為`zeliard-preview-story-v1`，vet／建置記於`story-vet-v1.log`／`story-build-v1.log`。正常視窗、原版冷重跑及獨立像素通過後，主入口同步574094bc；舊f733候選保留。
+- 故事視窗工具為`gui_story_v1.py`，完整故事輸出`gui-story-v1/`，首頁後正常Space跳過另輸出`gui-story-skip-v1/`。候選身份與80份來源另存`story-candidate-identity-v1.json`／`story-candidate-sources-v1/`；兩路均記原生輸入／週期日誌。
+- 正式47頁與獨立離線排版的核對沿`compare_story_pair_pixels_v1.py`／`story-pair-pixels-v1.json`。故事後的六行捲字仍走32C9消費端，與製作名單一起保留待辦，不混入58段正文驗收。
+- 故事GUI的原生日誌冷重播工具為`replay_story_gui_v1.go`，完整／跳過輸出`story-gui-replay-v1/`／`story-skip-gui-replay-v1/`；獨立實際畫面核對沿`verify_story_gui_pixels_v1.py`，輸出`story-gui-pixels-v1.json`／`story-skip-gui-pixels-v1.json`。
+- 故事收尾核對沿`audit_intro_story_v1.py`／`story-current-audit-v1.json`，根端實際視窗目視清單為`story-root-visual-review-v1.json`。通過後的主入口同步工具及收據為`promote_story_v1.py`／`story-mainalias-sync-v1.json`；提交與私人遠端身份另記`story-repository-sync-v1.json`。
 - 實際視窗的獨立原版重跑與像素核對沿`replay_gui_original_v1.go`／`gui-original-pair-v1/`及`verify_gui_pixels_v1.py`／`gui-pixels-v1.json`。原版只重跑相同冷啟動與週期預算，不還原GUI記憶體。
-- 本輪收尾為`audit_intro_threat_v1.py`／`current-audit-v1.json`，根端三張圖的目視清單為`root-visual-review-v1.json`。主入口同步與提交後私人遠端身份分別記於`mainalias-sync-v1.json`／`repository-sync-v1.json`。
+- 魔王三行前輪收尾為`audit_intro_threat_v1.py`／`current-audit-v1.json`，根端三張圖的目視清單為`root-visual-review-v1.json`。該輪主入口同步與提交後私人遠端身份分別記於`mainalias-sync-v1.json`／`repository-sync-v1.json`。
 - 洞窟呈現生命週期與動態格的窄研究沿`workplace/cave-hd-v1/lifecycle_probe_v1.go`與`lifecycle-v1/`。v2另核7114／714C完成及703C／7136開始，輸出`lifecycle-v2/`；`lifecycle-return-v1.commands`沿正常入洞再Up回城，輸出`lifecycle-return-v1/`。只讀觀測，不接正式前端。
 - 動態地圖至圖格的獨立解碼沿同根`decode_dynamic_map_v1.py`／`dynamic-map-proof-v1.json`，取前輪已封存的3123來源，不重跑原版或猜物件種類。
 - 新完成點的完整重建沿`decode_lifecycle_actor_v1.py`、`prove_lifecycle_composition_v1.py`與`decode_lifecycle_map_v1.py`，各用lifecycle-v2的真實來源；彙總為`lifecycle-composition-proof-v1.json`及`lifecycle-map-proof-v1.json`。
