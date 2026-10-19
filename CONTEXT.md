@@ -2,9 +2,11 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-主入口d72e260a，97份Go、測試與譯表固定。022送返後Muralla山景、前景、地面與主角HD恢復已限定CONFORMED，021四段中文及置中肖像保持。既有29物件、主角30姿態、十武器及020入口收據保留原身份；全遊戲中文與HD仍在開發。
+主入口fab8f646，98份Go、測試與譯表固定。023正常洞窟探索的七姿態補圖已限定CONFORMED，主角圖組增至37姿態。022送返後城鎮HD、021中文、29物件、十武器及020入口收據保持原身份；全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
+
+接續探索取得18幅正常原版來源，獨立重建580608原生像素零差。七個主角姿態已補圖，另1個配色變化保持原貌；見[規格023](docs/spec/023-cave-expedition-player-hd.md)。45具名、18點完整配對及實際攀繩視窗通過，尚未走到下一洞窟。
 
 | 項目 | 現況 | 證據與限制 |
 |---|---|---|
@@ -18,9 +20,9 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 送返後城鎮HD來源022限定CONFORMED | 原版17點及44355讀取、五份71680原生像素閉合；34具名、vet／build及五整圖2880000像素通過。GUI v2及3775筆原生日誌、3114072實際像素通過，主入口已同步d72e260a |
+| 本輪工作 | 023七個正常探索主角來源已限定CONFORMED | 主入口fab8f646／98來源。45具名無skip／fail，18點完整原版配對、18份5225472高清像素與既有22份通過；實際X攀繩、3494日誌重播及獨立圖面零差 |
 | 接續工作 | 正常洞窟其餘圖像與中文、其他物品來源 | 022五bytes造成的城鎮HD拒絕已閉合，不追無關寫入原因。其他主角／武器／物件及洞窟仍待擴充，已驗配色保留原色。Sabre未正常取得，不改金額或猜效果；未走物品／法術仍候選 |
-| HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角30姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；兩個已驗主角配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
+| HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角37姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -53,6 +55,10 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 023現行入口為`workplace/cave-hd-v1/expedition-unit-v1/candidate-identity.json`及同目錄的`tests.jsonl`、`pixels-receipt.json`、`pair-receipt.json`；98份固定來源在`expedition-candidate-sources-v1/`。實作前READY為`expedition-build-v2/ready-review.json`，原版與獨立盤點為`expedition-source-v2/`、`expedition-inventory-v2/`；七圖固定登錄與18份獨立合成為`expedition-art-preview-v2/`及`expedition-composition-preview-v1/`。正常鍵序為`tools/cave-expedition.commands`。實際GUI工具／輸出為`expedition-tools-v1/`及`expedition-gui-v1/`，3494筆日誌與獨立像素為`expedition-gui-pair-v2/`、`expedition-gui-pixels-v2/`。45具名、18點完整原版配對與攀繩視窗通過，主入口fab8f646；前d72備份在`expedition-unit-v1/previous-main-d72e260a`。最後輸入／來源／擁有權稽核為`expedition-unit-v1/current-audit.json`，Git／Docker收尾另存`repository-sync.json`。不重開021／022已閉合工作。
+
+- 接續探索沿`workplace/cave-hd-v1/expedition-build-v2/`與`expedition-source-v2/`，重新建置既有`exploration_probe_v1.go`，冷啟動鍵序沿`exploration-startup-v1.commands`。讀原版、固定882來源與原存檔皆唯讀；僅輸出／存檔副本可寫。原版進程有800M指令、512命令及96擷取上限，不注入、不還原或挑選亂數。目的是推進正常路徑，不重開021／022或首場首寶石已閉合驗證。
 
 - 送返後城鎮HD依[022](docs/spec/022-return-town-hd.md)先DRAFT。`workplace/cave-hd-v1/return_town_probe_v1.go`／`return-town-build-v1/`／`return-town-read-v1/`重播既有104命令，逐點核17原件，再監看原版靜止及左右步行的11B1:8000..D800原生讀取。監看期間不由觀察器讀取該區；使用既有研究根，尚未READY不改正式程式。
 - `return_town_footprint_v1.py`／`return-town-footprint-v1.json`核完整215×8地圖、居民底圖、原生前景／人物／主角重建與原版讀取日誌。探針v1只建置未執行，啟動前檢查將觀察結束與放鍵後擷取時間分欄，實際執行為probe-v2；來源與binary SHA另記足跡收據。未把中途畫格當完整驗收。

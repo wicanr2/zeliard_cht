@@ -1,4 +1,4 @@
-// 洞窟主角30個已驗姿態。原始來源、透明登錄與遮擋契約見規格017。
+// 洞窟主角37個已驗姿態。來源、透明登錄與遮擋契約見規格017及023。
 package hd
 
 import (
@@ -45,6 +45,13 @@ var cavePlayerRegistrations = []cavePlayerRegistration{
 	{"abe90bbdc37844ae2a933e8a6b80ef96937c2b94de847b5005f6a1bb3a01b2ec", image.Rect(101, 650, 599, 1192), image.Rect(2, 0, 23, 24), "c816b12dd08174bc8bf73fe6144b210ec857ce5a1b9e31ca72beca29164d07e0"},
 	{"889c704b4c20d24790ba26947fdf3aa243e89d3d6492ee9cf324df8a37cf84e0", image.Rect(111, 56, 577, 631), image.Rect(5, 1, 24, 24), "09ac6a3c8af69ebcf09d3f6402539a13b7d8a246d904351372d97df86ea0c416"},
 	{"533e0dbc6391f4eaef8ff7c27789b2aabd6e4e61b5f793b3036e655c6a48bcd8", image.Rect(714, 58, 1226, 628), image.Rect(1, 0, 22, 24), "a8f19e7b255319103adec0dd8126329a360204ce21d55a44b56814e353b63f82"},
+	{"c03571efe91aea6dc91514cf7b89a7f22752b34ecd6335cc1a9bef9aa687ade0", image.Rect(48, 25, 414, 448), image.Rect(2, 0, 23, 24), "029feb5a2a44cb4b567f6c73a73517b24d6991f0a333c52baaa4539a2b77e5a3"},
+	{"acde2d3ef27ff5aca995429c975fc8452a4fc29b8601cc32c3e2553aa8a7c7a0", image.Rect(471, 156, 778, 450), image.Rect(1, 8, 19, 24), "fbb827921a3eec11404684330fa8d689d28cbe8a8b5a9ca5e778525a1ebed500"},
+	{"f3c8eae54a8414476c042f57a5e390e93596da2d10954aec8a27357e4e7c25f2", image.Rect(994, 27, 1246, 453), image.Rect(1, 0, 20, 24), "6669a57cc06c72dc903ede9837fda3d5334da9f1c9acb132851ad3f90cfa7f1a"},
+	{"e7ca0dc3722c9b053e578791f62f04f904d2a168aef8f82dd5ba4767a68c4685", image.Rect(124, 461, 326, 917), image.Rect(5, 0, 19, 24), "4a984f2c633477ac6117b4625fa996bc17836f5d8ae2df79d09a8c1af16f848a"},
+	{"19fabad81a43edd6108a46f0dd091137bfcda2a9e04497277714af52ca002201", image.Rect(538, 515, 783, 895), image.Rect(4, 2, 20, 24), "f323c806506b263fac2d09ccb6a6ad91775b264fa41199389045a68ea12f8fd3"},
+	{"55adeb9c9dd4bcdf75ae503ca91f564b325fd4331202f73fea8e224efed4987a", image.Rect(918, 617, 1238, 910), image.Rect(2, 8, 20, 24), "d976d2b4e8b2d6a4fb802fad3ac50bf64033542156041a48b69d2f6378fcd402"},
+	{"eb7307bb6a7270d82ca058afc46655c942c3d00dce2a3bd8bb16f61a8c100b6a", image.Rect(32, 1079, 434, 1219), image.Rect(0, 16, 20, 24), "3f148dfa6019717f0eb981f0b5a15b5ecf3cedfdbfd9062982a1084ec0efced0"},
 }
 
 type cavePlayerPose struct {
@@ -60,7 +67,7 @@ type cavePlayerCrop struct {
 
 func (c cavePlayerCrop) Bounds() image.Rectangle { return c.box }
 
-// NewCavePlayer先驗五張固定圖面及全部30個取樣，再交出可用圖組。
+// NewCavePlayer先驗六張固定圖面及全部37個取樣，再交出可用圖組。
 func NewCavePlayer(dir string) (*CavePlayer, error) {
 	atlas, err := caveArtwork(filepath.Join(dir, "player-atlas-handpaint-v1.png"), "a2ca6c6de0bdb07c7a97ae301ab66eab9c623b93da14ac5ec2cf7b2dc0930662")
 	if err != nil {
@@ -82,6 +89,10 @@ func NewCavePlayer(dir string) (*CavePlayer, error) {
 	if err != nil {
 		return nil, err
 	}
+	expedition, err := caveArtwork(filepath.Join(dir, "player-expedition-atlas-handpaint-v1.png"), "7691d0862c5a98e49112ef2022ec5ac47529afc16a07221dc44e3a661925a0c3")
+	if err != nil {
+		return nil, err
+	}
 	player := &CavePlayer{poses: map[string]*cavePlayerPose{}}
 	for n, r := range cavePlayerRegistrations {
 		source := atlas
@@ -96,6 +107,9 @@ func NewCavePlayer(dir string) (*CavePlayer, error) {
 		}
 		if n >= 28 {
 			source = extra
+		}
+		if n >= 30 {
+			source = expedition
 		}
 		if r.crop.Empty() || !r.crop.In(source.Bounds()) || r.native.Empty() || !r.native.In(image.Rect(0, 0, 24, 24)) || player.poses[r.key] != nil {
 			return nil, fmt.Errorf("主角美術登錄不符")

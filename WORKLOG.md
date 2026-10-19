@@ -888,3 +888,17 @@ unit-v1因GUI原擷取未另存palette檔停止，log、原測試與來源SHA保
 
 
 022限定收尾：GUI v2已正常退出0，完整城鎮四HD層、原貌切換與五個中文／肖像時刻七圖目視通過。3775筆實際日誌冷重播每筆完整原版、末端GUI及存檔相同，850 FileOps；保留最後清框一筆kind2。城鎮810432加同輪中文／肖像2303640實際像素零差，三呈現來源段、色盤、來源時間與原CPU分開核對。153自有檔、97來源及原件／快照／字型／存檔SHA／mtime核對，主入口同步d72e260a，舊3ae另存return-town-previous-main-3ae68018。GUI v1的備援Sky旗標假設與獨立像素v1的舊地面公式保留失敗身份，不改產品或挑結果。沒有Release、tag或封包；Git及Docker收尾見return-town-repository-sync-v1.json。接續正常洞窟其餘圖像與中文，不重開五bytes無關寫入原因。
+
+## 2026-10-19：正常洞窟探索與七姿態補圖023
+
+承接1090ce4的022完成狀態，工作樹乾淨且無專案容器。命中dosgolem原版觀測、規格閘門及文件職責；README更新前另讀retro-remake-readme-standard。沿既有cave-hd-v1研究根，不重開已閉合首戰、021或022。所有分析、建置、原版與GUI在有界非root Docker內執行。
+
+既有exploration_probe_v1.go首次由/study建置遇Go internal路徑限制，改由/project工作區建置成功。冷F7與自建存檔正常探索到左側攀繩及下層交戰，18點、113命令、146110000指令，不注入或還原。獨立重建580608原生像素零差，得到七個新增姿態及一個配色變化；尚未走至下一洞窟。來源與盤點沿expedition-source-v2、expedition-inventory-v2。前期metadata錯用根層檔數，改按既有manifest逐檔核29件含jsdos，原件不變。
+
+先寫023 DRAFT，以內建imagegen依七個原圖姿態與既有手繪角色產生圖集7691d086。完整提示與原PNG只留本地。首次按欄自動登錄受底列腳尖跨欄影響而拒絕，v2以固定七個分離窗口保留完整腳尖與原alpha，未改圖面。原30登錄／RGBA不變，七張72×72取樣與18份獨立完整合成已目視。expedition-build-v2/ready-review.json核97來源不變後才把023改READY並實作。
+
+正式變更只追加七登錄、第六張圖組與測試，未知及配色仍原貌，缺圖整組拒絕。45具名測試無fail／skip，37直接取樣、新18份5225472及既有22份6386688高清像素、vet及build通過。18點完整原版RAM／Regs／VGA／色盤／時間／完成來源／後畫與原路徑相同；存檔SHA／mtime保持。
+
+fab8f646／98來源及135工具輸入固定後才啟動實際X。正常冷F7、左行與Down取得姿態33攀繩，暫停下原貌與兩次HD、中文HUD及最後程式擷取相同，退出0。stdin緩衝使首段額外等待，實際原生日誌完整保留；不當成113命令同一路徑。3494筆日誌重播、最終GUI完整原版相同。重播v1誤用cycles欄，v2按實際elapsed_cycles後同日誌通過；像素v1漏載portal helper，v2只修文字切片終點，同一來源通過。兩個工具失敗與輸入不覆寫，未重跑GUI挑結果。
+
+實際全遊戲區290304高清／290304原貌像素零差，兩HD全畫布576000相同、中文HUD68544保留。呈現來源166861689、Body166770124、CPU166889374分開記錄，落後27685指令。主入口同步fab8f646，舊d72備份在expedition-unit-v1/previous-main-d72e260a。PRIVATE已由主機gh確認；來源稽核及Git／Docker收尾沿expedition-unit-v1/current-audit.json與repository-sync.json。沒有Release、tag或封包，其他洞窟、中文、音效與實體手把仍待推進。

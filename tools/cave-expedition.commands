@@ -1,0 +1,115 @@
+# 正常冷F7、自建存檔、左移、跳躍、攀繩與下層交戰。規格023。
+# shot標籤沿首次探索保留，只供定位，不表示寶箱、區域或原版規則已解明。
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x41 500000
+run 2000000
+key 0x15 150000
+run 1500000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x1c 100000
+run 16000000
+key 0x4d 8000000
+run 250000
+key 0x48 250000
+run 20000000
+shot cave-entered
+keys 0x4b,0x39 500000
+run 100000
+shot left-attack-1
+keys 0x4b,0x39 500000
+run 100000
+keys 0x4b,0x39 500000
+run 100000
+shot left-attack-3
+key 0x4b 2000000
+run 100000
+shot move-left
+keys 0x4b,0x48 1500000
+run 100000
+shot jump-left
+key 0x4d 550000
+key 0x50 3000000
+shot vine-down
+key 0x4d 1000000
+run 150000
+shot vine-align
+key 0x50 3500000
+run 100000
+shot lower-corridor
+key 0x50 3500000
+run 100000
+shot lower-vine-2
+keys 0x4d,0x39 500000
+run 80000
+keys 0x4d,0x39 500000
+run 80000
+shot chest-right-attack
+keys 0x4b,0x39 500000
+run 100000
+keys 0x4b,0x39 500000
+run 100000
+shot lower-left-strike
+keys 0x4b,0x39 700000
+run 100000
+shot lower-left-advance
+keys 0x4b,0x39 1000000
+run 100000
+shot lower-west
+keys 0x4b,0x39 1500000
+run 100000
+shot west-corridor
+keys 0x4b,0x39 2000000
+run 100000
+shot west-open
+keys 0x48,0x4b 1500000
+run 100000
+shot leave-vine-left
+key 0x47 1500000
+run 100000
+shot diagonal-left
+run 4000000
+shot expedition-result
+quit

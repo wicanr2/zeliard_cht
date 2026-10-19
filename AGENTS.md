@@ -105,6 +105,10 @@
 
 ## 文件索引與權責
 
+新增補圖入口：[正常洞窟探索主角補圖規格](docs/spec/023-cave-expedition-player-hd.md)與[獨立圖面及退回測試](internal/prototype/hd/cave_expedition_test.go)。本地原版來源與獨立重建沿CONTEXT的接續探索入口。
+
+[洞窟正常探索鍵序](tools/cave-expedition.commands)保留首次冷F7與原版按鍵，不包含原版資料、還原狀態或注入。
+
 | 文件 | 唯一職責 |
 |---|---|
 | [.gitattributes](.gitattributes) | 保留製作名單TSV空欄的分隔Tab；欄數、空白來源與字型由捲字譯表驗證器檢查 |
