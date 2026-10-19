@@ -926,3 +926,13 @@ sword-unit-v1的11具名測試全部PASS，無fail／skip；15新配對點與8�
 實際GUI v1的裝備頁及刀劍油選取兩面板已通過，使用步驟因自動化寫成Space，X11不辨識而未送原版按下。隔離Xvfb確認No such key name，小寫space正常，屬工具錯誤。保留失敗v1及sword-gui-preflight-v1.json；GUI v2僅改按鍵名稱與輸出路徑，產品與100來源不變。後續最終GUI、日誌、數字像素與Git／Docker收尾另追加，不預先算通過。
 
 025收尾：GUI v2四張實際面板1161216像素零差並逐張目視，正常退出0。sword-gui-pair-v2從冷啟動重播3130筆實際原生日誌，每筆暫存器／時間及末端完整RAM／VGA／暫存器／時間相同；FileOps確認SAVEM1讀256bytes。actual-pixels.json核2448個同一暫停時刻的原版數字像素零差，X與程式畫布相同。主入口同步439baeea，舊4209備份在sword-unit-v1/previous-main-4209f976。025限定CONFORMED，README／CONTEXT／WORKLIST／來源索引與016勘誤同步。該來源洞窟HUD與未涵蓋HD維持待查，不重開已閉合字區或猜數字效果。Git／來源稽核與Docker收尾另存sword-unit-v1/current-audit.json及repository-sync.json；不建立Release、tag或封包。
+
+## 2026-10-19：洞窟名稱前綴026
+
+前輪025已推送並改變現行狀態，本輪分類為進展。讀CONTEXT／WORKLIST並命中中文顯示語意隔離及原版執行器路由，沿固定882來源及原版正常F7查SAVEM1的Malicia名稱仍英文。兩份正常來源均讀同一21byte名稱，前綴0次讀取；繪字機器碼、字型、色盤及完整字形相同。先保存026 READY，才增加單一已觀察完整前綴SHA，不遮罩任意欄位，譯表與原版狀態不變。分析v1最後metadata誤把/study當/project子路徑；v2僅修記錄，原觀測未重跑。
+
+首輪配對的SAVEM1回鎮後直接Up未重入，該失敗保留hud-prefix-unit-v1。純正常觀測確認原始0083為22，左移至21後Up可入洞；沒有改HUD守衛、座標或原始資料。READY v2保存後，診斷JSON只增加原始0083讀值，測試保留已觀察的全部鍵序。unit-v2的13具名與23完整原版配對點全部通過，無fail／skip，vet／build通過。十張完整中文圖5760000獨立像素零差。
+
+ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐張目視。回鎮對齊實際讀22至21，只用正常按放；冷F7、入洞、裝備頁開關、回鎮及重入退出0。原生日誌3654筆冷重播，每筆暫存器／時間及最終完整原版相同；五個真實暫停時刻也各匹配完整原版。依同時刻原版RGB、TSV及獨立字型核完整HUD共342720像素零差，279720原數字與文字區外像素不變。
+
+主入口同步ae87b6b7，舊439保留於hud-prefix-unit-v2/previous-main-439baeea。026限定CONFORMED，來源／擁有權／連結稽核與Git／Docker收尾為current-audit.json及repository-sync.json。此輪未改HD素材，下一步先核洞窟FFFF前綴及0093=2角色圖層；不把HUD不讀前綴的證據套到整張HD，不追C013／C014寫入原因。沒有Release、tag或封包。

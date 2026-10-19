@@ -299,6 +299,21 @@
         "trace-v2/header-22cd-d614-240898542.json",
         "ida-evidence.json",
         "observation-comparison-v2.json"
+      ],
+      "observed_runtime_prefixes": [
+        {
+          "sha256": "6c853b5dab1da5682a959dd804b0f23e5acdc3aa67099596335e1293694f03b2",
+          "level": "已證實",
+          "source_save": "SAVEM1.USR，取得過程未知",
+          "prefix_native_reads": 0,
+          "header_body_native_reads": 21,
+          "evidence": [
+            "workplace/prose-v1/hud-prefix-source-v1/SAVEM1/receipt.json",
+            "workplace/prose-v1/hud-prefix-source-v1/analysis.json",
+            "docs/spec/026-cave-hud-source-prefix.md"
+          ],
+          "unknown": "C013／C014數值的玩法意義與寫入原因未知"
+        }
       ]
     },
     {

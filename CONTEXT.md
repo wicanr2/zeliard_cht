@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-主入口439baeea，100份Go、測試、譯表與依賴檔固定。025刀劍第二行、原版數字保留及來源存檔的刀劍油使用已限定CONFORMED；024盾牌、023的37個主角姿態、022城鎮HD、021中文、29物件、十武器及020入口收據保持原身份。全遊戲中文與HD仍在開發。
+主入口ae87b6b7，101份Go、測試、譯表與依賴檔固定。026洞窟名稱的已觀察前綴與正常切換已限定CONFORMED；025刀劍／刀劍油、024盾牌、023的37個主角姿態、022城鎮HD、021中文、29物件、十武器及020入口收據保持原身份。全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -20,8 +20,8 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 025刀劍第二行及刀劍油使用已限定CONFORMED | 主入口439baeea／100來源。11具名、23完整配對點、2880000獨立及1161216實際面板像素、3130日誌及2448原數字像素通過。原包SAVEM1取得未知，只驗正常F7後操作，不推定效果公式 |
-| 接續工作 | 來源SAVEM1的洞窟HUD入口與未涵蓋HD來源，再推進其餘中文 | Malicia完成原圖名稱字形正確，但前綴13／14兩bytes與靜態來源不同；先觀察22CD／2344，不放寬守衛或追無關寫入。該來源部分洞窟畫格保留原貌。刀劍油正常買入及其他物品／法術仍待驗 |
+| 本輪工作 | 026洞窟名稱前綴與正常切換已限定CONFORMED | 主入口ae87b6b7／101來源。13具名、23完整配對點、5760000獨立像素、3654實際日誌、五個同時刻HUD共342720像素通過。279720原數字及文字區外像素不變；來源取得及原欄位意義仍未知 |
+| 接續工作 | 來源SAVEM1的洞窟裝備分支與HD來源，再推進其餘中文 | HUD已閉合，不重開C013／C014寫入原因。CaveFrames仍對FFFF前綴拒絕，解碼另限定0093=0，而此正常來源0093=2；先觀察原版完成來源與附加圖層讀取，再審查HD，不能套用HUD不讀前綴的證據到整張洞窟。刀劍油買入及其他物品／法術仍待驗 |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角37姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -46,7 +46,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-先沿`sword-hud-preflight-v1.json`，正常重播SAVEM1至Malicia，只觀察HUD的22CD／2344及來源前綴，再審查顯示守衛；該來源未涵蓋HD畫格另核來源，不猜原版資料。025已驗刀劍油選取、使用、消耗及重開，正常買入仍待取得足夠金幣。原包五份存檔均在Muralla，來源取得未知，不能當作後段城鎮入口。其餘未使用物品仍候選。024僅閉合004dad，025僅閉合004d22與已列刀劍油來源，不解釋數字公式。017／023主角、018武器、019物件、020入口、021及022保持原收據，不重開已閉合相位、動畫或五bytes寫入原因。113純文字居民中112、53場景中40及五混合入口仍待正常路徑；正式字級、術語、HD倍率／預設、音訊及實體手把驗收仍待處理。證據見[RESEARCH-LOG.md](RESEARCH-LOG.md)與[VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+先以正常SAVEM1冷F7與已驗入洞鍵序，觀察洞窟完成來源及0093=2的角色圖層。`internal/prototype/hd/cave_frames.go`目前只接受C000的3f5ed前綴；`cave_sources.go`另拒絕非零0093。026只證明名稱繪字不讀前綴，不能據此開通整張HD。先做最小充分原版讀取／圖層與完整原圖重建證據，再走READY；不追C013／C014無關寫入或重開已閉合HUD、刀劍、盾牌數字區。025刀劍油使用已驗，正常買入仍待；原包五份存檔均在Muralla、取得未知。113居民中112、53場景中40及五混合入口仍待正常路徑；正式字級、術語、HD倍率／預設、音訊及實體手把驗收仍待處理。證據見[RESEARCH-LOG.md](RESEARCH-LOG.md)與[VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -55,6 +55,8 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- [026洞窟名稱前綴](docs/spec/026-cave-hud-source-prefix.md)原版入口為`workplace/prose-v1/hud_prefix_probe_v1.go`／`hud-prefix-source-v1/`，各擷取的輸入、工具及位址身份在同目錄`identity.json`。分析v2核兩次21位元組讀取、前綴0次讀取及完整字形；v1路徑metadata錯誤保留。READY先存`hud-prefix-ready-review-v1.json`；`hud_prefix_navigation_probe_v1.go`／`hud-prefix-navigation-v1/`正常對齊後，v2審查補原始0083診斷。`hud-prefix-unit-v1/`未對齊失敗保留，現行`hud-prefix-unit-v2/`驗13具名、23完整配對點、十整圖5760000獨立像素及vet／build。身份`hud-prefix-candidate-identity-v1.json`／`hud-prefix-candidate-sources-v1/`固定101來源，GUI為`hud_prefix_gui_v1.py`／`hud-prefix-gui-v1/`；根端目視五圖。`hud_prefix_gui_replay_v1.go`／`hud-prefix-gui-pair-v1/`核3654筆及五個真實暫停快照，`hud_prefix_actual_pixels_v1.py`／`hud-prefix-unit-v2/actual-pixels.json`核342720完整HUD與279720原數字／區外像素零差。稽核為同目錄`current-audit.json`、主入口同步／備份為`mainalias-sync.json`／`previous-main-439baeea`，Git／Docker收尾為`repository-sync.json`。此項已閉合；HD裝備分支另追。
 
 - 持有物品觀測入口為`workplace/prose-v1/held_item_probe_v1.go`，二進位在`source-item-tools-v1/held-item-probe`，正常F7、原生鍵序與擷取在`held-item-v1/`。來源為原包SAVEM1.USR，SHA沿來源清單；原始檔唯讀，scratch副本保留mtime。刀劍油選取、使用、槽位消耗及重開已觀察，不推定取得過程或效果公式。該次4209f976觀測保持原身份，現行驗收依下列025入口。
 

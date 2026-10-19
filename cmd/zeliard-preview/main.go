@@ -527,6 +527,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"town_player_hd_matched":     g.townPlayerMatch,
 			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
 			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
+			"native_primary_0083":        g.o.Byte(oracle.Far(0x1b1, 0x0083)),
 			"text_cursor":                g.o.Word(oracle.Far(0x01b1, 0xff4c)),
 			"advance_input_flags":        int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
 		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。

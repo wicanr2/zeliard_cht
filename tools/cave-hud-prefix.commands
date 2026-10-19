@@ -1,0 +1,12 @@
+key 0x1c 500000
+run 1500000
+shot cave-inventory
+key 0x1c 500000
+run 1500000
+shot cave-closed
+key 0x48 250000
+run 20000000
+shot returned-town
+key 0x48 250000
+run 20000000
+shot cave-reentered

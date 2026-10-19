@@ -208,6 +208,17 @@ func NewHUD(o *oracle.Oracle, root, catalog string, font bitmap.Font) (*HUD, err
 	return h, nil
 }
 
+// 026：只接受同一名稱來源已觀察的完整前綴，不遮罩遊戲狀態欄位。
+func hudPrefixMatches(s *hudSource, prefix []byte) bool {
+	if len(prefix) != 64 || len(s.prefix) != 64 {
+		return false
+	}
+	if bytes.Equal(prefix, s.prefix) {
+		return true
+	}
+	return s.key == "zelres3.file.00c31a" && hudHash(prefix) == "6c853b5dab1da5682a959dd804b0f23e5acdc3aa67099596335e1293694f03b2"
+}
+
 func (h *HUD) begin(o *oracle.Oracle, entry uint16) {
 	h.pending = nil
 	if o.VideoMode() != 0x13 || o.DSReg() != 0x01b1 || hudHash(o.Bytes(oracle.Far(0x01b1, 0x22bf), 0xc7)) != "a4564867c4b2fa886ea061551023ca7343b7e6b33f2ec9dd392b6aa452627504" {
@@ -228,7 +239,7 @@ func (h *HUD) begin(o *oracle.Oracle, entry uint16) {
 			}
 			candidate.base, candidate.header = uint16(base), o.SI()
 		}
-		if candidate.header == o.SI() && bytes.Equal(o.Bytes(oracle.Far(0x01b1, candidate.base), 64), s.prefix) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, candidate.header), len(s.raw)), s.raw) {
+		if candidate.header == o.SI() && hudPrefixMatches(s, o.Bytes(oracle.Far(0x01b1, candidate.base), 64)) && bytes.Equal(o.Bytes(oracle.Far(0x01b1, candidate.header), len(s.raw)), s.raw) {
 			if h.pending != nil {
 				h.pending = nil
 				return // 相同入口有多個來源解釋時不猜選其中一個。

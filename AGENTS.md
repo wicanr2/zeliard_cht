@@ -161,6 +161,7 @@
 | [internal/prototype/overlay/town.go](internal/prototype/overlay/town.go) | 唯讀居民中文覆繪、來源閘門與背景還原 |
 | [internal/prototype/overlay/town_test.go](internal/prototype/overlay/town_test.go) | 正常交談配對、113筆容量與來源失配拒絕驗證 |
 | [docs/hud-source-index.json](docs/hud-source-index.json) | 狀態列來源、原版完成字形、安全區與證據等級 |
+| [docs/spec/026-cave-hud-source-prefix.md](docs/spec/026-cave-hud-source-prefix.md)、[原包存檔鍵序](tools/cave-hud-source-save.commands)、[自建存檔鍵序](tools/cave-hud-prefix.commands)、[配對測試](internal/prototype/overlay/hud_prefix_test.go) | 名稱前綴、原版讀取範圍與兩條正常回鎮／重入路徑；原始0083僅供診斷 |
 | [internal/prototype/overlay/hud.go](internal/prototype/overlay/hud.go) | 當次入口唯一驗證來源的狀態列覆繪，不改原版數值或輸入 |
 | [internal/prototype/overlay/hud_scene_test.go](internal/prototype/overlay/hud_scene_test.go) | 正常室內名稱配對及候選來源的唯一匹配／失配退回測試 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
