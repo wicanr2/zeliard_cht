@@ -31,7 +31,18 @@
 
 Malicia 洞窟地形試作另加 `-cave-art-dir /project/workplace/cave-hd-v1`，目錄須含身份相符的 `terrain-handpaint-v2.png` 與 `rock-material-v1.png`。目前替換已確認的地形1..14。正常入洞、首戰拾取、跳蹲、原貌切換及回城已抽驗；原貌與HD共用原版完成畫格。未知來源、缺圖或整區重建不符時保留原貌。素材僅存本機，範圍見[洞窟地形規格](docs/spec/011-cave-hd.md)及[完成畫格規格](docs/spec/012-cave-frame-sources.md)。
 
-洞窟主角另加 `-cave-player-art-dir /project/workplace/cave-hd-v1`，搭配上述地形選項。目錄需含七張固定圖集：`player-atlas-handpaint-v1.png`、`player-motion-atlas-handpaint-v1.png`、`player-gui-atlas-handpaint-v1.png`、`player-left-atlas-handpaint-v2.png`、`player-motion-extra-handpaint-v1.png`、`player-expedition-atlas-handpaint-v1.png`、`player-shield-atlas-handpaint-v2.png`。已接54個來源姿態，其中17個為正常讀取來源存檔後觀察的持盾站立、步行、出劍、跳與蹲。高清合成保留原版位置與後畫遮擋；原版配色變化、未知姿態與未驗特殊組合保留原貌。三次同原版HD切換、裝備頁撤除及回鎮重入已抽驗，來源存檔的取得過程未知。圖集只留本機，範圍見[洞窟主角規格](docs/spec/017-cave-player-hd.md)、[正常探索補圖](docs/spec/023-cave-expedition-player-hd.md)及[持盾分支](docs/spec/027-cave-shield-profile-hd.md)。
+洞窟主角另加 `-cave-player-art-dir /project/workplace/cave-hd-v1`，搭配上述地形選項。目錄需含八張本地固定圖集：
+
+- `player-atlas-handpaint-v1.png`
+- `player-motion-atlas-handpaint-v1.png`
+- `player-gui-atlas-handpaint-v1.png`
+- `player-left-atlas-handpaint-v2.png`
+- `player-motion-extra-handpaint-v1.png`
+- `player-expedition-atlas-handpaint-v1.png`
+- `player-shield-atlas-handpaint-v2.png`
+- `player-shield-transition-handpaint-v1.png`
+
+已接55個來源姿態，包含17個一般持盾姿態及雙朝向共用的背面離洞姿態。直接高清合成保留原版位置與後畫遮擋；未知來源、配色與未驗特殊組合保留原貌。正常離洞、回鎮撤除與重入已抽驗，原始遊戲與存檔不改，來源存檔取得過程未知。圖集只留本機，範圍見[主角規格](docs/spec/017-cave-player-hd.md)、[探索補圖](docs/spec/023-cave-expedition-player-hd.md)、[一般持盾](docs/spec/027-cave-shield-profile-hd.md)與[持盾離洞](docs/spec/028-cave-shield-transition-hd.md)。
 
 洞窟武器另加 `-cave-weapon-art-dir /project/workplace/cave-hd-v1`，搭配地形選項，載入本地 `weapon-atlas-handpaint-v1.png`。十個已確認來源直接以高清合成，保留原版包絡、方向與最後圖層；收劍即撤除，未知來源維持原貌。主角可用原貌或HD，未提供物件圖組時動態物件仍為原貌。範圍見[洞窟武器規格](docs/spec/018-cave-weapon-hd.md)，不代表全部武器或洞窟已完成。
 

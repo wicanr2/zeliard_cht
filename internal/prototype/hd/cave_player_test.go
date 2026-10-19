@@ -33,8 +33,8 @@ func TestCavePlayerDirectRegisteredPixels(t *testing.T) {
 	if err = json.Unmarshal(data, &review); err != nil {
 		t.Fatal(err)
 	}
-	if len(review.Poses) != 37 || len(player.poses) != 54 {
-		t.Fatal("原37姿態或持盾17姿態圖組未完整載入")
+	if len(review.Poses) != 37 || len(player.poses) != 55 {
+		t.Fatal("原37姿態、持盾17姿態或離洞姿態圖組未完整載入")
 	}
 	for _, entry := range review.Poses {
 		pose := player.poses[entry.Key]

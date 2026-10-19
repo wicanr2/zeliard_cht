@@ -276,9 +276,11 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 	if profiles > 1 {
 		return nil, fmt.Errorf("unobserved combined actor profile")
 	}
-	// 規格027僅驗0093=2的一般持盾動作，未驗特殊姿態組合。
+	// 027一般持盾、028正常離洞；未列組合維持拒絕。
 	shield := bp[0x93] == 2
-	if shield && profiles != 0 {
+	// 規格028：正常離洞的背面持盾；其他特殊組合仍拒絕。
+	shieldTransition := shield && bp[0xff3a] == 255 && bp[0xe8] == 0 && bp[0xff39] == 0 && bp[0xff38] == 0 && bp[0xff40] == 0
+	if shield && profiles != 0 && !shieldTransition {
 		return nil, fmt.Errorf("unobserved combined shield profile")
 	}
 	if bp[0xff40] != 0 && bp[0xff40] != 255 {
@@ -407,8 +409,14 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 	if e := layer(table, 9, 0); e != nil {
 		return nil, e
 	}
-	// 01B1:3BFD..3C04及3C16..3C26：已驗分支與0093=0時無前手。
-	if profiles == 0 {
+	// 01B1:3BFD..3C26：E8及無盾特殊分支無前手；028沿3C27加7E。
+	if profiles == 0 || shieldTransition {
+		if shieldTransition {
+			front = 0x6117 + 0x7e
+			if bp[0xc2]&1 != 0 {
+				front = 0x61b9 + 0x7e
+			}
+		}
 		if e := layer(front, count, start); e != nil {
 			return nil, e
 		}

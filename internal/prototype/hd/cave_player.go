@@ -1,4 +1,4 @@
-// 洞窟主角54個已驗姿態。來源、透明登錄與遮擋契約見規格017、023及027。
+// 洞窟主角55個已驗姿態。來源、透明登錄與遮擋契約見規格017、023、027及028。
 package hd
 
 import (
@@ -71,6 +71,7 @@ var cavePlayerRegistrations = []cavePlayerRegistration{
 	{"58a554ead34d56d8d686d01d0418f8e09e94ef2dc72445216d172372fb9e923d", image.Rect(556, 683, 751, 933), image.Rect(1, 0, 22, 24), "f0768403ea3d64398f0bc21fbf825cce2253d4b31a49c4aafd251cda4dfa9a87"},
 	{"3deabdb1bd9da91cc083ed10b806f3e403c10bdfd7a16c63872bbe04a98ff56c", image.Rect(808, 686, 1002, 945), image.Rect(1, 0, 22, 24), "09609caa8233801ccf13d298d29616bb384406bd911b15fdf6c5a55ec3ce6216"},
 	{"0624a1da236e5645ab9dba5b0876f79bcc8c8c3656de96cef901d500262ccbde", image.Rect(1035, 759, 1277, 947), image.Rect(1, 8, 22, 24), "4b3a2dc5e3e746e1d0a9f792521bc944739d860be5ee65c16b01c1fb2846425b"},
+	{"a119ce2b9025164280afcca26ca61fb31cf53bfc5760c46c5ca570b1a8cfac94", image.Rect(298, 79, 928, 1193), image.Rect(4, 0, 20, 24), "0a0a29b044de4c1a5f187d6443691570fe77d6648d31c2b1fc4282138a09e942"},
 }
 
 type cavePlayerPose struct {
@@ -86,7 +87,7 @@ type cavePlayerCrop struct {
 
 func (c cavePlayerCrop) Bounds() image.Rectangle { return c.box }
 
-// NewCavePlayer先驗七張固定圖面及全部54個取樣，再交出可用圖組。
+// NewCavePlayer先驗八張固定圖面及全部55個取樣，再交出可用圖組。
 func NewCavePlayer(dir string) (*CavePlayer, error) {
 	atlas, err := caveArtwork(filepath.Join(dir, "player-atlas-handpaint-v1.png"), "a2ca6c6de0bdb07c7a97ae301ab66eab9c623b93da14ac5ec2cf7b2dc0930662")
 	if err != nil {
@@ -125,6 +126,10 @@ func NewCavePlayer(dir string) (*CavePlayer, error) {
 	if err != nil {
 		return nil, err
 	}
+	transition, err := caveArtwork(filepath.Join(dir, "player-shield-transition-handpaint-v1.png"), "3a7fa827fee261f0c9bcfd611fd8f2c19a0ed347218a976a52ccd9b08c771acb")
+	if err != nil {
+		return nil, err
+	}
 	for n, r := range cavePlayerRegistrations {
 		source := atlas
 		if n >= 14 {
@@ -144,6 +149,9 @@ func NewCavePlayer(dir string) (*CavePlayer, error) {
 		}
 		if n >= 37 {
 			source = shield
+		}
+		if n >= 54 {
+			source = transition
 		}
 		if r.crop.Empty() || !r.crop.In(source.Bounds()) || r.native.Empty() || !r.native.In(image.Rect(0, 0, 24, 24)) || player.poses[r.key] != nil {
 			return nil, fmt.Errorf("主角美術登錄不符")

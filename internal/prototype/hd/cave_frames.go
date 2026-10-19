@@ -273,8 +273,19 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 	if last == nil {
 		return nil
 	}
-	if in.steps < last.Steps || in.cycles < last.Cycles || (!f.drawing && !caveFrameEqual(in.indexed, last.SourceIndexed)) {
+	if in.steps < last.Steps || in.cycles < last.Cycles {
 		f.clear()
+		return nil
+	}
+	if !f.drawing && !caveFrameEqual(in.indexed, last.SourceIndexed) {
+		// 028：4129新主體可早於批次開始。撤除舊呈現，保留當次可信主體；
+		// 未完成圖面仍不呈現，後續finish須重新核整個原版畫格。
+		fresh := f.body != nil && f.body.steps > last.Steps && f.body.cycles >= last.Cycles && f.body.steps <= in.steps && f.body.cycles <= in.cycles && caveFrameSource(*f.body)
+		if fresh {
+			f.complete = nil
+		} else {
+			f.clear()
+		}
 		return nil
 	}
 	raw, rgb := cloneTownBytes(in.indexed), cloneTownBytes(in.rgb)

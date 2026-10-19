@@ -224,6 +224,10 @@
 | [tools/cave_hd_preview.py](tools/cave_hd_preview.py) | Docker內從原版完成快照合成洞窟HD離線研究圖，不接正式前端 |
 | [docs/spec/012-cave-frame-sources.md](docs/spec/012-cave-frame-sources.md) | 洞窟完成來源、圖層解碼、守衛與呈現生命週期 |
 | [internal/prototype/hd/cave_shield_test.go](internal/prototype/hd/cave_shield_test.go) | 027持盾53份原生／HD獨立合成、未知來源拒絕與正常冷F7完整原版配對 |
+| [docs/spec/028-cave-shield-transition-hd.md](docs/spec/028-cave-shield-transition-hd.md) | 正常離洞時持盾FF3A姿態、原版來源重用與高清連續顯示閘門 |
+| [docs/re-resolution-backlinks.tsv](docs/re-resolution-backlinks.tsv) | 固定模組雜湊與原始位址對應的後續證據、舊規格及必要回填標記 |
+| [internal/prototype/hd/cave_shield_transition_test.go](internal/prototype/hd/cave_shield_transition_test.go) | 028四份真實完成、直接高清合成、主體重用與正常原版完整狀態配對 |
+| [internal/prototype/hd/cave_transition_lifecycle_test.go](internal/prototype/hd/cave_transition_lifecycle_test.go) | 028實際視窗日誌在Draw時刻的主體生命週期、舊呈現撤除與原版狀態回歸 |
 | [internal/prototype/hd/cave_sources.go](internal/prototype/hd/cave_sources.go) | 規格012的原版地形、動態物件、主角與武器色號解碼 |
 | [internal/prototype/hd/cave_frames.go](internal/prototype/hd/cave_frames.go) | 規格012的完成來源選擇與撤除；高清美術另由011追蹤 |
 | [internal/prototype/hd/cave_terrain.go](internal/prototype/hd/cave_terrain.go) | 規格011的Malicia地形合成；動態、主角與武器保留原貌 |
