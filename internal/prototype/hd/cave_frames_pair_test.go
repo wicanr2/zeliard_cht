@@ -130,6 +130,15 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 		art.SetWeapon(weapon)
 	}
 	weaponCoverage := newCaveWeaponCoverage(weapon)
+	var objects *CaveObjects
+	if dir := os.Getenv("ZELIARD_CAVE_OBJECT_ART"); dir != "" {
+		objects, e = NewCaveObjects(dir)
+		if e != nil {
+			t.Fatal(e)
+		}
+		art.SetObjects(objects)
+	}
+	objectCoverage := newCaveObjectCoverage(objects)
 	if e = os.Mkdir(out, 0755); e != nil {
 		t.Fatal(e)
 	}
@@ -180,6 +189,7 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 			selected := frames.Present(b.Indexed(), rgb, false)
 			if selected != nil {
 				weaponCoverage.observe(t, out, selected)
+				objectCoverage.observe(t, out, selected)
 				if player != nil && !seenSources[selected.Steps] {
 					seenSources[selected.Steps] = true
 					key, pose, hidden := player.selectPose(selected.Decoded)
@@ -234,10 +244,16 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 			t.Fatalf("未取得指定GUI完成來源：%d", step)
 		}
 	}
+	for _, step := range objectCoverage.order {
+		if objectCoverage.capture[step] {
+			t.Fatalf("未取得指定GUI物件完成來源：%d", step)
+		}
+	}
 	receipt := map[string]any{"status": "ORIGINAL_GUI_JOURNAL_PAIR_EQUAL", "records": len(lines), "completed_frames": frames.captured, "refused": frames.refused, "HD_draws": draws, "native_paint_draws": paintFrames, "full_RAM_and_regs_each_record_equal": true, "original_GUI_final_RAM_and_indexed_equal": true, "input_journal_sha256": townBackgroundHash(data), "final": frames.State(), "state_injection": false}
 	receipt["player_sources"] = len(seenSources)
 	receipt["player_missing_sources"] = missingSources
 	receipt["weapon_coverage"] = weaponCoverage.summary()
+	receipt["object_coverage"] = objectCoverage.summary()
 	receipt["fileops"] = len(b.FileOps())
 	receipt["save_unchanged"] = true
 	encoded, e := json.MarshalIndent(receipt, "", "  ")
@@ -330,6 +346,18 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		art.SetWeapon(weapon)
 	}
 	weaponCoverage := newCaveWeaponCoverage(weapon)
+	var objects *CaveObjects
+	if dir := os.Getenv("ZELIARD_CAVE_OBJECT_ART"); dir != "" {
+		if art == nil {
+			t.Fatal("物件HD須搭配地形")
+		}
+		objects, e = NewCaveObjects(dir)
+		if e != nil {
+			t.Fatal(e)
+		}
+		art.SetObjects(objects)
+	}
+	objectCoverage := newCaveObjectCoverage(objects)
 	seenPlayerFrames := map[uint64]bool{}
 	seenPlayerKeys := map[string]int{}
 	var missingPlayerSources []map[string]any
@@ -358,6 +386,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		}
 		used++
 		weaponCoverage.observe(t, out, selected)
+		objectCoverage.observe(t, out, selected)
 		if art != nil && art.player != nil && !seenPlayerFrames[selected.Steps] {
 			seenPlayerFrames[selected.Steps] = true
 			key, pose, hidden := art.player.selectPose(selected.Decoded)
@@ -529,6 +558,9 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 					if art.weapon != nil {
 						point["weapon_hd"] = art.WeaponState()
 					}
+					if art.objects != nil {
+						point["objects_hd"] = art.ObjectState()
+					}
 					point["Chinese_overwrites_game_pixels"] = 0
 				} else {
 					canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
@@ -564,7 +596,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		}
 	}
 	playerCoverage := map[string]any{"source_frames": len(seenPlayerFrames), "known_frames": playerKnown, "fully_occluded_frames": playerHidden, "missing_visible_frames": playerMissing, "keys": seenPlayerKeys, "missing_sources": missingPlayerSources, "scope": "正常完成來源盤點；缺素材保留原貌，未稱全動畫HD"}
-	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "weapon_coverage": weaponCoverage.summary(), "save_unchanged": true, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角／武器HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
+	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "weapon_coverage": weaponCoverage.summary(), "object_coverage": objectCoverage.summary(), "save_unchanged": true, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角／武器HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
 	if e != nil {
 		t.Fatal(e)
 	}

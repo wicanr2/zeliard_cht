@@ -62,6 +62,8 @@ type caveObject struct {
 	X, Y, Record, Template int
 	ID, Palette            byte
 	Tiles                  [4]byte
+	Backgrounds            [4]byte
+	Raster                 [256]byte
 }
 type caveDecoded struct {
 	Background             []byte
@@ -228,10 +230,13 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 			}
 			object := caveObject{X: 48 + x*8, Y: 14 + y*8, Record: record, Template: entry, ID: id, Palette: byte(pi)}
 			copy(object.Tiles[:], t[1:])
-			out.Objects = append(out.Objects, object)
+			for i := range object.Raster {
+				object.Raster[i] = 255
+			}
 			for q, tile := range t[1:] {
 				gx, gy := x+q%2, y+q/2
 				bg := backgroundID(mapID(gx, gy))
+				object.Backgrounds[q] = bg
 				base, e := caveStatic(r, bg)
 				if e != nil {
 					return nil, e
@@ -244,12 +249,16 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 				put(px, py, decoded)
 				for yy := 0; yy < 8; yy++ {
 					for xx := 0; xx < 8; xx++ {
+						if visible[yy*8+xx] {
+							object.Raster[(q/2*8+yy)*16+q%2*8+xx] = decoded[yy*8+xx]
+						}
 						if visible[yy*8+xx] && inside(px+xx, py+yy) {
 							out.Dynamic = append(out.Dynamic, cavePixel{px + xx, py + yy, decoded[yy*8+xx]})
 						}
 					}
 				}
 			}
+			out.Objects = append(out.Objects, object)
 		}
 	}
 	// 主角僅接受已觀測之裝備／姿態分支，未知來源安全拒絕。

@@ -17,11 +17,29 @@ type CaveTerrain struct {
 	playerState map[string]any
 	weapon      *CaveWeapon
 	weaponState map[string]any
+	objects     *CaveObjects
+	objectState map[string]any
 }
 
 func (s *CaveTerrain) SetPlayer(player *CavePlayer) { s.player = player; s.playerState = nil }
 
 func (s *CaveTerrain) SetWeapon(weapon *CaveWeapon) { s.weapon = weapon; s.weaponState = nil }
+
+func (s *CaveTerrain) SetObjects(objects *CaveObjects) { s.objects = objects; s.objectState = nil }
+
+func (s *CaveTerrain) ObjectState() map[string]any {
+	if s == nil || s.objectState == nil {
+		return nil
+	}
+	state := make(map[string]any, len(s.objectState))
+	for key, value := range s.objectState {
+		if keys, ok := value.([]string); ok {
+			value = append([]string{}, keys...)
+		}
+		state[key] = value
+	}
+	return state
+}
 
 func (s *CaveTerrain) WeaponState() map[string]any {
 	if s == nil || s.weaponState == nil {
@@ -115,11 +133,15 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	if s != nil {
 		s.playerState = nil
 		s.weaponState = nil
+		s.objectState = nil
 		if s.player != nil {
 			s.playerState = map[string]any{"loaded": true, "matched": false, "occluded": false}
 		}
 		if s.weapon != nil {
 			s.weaponState = map[string]any{"loaded": true, "matched": false, "empty": false}
+		}
+		if s.objects != nil {
+			s.objectState = map[string]any{"loaded": true, "matched": false}
 		}
 	}
 	box := image.Rect(144, 42, 816, 474).Add(origin)
@@ -261,7 +283,13 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			}
 		}
 	}
-	paintNative(d.Dynamic)
+	if s.objects == nil {
+		paintNative(d.Dynamic)
+	} else {
+		s.objectState = s.objects.draw(dst, d, f.Palette, origin)
+		s.objectState["source_steps"] = f.Steps
+		s.objectState["body_steps"] = f.BodySteps
+	}
 	if playerPose != nil {
 		playerPose.draw(dst, d, f.Paints, origin)
 	} else {
