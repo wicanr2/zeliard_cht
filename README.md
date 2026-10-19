@@ -59,7 +59,7 @@ workplace/bin/zeliard-preview \
   -user-dir /project/workplace/frontend-user
 ```
 
-`/orig` 須唯讀掛載完整原版資料，`/fonts` 為使用者提供的字型目錄。原版存檔另落在使用者目錄下的 `game/`，手把設定獨立保存。音效雛形可加 `-audio ebiten`，預設為 `-audio off`。暫停、失焦及手把設定頁會關閉當次播放，恢復時建立新佇列。現有重度觀察視窗出現大量欠載，聲音會插入空白；穩定節奏、人耳與實體裝置仍待驗證，見[音訊規格](docs/spec/029-runtime-audio.md)。
+`/orig` 須唯讀掛載完整原版資料，`/fonts` 為使用者提供的字型目錄。原版存檔另落在使用者目錄下的 `game/`，手把設定獨立保存。音效雛形可加 `-audio ebiten`，預設為 `-audio off`。暫停、失焦及手把設定頁會關閉當次播放，恢復時建立新佇列。現有視窗仍有欠載與佇列滿載，聲音可能插入空白或丟樣；穩定節奏、人耳與實體裝置仍待驗證，見[音訊規格](docs/spec/029-runtime-audio.md)。
 
 研究用 `-audio-wav /project/workplace/<新檔名>.wav` 保存原版生成的單聲道取樣，拒絕覆寫已有檔案。這份檔案不代表裝置實際播放的聲音，須另做裝置監聽。
 

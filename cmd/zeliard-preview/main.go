@@ -544,17 +544,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	draw.Draw(g.canvas, g.canvas.Bounds(), &image.Uniform{color.RGBA{18, 23, 32, 255}}, image.Point{}, draw.Src)
 	if w == 320 && h == 200 && len(rgb) == 320*200*3 {
-		for y := 0; y < 200; y++ {
-			for x := 0; x < 320; x++ {
-				i := (y*320 + x) * 3
-				c := color.RGBA{rgb[i], rgb[i+1], rgb[i+2], 255}
-				for yy := 0; yy < scale; yy++ {
-					for xx := 0; xx < scale; xx++ {
-						g.canvas.SetRGBA(x*scale+xx, barHeight+y*scale+yy, c)
-					}
-				}
-			}
-		}
+		bitmap.DrawRGB3(g.canvas, rgb, image.Pt(0, barHeight))
 	}
 	g.hdMatched = false
 	if g.hdEnabled && g.hd != nil && w == 320 && h == 200 {
