@@ -944,3 +944,9 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 勘誤：初見四種未知房間不是四個手勢，其中兩種是同手勢不同燭光，實際新增三個。原快照與初次分類留在hd-gui-pair-v1/unknown，五組與見證在hd-gesture-source-v1/inventory.json，不重寫舊收據。
 - 已證實：新版431筆觀察與同時點原版匹配相同。唯一未知來源SHA為7c696f045cf275ace1387ed0cfa654f4e5e698d809e01ce068d2b96794bc446e，IP01B1:3770，與最近穩定圖相差8個燭焰像素；繪製中更新是強推論，不覆蓋位址或加映射。原子退回及原生輸入不變另驗。
 - 手繪圖是原版構圖衍生的本機研究素材；15來源與圖面固定SHA見規格001、註冊索引及程式。原版、字型、畫面與圖面不入Git或發行包，不藉此宣稱其他場景或全遊戲完成。
+
+### 教堂場景名稱的正常載入證據
+
+- 固定EXE fe1c00b3、SAR2 bf7c792a與dosgolem 882份2a5ad11a沿CONTEXT完整雜湊。Go1.24.13，原版位址空間為dosgolem實模式01B1段內偏移；檔案偏移屬ZELRES2.SAR，不作EXE或IDA線性位址解讀。
+- 兩次正常冷讀存檔路徑均由22CD收到A2A6完整14 bytes，對應SAR2 header01a444／body01a448、module01a19e。入口原文SHA a7abf555、前綴77e9c7f2、字型f16d564f、繪字碼a4564867，完整值及兩次steps／cycles見church-scene-v1/pair/receipt.json。2344完成SI A2B4，字形b4d572d4及安全區(94,175,51,8)相同，證據等級已證實。
+- 實際視窗及獨立字形證據見同研究根gui-v1、replay-v1與pixels-v1.json。場景名稱顯示與原版規則分離，回鎮改用已驗Muralla來源；不從固定SAR檔案候選外推旅店可達。

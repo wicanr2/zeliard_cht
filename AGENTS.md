@@ -171,6 +171,7 @@
 | [docs/cave-shield-source-index.json](docs/cave-shield-source-index.json) | 固定IDA輸入的盾牌圖層分類、原始定位、推論等級及證據；新匯出自動合併 |
 | [internal/prototype/overlay/hud.go](internal/prototype/overlay/hud.go) | 當次入口唯一驗證來源的狀態列覆繪，不改原版數值或輸入 |
 | [internal/prototype/overlay/hud_scene_test.go](internal/prototype/overlay/hud_scene_test.go) | 正常室內名稱配對及候選來源的唯一匹配／失配退回測試 |
+| [internal/prototype/overlay/church_scene_test.go](internal/prototype/overlay/church_scene_test.go) | 教堂場景名稱的正常進出、完成字形、唯讀配對與舊名稱撤除；不修改既有執行器 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
 | [docs/spec/013-intro-narration.md](docs/spec/013-intro-narration.md) | 其餘片頭顯示來源與魔王三行宣言的試作閘門 |
 | [docs/spec/014-intro-story.md](docs/spec/014-intro-story.md) | 完整故事的58片段、52清框與唯讀中文生命週期 |

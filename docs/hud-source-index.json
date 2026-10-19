@@ -459,13 +459,13 @@
         51,
         8
       ],
-      "level": "強推論",
-      "runtime_admitted": false,
+      "level": "已證實",
+      "runtime_admitted": true,
       "source_sha256": "a7abf555f04575000cc92646596832fd4900e8b80065ea3585dae088b63ec7e0",
       "source_length": 14,
       "module_prefix_sha256": "77e9c7f2badfd92ab8207744d8af45ac2db891835e743e4a72e1abcbc82fb944",
-      "runtime_base": null,
-      "runtime_header": null,
+      "runtime_base": "0xa000",
+      "runtime_header": "a2a6",
       "entry": "22cd",
       "complete": "2344",
       "bitmap_sha256": "b4d572d4fecabce8ae5f8128c6c8731c49119f5983e49c1f0af105e6a112ba0e",
@@ -477,8 +477,19 @@
       "evidence": [
         "workplace/hud-v1/scene-candidates.json",
         "workplace/hud-v1/font-primitive-proof.json",
-        "workplace/scene-v1/consumer-evidence-v2.json"
-      ]
+        "workplace/scene-v1/consumer-evidence-v2.json",
+        "workplace/prose-v1/services-v1/church-scene-v1/pair/receipt.json",
+        "workplace/prose-v1/services-v1/church-scene-v1/replay-v1/normal/receipt.json",
+        "workplace/prose-v1/services-v1/church-scene-v1/pixels-v1.json"
+      ],
+      "safe_box": [
+        94,
+        175,
+        51,
+        8
+      ],
+      "palette_sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c",
+      "normal_path_scope": "自建SAVETEST冷F7，兩次正常教堂進出；實際GUI另驗首頁、祝福、回鎮與DOS退出，不推定旅店可達"
     },
     {
       "key": "zelres2.file.01baa1",
@@ -2016,7 +2027,13 @@
     "candidate_contract": "workplace/scene-v1/source-contract.json",
     "candidate_contract_sha256": "87db6cc153ca3465ef39d9ecdfebfe6d8c4c8c26062ccfa9b8daf300ff8b49e0",
     "added": 44,
-    "observed_added": 4,
-    "limits": "候選只有實際入口及來源／字形條件全部通過才顯示；未走過場景不稱正常路徑已驗"
+    "observed_added": 5,
+    "limits": "候選只有實際入口及來源／字形條件全部通過才顯示；未走過場景不稱正常路徑已驗",
+    "normal_verification_addendum": {
+      "source_evidence": "workplace/prose-v1/services-v1/church-scene-v1/pair/receipt.json",
+      "source_evidence_sha256": "b7129f090c93d42e85a4070ccf81af4e341201f514cfe70383c4b64aeb8b6ff2",
+      "new_key": "zelres2.file.01a448",
+      "remaining_unwalked_candidates": 39
+    }
   }
 }
