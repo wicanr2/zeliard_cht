@@ -18,7 +18,7 @@ func TestCavePlayerDirectRegisteredPixels(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	data, err := os.ReadFile(filepath.Join(root, "player-gui-art-preview-v1/registration.json"))
+	data, err := os.ReadFile(filepath.Join(root, "player-motion-extra-preview-v1/registration.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,8 +33,8 @@ func TestCavePlayerDirectRegisteredPixels(t *testing.T) {
 	if err = json.Unmarshal(data, &review); err != nil {
 		t.Fatal(err)
 	}
-	if len(review.Poses) != 25 || len(player.poses) != 25 {
-		t.Fatal("25姿態圖組未完整載入")
+	if len(review.Poses) != 30 || len(player.poses) != 30 {
+		t.Fatal("30姿態圖組未完整載入")
 	}
 	for _, entry := range review.Poses {
 		pose := player.poses[entry.Key]

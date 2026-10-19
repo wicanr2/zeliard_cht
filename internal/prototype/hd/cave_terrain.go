@@ -15,9 +15,24 @@ type CaveTerrain struct {
 	material    []color.NRGBA
 	player      *CavePlayer
 	playerState map[string]any
+	weapon      *CaveWeapon
+	weaponState map[string]any
 }
 
 func (s *CaveTerrain) SetPlayer(player *CavePlayer) { s.player = player; s.playerState = nil }
+
+func (s *CaveTerrain) SetWeapon(weapon *CaveWeapon) { s.weapon = weapon; s.weaponState = nil }
+
+func (s *CaveTerrain) WeaponState() map[string]any {
+	if s == nil || s.weaponState == nil {
+		return nil
+	}
+	state := make(map[string]any, len(s.weaponState))
+	for key, value := range s.weaponState {
+		state[key] = value
+	}
+	return state
+}
 
 func (s *CaveTerrain) PlayerState() map[string]any {
 	if s == nil || s.playerState == nil {
@@ -99,8 +114,12 @@ func NewCaveTerrain(dir string) (*CaveTerrain, error) {
 func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Point) bool {
 	if s != nil {
 		s.playerState = nil
+		s.weaponState = nil
 		if s.player != nil {
 			s.playerState = map[string]any{"loaded": true, "matched": false, "occluded": false}
+		}
+		if s.weapon != nil {
+			s.weaponState = map[string]any{"loaded": true, "matched": false, "empty": false}
 		}
 	}
 	box := image.Rect(144, 42, 816, 474).Add(origin)
@@ -177,15 +196,26 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		s.playerState = map[string]any{"loaded": true, "matched": pose != nil, "occluded": hidden, "source_key": key, "source_steps": f.Steps, "body_steps": f.BodySteps}
 		if pose != nil {
 			s.playerState["pose"] = pose.number
-			// 先移除原版角色及武器，留下已驗的當次下層，再做高清合成。
-			for y := 14; y < 158; y++ {
-				for x := 48; x < 272; x++ {
-					v := int(d.Background[y*320+x]) * 3
-					c := color.RGBA{f.Palette[v], f.Palette[v+1], f.Palette[v+2], 255}
-					for dy := 0; dy < 3; dy++ {
-						for dx := 0; dx < 3; dx++ {
-							dst.SetRGBA(x*3+dx+origin.X, y*3+dy+origin.Y, c)
-						}
+		}
+	}
+	var weaponPose *caveWeaponPose
+	if s.weapon != nil {
+		key, pose, empty := s.weapon.selectPose(d)
+		weaponPose = pose
+		s.weaponState = map[string]any{"loaded": true, "matched": pose != nil, "empty": empty, "source_key": key, "source_steps": f.Steps, "body_steps": f.BodySteps}
+		if pose != nil {
+			s.weaponState["pose"] = pose.number
+		}
+	}
+	if playerPose != nil || weaponPose != nil {
+		// 移除原版角色及武器，還原當次下層。原貌角色與配色也由後續原圖層重畫。
+		for y := 14; y < 158; y++ {
+			for x := 48; x < 272; x++ {
+				v := int(d.Background[y*320+x]) * 3
+				c := color.RGBA{f.Palette[v], f.Palette[v+1], f.Palette[v+2], 255}
+				for dy := 0; dy < 3; dy++ {
+					for dx := 0; dx < 3; dx++ {
+						dst.SetRGBA(x*3+dx+origin.X, y*3+dy+origin.Y, c)
 					}
 				}
 			}
@@ -237,6 +267,10 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	} else {
 		paintNative(d.Actor)
 	}
-	paintNative(d.Weapon)
+	if weaponPose != nil {
+		weaponPose.draw(dst, d, origin)
+	} else {
+		paintNative(d.Weapon)
+	}
 	return true
 }

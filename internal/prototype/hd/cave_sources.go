@@ -68,6 +68,8 @@ type caveDecoded struct {
 	Actor, Weapon, Dynamic []cavePixel
 	ActorRaster            [576]byte
 	ActorX, ActorY         int
+	WeaponRaster           [1024]byte
+	WeaponX, WeaponY       int
 	Cells                  []caveCell
 	Objects                []caveObject
 	Differences            int
@@ -407,6 +409,11 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 			}
 		}
 	}
+	for i := range out.WeaponRaster {
+		out.WeaponRaster[i] = 255
+	}
+	weaponPosition := caveWord(p, 0x4ff7)
+	out.WeaponX, out.WeaponY = weaponPosition%320, weaponPosition/320
 	if p[0xff44] != 0 {
 		template, e := cavePart(r, caveWord(p, 0x4ff9), 16)
 		if e != nil {
@@ -433,6 +440,7 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 							color = p[0x4ff6]
 						}
 						out.Weapon = append(out.Weapon, cavePixel{wx + n/4*8 + x, wy + n%4*8 + y, color})
+						out.WeaponRaster[(n%4*8+y)*32+n/4*8+x] = color
 					}
 				}
 			}

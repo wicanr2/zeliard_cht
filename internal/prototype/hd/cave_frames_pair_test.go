@@ -82,6 +82,7 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 	}
 	var machines [2]*oracle.Oracle
 	var audio [2]*oracle.Audio
+	var scratchSaves []string
 	for i := range machines {
 		o, e := oracle.Load(filepath.Join(root, "ZELIARD.EXE"), root)
 		if e != nil {
@@ -98,7 +99,9 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 			t.Fatal(e)
 		}
 		o.SetScratch(scratch)
+		scratchSaves = append(scratchSaves, p)
 		o.SetDOSBoxCycles(header.CyclesPerMS)
+		o.TraceFiles()
 		audio[i] = o.NewAudio(header.SampleRate)
 		if townBackgroundHash(o.Bytes(oracle.Far(0, 0), 1<<20)) != header.InitialMemory || o.Regs() != header.InitialRegs {
 			t.Fatal("cold source differs")
@@ -118,6 +121,15 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 		}
 		art.SetPlayer(player)
 	}
+	var weapon *CaveWeapon
+	if dir := os.Getenv("ZELIARD_CAVE_WEAPON_ART"); dir != "" {
+		weapon, e = NewCaveWeapon(dir)
+		if e != nil {
+			t.Fatal(e)
+		}
+		art.SetWeapon(weapon)
+	}
+	weaponCoverage := newCaveWeaponCoverage(weapon)
 	if e = os.Mkdir(out, 0755); e != nil {
 		t.Fatal(e)
 	}
@@ -167,6 +179,7 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 			_, _, rgb := b.ScreenRGB()
 			selected := frames.Present(b.Indexed(), rgb, false)
 			if selected != nil {
+				weaponCoverage.observe(t, out, selected)
 				if player != nil && !seenSources[selected.Steps] {
 					seenSources[selected.Steps] = true
 					key, pose, hidden := player.selectPose(selected.Decoded)
@@ -210,9 +223,23 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 	if !reflect.DeepEqual(a.FileOps(), b.FileOps()) || !reflect.DeepEqual(a.KeyReads(), b.KeyReads()) || len(b.Wrote()) != 0 || len(b.HeldKeys()) != 0 {
 		t.Fatal("file/input parity")
 	}
+	for _, p := range scratchSaves {
+		current, e := os.Stat(p)
+		if e != nil || !current.ModTime().Equal(info.ModTime()) || !bytes.Equal(read(p), save) {
+			t.Fatal("GUI重播改動存檔或mtime", e)
+		}
+	}
+	for _, step := range weaponCoverage.captureOrder {
+		if weaponCoverage.captureSteps[step] {
+			t.Fatalf("未取得指定GUI完成來源：%d", step)
+		}
+	}
 	receipt := map[string]any{"status": "ORIGINAL_GUI_JOURNAL_PAIR_EQUAL", "records": len(lines), "completed_frames": frames.captured, "refused": frames.refused, "HD_draws": draws, "native_paint_draws": paintFrames, "full_RAM_and_regs_each_record_equal": true, "original_GUI_final_RAM_and_indexed_equal": true, "input_journal_sha256": townBackgroundHash(data), "final": frames.State(), "state_injection": false}
 	receipt["player_sources"] = len(seenSources)
 	receipt["player_missing_sources"] = missingSources
+	receipt["weapon_coverage"] = weaponCoverage.summary()
+	receipt["fileops"] = len(b.FileOps())
+	receipt["save_unchanged"] = true
 	encoded, e := json.MarshalIndent(receipt, "", "  ")
 	if e != nil {
 		t.Fatal(e)
@@ -291,6 +318,18 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		}
 		art.SetPlayer(player)
 	}
+	var weapon *CaveWeapon
+	if dir := os.Getenv("ZELIARD_CAVE_WEAPON_ART"); dir != "" {
+		if art == nil {
+			t.Fatal("武器HD須搭配地形")
+		}
+		weapon, e = NewCaveWeapon(dir)
+		if e != nil {
+			t.Fatal(e)
+		}
+		art.SetWeapon(weapon)
+	}
+	weaponCoverage := newCaveWeaponCoverage(weapon)
 	seenPlayerFrames := map[uint64]bool{}
 	seenPlayerKeys := map[string]int{}
 	var missingPlayerSources []map[string]any
@@ -318,6 +357,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 			return
 		}
 		used++
+		weaponCoverage.observe(t, out, selected)
 		if art != nil && art.player != nil && !seenPlayerFrames[selected.Steps] {
 			seenPlayerFrames[selected.Steps] = true
 			key, pose, hidden := art.player.selectPose(selected.Decoded)
@@ -486,6 +526,9 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 					if art.player != nil {
 						point["player_hd"] = art.PlayerState()
 					}
+					if art.weapon != nil {
+						point["weapon_hd"] = art.WeaponState()
+					}
 					point["Chinese_overwrites_game_pixels"] = 0
 				} else {
 					canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
@@ -521,7 +564,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		}
 	}
 	playerCoverage := map[string]any{"source_frames": len(seenPlayerFrames), "known_frames": playerKnown, "fully_occluded_frames": playerHidden, "missing_visible_frames": playerMissing, "keys": seenPlayerKeys, "missing_sources": missingPlayerSources, "scope": "正常完成來源盤點；缺素材保留原貌，未稱全動畫HD"}
-	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "save_unchanged": true, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
+	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "weapon_coverage": weaponCoverage.summary(), "save_unchanged": true, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角／武器HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
 	if e != nil {
 		t.Fatal(e)
 	}

@@ -160,7 +160,10 @@
 | [docs/spec/015-intro-scroll-blocks.md](docs/spec/015-intro-scroll-blocks.md) | 首章、製作名單與六行收尾的來源、視窗與捲動生命週期 |
 | [docs/spec/016-shared-inventory-text.md](docs/spec/016-shared-inventory-text.md) | 物品、裝備及使用訊息的共用來源分類與顯示閘門 |
 | [docs/spec/017-cave-player-hd.md](docs/spec/017-cave-player-hd.md) | 洞窟主角完整姿態來源、高清透明素材與原版後畫遮擋契約 |
-| [internal/prototype/hd/cave_player.go](internal/prototype/hd/cave_player.go)、[測試](internal/prototype/hd/cave_player_test.go) | 規格017的14姿態登錄、完整遮擋、直接高清合成與原貌退回 |
+| [internal/prototype/hd/cave_player.go](internal/prototype/hd/cave_player.go)、[測試](internal/prototype/hd/cave_player_test.go) | 規格017的主角姿態登錄、完整遮擋、直接高清合成與原貌退回 |
+| [docs/spec/018-cave-weapon-hd.md](docs/spec/018-cave-weapon-hd.md) | 洞窟32×32武器來源、高清下層與最後合成閘門 |
+| [internal/prototype/hd/cave_weapon.go](internal/prototype/hd/cave_weapon.go)、[測試](internal/prototype/hd/cave_weapon_test.go) | 規格018的十武器圖面、下層還原、空白／未知退回與最後高清合成 |
+| [tools/weapon-hd.commands](tools/weapon-hd.commands) | 正常首戰及固定左右出劍延伸，供018完整原版配對 |
 | [internal/prototype/overlay/inventory_sources.go](internal/prototype/overlay/inventory_sources.go)、[測試](internal/prototype/overlay/inventory_sources_test.go) | 規格016的指標表字型分類、來源拒絕及正常物品中文配對 |
 | [tools/item-shop-magia.commands](tools/item-shop-magia.commands) | 自建存檔冷F7、正常買入Magia Stone、選用、移除及回城鍵序 |
 | [text/intro-credits-prototype.tsv](text/intro-credits-prototype.tsv) | 製作名單51行來源鍵與試譯，保留人名及空白行 |

@@ -31,7 +31,9 @@
 
 Malicia 洞窟地形試作另加 `-cave-art-dir /project/workplace/cave-hd-v1`，目錄須含身份相符的 `terrain-handpaint-v2.png` 與 `rock-material-v1.png`。目前替換已確認的地形1..14。正常入洞、首戰拾取、跳蹲、原貌切換及回城已抽驗；原貌與HD共用原版完成畫格。未知來源、缺圖或整區重建不符時保留原貌。素材僅存本機，範圍見[洞窟地形規格](docs/spec/011-cave-hd.md)及[完成畫格規格](docs/spec/012-cave-frame-sources.md)。
 
-洞窟主角另加 `-cave-player-art-dir /project/workplace/cave-hd-v1`，搭配上述地形選項，載入 `player-atlas-handpaint-v1.png`、`player-motion-atlas-handpaint-v1.png`、`player-gui-atlas-handpaint-v1.png` 三張本地固定圖集。已接25個來源姿態，直接以高清合成，保留原版位置、後畫遮擋與最後武器。已驗原版配色變化繼續顯示原色，武器與動態物件也保留原貌；未知姿態或圖面失配時回退。這些圖集不隨儲存庫散布，驗證及限制見[洞窟主角規格](docs/spec/017-cave-player-hd.md)。
+洞窟主角另加 `-cave-player-art-dir /project/workplace/cave-hd-v1`，搭配上述地形選項，載入五張本地固定圖集：`player-atlas-handpaint-v1.png`、`player-motion-atlas-handpaint-v1.png`、`player-gui-atlas-handpaint-v1.png`、`player-left-atlas-handpaint-v2.png`、`player-motion-extra-handpaint-v1.png`。已接30個來源姿態，直接以高清合成，保留原版位置與後畫遮擋。已驗原版配色變化繼續顯示原色；未知姿態或任一圖面失配時回退。這些圖集不隨儲存庫散布，驗證及限制見[洞窟主角規格](docs/spec/017-cave-player-hd.md)。
+
+洞窟武器另加 `-cave-weapon-art-dir /project/workplace/cave-hd-v1`，搭配地形選項，載入本地 `weapon-atlas-handpaint-v1.png`。十個已確認來源直接以高清合成，保留原版包絡、方向與最後圖層；收劍即撤除，未知來源維持原貌。主角可用原貌或HD，動態物件仍為原貌。範圍見[洞窟武器規格](docs/spec/018-cave-weapon-hd.md)，不代表全部武器或洞窟已完成。
 
 建置後在 Docker 內執行：
 

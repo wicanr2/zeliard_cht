@@ -440,6 +440,13 @@ func (g *game) cavePlayerState() map[string]any {
 	return g.caveTerrainHD.PlayerState()
 }
 
+func (g *game) caveWeaponState() map[string]any {
+	if !g.hdEnabled || !g.caveTerrainMatch {
+		return nil
+	}
+	return g.caveTerrainHD.WeaponState()
+}
+
 func (g *game) Draw(screen *ebiten.Image) {
 	w, h, rawRGB := g.o.ScreenRGB()
 	raw := g.o.Indexed()
@@ -488,6 +495,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"cave_frame_presentation":    g.caveFrames.State(),
 			"cave_terrain_hd_matched":    g.caveTerrainMatch,
 			"cave_player_hd":             g.cavePlayerState(),
+			"cave_weapon_hd":             g.caveWeaponState(),
 			"input_trace_error":          g.inputTraceError,
 			"town_ground_hd_matched":     g.townGroundMatch,
 			"town_player_hd_matched":     g.townPlayerMatch,
@@ -765,6 +773,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"cave_frame_presentation": g.caveFrames.State(),
 				"cave_terrain_hd_matched": g.caveTerrainMatch,
 				"cave_player_hd":          g.cavePlayerState(),
+				"cave_weapon_hd":          g.caveWeaponState(),
 				"input_trace_error":       g.inputTraceError,
 				"town_ground_hd_matched":  g.townGroundMatch,
 				"town_player_hd_matched":  g.townPlayerMatch,
@@ -829,6 +838,7 @@ func main() {
 	townPlayerArt := flag.String("town-player-art-dir", "", "可選：Muralla主角八姿態手繪圖目錄，搭配已驗前景HD")
 	caveArt := flag.String("cave-art-dir", "", "可選：Malicia手繪地形圖目錄，角色與物件保留原貌")
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
+	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
 	townSignsText := flag.String("town-signs-text", "", "可選：Muralla招牌中文TSV，搭配前景HD")
 	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
 	kingRefB := flag.String("king-reference-b", "", "可選：本地原版國王姿態 B 的 screen.bin")
@@ -926,6 +936,14 @@ func main() {
 			log.Printf("洞窟地形HD未載入，保留原貌：%v", err)
 		} else {
 			g.caveFrames = hd.NewCaveFrames(g.o)
+			if *caveWeaponArt != "" {
+				weapon, e := hd.NewCaveWeapon(*caveWeaponArt)
+				if e != nil {
+					log.Printf("洞窟武器HD未載入，保留武器原貌：%v", e)
+				} else {
+					g.caveTerrainHD.SetWeapon(weapon)
+				}
+			}
 			if *cavePlayerArt != "" {
 				player, e := hd.NewCavePlayer(*cavePlayerArt)
 				if e != nil {

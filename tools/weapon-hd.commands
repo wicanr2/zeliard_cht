@@ -1,0 +1,128 @@
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+shot cold-town
+key 0x41 500000
+run 2000000
+shot load-list
+key 0x15 150000
+run 1500000
+shot load-name
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+shot load-name-entered
+key 0x1c 100000
+run 16000000
+shot restored
+key 0x4d 8000000
+run 250000
+shot cave-near
+key 0x48 250000
+run 20000000
+shot cave-entered
+run 1000000
+shot cave-idle-1
+run 2000000
+shot cave-idle-2
+key 0x39 500000
+run 500000
+shot sword-standing
+key 0x4d 2000000
+run 250000
+shot cave-right-1
+key 0x39 1000000
+run 250000
+shot sword-right-1
+key 0x4d 2000000
+run 250000
+shot cave-right-2
+key 0x39 1000000
+run 250000
+shot sword-right-2
+down 0x4d
+down 0x39
+run 2000000
+up 0x4d
+up 0x39
+run 250000
+shot advance-strike-1
+down 0x4d
+down 0x39
+run 2000000
+up 0x4d
+up 0x39
+run 250000
+shot advance-strike-2
+key 0x4b 500000
+run 250000
+shot pickup-attempt-left-1
+key 0x4b 500000
+run 250000
+shot pickup-attempt-left-2
+key 0x4b 500000
+run 250000
+shot pickup-attempt-left-3
+key 0x4b 500000
+run 250000
+shot pickup-attempt-left-4
+key 0x48 500000
+shot jump-key-500k
+run 250000
+shot jump-after-250k
+run 1000000
+shot jump-after-1250k
+key 0x50 250000
+shot down-key-250k
+run 1000000
+shot down-released-after-1m
+
+# 正常延伸左右出劍，無注入狀態。
+keys 0x4b,0x39 2000000
+run 250000
+shot weapon-left-strike-1
+keys 0x4b,0x39 2000000
+run 250000
+shot weapon-left-strike-2
+keys 0x4d,0x39 2000000
+run 250000
+shot weapon-right-strike-3
