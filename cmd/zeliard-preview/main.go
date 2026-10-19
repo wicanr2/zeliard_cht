@@ -60,6 +60,7 @@ type game struct {
 	captureTail          int
 	intro                *xlate.Layer
 	scroll               *overlay.Scroll
+	introThreat          *overlay.IntroThreat
 	dialogue             *overlay.Dialogue
 	townDialogue         *overlay.TownDialogue
 	menuLabels           *overlay.Labels
@@ -473,6 +474,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"town_background_hd_matched": g.townBackgroundMatch,
 			"town_scenery_hd_matched":    g.townSceneryMatch,
 			"town_frame_presentation":    g.townFrames.State(),
+			"intro_threat":               g.introThreat.State(),
 			"cave_frame_presentation":    g.caveFrames.State(),
 			"cave_terrain_hd_matched":    g.caveTerrainMatch,
 			"input_trace_error":          g.inputTraceError,
@@ -589,6 +591,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	if g.scroll != nil && w == 320 && h == 200 {
 		g.scroll.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
+	}
+	if g.introThreat != nil && w == 320 && h == 200 {
+		g.introThreat.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
 	if g.dialogue != nil && w == 320 && h == 200 {
 		g.dialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
@@ -733,6 +738,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				}(),
 				"original_memory_sha256": fmt.Sprintf("%x", sha256.Sum256(originalMemory)),
 				"original_regs":          g.o.Regs(),
+				"intro_threat":           g.introThreat.State(),
 				"original_source_kind":   "live CPU/VGA; may be within drawing batch; distinct from cave completed/rejected source",
 				"merchant_hd_matched":    g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose,
 				"bank_hd_matched": g.bankHDMatched, "bank_hd_pose": g.bankHDPose,
@@ -786,6 +792,7 @@ func main() {
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
 	introText := flag.String("intro-text", "text/intro-prototype.json", "片頭覆繪原型譯文")
 	introScroll := flag.String("intro-scroll", "", "可選：首章捲動中文試譯 TSV，取代單句 prototype")
+	introThreat := flag.String("intro-threat", "", "可選：魔王三行宣言中文試譯 TSV")
 	dialogueText := flag.String("dialogue-text", "", "可選：對話與報價試譯 TSV")
 	labelsText := flag.String("labels-text", "", "可選：城鎮選單標籤試譯 TSV")
 	hudText := flag.String("hud-text", "", "可選：狀態列與場景名稱試譯 TSV")
@@ -970,6 +977,12 @@ func main() {
 		g.itemShopHD, err = hd.NewItemShop(itemReferencePaths, *itemPalette, itemArtworkPaths)
 		if err != nil {
 			log.Printf("道具店 HD 圖組未載入，保留原貌：%v", err)
+		}
+	}
+	if *introThreat != "" {
+		g.introThreat, err = overlay.NewIntroThreat(o, filepath.Join(root, "ZELRES1.SAR"), *introThreat, font)
+		if err != nil {
+			log.Printf("魔王宣言中文未載入，保留原文：%v", err)
 		}
 	}
 	if *introScroll != "" {

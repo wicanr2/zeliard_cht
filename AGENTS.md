@@ -154,6 +154,10 @@
 | [internal/prototype/overlay/hud.go](internal/prototype/overlay/hud.go) | 當次入口唯一驗證來源的狀態列覆繪，不改原版數值或輸入 |
 | [internal/prototype/overlay/hud_scene_test.go](internal/prototype/overlay/hud_scene_test.go) | 正常室內名稱配對及候選來源的唯一匹配／失配退回測試 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
+| [docs/spec/013-intro-narration.md](docs/spec/013-intro-narration.md) | 其餘片頭顯示來源與魔王三行宣言的試作閘門 |
+| [text/intro-threat-prototype.tsv](text/intro-threat-prototype.tsv) | 魔王三行宣言的來源鍵與中文試譯，控制碼仍由原版消費 |
+| [internal/prototype/overlay/intro_threat.go](internal/prototype/overlay/intro_threat.go) | 規格013的唯讀逐字來源、完整畫面守衛與三行中文 |
+| [internal/prototype/overlay/intro_threat_test.go](internal/prototype/overlay/intro_threat_test.go) | 正常冷啟動完整原版配對、字形途中與失配退回驗證 |
 | [text/intro-scroll-prototype.tsv](text/intro-scroll-prototype.tsv) | 首章 30 行試譯，鍵為本地 SAR 的檔案偏移；專名尚待手冊校訂 |
 | [text/dialogue-prototype.tsv](text/dialogue-prototype.tsv) | 國王、長老、武器店、銀行與道具店的對話試譯；原文與控制碼仍留在本地遊戲資料 |
 | [internal/prototype/overlay/dialogue.go](internal/prototype/overlay/dialogue.go) | 國王與長老對話逐字、捲動與待續標記的唯讀覆繪試作 |
