@@ -115,6 +115,7 @@
 
 | 文件 | 唯一職責 |
 |---|---|
+| [tools/bank-persistence.commands](tools/bank-persistence.commands)、[internal/prototype/overlay/bank_persistence_test.go](internal/prototype/overlay/bank_persistence_test.go) | 銀行交易、長老另存、正常退出與冷讀後查詢的正常鍵序與原版／中文配對；只含輸入及自有測試 |
 | [tools/residents-muralla.commands](tools/residents-muralla.commands)、[internal/prototype/overlay/town_residents_test.go](internal/prototype/overlay/town_residents_test.go) | 七筆Muralla居民來源的正常冷讀、移動、交談與關閉，以及19點原版只讀配對；不含原版資料 |
 | [docs/spec/032-presentation-clock.md](docs/spec/032-presentation-clock.md) | 顯示更新與原版執行時鐘的可撤回比較，未定正式追趕與節奏 |
 | [docs/spec/031-audio-stream-scheduling.md](docs/spec/031-audio-stream-scheduling.md)、[預填取消測試](cmd/zeliard-preview/audio_test.go) | 原版串流的後端預取、送樣、等待與暫停生命週期；不改原版時鐘 |

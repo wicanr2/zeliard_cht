@@ -894,3 +894,15 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 工具勘誤：residents-pair-v1以JSON位元組比較typed Rectangle與map，Min／Max順序不同造成假失敗；v2保留所有欄位改結構比較通過，獨立像素亦確認。ERRATUM原文保留，confirmation.json追加確認，不重寫歷史。Python最初語法錯誤在讀來源前停止；不是產品缺陷。
 
 032僅DRAFT試作：依固定Ebitengine2.9.9平台時鐘契約及psychic-war的累計cycles回饋方法，正常180筆日誌與525015生成取樣相同。實際訊號47317對48652音框，21585非零值／順序相同，完整精確驗收仍FAIL，不能以移除靜音後相同稱為時間軸通過。此差異標為平台近似，不深挖DAC／PIT逐週期一致。100毫秒追趕上限與卡頓操作取捨未獲使用者確認，不進正式路徑。各工具、輸入身份與原始收據入口見CONTEXT。
+
+## 2026-10-20：銀行餘額的新檔冷讀
+
+輸入沿EXE fe1c00b3、SAR2 bf7c792a、882份dosgolem來源摘要2a5ad11a及字型20e8b505；Go1.24.13、Python3.11。自建SAVETEST SHA-256為78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb、mtime_ns725847808000000000。原始29檔與參考來源唯讀，只有各側scratch及本輪輸出可寫。
+
+已證實：正常銀行存100、領50及離店後，可回長老另存LEDGER，正常退出，再冷F7讀回。原版確實寫出並讀入256 bytes，冷讀後銀行來源仍是SAR2檔案偏移01a073，原版01B1:AD30數字暫存及已完成字形為50，身上01B1:0086為950。兩側各自產生的新檔SHA均為c3b21bcfe48c5b68fe2051bc9e818c054d7ea9e604ea2df6742b0186fb9444ba；來源SAVETEST及mtime未變。此項只驗玩家可見保存結果，不推測USR帳戶欄位格式。
+
+56個完整原版／中文狀態及來源畫面相同，銀行金額沿原版數字圖形，不由中文層計算或重新印數字。11252筆原生日誌、613行可重生輸入、56個來源圖及測試收據入口見CONTEXT。離線來源圖不當成實際X視窗，這段完整存讀流程及獨立完整排版仍待後續驗證。
+
+混合來源的入口限制另存mixed-reachability.json：五份既有USR冷F7後的C000前綴均匹配SAR2 payload0392dc，五筆混合來源分屬03ae89與03e813。這只證明既有起點，不能宣稱後段不可達；原包存檔取得過程未知。本輪不猜控制碼、劇情或交易分支。
+
+稽核勘誤：此固定dosgolem的internal/dos/files.go之write呼叫h.f.Write並記Wrote，不加入FileOps。FileOps中的LEDGER只有create／close，不代表沒有寫入；新檔原先不存在、原版獨立生成的256 bytes及第二次F7讀取共同證明保存。audit-v1-failure／confirmation保留工具錯誤及來源雜湊，不把日誌缺項當成產品缺陷。

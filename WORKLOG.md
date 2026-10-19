@@ -1010,3 +1010,14 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - 實際視窗沿cea16753／112來源，不套032，六來源九頁及關閉、退出0。4510筆實際按放／執行日誌冷重播，16個暫停點原版RAM／VGA／色盤／時間／持鍵與中文狀態相同；9216000實際遊戲區像素獨立核對零差，九頁已逐張目視。本輪HD與音效未新增驗收。
 - 新增tools/residents-muralla.commands，只有run／key／shot，不含遊戲資料。TestTownSevenMurallaSourcesReadOnly一具名通過，19點十一頁七來源；不將既有031的11項重複計為本輪新增。當前114份來源只增加測試，執行期程式與譯表不改；主入口不重建、不升格，031候選保持原身份。
 - 來源、擁有權、連結、根端目視、Git推送與Docker清理收據見residents-unit-v1；原圖、錄音、字型與完整原版收據只留忽略目錄。本輪不建立tag、Release或交付封包，全遊戲工作仍進行中。
+
+## 2026-10-20：銀行存款的正常另存與冷讀
+
+- 前輪42db3ed為已推送進展，本輪先核CONTEXT／WORKLIST、Git與Docker狀態。命中中文顯示／語意隔離、規格閘門與文件職責，沿既有dosgolem-go-ebiten映像，未新建工具鏈。
+- 核五筆混合控制碼入口與既有source-saves-v1/index.json。五份來源USR都從Muralla模組開始，無法直接當後段來源的正常驗收；不推論後段不可達，不重複靜態handler研究。先補已授權範圍內的銀行存讀垂直鏈。
+- bank_persistence_probe_v1.go只驅動冷F7、方向與Space、長老另存LEDGER、Ctrl+Q及Y退出，再冷啟動F7讀自己的新檔。先沿bank.commands存100、領50；首次回屋位置差一格，保存原圖後正常左移一格入門，沒有改位置或重開原版。
+- 新LEDGER為256 bytes、SHA c3b21bcfe48c5b68fe2051bc9e818c054d7ea9e604ea2df6742b0186fb9444ba。冷讀後銀行顯示存款50、身上950，正常離店仍950。自建SAVETEST原始SHA及mtime不變；新存檔只在研究scratch產生。
+- 11252筆原生日誌轉613行正常輸入，保留兩次啟動及56個擷取點。新增TestBankLedgerSaveLoadReadOnly一具名，133.23秒通過、無skip；兩側各自交易、另存及冷讀，56完整RAM／暫存器／VGA／色盤／時間／持鍵／FileOps／KeyReads相同，各自產生同一新檔。來源觀察畫面亦相同，原版數字字形保留；vet通過。
+- 本輪只有正常鍵序、測試與文件新增，執行期程式及譯表不改。當前115份來源，主入口cea16753／112來源保持，031及032不升格。離線探針圖已逐張目視，實際視窗與獨立完整排版另待驗，不把來源PNG稱作X視窗。
+- 收尾稽核首輪錯要求FileOps含write／Len256而失敗。核固定執行器internal/dos/files.go，write只記Wrote，未加入FileOps；原版create／close、新生成256-byte檔及冷F7實際讀256已齊。修稽核契約，保留audit-v1-failure及confirmation，不改產品、輸入或已通過的測試，不重跑挑結果。
+- 來源、擁有權、連結、目視及Git／Docker收尾在bank-persistence-unit-v1，入口見CONTEXT。原版資料、字型、兩份USR、原圖及完整收據留本機；不建立tag、Release或正式封包，全遊戲中文與HD繼續進行。

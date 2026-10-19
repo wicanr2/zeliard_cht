@@ -87,7 +87,7 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 
 武器商人HD需三個原版畫格、色盤與三張本地手繪圖，入口見[商人覆繪規格](docs/spec/001-runtime-overlay.md#武器商人三姿態手繪肖像)。目前支援迎客、交叉雙臂與未購物告別姿態，跟隨原版畫格切換；缺圖、未知畫格或色盤不符時保留原貌。未購物離店另有中文告別，金幣與離店條件由原版處理。
 
-銀行已有標題、選單、金額欄、存錢、領錢、查詢、無alma寶石及交易後／未交易告別試譯。金額沿原版方向鍵調整：上加1、下減1、左加10、右減10，以Space確認。存提款問句會保留，數字使用原版字形；其餘銀行分支及存款的存檔恢復仍待驗，見[銀行試作規格](docs/spec/001-runtime-overlay.md#銀行交易與標題-prototype)。
+銀行已有標題、選單、金額欄、存錢、領錢、查詢、無alma寶石及交易後／未交易告別試譯。金額沿原版方向鍵調整：上加1、下減1、左加10、右減10，以Space確認。存提款問句會保留，數字使用原版字形。存款50金幣的新存檔冷讀已通過原版與中文配對，這段存讀流程仍待實際視窗驗證；其餘銀行分支未驗，見[銀行試作規格](docs/spec/001-runtime-overlay.md#銀行交易與標題-prototype)。
 
 銀行HD使用三組本地原版畫格與手繪圖，入口為 `-bank-reference-a`、`-bank-reference-b`、`-bank-reference-c`、`-bank-palette`及 `-bank-art-a`、`-bank-art-b`、`-bank-art-c`。它依已知畫格切換，保留外框；未知姿態或缺圖保留原貌。素材與參數對應見[銀行肖像規格](docs/spec/001-runtime-overlay.md#銀行未交易告別與手繪肖像-prototype)，不代表完整銀行動畫。
 
