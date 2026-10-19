@@ -24,6 +24,10 @@ type townSceneSign struct {
 	worldX, width int
 	text          string
 }
+
+// Muralla完整canonical地圖及原生讀取足跡見規格022。
+const townSceneTerrainTiles = 240
+
 type TownScenery struct {
 	tiles   [215][8]byte
 	palette []byte
@@ -73,7 +77,7 @@ func NewTownScenery(root, memoryRef, palettePath, artDir, signsPath string, font
 					return nil, fmt.Errorf("參考底圖缺項")
 				}
 			}
-			if v >= 253 {
+			if v >= townSceneTerrainTiles {
 				return nil, fmt.Errorf("參考底圖未支援")
 			}
 			s.tiles[x][y] = v
@@ -204,8 +208,8 @@ func townSceneTile(b []byte, off int) [64]byte {
 	return out
 }
 
-// 只排除不被group0..4讀取的保留圖塊，並封住未知group與ID。
-// 正常重讀的來源與完整像素證據見規格007「重讀後的來源範圍勘誤」。
+// 只排除已驗人物及地形不讀取的保留區，封住未知group與ID。
+// 正常重讀見規格007；Muralla地形0..239的完整足跡見規格022。
 func townSceneSources(p, r, e []byte) ([]townSceneActor, error) {
 	if len(p) != 65536 || len(r) != 65536 || len(e) != 65536 {
 		return nil, fmt.Errorf("來源段長度不符")
@@ -218,7 +222,8 @@ func townSceneSources(p, r, e []byte) ([]townSceneActor, error) {
 		{p[0x6975:0x6a77], "ca30aab0ce543dd922095b669255fe1a76dbcc5256992e1ee5b437fb91925182"},
 		{r[0x4000:0x5d80], "396a3b47dd240301fae669a494230194944987e2c46e32eaf35baa8e50d36825"},
 		{r[0x6000:0x68a0], "045d4246ae0be72df3ac0201bc9ac8e5e1b50829783d6c79727fce7af0ef66c7"},
-		{r[0x8000:0xd800], "dee3ebbe90182e87fa27a8a4de31317c187a57c16ead6ed383e0a715c0484c0e"},
+		{r[0x8000:0xae00], "6cddbaa678370307422a6a60798c0d75a53c46deacc1a9f299a716c40d234b45"},
+		{r[0xd000:0xd800], "0bdb78b2702490f3309f72ea3046fda2417bd088a9a6eec1c3f179fcad4cef71"},
 		{e[0x7000:0x74c0], "90de4921fb15fa26b9214b33e5c89daaa65106984db0f7417b3bd09f384392ce"},
 		{e[0x8000:0x8800], "2c7708d6978dbd5661612bf36d921b12facb3f5aebe283012f2baedc7603e431"},
 		{p[0xc000:0xc040], "025bf2982660c942cbefed303ccdd0523ff824756a0fe0bb2587b99e0931e7ec"},
@@ -259,7 +264,7 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 	under := func(wx int) (int, error) {
 		for _, a := range actors {
 			if a.x == wx {
-				if a.under >= 253 {
+				if a.under >= townSceneTerrainTiles {
 					return 0, fmt.Errorf("unverified nested townSceneActor underlay")
 				}
 				return a.under, nil
@@ -281,7 +286,7 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 					}
 				}
 			}
-			if id >= 253 || id != int(s.tiles[camera+4+col][row]) {
+			if id >= townSceneTerrainTiles || id != int(s.tiles[camera+4+col][row]) {
 				return nil, fmt.Errorf("townSceneTile source mismatch %d %d", col, row)
 			}
 			pixels := townSceneTile(r, 0x8100+id*48)

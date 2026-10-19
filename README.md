@@ -68,7 +68,7 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 
 國王 HD 肖像使用 `-king-reference-a`、`-king-reference-b`、`-king-art`、`-king-speaking-art` 載入本地兩個原版姿態及兩張手繪圖。它保留黃色外框，未知姿態退回原貌；完整參數與限制見[試作規格](docs/spec/001-runtime-overlay.md)。
 
-長老 HD 另用 `-sage-reference-a`、`-sage-reference-b`、`-sage-palette`、`-sage-art` 載入本地兩個原版畫格、色盤及手繪圖。它支援已驗左側及昏迷送返時的置中位置，保留黃色外框與四個原版動畫像素。送返的四段中文、前文保留、待續、捲動及回鎮撤除已驗，送返後城鎮暫保留原貌，見[送返覆繪規格](docs/spec/021-exhaustion-return-overlay.md)。武器店目前已接初訪、交易後詢問、告別、五列選單與「練習劍／賢者之劍」試譯。商品框上方及確認框旁的舊中文可保留，原版彈窗仍會遮住部分字。
+長老 HD 另用 `-sage-reference-a`、`-sage-reference-b`、`-sage-palette`、`-sage-art` 載入本地兩個原版畫格、色盤及手繪圖。它支援已驗左側及昏迷送返時的置中位置，保留黃色外框與四個原版動畫像素。送返的四段中文、前文保留、待續、捲動及回鎮撤除已驗，見[送返覆繪規格](docs/spec/021-exhaustion-return-overlay.md)。送返後可恢復城鎮山景、前景、地面與主角HD，見[城鎮來源規格](docs/spec/022-return-town-hd.md)。武器店目前已接初訪、交易後詢問、告別、五列選單與「練習劍／賢者之劍」試譯。商品框上方及確認框旁的舊中文可保留，原版彈窗仍會遮住部分字。
 
 同時載入對話與標籤 TSV 時，第一筆武器報價可顯示中文，售價與折抵保留原版數字圖形。各段等原版完成後才出現，未完成時暫留白。選第二件武器的資金不足對話與翻頁也已接入。Return開啟的裝備頁已有分類標題、「無」及練習劍兩行試譯，保留原版標題顏色與陰影。其他報價、物品、魔法與場景名稱仍待中文化，交易與裝備規則由原版處理。
 

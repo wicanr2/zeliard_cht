@@ -166,6 +166,8 @@
 | [docs/spec/019-cave-object-hd.md](docs/spec/019-cave-object-hd.md) | 洞窟動態物件來源、美術、層序及正常驗收閘門 |
 | [docs/spec/020-cave-portal-hd.md](docs/spec/020-cave-portal-hd.md) | Malicia至Muralla入口的圖塊、裁切、高清及中文圖牌閘門 |
 | [docs/spec/021-exhaustion-return-overlay.md](docs/spec/021-exhaustion-return-overlay.md) | 正常昏迷送返長老的中文、續頁／捲動、置中肖像及離開生命週期 |
+| [docs/spec/022-return-town-hd.md](docs/spec/022-return-town-hd.md) | 送返後Muralla地形來源、原版讀取範圍、嚴格上界及HD恢復閘門 |
+| [internal/prototype/hd/town_return_source_test.go](internal/prototype/hd/town_return_source_test.go) | 五份正常送返來源的四圖層、完成畫格、ID上界及排除區／使用區原子退回 |
 | [internal/prototype/overlay/dialogue_retained.go](internal/prototype/overlay/dialogue_retained.go)、[送返測試](internal/prototype/overlay/exhaustion_return_test.go)、[GUI日誌配對](internal/prototype/overlay/exhaustion_gui_test.go) | 四字段完整性、前文保留、失序回退、正常原版／獨立全幅及真實GUI同狀態 |
 | [internal/prototype/hd/cave_portal.go](internal/prototype/hd/cave_portal.go)、[入口測試](internal/prototype/hd/cave_portal_test.go) | 完整矩陣與資源守衛、直接高清圖牌及獨立全幅驗證 |
 | [internal/prototype/hd/cave_object.go](internal/prototype/hd/cave_object.go)、[測試](internal/prototype/hd/cave_object_test.go) | 規格019的物件圖組、原版清黑、繪製順序、裁切及未知退回 |

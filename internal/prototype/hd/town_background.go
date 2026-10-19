@@ -14,11 +14,14 @@ import (
 
 var townBackgroundBox = image.Rect(48, 24, 272, 102)
 
-type townBackgroundProfile struct{ module, atlas, mask, flags string }
+type townBackgroundProfile struct {
+	module, atlas, mask, flags string
+	tiles                      int
+}
 
 var townBackgroundProfiles = []townBackgroundProfile{
-	{"968819bb6c4906514b4fce3e2ce99764b73cfa003f48d7d57d4cf8b12da8ffb6", "4498209b563897a0748e566ab3f6092568f0dc715d3a06444702a1a16b4c8229", "1d37729d004341fd0752fd6c2eecac02f02e7a8281d9cbe6c69fb31870866fa1", "39d0bc2e7a1c1ac63a45ce37be5a08d075a39d79607816518512a8c503a0cda7"},
-	{"025bf2982660c942cbefed303ccdd0523ff824756a0fe0bb2587b99e0931e7ec", "4a8f46fc9281127df72f9df966c6e0e1bed15a900d766c1429dcaf2efa4ec094", "0bdb78b2702490f3309f72ea3046fda2417bd088a9a6eec1c3f179fcad4cef71", "3c99e91e511b40beb89725b811da825b592d72b791cd936ef5682260e40ac677"},
+	{"968819bb6c4906514b4fce3e2ce99764b73cfa003f48d7d57d4cf8b12da8ffb6", "4498209b563897a0748e566ab3f6092568f0dc715d3a06444702a1a16b4c8229", "1d37729d004341fd0752fd6c2eecac02f02e7a8281d9cbe6c69fb31870866fa1", "39d0bc2e7a1c1ac63a45ce37be5a08d075a39d79607816518512a8c503a0cda7", 256},
+	{"025bf2982660c942cbefed303ccdd0523ff824756a0fe0bb2587b99e0931e7ec", "889318f3979aaa81803facbf6d14ed4f7f45c78b4a7c2fe2881d64ea1e5da8c2", "0bdb78b2702490f3309f72ea3046fda2417bd088a9a6eec1c3f179fcad4cef71", "3c99e91e511b40beb89725b811da825b592d72b791cd936ef5682260e40ac677", townSceneTerrainTiles},
 }
 
 // TownBackground使用原版已畫圖塊快取與遮罩延伸遠山，不改前景。
@@ -95,14 +98,14 @@ func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed,
 		townBackgroundHash(primary[0xa000:0xb500]) != "1c2a41755ddff41db37e45b22517b1d9e3bfb8a658afa9d7a48fee2b05b12a5c" {
 		return nil, false
 	}
-	known := false
+	tileLimit := 0
 	for _, p := range townBackgroundProfiles {
-		if townBackgroundHash(primary[0xc000:0xc040]) == p.module && townBackgroundHash(resources[0x8100:0xb100]) == p.atlas && townBackgroundHash(resources[0xd000:0xd800]) == p.mask && townBackgroundHash(resources[0x8006:0x8106]) == p.flags {
-			known = true
+		if townBackgroundHash(primary[0xc000:0xc040]) == p.module && townBackgroundHash(resources[0x8100:0x8100+p.tiles*48]) == p.atlas && townBackgroundHash(resources[0xd000:0xd800]) == p.mask && townBackgroundHash(resources[0x8006:0x8106]) == p.flags {
+			tileLimit = p.tiles
 			break
 		}
 	}
-	if !known {
+	if tileLimit == 0 {
 		return nil, false
 	}
 	mask := make([]bool, 224*78)
@@ -122,6 +125,9 @@ func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed,
 	for col := 0; col < 28; col++ {
 		for row := 0; row < 3; row++ {
 			tile := int(primary[0xe000+col*8+row])
+			if tile >= tileLimit {
+				return nil, false
+			}
 			transparent := resources[0x8006+tile] != 0
 			for dy := 0; dy < 8; dy++ {
 				for dx := 0; dx < 8; dx++ {

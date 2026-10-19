@@ -86,3 +86,7 @@
 完整逐圖與像素結果沿兩GUI目錄的audit、visual-review及pixel-review；根端另讀九張actualX圖，入口為`coherent-frame-v1/root-nav-gui-review-v2.json`與`root-main-gui-review-v2.json`。失敗v2沒有當次RAM，只能依完整50資源候選精確核對角色，該限制保持。來源時間與當次CPU時間分開，live `.indexed`不改寫。仍不宣稱主角／居民HD、地面HD、完整洞窟、其他城鎮、跳躍／戰鬥、音訊或實體手把完成。
 
 main3兩頁在不同原版時間，框外有80原生像素差，位於`(48,121)-(55,142)`。兩頁TownFrames、前景HD及遠山HD皆未使用，差異全在中文框外；不要求跨時刻框外零差，也不憑圖片推論NPC規則。各頁文字／marker／狀態ROI零差與三圓角27HD像素來源背景差另列，見`root-cross-time-review-v1.json`及GUI的`page-outside-difference.json`。
+
+## 送返後Muralla來源邊界增量
+
+[規格022](022-return-town-hd.md)已限定CONFORMED。Muralla地形只接受ID0..239，前景來源驗8000..AE00及完整D000..D800遮罩；遠山Muralla atlas只驗8100..AE00。其他程式／人物／色盤與完整像素守衛維持，城堡profile保持原256圖塊。舊表與收據維持其當輪版本身份，現行來源契約以022及CONTEXT為準。

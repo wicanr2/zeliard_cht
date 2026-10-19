@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-主入口3ae68018，96份Go、測試與譯表固定。021正常昏迷送返長老的四段中文、置中HD與完整回鎮撤除已限定CONFORMED。既有29物件、主角30姿態、十武器及020入口成果保持原收據身份；送返後城鎮目前保留原貌，全遊戲中文與HD仍在開發。
+主入口d72e260a，97份Go、測試與譯表固定。022送返後Muralla山景、前景、地面與主角HD恢復已限定CONFORMED，021四段中文及置中肖像保持。既有29物件、主角30姿態、十武器及020入口收據保留原身份；全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -18,8 +18,8 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 正常昏迷送返長老021限定CONFORMED | 四字段順序保留、待續／捲動、置中HD與完整Muralla回鎮撤除通過。正常17點原版相同，九整圖5184000像素零差；GUI v6及3849筆冷重播通過，六時刻2764368實際像素零差。原件及存檔不變，主入口已同步3ae68018 |
-| 接續工作 | 送返後Muralla城鎮HD來源，再推正常洞窟其餘圖像與中文 | 十守衛僅11B1:8000..D800有五bytes不同，先追來源用途並經READY，不放寬守衛。其他主角／武器／物件來源及洞窟仍待擴充，已驗配色保留原色。Sabre1,200高於起始1,000，未正常取得，不改金額或猜效果；未走物品／法術仍候選 |
+| 本輪工作 | 送返後城鎮HD來源022限定CONFORMED | 原版17點及44355讀取、五份71680原生像素閉合；34具名、vet／build及五整圖2880000像素通過。GUI v2及3775筆原生日誌、3114072實際像素通過，主入口已同步d72e260a |
+| 接續工作 | 正常洞窟其餘圖像與中文、其他物品來源 | 022五bytes造成的城鎮HD拒絕已閉合，不追無關寫入原因。其他主角／武器／物件及洞窟仍待擴充，已驗配色保留原色。Sabre未正常取得，不改金額或猜效果；未走物品／法術仍候選 |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角30姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；兩個已驗主角配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -44,7 +44,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步先補送返後Muralla城鎮HD來源，再推正常洞窟其餘可見圖像、其他物品與候選中文。五個差異在dosgolem實模式11B1:AE60、AE62至AE65；盤點為cave-hd-v1/exhaustion-town-source-v1.json，不推論未用區，須經來源證據與READY才接入。021四字段、兩位置肖像與回鎮撤除已閉合，不重開GUI工具的歷史失敗。Malicia至Muralla入口沿[020](docs/spec/020-cave-portal-hd.md)限定閉合，不重開矩陣、字牌或首戰尾段數字檢查。主角30姿態、十武器與29物件來源沿[017](docs/spec/017-cave-player-hd.md)、[018](docs/spec/018-cave-weapon-hd.md)及[019](docs/spec/019-cave-object-hd.md)限定閉合；五張主角、一張武器及四張物件PNG身份固定，兩個主角配色保留原色。原25主角及原28物件取樣不變，不重開14／15補圖勘誤。共用文字分類與Magia垂直鏈已依[規格016](docs/spec/016-shared-inventory-text.md)閉合，不重開指標表或首瓶藥水研究。Sabre正常使用先滿足金幣條件；不可改金額或把資金不足當使用驗收。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步推正常洞窟其餘可見圖像、其他物品與候選中文。022已完成送返後Muralla城鎮HD恢復，AE00..D000僅排除於已驗Muralla圖形profile，未知ID240以上仍拒絕；五bytes寫入原因不影響本適配層，不另開無關研究。021四字段、兩位置肖像與回鎮撤除已閉合，不重開GUI工具的歷史失敗。Malicia至Muralla入口沿[020](docs/spec/020-cave-portal-hd.md)限定閉合，不重開矩陣、字牌或首戰尾段數字檢查。主角30姿態、十武器與29物件來源沿[017](docs/spec/017-cave-player-hd.md)、[018](docs/spec/018-cave-weapon-hd.md)及[019](docs/spec/019-cave-object-hd.md)限定閉合；五張主角、一張武器及四張物件PNG身份固定，兩個主角配色保留原色。原25主角及原28物件取樣不變，不重開14／15補圖勘誤。共用文字分類與Magia垂直鏈已依[規格016](docs/spec/016-shared-inventory-text.md)閉合，不重開指標表或首瓶藥水研究。Sabre正常使用先滿足金幣條件；不可改金額或把資金不足當使用驗收。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -54,7 +54,15 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 工具與本地證據入口
 
+- 送返後城鎮HD依[022](docs/spec/022-return-town-hd.md)先DRAFT。`workplace/cave-hd-v1/return_town_probe_v1.go`／`return-town-build-v1/`／`return-town-read-v1/`重播既有104命令，逐點核17原件，再監看原版靜止及左右步行的11B1:8000..D800原生讀取。監看期間不由觀察器讀取該區；使用既有研究根，尚未READY不改正式程式。
+- `return_town_footprint_v1.py`／`return-town-footprint-v1.json`核完整215×8地圖、居民底圖、原生前景／人物／主角重建與原版讀取日誌。探針v1只建置未執行，啟動前檢查將觀察結束與放鍵後擷取時間分欄，實際執行為probe-v2；來源與binary SHA另記足跡收據。未把中途畫格當完整驗收。
+- 022 READY原文／審查為`return-town-ready-v1.md/json`，完成後才改前景與遠山的Muralla圖塊上界。`return_town_validate_v1.py`／unit-v1因GUI未另存palette檔停止；來源／log保留。v2改讀已核同一完整CPU RAM／色號的原版重播palette，產品不改。`return-town-unit-v2/`34具名、vet及候選d72e260a通過。獨立`return_town_pixels_v1.py`僅地面因舊camera公式失敗，診斷`return-town-pixel-diagnostic-v1.json`保存；v2沿009既有原圖唯一循環匹配，同五來源2880000整幅像素零差，不改正式地面或重開其研究。
+- `return_town_freeze_v1.py`／`return-town-candidate-identity-v1.json`／`return-town-candidate-sources-v1/`固定97來源、247輸入；`return-town-tools-v1/gui_return_town.py`／`return-town-gui-v1/`實際冷F7及送返後恢復HD執行中。期間不改程式／測試／譯表與固定工具。後續日誌為`return_town_replay_v1.py`／`return-town-gui-pair-v1/`，實際像素為`return_town_gui_pixels_v1.py`／`return-town-gui-pixels-v1/`，未完成者不預先計通過。
+- GUI v1四個HD層與完成畫格均已匹配，但工具誤要求舊Sky旗標也true而停止。`return-town-gui-preflight-v1.json`保存失敗及主前端程式核對勘誤：Sky先嘗試繪製，完整Background後繪並涵蓋天空，沒有「Background成功就跳過Sky」分支。`return_town_gui_prepare_v2.py`／`return-town-gui-v2/`只改驗四個正式圖層，產品97來源不變；日誌、像素及稽核工具明示讀v2，不把v1失敗改名成功。筆記追加工具為`return_town_notes_v1.py`，後續稽核／同步為`return_town_audit_v1.py`、`return_town_promote_v1.py`及return-town-current-audit／mainalias-sync前綴。
+
 以下按研究版本保留證據入口。舊候選與舊失敗保持原身份；目前主入口與下一步以上方狀態表為準。
+
+- 022現行：`return-town-ready-v1.md/json`保存實作前審查；`return-town-candidate-identity-v1.json`及97來源固定；`return-town-unit-v2/`34具名與候選d72e260a，`return-town-pixels-v2/`五整圖2880000像素。真正視窗`return-town-gui-v2/`，`return-town-gui-pair-v1/`原生日誌3775筆／850 FileOps，每筆原版及末端GUI相同；`return-town-gui-pixels-v1/`城鎮810432及中文／肖像2303640像素零差，`return-town-root-visual-review-v1.json`七張X圖目視。`return-town-current-audit-v1.json`核153自有檔、29原件、882來源與字型／存檔SHA／mtime；主入口同步／舊3ae備份為`return-town-mainalias-sync-v1.json`／`return-town-previous-main-3ae68018`。Git及容器收尾`return-town-repository-sync-v1.json`，文件更新工具`return_town_finalize_docs_v1.py`。以下DRAFT／READY／執行中敘述只保留歷史，不重開已閉合範圍。
 
 - 021現行入口：`exhaustion-candidate-identity-v1.json`／96來源；正常`exploration-return-pair-v3/`；真正視窗`exhaustion-gui-v6/`；`exhaustion_replay_v2.py`／`exhaustion-gui-pair-v2/`；`exhaustion_gui_pixels_v2.py`／`exhaustion-gui-pixels-v2/`及`exhaustion-root-visual-review-v1.json`。3849筆每筆原版相同、850 FileOps、六時刻2764368像素零差。清框保留一筆kind2／first_difference430，不稱零拒絕。`exhaustion_audit_v1.py`／`exhaustion-current-audit-v1.json`核151自有檔、29原件、882來源、壓縮包、字型與存檔SHA／mtime。主入口同步／舊0d備份為`exhaustion-mainalias-sync-v1.json`／`exhaustion-previous-main-0d70040a`，Git及容器收尾為`exhaustion-repository-sync-v1.json`；文件更新工具為`exhaustion_finalize_docs_v1.py`。既有長老PNG及完整提示詞仍沿workplace/hd-sage-generation.json，未生成新圖。以下v1至v5只保留歷史證據，不代表現行未完成。
 
