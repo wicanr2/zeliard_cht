@@ -50,7 +50,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-教堂中文、15穩定畫格HD與場景名稱已驗完，不重做相同驗收。接續從自建存檔正常尋找旅店入口，再推進其餘居民、物品／法術及地下城HD。其餘106筆居民、五筆混合控制碼、39場景名、實體手把及正式設計仍待完成。
+教堂中文、15穩定畫格HD與場景名稱已驗完，不重做相同驗收。Muralla既有入口資料列出六個已知入口，未包含已確認的旅店入口；本輪正常城鎮探索已退出，不重掃同一地區。先推進目前可達的物品／法術使用與地下城正常流程，再於後續城鎮補旅店來源。其餘106筆居民、五筆混合控制碼、39場景名、實體手把及正式設計仍待完成。
 
 居民擴充已閉合六筆新來源九頁，不重做同一驗收。032已用可撤回試作比較真實時間排程，使用者尚未確認是否採用100毫秒追趕上限；依賴該選擇的正式實作先不進行。試作只達平台近似時序，不為逐音框一致深入硬體driver。031候選37d86d66不升主入口，現行4996622f沿030並加入教堂HD。正式字級、術語、HD倍率／預設、人耳及實體USB／藍牙手把仍待完成；未驗項不當成完成。
 
@@ -61,6 +61,8 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 旅店正常入口研究沿`workplace/prose-v1/inn_prepare_v1.py`與生成的`inn_probe_v1.go`，輸出`services-v1/inn-normal-v1/`。`inn_classify_v1.py`核正常城鎮探索收據與既有六入口，分類存於`entry-audit-v1.json`；該路徑未進旅店，不計中文或HD驗收。沿自建SAVETEST冷F7及正常鍵盤探索，不注入位置、生命或金幣。六個已知入口未含旅店，不重掃Muralla；先完成可達物品使用與後續地下城正常路徑，再核旅店報價／拒絕／住宿及離店，依001的旅店DRAFT審查。
 
 - 教堂場景名稱已沿兩次正常進出及實際視窗驗完，入口為`services-v1/church-scene-v1/final-audit-v1.json`與`provenance-v1.json`。`church_scene_prepare_v1.py`、`church_scene_verify_prepare_v1.py`固定控制器與實際日誌清單；`church_scene_document_v1.py`及`church_scene_audit_v1.py`依同一證據回填文件與檢查身份。工作樹只新增測試，主入口仍4996622f／115來源，119份工作樹保留031。來源鍵正常驗證由13增為14，未走過場景由40減為39；原版素材與完整收據均留本地。Git、PRIVATE與容器收尾見同研究根`repository-sync-v1.json`。
 
