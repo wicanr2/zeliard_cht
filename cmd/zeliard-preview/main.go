@@ -477,6 +477,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"town_frame_presentation":    g.townFrames.State(),
 			"intro_threat":               g.introThreat.State(),
 			"intro_story":                g.introStory.State(),
+			"intro_scroll":               g.scroll.State(),
 			"cave_frame_presentation":    g.caveFrames.State(),
 			"cave_terrain_hd_matched":    g.caveTerrainMatch,
 			"input_trace_error":          g.inputTraceError,
@@ -745,6 +746,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"original_regs":          g.o.Regs(),
 				"intro_threat":           g.introThreat.State(),
 				"intro_story":            g.introStory.State(),
+				"intro_scroll":           g.scroll.State(),
 				"original_source_kind":   "live CPU/VGA; may be within drawing batch; distinct from cave completed/rejected source",
 				"merchant_hd_matched":    g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose,
 				"bank_hd_matched": g.bankHDMatched, "bank_hd_pose": g.bankHDPose,
@@ -798,6 +800,8 @@ func main() {
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
 	introText := flag.String("intro-text", "text/intro-prototype.json", "片頭覆繪原型譯文")
 	introScroll := flag.String("intro-scroll", "", "可選：首章捲動中文試譯 TSV，取代單句 prototype")
+	introCredits := flag.String("intro-credits", "", "可選：製作名單中文試譯 TSV")
+	introOutro := flag.String("intro-outro", "", "可選：故事後六行捲字中文試譯 TSV")
 	introThreat := flag.String("intro-threat", "", "可選：魔王三行宣言中文試譯 TSV")
 	introStory := flag.String("intro-story", "", "可選：完整故事中文試譯 TSV")
 	dialogueText := flag.String("dialogue-text", "", "可選：對話與報價試譯 TSV")
@@ -998,8 +1002,8 @@ func main() {
 			log.Printf("魔王宣言中文未載入，保留原文：%v", err)
 		}
 	}
-	if *introScroll != "" {
-		g.scroll, err = overlay.NewScroll(o, filepath.Join(root, "ZELRES1.SAR"), *introScroll, font)
+	if *introScroll != "" || *introCredits != "" || *introOutro != "" {
+		g.scroll, err = overlay.NewScrollBlocks(o, filepath.Join(root, "ZELRES1.SAR"), overlay.ScrollCatalogs{First: *introScroll, Credits: *introCredits, Outro: *introOutro}, font)
 		if err != nil {
 			log.Printf("片頭捲動中文未載入，保留原文：%v", err)
 		}

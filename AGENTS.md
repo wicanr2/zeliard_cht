@@ -107,6 +107,7 @@
 
 | 文件 | 唯一職責 |
 |---|---|
+| [.gitattributes](.gitattributes) | 保留製作名單TSV空欄的分隔Tab；欄數、空白來源與字型由捲字譯表驗證器檢查 |
 | [README.md](README.md) | 故事背景、穩定入口、使用方式與現況摘要 |
 | [LICENSE](LICENSE) | 自有程式與文件的 RRSAL-1.0 完整條款及原版素材排除範圍 |
 | [CONTEXT.md](CONTEXT.md) | 有日期的目前狀態、決策、來源及下一步 |
@@ -156,6 +157,10 @@
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
 | [docs/spec/013-intro-narration.md](docs/spec/013-intro-narration.md) | 其餘片頭顯示來源與魔王三行宣言的試作閘門 |
 | [docs/spec/014-intro-story.md](docs/spec/014-intro-story.md) | 完整故事的58片段、52清框與唯讀中文生命週期 |
+| [docs/spec/015-intro-scroll-blocks.md](docs/spec/015-intro-scroll-blocks.md) | 首章、製作名單與六行收尾的來源、視窗與捲動生命週期 |
+| [text/intro-credits-prototype.tsv](text/intro-credits-prototype.tsv) | 製作名單51行來源鍵與試譯，保留人名及空白行 |
+| [text/intro-outro-prototype.tsv](text/intro-outro-prototype.tsv) | 故事後六行捲動文字試譯 |
+| [internal/prototype/overlay/scroll_blocks_test.go](internal/prototype/overlay/scroll_blocks_test.go) | 三組捲字正常原版配對、獨立排版、途中呈現與退回驗證 |
 | [text/intro-threat-prototype.tsv](text/intro-threat-prototype.tsv) | 魔王三行宣言的來源鍵與中文試譯，控制碼仍由原版消費 |
 | [text/intro-story-prototype.tsv](text/intro-story-prototype.tsv) | 完整故事58個文字／字色片段的來源鍵與中文試譯 |
 | [internal/prototype/overlay/intro_story.go](internal/prototype/overlay/intro_story.go) | 規格014的原版字形、清框與唯讀中文生命週期 |

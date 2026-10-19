@@ -4,7 +4,7 @@
 
 目前前端雛形包含片頭首章 30 行與魔王三行宣言、國王與長老對話中文、存讀提示、武器店、銀行存提款、道具店買賣與三種商品介紹，以及部分裝備名稱、藥水使用訊息與居民交談。生命、寶石、金幣、地點四個狀態欄，以及城堡、城鎮、洞窟、國王、武器店、小屋與Marid長老名稱也已接入。手繪 HD 包含邊框、國王、長老、武器商人、銀行與道具店肖像、城堡／Muralla鎮的完整遠山，以及Muralla樹木、建物與岩壁前景試作。Muralla地面與主角八個行走姿態也已接入，居民保留原貌；武器、魔法與銀行招牌可顯示中文。手把設定頁可選裝置並綁定按鍵。正常領賞、存讀檔、首筆武器交易、裝備開關、銀行存提款、首瓶藥水買賣與使用、六頁商品介紹及狀態列切片已有原版對照及正常視窗驗證，HD 切換只驗已觀察姿態。首場交戰、第一顆寶石及洞窟中文狀態列也已通過正常視窗驗證。其餘中文、場景與角色 HD、音效、實體手把及後續戰鬥仍待完成或驗證，尚未提供正式遊玩版。最新進度見 [CONTEXT.md](CONTEXT.md)，驗證範圍見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
-故事正文也已加入58片段、47頁中文，正常播完與Space跳過均通過原版冷重跑及實際視窗核對。故事後六行與製作名單仍待中文化，故事美術保留原貌。
+故事正文58片段、47頁中文，以及51行製作名單與六行收尾試譯已接入，正常播放、捲動與撤除通過原版配對、實際視窗及獨立排版核對。故事正文另已驗Space跳過；片頭美術仍為原貌，正式字級與專名待校訂。
 
 ## 故事背景
 
@@ -42,7 +42,17 @@ workplace/bin/zeliard-preview \
 
 `/orig` 須唯讀掛載完整原版資料，`/fonts` 為使用者提供的字型目錄。原版存檔另落在使用者目錄下的 `game/`，手把設定獨立保存。雛形尚未接音效輸出。
 
-首章捲動中文試作加上 `-intro-scroll /project/text/intro-scroll-prototype.tsv`，會沿原版事件顯示 30 行試譯。魔王三行宣言另加 `-intro-threat /project/text/intro-threat-prototype.tsv`，沿原版逐字完成與淡出顯示，進標題後撤除，方法見[其餘片頭規格](docs/spec/013-intro-narration.md)。故事正文另加 `-intro-story /project/text/intro-story-prototype.tsv`，涵蓋58片段、47個有文字的頁面，保留原版字色、逐字進度、清框及Space跳過。方法見[故事覆繪規格](docs/spec/014-intro-story.md)。專名與正式字級仍待校訂，製作名單、故事後六行捲字及其餘遊戲文字尚未完成。舊單句試作仍可用 `-intro-reference` 指向本地重生的原版畫格，方法及限制見[架構與試作規格](docs/spec/001-runtime-overlay.md)。
+片頭中文可依需要載入對應的試譯TSV：
+
+| 內容 | Docker內參數 | 範圍 |
+|---|---|---|
+| 首章捲字 | `-intro-scroll /project/text/intro-scroll-prototype.tsv` | 30行 |
+| 魔王宣言 | `-intro-threat /project/text/intro-threat-prototype.tsv` | 三行逐字與淡出 |
+| 故事正文 | `-intro-story /project/text/intro-story-prototype.tsv` | 58片段、47頁 |
+| 製作名單 | `-intro-credits /project/text/intro-credits-prototype.tsv` | 51行，保留人名、公司、年份及空白行 |
+| 收尾捲字 | `-intro-outro /project/text/intro-outro-prototype.tsv` | 六行，使用原版較高視窗 |
+
+五組可以同時載入。原版負責出字、捲動、字色、清框、等待及Space輸入，中文只改顯示。來源、畫面或字型不符時保留原貌；專名與正式字級仍待校訂。方法見[魔王宣言規格](docs/spec/013-intro-narration.md)、[故事覆繪規格](docs/spec/014-intro-story.md)及[三組捲字規格](docs/spec/015-intro-scroll-blocks.md)。其餘遊戲文字仍待完成。舊單句試作仍可用 `-intro-reference` 指向本地重生的原版畫格，方法及限制見[架構與試作規格](docs/spec/001-runtime-overlay.md)。
 
 HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -hd-art /project/workplace/hd-border-prototype.png`。參考畫格同目錄須有 `palette.bin`。試作圖只保存在本機；雛形檢查固定圖像身份後，僅替換兩側裝飾，不遮擋中間場景或資訊。缺圖、換場或色盤不符時保留原貌。這些選項與正式資產格式仍在試作階段。
 

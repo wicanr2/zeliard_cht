@@ -1,0 +1,2 @@
+# 製作名單保留原版空白列；兩欄TSV的空欄以行末Tab結束。
+text/intro-credits-prototype.tsv whitespace=-blank-at-eol

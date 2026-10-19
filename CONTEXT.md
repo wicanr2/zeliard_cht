@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-故事正文58片段、47頁中文已通過正常原版配對、實際視窗及獨立像素核對，主入口已同步574094bc。故事後六行及51行製作名單仍待中文化。Malicia地形與回城成果保持已驗身份；全遊戲中文與HD仍在開發。
+51行製作名單與六行收尾中文已通過原版配對、實際視窗及獨立像素核對，與首章、魔王及故事正文能正常銜接，主入口已同步fca020a3。Malicia地形與回城成果保持已驗身份；全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -16,9 +16,9 @@
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 首場交戰／第一寶石及跳／蹲另已通過原版、中文配對與正常視窗；不代表全遊戲已驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
-| 中文 | 工具列、首章、魔王宣言、故事正文、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 故事58片段、47頁正常播放與Space跳過已驗。六行收尾及51行名單仍待接入。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
+| 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 故事正文中文限定CONFORMED | 58片段、5083字形、52清框與163完整原版點相同。47頁正常視窗及Space跳過另以42895／9917筆實際日誌冷重跑，末端全部RAM／Regs／VGA相同。50張actualX遊戲畫布共28800000像素零差，人工只抽10圖。主入口574094bc、80來源；收尾入口為intro-narration-v1/story-current-audit-v1.json |
+| 本輪工作 | 三組捲字015限定CONFORMED | 首章30／名單51／收尾6行，95點完整原版相同，90張獨立中文排版、90次AND途中及首章舊入口通過。正常GUI三組1300列與故事5083字形零拒絕；44826筆實際日誌冷重跑及末端全部RAM／Regs／VGA相同，九張actualX共5184000像素零差，根端人工看九張。主入口fca020a3、83來源；收尾入口為intro-narration-v1/scroll-current-audit-v1.json |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形已接入 | 洞窟地形1..14可選覆繪，主角／武器／動態物件仍原貌。未知角色分支安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -43,7 +43,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步依32C9正常來源接51行製作名單及六行收尾中文。收尾由sub_6D04設Y20／高160，不能套用首章與名單的Y32／高120。其後接物品共用消費端、洞窟角色／物件HD。故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步接物品共用文字消費端，再推洞窟角色／物件HD。小字22DB與彩色AA2B已在[裝備來源索引](docs/inventory-source-index.json)定位，先沿已驗購買／物品頁鍵序擴一條正常分支，不把已知白名單當作全物品覆蓋。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -76,6 +76,14 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 - 正式47頁與獨立離線排版的核對沿`compare_story_pair_pixels_v1.py`／`story-pair-pixels-v1.json`。故事後的六行捲字仍走32C9消費端，與製作名單一起保留待辦，不混入58段正文驗收。
 - 故事GUI的原生日誌冷重播工具為`replay_story_gui_v1.go`，完整／跳過輸出`story-gui-replay-v1/`／`story-skip-gui-replay-v1/`；獨立實際畫面核對沿`verify_story_gui_pixels_v1.py`，輸出`story-gui-pixels-v1.json`／`story-skip-gui-pixels-v1.json`。
 - 故事收尾核對沿`audit_intro_story_v1.py`／`story-current-audit-v1.json`，根端實際視窗目視清單為`story-root-visual-review-v1.json`。通過後的主入口同步工具及收據為`promote_story_v1.py`／`story-mainalias-sync-v1.json`；提交與私人遠端身份另記`story-repository-sync-v1.json`。
+- 三組捲字來源沿同根`probe_scroll_blocks_v1.go`／`original-scroll-blocks-v1/`，獨立原生畫面核對為`prove_scroll_blocks_v1.py`／`scroll-blocks-proof-v1.json`。來源與版面依[規格015](docs/spec/015-intro-scroll-blocks.md)審查，先READY再接正式路徑；本輪已限已列範圍CONFORMED。
+- 三組捲字的獨立中文排版／離線圖沿`preview_scroll_blocks_v1.py`／`preview-scroll-blocks-v1/`；來源與容量審查保存為`ready-scroll-blocks-review-v1.json`及`ready-scroll-blocks-spec-v1.md`，與後續正式畫面分開。
+- 規格015的READY接入稿另存`scroll-blocks-ready-source-v1.go.txt`，只在READY全文保存後同步到`internal/prototype/overlay/scroll.go`；正式配對、候選與GUI另凍結，不將離線圖當作已接入。
+- 捲字正式接入測試沿`scroll-blocks-test-v1.jsonl`／`scroll-blocks-pair-v1/`與既有首章入口的`scroll-legacy-pair-v1/`，候選為`zeliard-preview-scroll-v1`，靜態檢查與建置為`scroll-blocks-vet-v1.log`／`scroll-blocks-build-v1.log`；正常視窗、冷重跑及像素通過後主入口同步fca020a3，舊574094bc候選保留。
+- 捲字正常視窗工具為`gui_scroll_blocks_v1.py`，輸出`gui-scroll-blocks-v1/`。候選身份及凍結來源另存`scroll-candidate-identity-v1.json`／`scroll-candidate-sources-v1/`，實際原生輸入日誌供獨立原版冷重播，不還原記憶體。
+- 捲字候選凍結工具為`freeze_scroll_candidate_v1.py`，只在正式配對、首章相容入口、vet及建置通過後執行；不覆寫舊574094bc候選與來源快照。
+- 捲字GUI獨立冷重播沿`replay_scroll_gui_v1.go`／`scroll-gui-replay-v1/`，逐筆核原生日誌並另存原版來源／完成列事件。實際視窗像素核對沿`verify_scroll_gui_pixels_v1.py`／`scroll-gui-pixels-v1.json`，使用原版事件重建中文行位置，不以正式覆繪程式當預期圖。
+- 捲字收尾核對沿`audit_scroll_blocks_v1.py`／`scroll-current-audit-v1.json`，根端實際圖目視清單為`scroll-root-visual-review-v1.json`。通過後以`promote_scroll_v1.py`產生`scroll-mainalias-sync-v1.json`，提交與私人遠端身份另記`scroll-repository-sync-v1.json`。
 - 實際視窗的獨立原版重跑與像素核對沿`replay_gui_original_v1.go`／`gui-original-pair-v1/`及`verify_gui_pixels_v1.py`／`gui-pixels-v1.json`。原版只重跑相同冷啟動與週期預算，不還原GUI記憶體。
 - 魔王三行前輪收尾為`audit_intro_threat_v1.py`／`current-audit-v1.json`，根端三張圖的目視清單為`root-visual-review-v1.json`。該輪主入口同步與提交後私人遠端身份分別記於`mainalias-sync-v1.json`／`repository-sync-v1.json`。
 - 洞窟呈現生命週期與動態格的窄研究沿`workplace/cave-hd-v1/lifecycle_probe_v1.go`與`lifecycle-v1/`。v2另核7114／714C完成及703C／7136開始，輸出`lifecycle-v2/`；`lifecycle-return-v1.commands`沿正常入洞再Up回城，輸出`lifecycle-return-v1/`。只讀觀測，不接正式前端。
