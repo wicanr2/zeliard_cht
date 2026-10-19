@@ -10,8 +10,10 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 	"testing"
+	"time"
 )
 
 func stereo(values []int16) []byte {
@@ -47,17 +49,73 @@ func TestStreamFragmentedFloatStereo(t *testing.T) {
 	}
 }
 
-func TestStreamUnderrunHasZeroStereo(t *testing.T) {
+func awaitSourceWait(t *testing.T, q *Stream) {
+	t.Helper()
+	deadline := time.Now().Add(2 * time.Second)
+	for q.Snapshot().Waits == 0 {
+		if time.Now().After(deadline) {
+			t.Fatal("來源未進入有界等待")
+		}
+		runtime.Gosched()
+	}
+}
+
+func TestStreamShortReadThenWaitForRealFrames(t *testing.T) {
 	q := NewStream(2)
 	q.Push([]int16{8192})
 	p := bytes.Repeat([]byte{255}, 24)
-	if _, err := io.ReadFull(q, p); err != nil {
-		t.Fatal(err)
+	n, err := q.Read(p)
+	if err != nil || n != 8 || !bytes.Equal(p[:n], stereo([]int16{8192})) {
+		t.Fatal("應先短讀已有的原版音框", n, err)
 	}
-	if !bytes.Equal(p, stereo([]int16{8192, 0, 0})) {
-		t.Fatal("欠載未補完整靜音音框")
+	done := make(chan []byte, 1)
+	go func() {
+		buf := make([]byte, 24)
+		n, _ := q.Read(buf)
+		done <- buf[:n]
+	}()
+	awaitSourceWait(t, q)
+	select {
+	case <-done:
+		t.Fatal("空來源提前回傳")
+	default:
 	}
-	if s := q.Snapshot(); s.Pulled != 1 || s.Underrun != 2 {
+	q.Push([]int16{-8192, 32767})
+	select {
+	case got := <-done:
+		if !bytes.Equal(got, stereo([]int16{-8192, 32767})) {
+			t.Fatal("新資料喚醒後插入靜音或破壞順序")
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("Push未喚醒來源")
+	}
+	if s := q.Snapshot(); s.Pulled != 3 || s.Underrun != 0 || s.ReadCalls != 2 || s.Waits != 1 || s.MaxReadBytes != 24 {
+		t.Fatal(s)
+	}
+}
+
+func TestStreamCloseWakesEmptyReader(t *testing.T) {
+	q := NewStream(2)
+	done := make(chan error, 1)
+	go func() {
+		n, err := q.Read(make([]byte, 17640))
+		if n != 0 {
+			done <- fmt.Errorf("關閉後仍輸出%d", n)
+			return
+		}
+		done <- err
+	}()
+	awaitSourceWait(t, q)
+	_ = q.Close()
+	select {
+	case err := <-done:
+		if err != io.EOF {
+			t.Fatal("關閉未喚醒並結束來源", err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("關閉仍卡住讀取")
+	}
+	if s := q.Snapshot(); s.Underrun != 0 || !s.Closed || s.Waits != 1 {
 		t.Fatal(s)
 	}
 }

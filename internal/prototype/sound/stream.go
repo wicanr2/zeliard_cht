@@ -10,11 +10,14 @@ import (
 
 const Rate = 44100
 const Capacity = Rate / 10
+const Prebuffer = Rate / 20
 
 // Stats的單位為單聲道音框；Bytes是輸出浮點雙聲道位元組數。
 type Stats struct {
 	Capacity, Queued                                    int
 	Pushed, Pulled, Underrun, Dropped, Discarded, Bytes uint64
+	ReadCalls, Waits                                    uint64
+	MaxReadBytes                                        int
 	Closed                                              bool
 }
 
@@ -22,6 +25,7 @@ type Stats struct {
 // 輸出為32位元小端浮點雙聲道；任意長度Read均保留完整音框順序。
 type Stream struct {
 	mu           sync.Mutex
+	ready        *sync.Cond
 	buf          []int16
 	start, count int
 	pending      [8]byte
@@ -33,7 +37,9 @@ func NewStream(capacity int) *Stream {
 	if capacity < 1 {
 		panic("音訊容量必須大於零")
 	}
-	return &Stream{buf: make([]int16, capacity), offset: 8, stats: Stats{Capacity: capacity}}
+	q := &Stream{buf: make([]int16, capacity), offset: 8, stats: Stats{Capacity: capacity}}
+	q.ready = sync.NewCond(&q.mu)
+	return q
 }
 
 func (q *Stream) Push(values []int16) {
@@ -42,6 +48,7 @@ func (q *Stream) Push(values []int16) {
 	if q.stats.Closed {
 		return
 	}
+	defer q.ready.Signal()
 	q.stats.Pushed += uint64(len(values))
 	if len(values) >= len(q.buf) {
 		q.stats.Dropped += uint64(q.count + len(values) - len(q.buf))
@@ -69,18 +76,27 @@ func (q *Stream) Read(dst []byte) (int, error) {
 	if q.stats.Closed {
 		return 0, io.EOF
 	}
+	q.stats.ReadCalls++
+	if len(dst) > q.stats.MaxReadBytes {
+		q.stats.MaxReadBytes = len(dst)
+	}
 	n := 0
 	for n < len(dst) {
 		if q.offset == 8 {
-			var v int16
-			if q.count > 0 {
-				v = q.buf[q.start]
-				q.start = (q.start + 1) % len(q.buf)
-				q.count--
-				q.stats.Pulled++
-			} else {
-				q.stats.Underrun++
+			if q.count == 0 && n > 0 {
+				break
 			}
+			for q.count == 0 && !q.stats.Closed {
+				q.stats.Waits++
+				q.ready.Wait()
+			}
+			if q.stats.Closed {
+				return 0, io.EOF
+			}
+			v := q.buf[q.start]
+			q.start = (q.start + 1) % len(q.buf)
+			q.count--
+			q.stats.Pulled++
 			bits := math.Float32bits(float32(v) / 32768)
 			binary.LittleEndian.PutUint32(q.pending[:4], bits)
 			binary.LittleEndian.PutUint32(q.pending[4:], bits)
@@ -101,6 +117,7 @@ func (q *Stream) Close() error {
 		q.stats.Discarded += uint64(q.count)
 		q.start, q.count = 0, 0
 		q.stats.Closed = true
+		q.ready.Broadcast()
 	}
 	return nil
 }
