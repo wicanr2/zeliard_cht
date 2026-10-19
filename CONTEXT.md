@@ -2,20 +2,20 @@
 
 更新日期：2026-10-20，Asia/Taipei。
 
-主入口已更新為6796b057／113份固定來源，沿1fd120ad新增教堂五段中文與七個唯讀觀察值，沒有帶入031音效候選。工作樹116份來源保留031待驗實作。教堂正常路徑16點完整原版配對、實際視窗9241筆日誌與16點重播通過；四頁393120獨立文字像素及63648原版金幣欄像素相符。舊入口與相容譯表已備份，未發布版本。
+主入口已更新為4996622f／115份固定來源，較已驗b96cfa4e只更正兩個參數說明字串，Xvfb內的-h輸出通過。完整15畫格視窗與像素收據沿b96cfa4e，資料、繪製及輸入程式相同，舊收據不換名。工作樹118份來源保留031待驗音效，主入口仍沿030音效。五個手勢／15個穩定畫格已通過兩次正常重訪、4108筆實際日誌、65個暫停點及431筆動態匹配重播。786780獨立HD像素與7853220內框外像素相符，原貌完整還原。舊入口已備份，未發布版本。
 
 前段銀行存款50的正常另存、退出、冷F7、查詢及離店950已驗完，沿原本cea16753與c3e68b98新檔身份。其27653筆、37點及兩頁獨立像素證據不重算為新入口驗收。
 
-居民維持七來源十一頁，其餘106筆純文字及五筆混合控制來源待正常路徑。已產生教堂兩個牧師姿態的手繪候選，六個原版房間畫格已盤點；候選尚未接入HD。既有HD沿028的55個主角姿態與場景，音訊驗收未增加。031候選37d86d66的正常聲音節奏仍未通過，032實時排程維持DRAFT及使用者取捨待確認；全遊戲中文與HD仍在開發。
+居民維持七來源十一頁，其餘106筆純文字及五筆混合控制來源待正常路徑。教堂手繪HD已接入五手勢／15穩定來源；單筆未知來源保持原貌。既有HD沿028的55個主角姿態與場景，音訊驗收未增加。031候選37d86d66的正常聲音節奏仍未通過，032實時排程維持DRAFT及使用者取捨待確認；全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
-教堂中文五來源已完成兩條正常分支。原版來源路徑生命75→77→80；實際GUI生命50→80，兩者分開保存，不要求不同輸入時序產生相同受傷值。GUI v7人工補一組正常Left按放，全部9241筆原生日誌均已重播；不稱全自動完成。銀行與音訊的既有收據保持原身份，031音效與032排程仍未升主入口。
+教堂15穩定畫格已完成可撤回覆繪。65張實際畫面與共用Go合成37440000像素相符，15組高清內框另與獨立Python註冊預覽核對。431筆動態匹配與當時原版快照相同；單筆未知來源相差8個燭焰像素，未猜補成完整姿態。中文專用受傷療傷收據沿6796b057，銀行與音訊既有收據保持原身份。
 
 | 項目 | 現況 | 證據與限制 |
 |---|---|---|
 | 使用者目標 | dosgolem、繁中、HD、工具列手把綁定 | 已授權開工；規則見 [AGENTS.md](AGENTS.md) |
-| GitHub | 私人 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 主機gh可用，保持PRIVATE；最近提交與遠端核對見WORKLOG |
+| GitHub | 私人 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 主機gh可用，保持PRIVATE；最近同步見services-v1/hd-repository-sync-v3.json，歷程見WORKLOG |
 | 本地 Git | 已初始化 `main`，設定 `origin` | 環境 placeholder 已不存在；使用 GitHub noreply 信箱作本儲存庫提交身份 |
 | 遊戲包 | 已安全解包與逐檔盤點 | 30 個壓縮項目，含目錄；29 個檔案，清單在本地 `workplace/source-manifest.json` |
 | 中文手冊 | RAR 已列目錄，17 張 JPG | 已人工讀外封面及第 1、5–13 頁；物品操作五張掃描另核RAR大小／CRC。另含地圖等掃描，17 張不等於 17 頁 |
@@ -24,9 +24,9 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；可選音效已接入，穩定節奏未完成 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、教堂、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113筆居民純文字試譯，七筆來源的十一頁及續頁／還原已驗。其他106筆居民來源與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 既有交易、存款50冷讀及無存款提款，已列原版配對與實際視窗通過 | 無存款拒絕及長老普通告別已補中文，正常回鎮1000；其他銀行分支、正式字級／術語仍待確認 |
-| 本輪工作 | 教堂五段中文、受傷療傷及正常離店已驗 | 16點原版配對；實際9241筆／16點、四頁獨立文字像素。主入口6796b057沿030音效，教堂HD候選未帶入 |
+| 本輪工作 | 教堂五手勢／15穩定畫格HD及同快照匹配已驗 | 兩次正常重訪，4108筆／65點、431動態觀察、786780獨立HD與7853220區外像素；主入口4996622f只更正說明，繪製驗收沿b96cfa4e；031音效未帶入 |
 | 接續工作 | 其餘文字及場景HD；排程選擇待確認 | 五份既有來源USR均從Muralla開始，後段混合腳本仍須正常入口。FF3A持盾生命週期已閉合；其他組合、居民／場景／物品文字與洞窟美術、實體手把及正式設計待完成 |
-| HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角55姿態，包含17個一般持盾及1個雙朝向共用的離洞姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
+| HD | 教堂五手勢／15穩定畫格、手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角55姿態，包含17個一般持盾及1個雙朝向共用的離洞姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -50,9 +50,9 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-教堂兩條中文分支已驗完，不重做相同驗收。接續教堂HD的六個房間畫格、燭光與兩個牧師姿態，先定來源守衛與動畫保留規格，再接手繪候選。旅店仍須正常入口，不能用來源字串冒充住宿驗收。其餘106筆居民、五筆混合控制碼、40場景名、物品／法術、洞窟HD、實體手把及正式設計仍待完成。
+教堂中文與15穩定畫格HD已驗完，不重做相同驗收。接續以正常教堂場景名稱核對既有HUD候選，再推進其餘居民、物品／法術及地下城HD。旅店仍須正常入口。其餘106筆居民、五筆混合控制碼、40場景名、實體手把及正式設計仍待完成；教堂場景名尚未另列新中文驗收。
 
-居民擴充已閉合六筆新來源九頁，不重做同一驗收。032已用可撤回試作比較真實時間排程，使用者尚未確認是否採用100毫秒追趕上限；依賴該選擇的正式實作先不進行。試作只達平台近似時序，不為逐音框一致深入硬體driver。031候選37d86d66不升主入口，現行6796b057沿030補銀行與教堂顯示。正式字級、術語、HD倍率／預設、人耳及實體USB／藍牙手把仍待完成；未驗項不當成完成。
+居民擴充已閉合六筆新來源九頁，不重做同一驗收。032已用可撤回試作比較真實時間排程，使用者尚未確認是否採用100毫秒追趕上限；依賴該選擇的正式實作先不進行。試作只達平台近似時序，不為逐音框一致深入硬體driver。031候選37d86d66不升主入口，現行4996622f沿030並加入教堂HD。正式字級、術語、HD倍率／預設、人耳及實體USB／藍牙手把仍待完成；未驗項不當成完成。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -61,6 +61,28 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 現行入口出處為services-v1/hd-final-audit-v3.json、hd-promotion-v3.json、hd-provenance-v3.json及hd-help-v3.json；完整繪製驗收仍沿下列v2。church_hd_help_document_v3.py只回填CLI說明差異與現況，不改舊視窗收據。
+
+- CLI說明收尾沿`church_hd_build_v3.py`及`services-v1/hd-candidate-v3/`，相對已驗b96cfa4e只改兩個flag.String第三參數說明文字，旗標名稱、預設與遊戲／輸入／繪製程式相同。`church_hd_help_v3.py`驗Xvfb內的`-h`輸出，`hd-help-v3.json`保存新入口身份；v2完整視窗與像素收據不換名。`church_hd_finalize_v3.py`依同一出處核對差異後更新入口，輸出`hd-final-audit-v3.json`、`hd-promotion-v3.json`及`hd-provenance-v3.json`。
+
+- 教堂HD繪製本體的驗收入口為`workplace/prose-v1/services-v1/hd-final-audit-v2.json`、`hd-promotion-v2.json`、`hd-provenance-v2.json`與`hd-visual-review-v2.json`。`church_hd_document_v2.py`回填文件；Git／PRIVATE／清理見`hd-repository-sync-v3.json`。以下v1、中文專用與舊畫格收據保留原身份，不混算為現行115份來源的同一收據。
+
+- 教堂HD收尾入口為`workplace/prose-v1/church_hd_finalize_v2.py`，輸出`services-v1/hd-final-audit-v2.json`、`hd-promotion-v2.json`及`hd-provenance-v2.json`。來源、工具版本、位址空間與各份收據雜湊由同一出處索引串接；`hd-repository-sync-v3.json`保存Git／PRIVATE與Docker收尾，不與前輪中文專用收據混用。
+
+- `church_hd_fallback_v2.go`以實際唯一未知觀察的原版快照驗證`Match`拒絕及`Draw`原子退回，輸出`services-v1/hd-fallback-v2.json`；最近穩定圖與原生差異只作分級記錄，保存於`hd-fallback-classification-v2.json`，不新增推測映射。五個實際手勢的根端目視在`hd-visual-review-v2.json`。
+
+- 15畫格視窗的重播與像素核對入口為`church_hd_verify_prepare_v2.py`生成的`church_hd_gui_replay_v2.go`、`church_hd_gui_pixels_v2.py`，輸出`services-v1/hd-gui-pair-v2/`及`hd-pixels-v2/`。除所有暫停點，另將實際動態觀察的每筆HD匹配結果核回同時點原版快照，不能以暫停圖通過取代修正前的一格延遲。
+
+- 15畫格擴充由`church_hd_expand_v2.py`讀取已審查註冊索引；`church_hd_build_v2.py`及`services-v1/hd-candidate-v2/`仍沿030音效。`church_hd_gui_prepare_v1.py`與`church_hd_gui_prepare_v2.py`固定兩版控制器，後者生成`church_hd_gui_v2.py`並輸出`services-v1/hd-gui-v2/`，以正常燭光時點與教堂重訪擷取15種穩定來源。未驗完不升主入口。
+
+- 教堂HD v1的六畫格視窗、3522筆／28點原版重播及314712獨立HD像素已通過，但動態監看發現四個未知完整畫格。`workplace/prose-v1/church_hd_gestures_v1.go`從實際正常日誌的三個首頁暫停點各自冷重播，再以正常Space繼續，輸出`services-v1/hd-gesture-source-v1/`。`church_hd_gesture_inventory_v1.py`依手勢區與完整來源分組，確認三個抬手中間姿態，四個未知畫格中有兩個只是同姿態的燭光不同。正常來源共五姿態／15個穩定畫格，另五個繪製中候選不升格。只採已觀察來源，不注入狀態；已依現行收據限定CONFORMED。六畫格v1候選與收據保持原身份，未曾升主入口；現行v2身份另見主入口稽核。
+
+- 教堂HD的來源固定與建置入口為`workplace/prose-v1/church_hd_build_v1.py`及`services-v1/hd-candidate-v1/`。`church_hd_gui_v1.py`、`church_hd_gui_replay_v1.go`與`church_hd_gui_pixels_v1.py`分別保存正常視窗、完整原版重播及獨立合成核對，輸出同研究根的`hd-gui-v1/`、`hd-gui-pair-v1/`與`hd-pixels-v1/`。`church_hd_finalize_v2.py`只在各層通過後更新主入口；缺少收據不計完成。
+
+- 教堂HD接入研究沿`workplace/prose-v1/church_hd_registration_v1.py`及`services-v1/hd-registration-v1/`，先驗六個來源畫格、共同底圖、祝福手勢與五個燭焰局部，不改原版動畫時間。兩張新燭光變體的完整內建image_gen提示詞與本機路徑在`services-v1/generation-flames-v1.json`，前輪候選保持不覆寫；正式接入契約回到規格001。
+
+- 五手勢／15畫格的高清註冊沿`workplace/prose-v1/church_hd_registration_v2.py`及`services-v1/hd-registration-v2/`，原版參考複本在`services-v1/hd-references-v2/`。三個中間手勢與重校祝福手勢的完整內建image_gen提示詞、原生姿態參考及本機圖面身份在`services-v1/generation-gestures-v1.json`，不覆寫前輪素材；必須先審查再擴充READY契約。
 
 - 教堂現況入口為`workplace/prose-v1/services-v1/final-audit.json`、`promotion.json`及`visual-review.json`。`church_document_v1.py`依同一稽核回填現況與歷程；`repository-sync.json`保存Git／PRIVATE／Docker收尾結果。原版、完整GUI原圖、手繪候選與字型均留本機。
 

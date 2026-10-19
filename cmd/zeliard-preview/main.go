@@ -97,6 +97,9 @@ type game struct {
 	itemShopHD           *hd.ItemShop
 	itemShopHDMatched    bool
 	itemShopHDPose       int
+	churchHD             *hd.Church
+	churchHDMatched      bool
+	churchHDFrame        int
 	hdEnabled, hdMatched bool
 	overlayPixels        []byte
 	texture              *ebiten.Image
@@ -273,7 +276,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -487,6 +490,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 		}
 	}
 	if g.observePath != "" {
+		churchMatched, churchFrame := false, -1
+		if g.hdEnabled && g.churchHD != nil && w == 320 && h == 200 {
+			churchMatched, churchFrame = g.churchHD.Match(raw, rawRGB)
+		}
 		observedPalette := make([]byte, 0, 768)
 		for _, c := range g.o.Palette() {
 			observedPalette = append(observedPalette, c[:]...)
@@ -535,6 +542,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
 			"native_primary_0083":        g.o.Byte(oracle.Far(0x1b1, 0x0083)),
 			"native_primary_0080":        g.o.Word(oracle.Far(0x1b1, 0x0080)),
+			"church_hd_matched":          churchMatched,
+			"church_hd_frame":            churchFrame,
 			"native_primary_0082":        g.o.Byte(oracle.Far(0x1b1, 0x0082)),
 			"native_primary_0084":        g.o.Byte(oracle.Far(0x1b1, 0x0084)),
 			"native_primary_0090":        g.o.Word(oracle.Far(0x1b1, 0x0090)),
@@ -629,6 +638,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.itemShopHDMatched, g.itemShopHDPose = g.itemShopHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.itemShopHDMatched
 	}
+	g.churchHDMatched, g.churchHDFrame = false, -1
+	if g.hdEnabled && g.churchHD != nil && w == 320 && h == 200 {
+		g.churchHDMatched, g.churchHDFrame = g.churchHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
+		g.hdMatched = g.hdMatched || g.churchHDMatched
+	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(raw, rawRGB)
 		clear(g.overlayPixels)
@@ -664,7 +678,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil {
+	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -796,6 +810,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"merchant_hd_matched":    g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose,
 				"bank_hd_matched": g.bankHDMatched, "bank_hd_pose": g.bankHDPose,
 				"item_shop_hd_matched": g.itemShopHDMatched, "item_shop_hd_pose": g.itemShopHDPose,
+				"church_hd_matched": g.churchHDMatched, "church_hd_frame": g.churchHDFrame,
 				"town_sky_hd_matched": g.townSkyHDMatched, "town_background_hd_matched": g.townBackgroundMatch,
 				"town_scenery_hd_matched": g.townSceneryMatch,
 				"town_frame_presentation": g.townFrames.State(),
@@ -899,6 +914,8 @@ func main() {
 	bankArtA := flag.String("bank-art-a", "", "可選：本地手繪銀行畫格 A PNG")
 	bankArtB := flag.String("bank-art-b", "", "可選：本地手繪銀行畫格 B PNG")
 	bankArtC := flag.String("bank-art-c", "", "可選：本地手繪銀行畫格 C PNG")
+	churchReferences := flag.String("church-reference-dir", "", "可選：教堂已核對原版房間畫格與色盤目錄")
+	churchArtwork := flag.String("church-art-dir", "", "可選：教堂固定手繪素材目錄")
 	var itemRefs, itemArts [4]*string
 	for i := range itemRefs {
 		itemRefs[i] = flag.String(fmt.Sprintf("item-reference-%d", i), "", "可選：道具店已核對原版畫格")
@@ -1070,6 +1087,12 @@ func main() {
 		g.bankHD, err = hd.NewBank(*bankRefA, *bankRefB, *bankRefC, *bankPalette, *bankArtA, *bankArtB, *bankArtC)
 		if err != nil {
 			log.Printf("銀行 HD 圖組未載入，保留原貌：%v", err)
+		}
+	}
+	if *churchReferences != "" || *churchArtwork != "" {
+		g.churchHD, err = hd.NewChurch(*churchReferences, *churchArtwork)
+		if err != nil {
+			log.Printf("教堂HD圖組未載入，保留原貌：%v", err)
 		}
 	}
 	var itemReferencePaths, itemArtworkPaths [4]string

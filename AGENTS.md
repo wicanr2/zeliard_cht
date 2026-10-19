@@ -252,6 +252,7 @@
 | [tools/item-shop-branches.commands](tools/item-shop-branches.commands) | 三件商品介紹、空賣、首瓶出售與售後物品頁的正常鍵序 |
 | [tools/item-shop-use.commands](tools/item-shop-use.commands) | 首瓶購買、城鎮物品頁、正常入洞窟、使用藥水與重開／關閉的鍵序 |
 | [internal/prototype/hd/bank.go](internal/prototype/hd/bank.go) | 銀行三個已觀察畫格的 HD 辨識、合成與安全退回 |
+| [internal/prototype/hd/church.go](internal/prototype/hd/church.go)、[教堂HD測試](internal/prototype/hd/church_test.go) | 教堂15個已觀察穩定房間畫格、同快照匹配、共同底圖與五種手勢／燭光局部覆繪；契約見規格001 |
 | [internal/prototype/hd/bank_test.go](internal/prototype/hd/bank_test.go) | 銀行 HD 邊界、來源不變及失配退回測試 |
 | [internal/prototype/overlay/item_purchase.go](internal/prototype/overlay/item_purchase.go) | 道具店購買、出售確認與三件商品說明的唯讀顯示鏈 |
 | [internal/prototype/overlay/item_title.go](internal/prototype/overlay/item_title.go) | 魔法物品店標題的來源、幾何與色彩核對 |
