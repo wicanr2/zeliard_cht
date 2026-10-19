@@ -129,6 +129,7 @@
 | [docs/inventory-source-index.json](docs/inventory-source-index.json) | 裝備頁彩色標題與兩行物品名稱的原始位址、證據等級及來源 |
 | [tools/ida_inventory_evidence.py](tools/ida_inventory_evidence.py) | IDA 9.4 裝備頁五函式證據重生，自動合併分級索引 |
 | [internal/prototype/overlay/inventory.go](internal/prototype/overlay/inventory.go) | 裝備標題、物品使用白字與已驗NO USE圖示覆繪；操作由原版處理 |
+| [docs/spec/025-sword-inventory-label.md](docs/spec/025-sword-inventory-label.md)、[正常鍵序](tools/sabre-source-use.commands)、[配對測試](internal/prototype/overlay/sword_test.go) | 原包SAVEM1冷F7、刀劍油使用與刀劍第二行數字區隔離；驗收狀態依規格，不以試譯代替驗收 |
 | [tools/inventory.commands](tools/inventory.commands) | 冷新局交易後開啟、關閉及重開裝備頁的正常鍵序 |
 | [tools/ida_dialogue_evidence.py](tools/ida_dialogue_evidence.py) | IDA 9.4 的正常國王初訪段證據，合併對話位址索引及未證實警示 |
 | [docs/dialogue-source-index.json](docs/dialogue-source-index.json) | 固定國王段傾印的原始定位、語意等級與證據，不與片頭段混用 |

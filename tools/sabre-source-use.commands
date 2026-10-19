@@ -1,0 +1,104 @@
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x41 500000
+run 2000000
+key 0x15 150000
+run 1500000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x32 100000
+run 200000
+key 0x2 100000
+run 200000
+key 0x1c 100000
+run 20000000
+shot loaded
+key 0x1c 500000
+run 1500000
+shot equipment
+key 0x1c 500000
+run 150000
+run 1500000
+key 0x4d 6000000
+run 150000
+shot cave-near
+key 0x4d 2000000
+run 150000
+shot gate-next
+key 0x48 250000
+run 150000
+run 20000000
+shot cave-entered
+key 0x1c 500000
+run 150000
+run 1000000
+shot cave-equipment
+key 0x4d 100000
+run 150000
+run 1500000
+shot select-first
+key 0x4d 100000
+run 150000
+run 1500000
+shot select-second
+key 0x4d 100000
+run 150000
+run 1500000
+shot select-third
+key 0x4d 100000
+run 150000
+run 1500000
+shot select-fourth
+key 0x4d 100000
+run 150000
+run 1500000
+shot select-fifth
+key 0x39 500000
+run 150000
+run 1500000
+shot sabre-used
+key 0x1c 500000
+run 150000
+run 1500000
+shot after-use-closed
+key 0x1c 500000
+run 150000
+run 1500000
+shot after-use-reopened
+key 0x1c 500000
+run 150000
+run 1500000
+shot use-final-closed

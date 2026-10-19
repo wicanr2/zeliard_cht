@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-主入口4209f976，99份Go、測試與譯表固定。024裝備頁盾牌第二行中文與原數字保留已限定CONFORMED；023的37個主角姿態、022城鎮HD、021中文、29物件、十武器及020入口收據保持原身份。全遊戲中文與HD仍在開發。
+主入口439baeea，100份Go、測試、譯表與依賴檔固定。025刀劍第二行、原版數字保留及來源存檔的刀劍油使用已限定CONFORMED；024盾牌、023的37個主角姿態、022城鎮HD、021中文、29物件、十武器及020入口收據保持原身份。全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -20,8 +20,8 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 024盾牌第二行中文與原數字已限定CONFORMED | 主入口4209f976／99來源。五個來源存檔均正常F7至Muralla，取得過程未知。修正第二行空白區被後畫數字改動而撤除中文；10具名、八點新配對、49點Magia回歸、四張獨立全圖及實際X、4291筆日誌通過 |
-| 接續工作 | 正常洞窟其餘圖像與中文、其他物品來源 | 022五bytes造成的城鎮HD拒絕已閉合，不追無關寫入原因。其他主角／武器／物件及洞窟仍待擴充，已驗配色保留原色。Sabre未正常取得，不改金額或猜效果；未走物品／法術仍候選 |
+| 本輪工作 | 025刀劍第二行及刀劍油使用已限定CONFORMED | 主入口439baeea／100來源。11具名、23完整配對點、2880000獨立及1161216實際面板像素、3130日誌及2448原數字像素通過。原包SAVEM1取得未知，只驗正常F7後操作，不推定效果公式 |
+| 接續工作 | 來源SAVEM1的洞窟HUD入口與未涵蓋HD來源，再推進其餘中文 | Malicia完成原圖名稱字形正確，但前綴13／14兩bytes與靜態來源不同；先觀察22CD／2344，不放寬守衛或追無關寫入。該來源部分洞窟畫格保留原貌。刀劍油正常買入及其他物品／法術仍待驗 |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角37姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -46,7 +46,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-接續正常洞窟其餘可見圖像、其他物品／法術及候選中文。原包五份存檔已各經正常F7讀取，均在Muralla，不能再把它們當作後段城鎮入口；來源存檔取得過程保持未知。已有持有物品可供接續觀察，但未正常使用者仍是候選。024僅閉合004dad的字母區與原數字保留，不解釋數字公式。017／023的37主角姿態與六圖組、018十武器、019的29物件、020入口、021四字段及022回鎮HD均保持原收據，不重開已閉合相位、動畫或五bytes寫入原因。Sabre仍須正常取得足夠金幣，不改金額。113純文字居民中112、53場景中40及五混合入口仍待正常路徑；混合入口先確認文字片段、重新分派與確認框生命週期，不猜原版控制。正式字級、術語、HD倍率／預設、音訊及實體手把驗收仍待處理。證據見[RESEARCH-LOG.md](RESEARCH-LOG.md)與[VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+先沿`sword-hud-preflight-v1.json`，正常重播SAVEM1至Malicia，只觀察HUD的22CD／2344及來源前綴，再審查顯示守衛；該來源未涵蓋HD畫格另核來源，不猜原版資料。025已驗刀劍油選取、使用、消耗及重開，正常買入仍待取得足夠金幣。原包五份存檔均在Muralla，來源取得未知，不能當作後段城鎮入口。其餘未使用物品仍候選。024僅閉合004dad，025僅閉合004d22與已列刀劍油來源，不解釋數字公式。017／023主角、018武器、019物件、020入口、021及022保持原收據，不重開已閉合相位、動畫或五bytes寫入原因。113純文字居民中112、53場景中40及五混合入口仍待正常路徑；正式字級、術語、HD倍率／預設、音訊及實體手把驗收仍待處理。證據見[RESEARCH-LOG.md](RESEARCH-LOG.md)與[VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -55,6 +55,10 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 持有物品觀測入口為`workplace/prose-v1/held_item_probe_v1.go`，二進位在`source-item-tools-v1/held-item-probe`，正常F7、原生鍵序與擷取在`held-item-v1/`。來源為原包SAVEM1.USR，SHA沿來源清單；原始檔唯讀，scratch副本保留mtime。刀劍油選取、使用、槽位消耗及重開已觀察，不推定取得過程或效果公式。該次4209f976觀測保持原身份，現行驗收依下列025入口。
+
+- [025刀劍第二行](docs/spec/025-sword-inventory-label.md)原版來源為`workplace/prose-v1/sword_probe_v1.go`與`sword-source-v2/`，九個回呼與37像素差分確認字母區不變，READY先存`sword-ready-review-v1.json`。`sword-unit-v1/`通過11具名、23完整配對點、五整圖2880000獨立像素及vet／build。主入口439baeea，100來源身份為`sword-candidate-identity-v2.json`，快照`sword-candidate-sources-v1/`；v1漏列兩個Go依賴檔的紀錄保留。正常GUI為`sword_gui_v2.py`／`sword-gui-v2/`，四面板1161216像素通過並根端目視；v1的Space按鍵工具錯誤保留於`sword-gui-preflight-v1.json`。`sword_gui_replay_v1.go`／`sword-gui-pair-v2/`核3130筆實際日誌與最終完整原版，`sword_actual_pixels_v1.py`／`sword-unit-v1/actual-pixels.json`核同一暫停的2448原數字像素。來源／擁有權／連結稽核為`sword-unit-v1/current-audit.json`，主入口備份及同步在同目錄`mainalias-sync.json`與`previous-main-4209f976`。洞窟HUD另從`sword-hud-preflight-v1.json`接續，不重開已閉合刀劍／盾牌字區或猜效果公式。
 
 - 024現行入口為`workplace/prose-v1/shield-unit-v1/candidate-identity.json`、`current-audit.json`及`actual-pixels.json`；99來源快照在`shield-candidate-sources-v1/`。原版差分為`shield_probe_v1.go`與`shield-source-v1/`，實作前READY為`source-saves-build-v1/shield-ready-review-v2.json`，原v1的數字語意稱呼已追加勘誤。`shield-unit-v1/tests.jsonl`、`receipt.json`、`independent-pixels.json`與`shield-regression-v1/`驗10具名、八點新配對、49點既有流程及2304000獨立像素。GUI為`shield-tools-v1/`、`shield-gui-v1/`，實際日誌重生為`shield_gui_replay_v1.go`及`shield-gui-pair-v1/`，共4291筆；四實際面板1161216及同時刻數字4896像素零差。舊fab主入口備份在`shield-unit-v1/previous-main-fab8f646`，Git／Docker收尾為`shield-unit-v1/repository-sync.json`。只驗已列來源存檔的`004dad`顯示，不代表其他盾牌或從新局取得。
 

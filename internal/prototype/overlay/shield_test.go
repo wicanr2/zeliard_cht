@@ -34,11 +34,12 @@ func TestShieldSecondLineSourceRegions(t *testing.T) {
 		t.Fatal(e)
 	}
 	wants := map[string]int{"004d96": 5, "004dad": 6, "004dc0": 5, "004dd2": 5, "004de4": 5, "004df9": 6}
+	swords := map[string]bool{"004d0c": true, "004d22": true, "004d35": true, "004d48": true, "004d5f": true, "004d78": true}
 	count := 0
 	for key, s := range l.sources {
 		pad, ok := wants[strings.TrimPrefix(key, "zelres2.file.")]
 		if !ok {
-			if s.leftPadding != 0 {
+			if s.leftPadding != 0 && !swords[strings.TrimPrefix(key, "zelres2.file.")] {
 				t.Fatal("無關來源被裁空白", key)
 			}
 			continue

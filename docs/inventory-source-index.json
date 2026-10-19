@@ -5,6 +5,28 @@
   "address_space": "IDA binary base 0 = dosgolem 01B1 段內偏移；不是 EXE 檔案偏移",
   "entries": [
     {
+      "address": "0xa786",
+      "level": "已證實",
+      "semantic": "原始E8E500 call sub_A86E，位於刀劍第二行文字之後。正常使用刀劍油後重開的數字繪製範圍由回呼差分確認，數字玩法語意未知。",
+      "evidence": [
+        "workplace/inventory-ida-v1/evidence.json",
+        "workplace/prose-v1/sword-source-v2/receipt.json",
+        "workplace/prose-v1/sword-source-v2/word-analysis.json",
+        "docs/spec/025-sword-inventory-label.md"
+      ]
+    },
+    {
+      "address": "0xa789",
+      "level": "已證實",
+      "semantic": "原始F6069300FF，call返回後定位；已列來源新增37個數字像素，字母區(238,86)-(263,94)不變。只確認顯示順序，不解釋數值公式。",
+      "evidence": [
+        "workplace/inventory-ida-v1/evidence.json",
+        "workplace/prose-v1/sword-source-v2/receipt.json",
+        "workplace/prose-v1/sword-source-v2/word-analysis.json",
+        "docs/spec/025-sword-inventory-label.md"
+      ]
+    },
+    {
       "address": "0x22db",
       "level": "已證實",
       "semantic": "小字 ASCIIZ 繪製入口，固定原版色號9",

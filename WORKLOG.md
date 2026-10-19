@@ -916,3 +916,13 @@ SAVEM3正常Enter裝備頁發現第一行已有中文，第二行的英文仍在
 4209f976、99來源、139工具輸入及四張預期圖固定後驗兩條實際X冷F7。HD開啟下開關／重開皆退出0，四面板1161216像素相同；根端逐張目視。實際日誌2123與2168筆共4291筆冷重播，每筆Regs／時間及末端完整原版相同，FileOps確認指定USR確實讀256bytes。重開時4896個數字區像素與同一暫停原版相同，實際X與程式畫布亦相同。GUI期間未改Go／測試／文字或固定工具，沒有失敗重跑挑結果。
 
 主入口同步4209f976，前fab備份在shield-unit-v1/previous-main-fab8f646。新原始定位附註加入既有inventory來源索引，016加勘誤backlink，數字公式仍未知。完整來源／擁有權／相對連結稽核與Git／Docker收尾分別在shield-unit-v1/current-audit.json及repository-sync.json。原始資料與圖像留本地；其他盾牌、混合居民、其餘中文與HD、音效及實體手把仍待完成，沒有Release、tag或封包。
+
+## 2026-10-19：刀劍油使用與刀劍文字025
+
+沿中文顯示語意隔離、文件職責及逆向技能入口，繼續原包SAVEM1的正常F7與持有物品操作。原版實走Muralla至Malicia，選到刀劍油、Space使用、關閉及重開；使用訊息與槽位消耗已觀察，來源取得未知。其後以025 DRAFT記錄刀劍第二行英文問題，沿既有IDA9.4定位加原版回呼差分，READY保存後才延伸固定ACD9六來源分類及字母安全區。未改譯表、原版數字或玩法。
+
+sword-unit-v1的11具名測試全部PASS，無fail／skip；15新配對點與8盾牌回歸點完整原版相同，vet／build通過。獨立五整圖2880000像素零差。候選439baeea，GUI前固定100份來源；初版身份漏列go.mod／go.sum，v2補齊，原98份v1身份保留，候選binary不變。
+
+實際GUI v1的裝備頁及刀劍油選取兩面板已通過，使用步驟因自動化寫成Space，X11不辨識而未送原版按下。隔離Xvfb確認No such key name，小寫space正常，屬工具錯誤。保留失敗v1及sword-gui-preflight-v1.json；GUI v2僅改按鍵名稱與輸出路徑，產品與100來源不變。後續最終GUI、日誌、數字像素與Git／Docker收尾另追加，不預先算通過。
+
+025收尾：GUI v2四張實際面板1161216像素零差並逐張目視，正常退出0。sword-gui-pair-v2從冷啟動重播3130筆實際原生日誌，每筆暫存器／時間及末端完整RAM／VGA／暫存器／時間相同；FileOps確認SAVEM1讀256bytes。actual-pixels.json核2448個同一暫停時刻的原版數字像素零差，X與程式畫布相同。主入口同步439baeea，舊4209備份在sword-unit-v1/previous-main-4209f976。025限定CONFORMED，README／CONTEXT／WORKLIST／來源索引與016勘誤同步。該來源洞窟HUD與未涵蓋HD維持待查，不重開已閉合字區或猜數字效果。Git／來源稽核與Docker收尾另存sword-unit-v1/current-audit.json及repository-sync.json；不建立Release、tag或封包。

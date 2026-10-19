@@ -82,7 +82,7 @@ HD 試作另加 `-hd-reference /project/workplace/probe-newgame-60m/screen.bin -
 
 物品頁另加入「不用」文字、小圖示及Ken’ko藥水兩行名稱。正常進入洞窟後可按Enter開物品頁、Right選藥水、Space使用；原版處理消耗與使用訊息。48點原版配對與正常視窗已驗使用、重開空欄及返回城鎮。該次原版生命已滿，只驗消耗與顯示；藥水受傷恢復量及未列物品分支尚未驗，見[道具使用規格](docs/spec/001-runtime-overlay.md#洞窟道具使用與物品頁文字-prototype)。
 
-共用物品文字已依原版指標表分類，新增60筆名稱及使用訊息候選。Magia石的正常買入、選用、使用、重開空欄及關閉已通過原版配對、獨立中文像素與實際視窗驗證。其他未正常取得的物品、裝備與魔法保留候選等級；譯名仍待校訂，見[共用物品文字規格](docs/spec/016-shared-inventory-text.md)。
+共用物品文字已依原版指標表分類，新增60筆名稱及使用訊息候選。Magia石的正常買入、選用、使用、重開空欄及關閉已通過原版配對、獨立中文像素與實際視窗驗證。原包存檔正常F7後的刀劍油使用，以及已列刀劍、盾牌名稱也已驗證，原版數字保持原貌；來源存檔的取得過程未知。其他物品、裝備與魔法仍待驗，譯名仍待校訂，見[共用物品文字](docs/spec/016-shared-inventory-text.md)與[刀劍文字及刀劍油](docs/spec/025-sword-inventory-label.md)規格。
 
 道具店 HD 使用 `-item-reference-0`至 `-item-reference-3`、`-item-palette`及 `-item-art-0`至 `-item-art-3`載入本地四組原圖與手繪圖。人物與蒸氣依已知原版畫格合成，保留黃色外框；未知畫格或缺圖退回原貌。四組抽樣來源不代表完整動畫，素材與對應見[道具店覆繪規格](docs/spec/001-runtime-overlay.md#道具店介紹出售與手繪畫格-prototype)。
 

@@ -197,14 +197,19 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 			if !known {
 				return nil, fmt.Errorf("未分類的裝備文字來源：%s", row[0])
 			}
-			inventory = kind != inventorySmallWhite && kind != inventoryShieldSecondLine
+			inventory = kind == inventoryLargeWhite || kind == inventoryLargeColor
 			inventoryWhite = kind == inventoryLargeWhite
-			if kind == inventoryShieldSecondLine {
+			if kind == inventoryShieldSecondLine || kind == inventorySwordSecondLine {
 				for off+leftPadding < end && data[off+leftPadding] == ' ' {
 					leftPadding++
 				}
-				if leftPadding != 5 && leftPadding != 6 || end-off-leftPadding != 6 {
-					return nil, fmt.Errorf("盾牌第二行的空白與文字範圍不符")
+				letters := end - off - leftPadding
+				valid := (leftPadding == 5 || leftPadding == 6) && letters == 6
+				if kind == inventorySwordSecondLine {
+					valid = leftPadding >= 4 && leftPadding <= 7 && letters == 5
+				}
+				if !valid {
+					return nil, fmt.Errorf("裝備第二行的空白與文字範圍不符")
 				}
 			}
 		}
@@ -352,7 +357,7 @@ func (l *Labels) begin(o *oracle.Oracle, charWidth int) {
 			y = int(o.CX() & 255)
 		}
 		lines := strings.Split(string(s.raw[:len(s.raw)-1]), "\r")
-		// 024：原版在盾牌第二行的前置空白後畫數字，只覆繪字母區。
+		// 024／025：原版在裝備第二行的前置空白後畫數字，只覆繪字母區。
 		if s.leftPadding > 0 {
 			if charWidth != 5 || len(lines) != 1 || s.leftPadding >= len(lines[0]) {
 				return

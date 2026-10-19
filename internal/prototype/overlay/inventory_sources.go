@@ -13,6 +13,7 @@ const (
 	inventoryLargeWhite
 	inventoryLargeColor
 	inventoryShieldSecondLine
+	inventorySwordSecondLine
 )
 
 // inventorySourceKinds 只分類固定 SAR2 的顯示來源。指標表、讀取端及
@@ -64,6 +65,9 @@ func inventorySourceKinds(data []byte) (map[int]inventoryTextKind, error) {
 				kind := table.kind
 				if table.pointer == 0xad67 && line == 1 {
 					kind = inventoryShieldSecondLine
+				}
+				if table.pointer == 0xacd9 && line == 1 {
+					kind = inventorySwordSecondLine
 				}
 				pointer, err = add(pointer, kind)
 				if err != nil {
