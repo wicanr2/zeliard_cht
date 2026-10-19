@@ -211,6 +211,7 @@
 | [internal/prototype/overlay/bank.go](internal/prototype/overlay/bank.go) | 銀行問句與後接結果的唯讀覆繪，逐筆保留原版數字圖形 |
 | [internal/prototype/overlay/bank_test.go](internal/prototype/overlay/bank_test.go) | 正常存提款的完整原版狀態、問句保留、數字圖形與未知畫面退回驗證 |
 | [tools/bank-text-gaps.commands](tools/bank-text-gaps.commands) | 冷F7後無存款提款、正常離店、長老普通告別與回城鎮的正常鍵序 |
+| [tools/church.commands](tools/church.commands)、[教堂配對測試](internal/prototype/overlay/church_test.go) | 自建存檔冷讀、兩種教堂入口、受傷存活返城、回復及離店的正常鍵序與來源核對 |
 | [tools/bank.commands](tools/bank.commands) | 自建存檔冷F7至銀行、存100、提50、查詢、無寶石與離店的原版鍵序 |
 | [internal/prototype/overlay/quotation_test.go](internal/prototype/overlay/quotation_test.go) | placeholder／字型／數字圖形合成與未知畫面退回驗證；合成數字不當原版行為證據 |
 | [internal/prototype/overlay/labels_test.go](internal/prototype/overlay/labels_test.go) | 冷新局走到長老選單的完整原版狀態與覆繪區域比較 |

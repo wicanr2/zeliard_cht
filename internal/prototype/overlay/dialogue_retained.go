@@ -8,6 +8,12 @@ var exhaustionReturnKeys = []string{
 	"zelres2.file.01d79c", "zelres2.file.01d7b2",
 }
 
+// 規格001的兩條正常教堂文字鏈；回復與離店仍由原版處理。
+var churchDialoguePaths = [][]string{
+	{"zelres2.file.01a453", "zelres2.file.01a508", "zelres2.file.01a568"},
+	{"zelres2.file.01a491", "zelres2.file.01a4cd", "zelres2.file.01a508", "zelres2.file.01a568"},
+}
+
 func (d *Dialogue) validateRetainedDialogue() error {
 	count := 0
 	var full []rune
@@ -19,19 +25,68 @@ func (d *Dialogue) validateRetainedDialogue() error {
 			}
 		}
 	}
-	if count == 0 {
-		return nil
-	}
-	if count != len(exhaustionReturnKeys) {
+	if count != 0 && count != len(exhaustionReturnKeys) {
 		return fmt.Errorf("送返長老對話須四個字段完整提供")
 	}
-	_, err := dialogueLayout(d.font, full)
-	return err
+	if count != 0 {
+		if _, err := dialogueLayout(d.font, full); err != nil {
+			return err
+		}
+	}
+	church := map[string][]rune{}
+	for _, path := range churchDialoguePaths {
+		for _, key := range path {
+			for _, p := range d.paragraphs {
+				if p.key == key {
+					church[key] = p.text
+				}
+			}
+		}
+	}
+	if len(church) == 0 {
+		return nil
+	}
+	if len(church) != 5 {
+		return fmt.Errorf("教堂對話須五個字段完整提供")
+	}
+	for _, path := range churchDialoguePaths {
+		var text []rune
+		for _, key := range path {
+			text = append(text, church[key]...)
+		}
+		if _, err := dialogueLayout(d.font, text); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // 缺前段、前段未完成或失序時，整框保留原文，不猜補前文。
 func (d *Dialogue) retainedDialogueLead(next int) ([]rune, bool) {
 	key := d.paragraphs[next].key
+	for _, path := range churchDialoguePaths {
+		for i, candidate := range path {
+			if key != candidate {
+				continue
+			}
+			if i == 0 {
+				return nil, true
+			}
+			if d.active && d.current >= 0 && d.current < len(d.paragraphs) {
+				previous := d.paragraphs[d.current]
+				if previous.key == path[i-1] && d.visible == len(previous.text) {
+					return append(append([]rune(nil), d.lead...), previous.text...), true
+				}
+			}
+		}
+	}
+	for _, path := range churchDialoguePaths {
+		for _, candidate := range path {
+			if key == candidate {
+				return nil, false
+			}
+		}
+	}
 	for i, candidate := range exhaustionReturnKeys {
 		if key != candidate {
 			continue

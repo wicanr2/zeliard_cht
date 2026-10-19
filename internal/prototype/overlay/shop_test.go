@@ -61,7 +61,7 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 		}
 		machines[i].SetDOSBoxCycles(3000)
 		scratch := t.TempDir()
-		if strings.Contains(commandPath, "bank") || strings.Contains(commandPath, "item-shop") {
+		if strings.Contains(commandPath, "bank") || strings.Contains(commandPath, "item-shop") || strings.Contains(commandPath, "church") {
 			savePath := os.Getenv("ZELIARD_BANK_SAVE")
 			if strings.Contains(commandPath, "item-shop") {
 				savePath = os.Getenv("ZELIARD_ITEM_SAVE")
@@ -313,6 +313,9 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 			if strings.Contains(commandPath, "bank") {
 				assertBankCheckpoint(t, f[1], d, l, b, dst, drawn)
 			}
+			if strings.Contains(commandPath, "church") {
+				assertChurchCheckpoint(t, f[1], d, b, dst, drawn)
+			}
 			if strings.Contains(commandPath, "item-shop") {
 				if strings.Contains(commandPath, "branches") {
 					assertItemBranchCheckpoint(t, f[1], d, l, b, dst, drawn)
@@ -463,6 +466,9 @@ func testWeaponShopNormalPath(t *testing.T, commandPath string, wantCheckpoints 
 	}
 	if strings.Contains(commandPath, "bank-no-purchase") {
 		scope = "normal cold F7 own save, bank greeting, no transaction farewell and outside1000; full original state equal"
+	}
+	if strings.Contains(commandPath, "church") {
+		scope = "normal cold F7 own save, two church welcome chains, cave damage75 and alive return, native healing80 and town1000; original state and recorded source equal"
 	}
 	if strings.Contains(commandPath, "branches") {
 		scope = "normal cold F7 own save, three item descriptions/pages, empty sell, prerequisite purchase50, sale confirmation25 and result975, departure and inventory removal; full original state equal"
