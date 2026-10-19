@@ -164,6 +164,8 @@
 | [docs/spec/018-cave-weapon-hd.md](docs/spec/018-cave-weapon-hd.md) | 洞窟32×32武器來源、高清下層與最後合成閘門 |
 | [internal/prototype/hd/cave_weapon.go](internal/prototype/hd/cave_weapon.go)、[測試](internal/prototype/hd/cave_weapon_test.go) | 規格018的十武器圖面、下層還原、空白／未知退回與最後高清合成 |
 | [docs/spec/019-cave-object-hd.md](docs/spec/019-cave-object-hd.md) | 洞窟動態物件來源、美術、層序及正常驗收閘門 |
+| [docs/spec/020-cave-portal-hd.md](docs/spec/020-cave-portal-hd.md) | Malicia至Muralla入口的圖塊、裁切、高清及中文圖牌閘門 |
+| [internal/prototype/hd/cave_portal.go](internal/prototype/hd/cave_portal.go)、[入口測試](internal/prototype/hd/cave_portal_test.go) | 完整矩陣與資源守衛、直接高清圖牌及獨立全幅驗證 |
 | [internal/prototype/hd/cave_object.go](internal/prototype/hd/cave_object.go)、[測試](internal/prototype/hd/cave_object_test.go) | 規格019的物件圖組、原版清黑、繪製順序、裁切及未知退回 |
 | [tools/weapon-hd.commands](tools/weapon-hd.commands) | 正常首戰及固定左右出劍延伸，供018完整原版配對 |
 | [internal/prototype/overlay/inventory_sources.go](internal/prototype/overlay/inventory_sources.go)、[測試](internal/prototype/overlay/inventory_sources_test.go) | 規格016的指標表字型分類、來源拒絕及正常物品中文配對 |

@@ -19,6 +19,24 @@ type CaveTerrain struct {
 	weaponState map[string]any
 	objects     *CaveObjects
 	objectState map[string]any
+	portal      *CavePortal
+	portalState map[string]any
+}
+
+func (s *CaveTerrain) SetPortal(portal *CavePortal) { s.portal = portal; s.portalState = nil }
+
+func (s *CaveTerrain) PortalState() map[string]any {
+	if s == nil || s.portalState == nil {
+		return nil
+	}
+	state := make(map[string]any, len(s.portalState))
+	for key, value := range s.portalState {
+		if points, ok := value.([]image.Point); ok {
+			value = append([]image.Point{}, points...)
+		}
+		state[key] = value
+	}
+	return state
 }
 
 func (s *CaveTerrain) SetPlayer(player *CavePlayer) { s.player = player; s.playerState = nil }
@@ -134,6 +152,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		s.playerState = nil
 		s.weaponState = nil
 		s.objectState = nil
+		s.portalState = nil
 		if s.player != nil {
 			s.playerState = map[string]any{"loaded": true, "matched": false, "occluded": false}
 		}
@@ -282,6 +301,9 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 				}
 			}
 		}
+	}
+	if s.portal != nil {
+		s.portalState = s.portal.draw(dst, f, d, origin)
 	}
 	if s.objects == nil {
 		paintNative(d.Dynamic)

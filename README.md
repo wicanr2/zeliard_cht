@@ -37,6 +37,8 @@ Malicia 洞窟地形試作另加 `-cave-art-dir /project/workplace/cave-hd-v1`�
 
 洞窟動態物件另加 `-cave-object-art-dir /project/workplace/cave-hd-v1`，搭配地形選項，載入 `object-red-handpaint-v1.png`、`object-green-handpaint-v1.png`、`object-effects-handpaint-v1.png`、`object-green-extra-handpaint-v1.png` 四張本地固定圖。29個已確認圖像來源按原版順序合成，保留清黑、部分出界裁切及主角／武器前後層。缺圖、未知鍵、不同配色或非零底圖保留原貌。這些圖不入儲存庫，範圍見[洞窟物件規格](docs/spec/019-cave-object-hd.md)，其餘物件與洞窟仍待完成。
 
+Malicia通往Muralla鎮的入口另加 `-cave-portal-art /project/workplace/cave-hd-v1/portal-handpaint-v1.png`，搭配地形選項。拱門直接以高清合成，人物、武器與物件仍依原版順序遮擋。搭配 `-hud-text /project/text/hud-prototype.tsv` 時，圖牌沿用「Muralla鎮」；未載譯表時顯示MURALLA。完整入口矩陣與資源不符時保留原圖，不套用其他入口。圖面只留本地，範圍見[入口規格](docs/spec/020-cave-portal-hd.md)。
+
 建置後在 Docker 內執行：
 
 ```sh

@@ -104,6 +104,18 @@ type HUD struct {
 
 func hudHash(data []byte) string { return fmt.Sprintf("%x", sha256.Sum256(data)) }
 
+// Translation只回傳已核對原件來源的譯文，不參與DOS條件判定。
+func (h *HUD) Translation(key string) (string, bool) {
+	if h == nil {
+		return "", false
+	}
+	s := h.sources[key]
+	if s == nil {
+		return "", false
+	}
+	return string(s.text), true
+}
+
 func NewHUD(o *oracle.Oracle, root, catalog string, font bitmap.Font) (*HUD, error) {
 	versions := map[string]string{
 		"ZELRES1.SAR": "56a73b59e952dab47fb0171a3fb1cdb7d641baceafa97e2826057f877a590eb0",

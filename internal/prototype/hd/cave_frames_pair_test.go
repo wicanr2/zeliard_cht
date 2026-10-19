@@ -139,6 +139,7 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 		art.SetObjects(objects)
 	}
 	objectCoverage := newCaveObjectCoverage(objects)
+	configureCavePortal(t, art)
 	if e = os.Mkdir(out, 0755); e != nil {
 		t.Fatal(e)
 	}
@@ -358,6 +359,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		art.SetObjects(objects)
 	}
 	objectCoverage := newCaveObjectCoverage(objects)
+	configureCavePortal(t, art)
 	seenPlayerFrames := map[uint64]bool{}
 	seenPlayerKeys := map[string]int{}
 	var missingPlayerSources []map[string]any
@@ -562,6 +564,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 						point["objects_hd"] = art.ObjectState()
 					}
 					point["Chinese_overwrites_game_pixels"] = 0
+					point["portal_hd"] = art.PortalState()
 				} else {
 					canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
 					old := cloneTownBytes(canvas.Pix)

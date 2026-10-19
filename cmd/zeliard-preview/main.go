@@ -454,6 +454,13 @@ func (g *game) caveObjectState() map[string]any {
 	return g.caveTerrainHD.ObjectState()
 }
 
+func (g *game) cavePortalState() map[string]any {
+	if !g.hdEnabled || !g.caveTerrainMatch {
+		return nil
+	}
+	return g.caveTerrainHD.PortalState()
+}
+
 func (g *game) Draw(screen *ebiten.Image) {
 	w, h, rawRGB := g.o.ScreenRGB()
 	raw := g.o.Indexed()
@@ -504,6 +511,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"cave_player_hd":             g.cavePlayerState(),
 			"cave_weapon_hd":             g.caveWeaponState(),
 			"cave_objects_hd":            g.caveObjectState(),
+			"cave_portal_hd":             g.cavePortalState(),
 			"input_trace_error":          g.inputTraceError,
 			"town_ground_hd_matched":     g.townGroundMatch,
 			"town_player_hd_matched":     g.townPlayerMatch,
@@ -783,6 +791,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"cave_player_hd":          g.cavePlayerState(),
 				"cave_weapon_hd":          g.caveWeaponState(),
 				"cave_objects_hd":         g.caveObjectState(),
+				"cave_portal_hd":          g.cavePortalState(),
 				"input_trace_error":       g.inputTraceError,
 				"town_ground_hd_matched":  g.townGroundMatch,
 				"town_player_hd_matched":  g.townPlayerMatch,
@@ -849,6 +858,7 @@ func main() {
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
 	caveObjectArt := flag.String("cave-object-art-dir", "", "可選：洞窟動態物件手繪圖集目錄，搭配洞窟地形HD")
+	cavePortalArt := flag.String("cave-portal-art", "", "可選：Muralla洞窟入口手繪圖，搭配洞窟地形HD")
 	townSignsText := flag.String("town-signs-text", "", "可選：Muralla招牌中文TSV，搭配前景HD")
 	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
 	kingRefB := flag.String("king-reference-b", "", "可選：本地原版國王姿態 B 的 screen.bin")
@@ -1087,6 +1097,18 @@ func main() {
 		g.hud, err = overlay.NewHUD(o, root, *hudText, font)
 		if err != nil {
 			log.Printf("狀態列試譯未載入，保留原文：%v", err)
+		}
+	}
+	if *cavePortalArt != "" && g.caveTerrainHD != nil {
+		title := "MURALLA"
+		if translated, ok := g.hud.Translation("zelres2.file.0399b8"); ok {
+			title = translated
+		}
+		portal, e := hd.NewCavePortal(*cavePortalArt, font, title)
+		if e != nil {
+			log.Printf("入口HD未載入，保留原圖：%v", e)
+		} else {
+			g.caveTerrainHD.SetPortal(portal)
 		}
 	}
 	ebiten.SetWindowSize(width, height)

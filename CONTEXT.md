@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-洞窟29個動態物件來源HD已接入，正常首戰、拾取、切換與回城通過原版配對、實際視窗及獨立像素驗證。現行候選為2ac1b51c，主入口同步另記object-mainalias-sync-v1.json。兩個已驗主角配色來源保留原色，不計HD匹配。主角30姿態、十個武器來源、共用物品與片頭中文及既有城鎮成果保持身份；全遊戲中文與HD仍在開發。
+Malicia通往Muralla的入口HD與中文圖牌已接入，020限定CONFORMED，主入口同步0d70040a。232項具名回歸、57份獨立全幅、正常38點配對、兩路實際視窗及1193472實際像素驗證通過。既有29物件、主角30姿態、十武器、中文與城鎮成果保持身份；全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -18,8 +18,8 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 洞窟動態物件019限定CONFORMED | 2ac1b51c／91固定來源，29圖像／四PNG；173具名及35獨立全幅10160640像素通過。正常38點全部原版相同，238有限來源中352物件匹配。兩GUI正常退出，3240日誌重播243完成／613合成、309物件已知、未知0；612864實際像素零差。兩主角配色完整576雙向映射與580608單元圖面另驗；不算HD。稽核object-current-audit-v1.json核144自有檔，舊018／017收據不改 |
-| 接續工作 | 洞窟入口等其餘可見圖像HD及正常探索中文 | 主角／武器／物件其他來源、其他洞窟仍待擴充，已驗配色提示保留原色。Sabre1,200高於起始1,000，v1只驗資金不足；正常第一寶石的銀行報價6，未取得Sabre，不改金額或猜效果。其他未走過的物品與法術來源仍是候選 |
+| 本輪工作 | 洞窟入口020限定CONFORMED | 0d70040a／93固定來源，直接120×120手繪及中英圖牌；232具名無fail／skip，57獨立全幅16547328像素、正常38點全部原版相同。首戰v2／回城v1退出0，3241實際日誌冷重播268完成／677合成／759 FileOps，原版相同、零拒絕；四洞窟及回城地面1193472實際像素零差。稽核147自有檔，舊019成果與失敗保持身份。額外HUD9具名通過、3舊fixture跳過不計驗收 |
+| 接續工作 | 洞窟正常探索的其餘圖像HD與中文 | 主角／武器／物件其他來源、其他洞窟仍待擴充，已驗配色提示保留原色。Sabre1,200高於起始1,000，v1只驗資金不足；正常第一寶石的銀行報價6，未取得Sabre，不改金額或猜效果。其他未走過的物品與法術來源仍是候選 |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角30姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；兩個已驗主角配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -44,7 +44,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步推洞窟入口等其餘可見圖像HD，並沿正常探索取得其他物品、校驗候選中文。主角30姿態、十武器與29物件來源沿[017](docs/spec/017-cave-player-hd.md)、[018](docs/spec/018-cave-weapon-hd.md)及[019](docs/spec/019-cave-object-hd.md)限定閉合；五張主角、一張武器及四張物件PNG身份固定，兩個主角配色保留原色。原25主角及原28物件取樣不變，不重開14／15補圖勘誤。共用文字分類與Magia垂直鏈已依[規格016](docs/spec/016-shared-inventory-text.md)閉合，不重開指標表或首瓶藥水研究。Sabre正常使用先滿足金幣條件；不可改金額或把資金不足當使用驗收。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步推正常洞窟探索的其餘可見圖像HD，並取得其他物品、校驗候選中文。Malicia至Muralla入口沿[020](docs/spec/020-cave-portal-hd.md)限定閉合，不重開矩陣、字牌或首戰尾段數字檢查。主角30姿態、十武器與29物件來源沿[017](docs/spec/017-cave-player-hd.md)、[018](docs/spec/018-cave-weapon-hd.md)及[019](docs/spec/019-cave-object-hd.md)限定閉合；五張主角、一張武器及四張物件PNG身份固定，兩個主角配色保留原色。原25主角及原28物件取樣不變，不重開14／15補圖勘誤。共用文字分類與Magia垂直鏈已依[規格016](docs/spec/016-shared-inventory-text.md)閉合，不重開指標表或首瓶藥水研究。Sabre正常使用先滿足金幣條件；不可改金額或把資金不足當使用驗收。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -55,6 +55,18 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 ## 工具與本地證據入口
 
 以下按研究版本保留證據入口。舊候選與舊失敗保持原身份；目前主入口與下一步以上方狀態表為準。
+
+- 入口HD依[020](docs/spec/020-cave-portal-hd.md)限定CONFORMED；原生矩陣、資源、裁切與完整來源核對沿`portal_inventory_v1.py`／`portal-source-v1/`，沿既有已驗完成來源，不注入或重打。美術參考為同目錄`reference.png`；圖面、完整提示詞與登錄另沿portal前綴，不覆寫既有地形／物件／主角。
+- 入口盤點初次在舊native-paints來源的獨立遮罩檔假設停止，該證據實際把真實CavePaints存於既有JSON。失敗全文與SHA記`portal-inventory-preflight-v1.json`，改讀明示的inline紀錄後對同批來源重跑；輸出原先仍空，原件與正式程式未改。
+- 入口盤點去重38真實完成來源，16完整／3部分裁切／19不在視野，26657個可見未遮擋入口像素與完整遊戲區零差，無未匹配字牌片段。21個圖塊按id+48bytes串接共1029bytes，SHA `3fd046b8c1281a013bfe1c8dfa627a663fec2eac5cebe7e3df025a63c1db6633`；40×40原生圖SHA `9374206133321e2cb058c7c94512e230cde8183afc6896282dd94989180fb716`。根端已核讀MURALLA。手繪圖與完整提示詞另存`portal-handpaint-v1.png`／`portal-prompt-v1.txt`及`portal-art-index-v1.json`，透明字牌留白、文字另畫；未READY不接正式路徑。
+- 入口美術裁切及直接120×120取樣沿`portal_register_v1.py`／`portal-art-preview-v1/`，保留原PNG與alpha。中文／原文圖牌的字型、字寬與安全區在同份登錄核對；不增新catalog格式，中文沿已驗HUD譯表，未提供該來源時用MURALLA。全幅合成另沿`portal_preview_v1.py`／`portal-composition-preview-v1/`，只作DRAFT研究，不算GUI。
+- 020的READY原文與審查為`portal-ready-spec-v1.md`／`portal-ready-review-v1.json`。57份獨立完整圖面及中英圖牌核對後才實作。候選0d70040a與93份Go／測試／譯表來源凍結於`portal-candidate-identity-v1.json`／`portal-candidate-sources-v1/`；實作後回歸為`portal_validate_v1.py`／`portal-unit-v2/`，232項具名無跳過，HUD、vet及建置另通過。正常38點在`portal-pair-v1/paths/`；不以單元圖面當GUI。
+- 入口GUI沿`portal_freeze_v1.py`／`portal-tools-v1/`，固定237輸入；正常首戰、切換／捲動與回城分別輸出`portal-gui-combat-v1/`、`portal-gui-return-v1/`。`portal_gui_targets_v1.py`保存真實完成時鐘，原版重播輸出`portal-gui-pair-v1/`，獨立完整合成由`portal_gui_pixels_v1.py`／`portal-gui-pixels-v1/`核對。工具輸出尚未完成者不預先算通過。
+- 入口GUI v1已在`combat-right-2.png`及`portal-scroll-HD-b.png`看見第一寶石1，尾段四步卻是2。舊腳本只接受尾段恰等1，因此停止，不是遊戲缺陷。v1失敗及原圖保留，勘誤為`portal-gui-preflight-v1.json`；`portal_gui_prepare_v2.py`／`portal-tools-v2/`改驗所有正常檢查點曾出現1。程式0d70040a、93來源及原鍵序預算不改，不固定／重擲亂數。正常首戰另輸出`portal-gui-combat-v2/`，回城沿v1。後續時鐘及像素工具明示使用v2首戰，不將v1改名為成功。
+- 020首戰v2與回城v1已正常退出0。`portal_replay_v1.py`／`portal-gui-pair-v1/`核3241實際日誌、268完成／677合成／759 FileOps，每筆原版及末端GUI RAM／VGA相同；336物件已知、206部分出界、104空白、未知0。僅既有c29c7a73主角配色保留原貌，不算HD或新語意。指定來源129643829／135129901／139943461／153125859的兩個真實時間與完整SHA相同。
+- 獨立像素工具v1因全域sprite被後續人物／武器取代而停止，完整失敗與一張未完成輸出保留`portal-pixel-preflight-v1.json`。`portal_gui_pixels_v2.py`只隔離變數，用同一GUI與重播來源核四洞窟加回城1193472高清像素零差；不重跑遊戲或改守衛。五張真正X截圖目視為`portal-root-visual-review-v1.json`。
+- 完成稽核沿`portal_audit_v1.py`／`portal-current-audit-v1.json`，核147自有檔、93固定來源、29原件、882快照、兩壓縮檔、字型及存檔SHA／mtime。額外HUD篩選9具名通過、3舊fixture跳過不計驗收，初次稽核誤當無skip的勘誤為`portal-audit-preflight-v1.json`。主入口同步與舊2ac1備份為`portal-mainalias-sync-v1.json`／`portal-previous-main-2ac1b51c`。完整提示詞、原PNG與登錄收`portal-art-final-index-v1.json`，嵌入建置資訊為`portal-build-info-v1.json`；Git及容器收尾另記`portal-repository-sync-v1.json`。沒有建立Release、tag或交付包。
+- 登錄首輪的「開口alpha必須全0」檢查停止。實際864個中心樣本中830為0、34為1，非零者皆RGB0；原版先清黑後合成，輸出RGB逐點仍0，人物與物件後畫不受影響。原圖alpha不改，改驗既有清黑契約下的可見輸出，失敗全文及數值記`portal-art-review-v1.json`，不放寬來源／色盤／區界或生成另一張圖挑結果。
 
 - 洞窟動態物件沿[019](docs/spec/019-cave-object-hd.md)先DRAFT，使用既有正常首戰／左右鍵序；探針`object_probe_v1.go`／`object-source-v1/`保存原始物件定位、16×16色號／透明來源及完整原版快照。獨立原生核對與來源圖表沿`object_inventory_v1.py`／`object-inventory-v1/`。不改主角、武器、共享dosgolem或原件，不以視覺來源推論敵人規則。
 - 019正常229完成來源取得352筆物件觀察、28個完整16×16鍵，分原始type1／2／10／18／20，不替欄位命名玩法。28份全遊戲區及256bytes各由獨立Python零差；所有已見四格底圖皆0，仍保留原黑色與出界裁切。精確平移／鏡射等價與美術參考分組沿`object_art_reference_v1.py`／`object-art-reference-v1/`，圖面及完整提示詞沿`object-art-index-v1.json`與`object-*-prompt-v1.txt`、`object-*-handpaint-v1.png`。未READY不接正式路徑。
