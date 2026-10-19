@@ -665,4 +665,23 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 4192在兩條正常鍵序未觀測，不再假定是必經初始化；其他情境用途未知，不追無玩家依賴helper。實際已觀察302C、39A3及40F0等入口。
 - 內建imagegen產生兩張1254×1254逐格圖與一張1254×1254連續岩面圖，完整提示詞與SHA在art-index-v1.json。逐格重複感強，連續圖改以循環地圖地址定位。圖塊黑色會直接覆寫VGA，不是通用透明色；ID3..8連續岩面欄保留原版空地與首末可見像素，內部黑點換材質。這是明示美術規則，不稱原版碰撞遮罩，素材alpha不改寫。
 - 離線工具先移除原貌武器／角色，核對整張320×200可原樣重建，再畫高清地形並還原原貌角色／武器。四張完成來源各64000色號重建零差，角色／武器opaque及繪製區外零差。只複製五個已驗中文標籤並核對當次原版位圖相同；數字及生命條取當次完成來源。
-- `tools/cave_hd_preview.py`以研究輸入唯讀、空白輸出另掛可寫的Docker命令重跑，四PNG與prototype逐byte相同。CLI不等於正式接入或GUI驗收；011仍DRAFT，下一步呈現生命週期、動態物件、美術映射審查，再進READY與正式驗收。
+- `tools/cave_hd_preview.py`以研究輸入唯讀、空白輸出另掛可寫的Docker命令重跑，四PNG與prototype逐byte相同。CLI不等於正式接入或GUI驗收；當輪011仍DRAFT，後續接入另見下一節。
+
+## 2026-10-19：洞窟完成來源、動態格及回城勘誤
+
+- 輸入固定為EXE `fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341`、dosgolem882檔摘要`2a5ad11a6c67b1e1d8a16d61830d8565f262ab38566f49d6ff076a721be58ada`。IDA9.4匯出`combat-v1/ida-cave-v3.json` SHA `3e11f43d6826ccdcd3b31f8c8ab74e18b745d4e36c421d699e71f4b9f89cb519`；以下定位均為IDA binary base0／實模式01B1段內偏移，資源在11B1，不能當SAR偏移。Go1.24.13、Python3.13.15、cycles3000，原始資料與共用dosgolem唯讀。
+- 已證實：703C／7136開始、7114／714C完成、4129保存主角來源。舊3123漏掉獨立武器更新；R011-lifecycle回填011至012及resolution-index-lifecycle-v1.json。`lifecycle-v2/`1082取樣，957當次完成、125批次保留；原版回城換場199像素改動按契約撤除。`full-frame-v2/`229完成事件整個224×144色號零差。主角資源與完成來源分開保存，未消費資源區可變，不能要求整段相同。
+- 已證實：動態地圖低七位從ED20取底圖，C010指標指向16-byte記錄，+4選A030／A070型別表，+6低四位選5-byte動畫。資源4000四位元圖格、A000遮罩及4F8C色表依3599重建，395次／77圖格零差。只描述圖像來源，不命名怪物或推論規則。地形1..14、動態、主角、武器完整重建後才接受呈現與高清合成。
+- 已證實：正常GUI原生日誌可冷重播。`input-replay-v4/`3319筆前後暫存器／時間相同，最終1MiB、色號及暫存器等於GUI。固定延伸捕捉FF39=255；獨立Python整區零差，334完成事件零差。v5首戰另見E8=255、回城另見FF3A=255，`actor-profiles-proof-v2.json`三來源各32256像素零差，角色171／194／240像素。圖像分支與原始位址見012，沒有給未知欄位附玩法名稱。
+- 限制：v5兩條失敗GUI無最終live RAM檔。`combat-profile-replay-v6/`及`return-profile-replay-v6/`只稱逐筆日誌暫存器／週期相同及242＋74完成事件重建零差。回城68BA來源的主段、資源、extra與色號SHA另等於GUI已呈現來源，不能外推完整live RAM對拍。三個profile只接受0／255且最多一個非零；0093／FF41與其他未驗組合仍拒絕。
+- 已證實R007-return-resource：Town主角模板最高ID45，實用資源6000..68A0及8000..D800不變，68A0..8000保留區回城可變。007／008與return-resolution-index-v1.json附原定位與審查，不取消程式／NPC／遮罩守衛。
+- 已證實R009-ground-phase：`return-replay-v5/last-town.memory` SHA `db512d91d79d856b8a94779c573623c8a4d1aebc48fbaa7d96f1dfb9bac12e9f`，完成色號SHA `c0e8fd4c11b3c295f53096dace6c4f1ac3956181101c5a7a164ba83d0c2b6023`。camera179時上下兩帶相位皆0，原公式差970／926像素。009保留原行走證據並附勘誤，改驗每帶唯一完整圖樣與RGB；零個或多個相位均拒絕。初始化producer仍未知，不阻塞顯示實作。
+- READY審查分開保存：ready-layer-review-v1、ready-terrain-review-v1、ready-ff39-review-v1、ready-actor-profiles-review-v2、ready-ground-return-review-v1。素材仍沿三份內建imagegen完整提示詞及art-index-v1，不重新產圖，不提交素材／原版／字型／收據。
+
+## 2026-10-19：原版增量覆寫與寶石驗證勘誤
+
+- 輸入、工具及位址空間沿上節。已證實：v6首戰116像素失配來自原版3316..3319在主角之後寫VGA。`combat-write-replay-v6/original-writes.json`保存148筆實際寫入，分列實體VGA位址、oracle IDA位址與01B1偏移。3272靜態格以DX乘2定位，整8×8覆寫；3599動態格以DX定位，底圖0整格覆寫，其他底圖依資源A000遮罩的0位元覆寫。只補靜態格仍差50／51像素，恰為動態格的後寫像素。
+- `native-paints-proof-v1.json`獨立Python重建三個實際來源各32256像素零差。首拒絕來源memory SHA `ee0f321df3579a1d1725b60a806a38a1f2efde9d858bd14c28a5c4e077da16a8`、body SHA `32828873904c436a8271db7e890fc95a21a51d66a0063f2dfcadf5cc3207bbdb`。依真實寫入扣除舊主角像素，不由最終顏色猜遮擋。READY審查為`ready-native-paints-review-v1.json`，正式實作再驗64筆上限、來源／時間順序、深複製及原子退回。
+- `current-journal-pair-v7/receipt.json`兩個原版冷啟動重播3349筆日誌，每筆完整RAM、暫存器、VGA／色盤及虛擬時間相同；最終另等於原失敗GUI實際RAM及色號。267完成畫格零差、零拒絕，674次HD繪製包含30次增量來源。未知分支仍退回，不推論敵人或掉落規則。
+- R-gem-reference：v7工具將`advance-strike-2.indexed`的寶石0誤當作1。該ROI與cave-entered的0相同，色號SHA `dc8686f5ea84b3bf3a77759d8e6f4084c7286d762ba215045b3123114550f2b2`；正確`pickup-attempt-left-1.indexed`的1為`ffab415a8d3c239e8a6dccf0d40e50bc04f42a058d703ec8719c224b6d5afed0`。撤銷舊GUI的first_gem_bitmap判定，HD／輸入證據各自保留。
+- 修正工具v8沿同候選0227c040，不改原版或種子。移除持鍵中抓圖的額外耗時，以正常按鍵完成拾取。`gem-reference-review-v8.json`獨立核對原版0反例、正確1參考與實際X視窗：第一拾取1，最終2與當次原版色號相同。300完成事件零拒絕；`pixel-current-v10/`另核該次原版全區重建及290304高清像素零差。原錯誤收據不覆寫，不以碰巧通過的結果替換原版日誌。

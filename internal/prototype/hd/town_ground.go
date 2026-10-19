@@ -55,34 +55,18 @@ func (s *TownGround) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palett
 	if s == nil || !box.In(dst.Bounds()) || !townFrameSource(townFrameInput{mode: mode, primary: p, resources: r, extra: e, palette: palette}) {
 		return false
 	}
-	f, err := s.scene.decode(mode, p, r, e, raw, rgb)
+	_, err := s.scene.decode(mode, p, r, e, raw, rgb)
 	if err != nil {
 		return false
 	}
-	for y := 0; y < 16; y++ {
-		factor := 1
-		if y >= 8 {
-			factor = 2
-		}
-		for x := 0; x < 224; x++ {
-			u := (x + (f.camera-153)*8*factor) % 112
-			if u < 0 {
-				u += 112
-			}
-			want := s.reference[y*112+u]
-			i := (142+y)*320 + 48 + x
-			if raw[i] != want || !bytes.Equal(rgb[i*3:i*3+3], s.scene.palette[int(want)*3:int(want)*3+3]) {
-				return false
-			}
-		}
+	phase, ok := s.phases(raw, rgb)
+	if !ok {
+		return false
 	}
 	for y := 0; y < 48; y++ {
-		factor := 1
-		if y >= 24 {
-			factor = 2
-		}
+
 		for x := 0; x < 672; x++ {
-			u := (x + (f.camera-153)*24*factor) % 336
+			u := (x + phase[y/24]*3) % 336
 			if u < 0 {
 				u += 336
 			}
@@ -94,4 +78,39 @@ func (s *TownGround) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palett
 		}
 	}
 	return true
+}
+
+// phases只接受完整圖樣與RGB的唯一循環位移，契約見009回城勘誤。
+func (s *TownGround) phases(raw, rgb []byte) ([2]int, bool) {
+	var phases [2]int
+	if len(raw) != 64000 || len(rgb) != 192000 || len(s.reference) != 1792 {
+		return phases, false
+	}
+	for band := 0; band < 2; band++ {
+		found := -1
+		for shift := 0; shift < 112; shift++ {
+			matched := true
+			for y := band * 8; y < band*8+8 && matched; y++ {
+				for x := 0; x < 224; x++ {
+					value := s.reference[y*112+(x+shift)%112]
+					i := (142+y)*320 + 48 + x
+					if raw[i] != value || !bytes.Equal(rgb[i*3:i*3+3], s.scene.palette[int(value)*3:int(value)*3+3]) {
+						matched = false
+						break
+					}
+				}
+			}
+			if matched {
+				if found >= 0 {
+					return phases, false
+				}
+				found = shift
+			}
+		}
+		if found < 0 {
+			return phases, false
+		}
+		phases[band] = found
+	}
+	return phases, true
 }

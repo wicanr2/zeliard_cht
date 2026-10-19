@@ -1,0 +1,417 @@
+package hd
+
+import (
+	"bytes"
+	"encoding/json"
+	"image"
+	"image/png"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strconv"
+	"strings"
+	"testing"
+
+	"github.com/wicanr2/dosgolem/oracle"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/overlay"
+)
+
+func TestCaveFramesNormalPathsReadOnly(t *testing.T) {
+	paths, out := os.Getenv("ZELIARD_CAVE_COMMANDS"), os.Getenv("ZELIARD_CAVE_OUTPUT")
+	if paths == "" || out == "" {
+		t.Skip("須掛載正常鍵序及輸出；skip不算驗收")
+	}
+	for _, path := range filepath.SplitList(paths) {
+		t.Run(filepath.Base(path), func(t *testing.T) {
+			runCaveFramesPair(t, path, filepath.Join(out, strings.TrimSuffix(filepath.Base(path), ".commands")))
+		})
+	}
+}
+
+// 重播既有失敗GUI的同一份原生IRQ／RunCycles日誌，無狀態注入。
+func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
+	root, project, study, out := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_PROJECT"), os.Getenv("ZELIARD_CAVE_STUDY"), os.Getenv("ZELIARD_CAVE_JOURNAL_OUTPUT")
+	if root == "" || project == "" || study == "" || out == "" {
+		t.Skip("須掛載固定GUI日誌與輸出；skip不算驗收")
+	}
+	read := func(path string) []byte {
+		b, e := os.ReadFile(path)
+		if e != nil {
+			t.Fatal(e)
+		}
+		return b
+	}
+	data := read(filepath.Join(study, "gui-current-combat-v6/guest-inputs.jsonl"))
+	type journalRecord struct {
+		Kind          string      `json:"kind"`
+		CyclesPerMS   uint64      `json:"cycles_per_ms"`
+		SampleRate    int         `json:"audio_sample_rate"`
+		InitialMemory string      `json:"initial_memory_sha256"`
+		InitialRegs   oracle.Regs `json:"initial_regs"`
+		Scan          uint8       `json:"scan"`
+		Pressed       bool        `json:"pressed"`
+		Budget        uint64      `json:"cycle_budget"`
+		BeforeSteps   uint64      `json:"before_steps"`
+		BeforeCycles  uint64      `json:"before_cycles"`
+		AfterSteps    uint64      `json:"after_steps"`
+		AfterCycles   uint64      `json:"after_cycles"`
+		AfterRegs     oracle.Regs `json:"after_regs"`
+		Audio         bool        `json:"audio_render"`
+		Error         string      `json:"error"`
+	}
+	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
+	var header journalRecord
+	if e := json.Unmarshal([]byte(lines[0]), &header); e != nil || header.Kind != "header" {
+		t.Fatal("journal header", e)
+	}
+	savePath := os.Getenv("ZELIARD_CAVE_SAVE")
+	save := read(savePath)
+	info, e := os.Stat(savePath)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if townBackgroundHash(save) != "78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb" {
+		t.Fatal("save identity")
+	}
+	var machines [2]*oracle.Oracle
+	var audio [2]*oracle.Audio
+	for i := range machines {
+		o, e := oracle.Load(filepath.Join(root, "ZELIARD.EXE"), root)
+		if e != nil {
+			t.Fatal(e)
+		}
+		defer o.Close()
+		machines[i] = o
+		scratch := t.TempDir()
+		p := filepath.Join(scratch, "SAVETEST.usr")
+		if e = os.WriteFile(p, save, 0644); e != nil {
+			t.Fatal(e)
+		}
+		if e = os.Chtimes(p, info.ModTime(), info.ModTime()); e != nil {
+			t.Fatal(e)
+		}
+		o.SetScratch(scratch)
+		o.SetDOSBoxCycles(header.CyclesPerMS)
+		audio[i] = o.NewAudio(header.SampleRate)
+		if townBackgroundHash(o.Bytes(oracle.Far(0, 0), 1<<20)) != header.InitialMemory || o.Regs() != header.InitialRegs {
+			t.Fatal("cold source differs")
+		}
+	}
+	a, b := machines[0], machines[1]
+	frames := NewCaveFrames(b)
+	art, e := NewCaveTerrain(os.Getenv("ZELIARD_CAVE_ART"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	draws, paintFrames := 0, 0
+	for index, line := range lines[1:] {
+		var r journalRecord
+		if e = json.Unmarshal([]byte(line), &r); e != nil {
+			t.Fatal(e)
+		}
+		if a.Steps() != r.BeforeSteps || a.Cycles() != r.BeforeCycles {
+			t.Fatal("record before", index+2)
+		}
+		for i, o := range machines {
+			switch r.Kind {
+			case "key":
+				if r.Pressed {
+					o.KeyDown(r.Scan)
+				} else {
+					o.KeyUp(r.Scan)
+				}
+			case "run":
+				if r.Budget > 5000000 || o.Steps() > 200000000 {
+					t.Fatal("journal budget")
+				}
+				err := o.RunCycles(r.Budget)
+				message := ""
+				if err != nil {
+					message = err.Error()
+				}
+				if r.Audio {
+					audio[i].Render()
+				}
+				if message != r.Error || o.Regs() != r.AfterRegs {
+					t.Fatal("record registers/error", index+2, i)
+				}
+			default:
+				t.Fatal("unknown record", r.Kind)
+			}
+			if o.Steps() != r.AfterSteps || o.Cycles() != r.AfterCycles {
+				t.Fatal("record after", index+2, i)
+			}
+		}
+		if r.Kind == "run" {
+			_, _, rgb := b.ScreenRGB()
+			selected := frames.Present(b.Indexed(), rgb, false)
+			if selected != nil {
+				draws++
+				if len(selected.Paints) > 0 {
+					paintFrames++
+				}
+				if !art.Draw(caveOriginalCanvas(selected), selected, image.Point{}) {
+					t.Fatal("recorded frame HD refused", index+2)
+				}
+			}
+		}
+		if !bytes.Equal(a.Bytes(oracle.Far(0, 0), 1<<20), b.Bytes(oracle.Far(0, 0), 1<<20)) || !bytes.Equal(a.Indexed(), b.Indexed()) || a.Palette() != b.Palette() || a.Regs() != b.Regs() || !bytes.Equal(a.HeldKeys(), b.HeldKeys()) {
+			t.Fatal("adapter changed original", index+2)
+		}
+	}
+	if frames.refused != 0 || frames.captured != 267 || draws == 0 || paintFrames == 0 {
+		t.Fatal("recorded path incomplete", frames.captured, frames.refused, draws, paintFrames, frames.lastRefusal)
+	}
+	if !bytes.Equal(b.Bytes(oracle.Far(0, 0), 1<<20), read(filepath.Join(study, "gui-current-combat-v6/town-final.png.memory"))) || !bytes.Equal(b.Indexed(), read(filepath.Join(study, "gui-current-combat-v6/town-final.png.indexed"))) {
+		t.Fatal("final GUI original differs")
+	}
+	if !reflect.DeepEqual(a.FileOps(), b.FileOps()) || !reflect.DeepEqual(a.KeyReads(), b.KeyReads()) || len(b.Wrote()) != 0 || len(b.HeldKeys()) != 0 {
+		t.Fatal("file/input parity")
+	}
+	if e = os.Mkdir(out, 0755); e != nil {
+		t.Fatal(e)
+	}
+	receipt := map[string]any{"status": "ORIGINAL_GUI_JOURNAL_PAIR_EQUAL", "records": len(lines), "completed_frames": frames.captured, "refused": frames.refused, "HD_draws": draws, "native_paint_draws": paintFrames, "full_RAM_and_regs_each_record_equal": true, "original_GUI_final_RAM_and_indexed_equal": true, "input_journal_sha256": townBackgroundHash(data), "final": frames.State(), "state_injection": false}
+	encoded, e := json.MarshalIndent(receipt, "", "  ")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = os.WriteFile(filepath.Join(out, "receipt.json"), append(encoded, 10), 0644); e != nil {
+		t.Fatal(e)
+	}
+}
+
+func runCaveFramesPair(t *testing.T, path, out string) {
+	root, project := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_PROJECT")
+	savePath := os.Getenv("ZELIARD_CAVE_SAVE")
+	save, e := os.ReadFile(savePath)
+	if e != nil || townBackgroundHash(save) != "78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb" {
+		t.Fatal("自建存檔不符", e)
+	}
+	info, e := os.Stat(savePath)
+	if e != nil {
+		t.Fatal(e)
+	}
+	var machines [2]*oracle.Oracle
+	for i := range machines {
+		o, e := oracle.Load(filepath.Join(root, "ZELIARD.EXE"), root)
+		if e != nil {
+			t.Fatal(e)
+		}
+		machines[i] = o
+		defer o.Close()
+		o.SetDOSBoxCycles(3000)
+		scratch := t.TempDir()
+		p := filepath.Join(scratch, "SAVETEST.usr")
+		if e = os.WriteFile(p, save, 0644); e != nil {
+			t.Fatal(e)
+		}
+		if e = os.Chtimes(p, info.ModTime(), info.ModTime()); e != nil {
+			t.Fatal(e)
+		}
+		o.SetScratch(scratch)
+	}
+	a, b := machines[0], machines[1]
+	font, e := bitmap.Load(os.Getenv("ZELIARD_FONT"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	labels, e := overlay.NewLabels(b, filepath.Join(root, "ZELRES2.SAR"), filepath.Join(project, "text/labels-prototype.tsv"), font)
+	if e != nil {
+		t.Fatal(e)
+	}
+	dialogue, e := overlay.NewDialogue(b, filepath.Join(root, "ZELRES2.SAR"), filepath.Join(project, "text/dialogue-prototype.tsv"), font)
+	if e != nil {
+		t.Fatal(e)
+	}
+	dialogue.UseLabels(labels)
+	hud, e := overlay.NewHUD(b, root, filepath.Join(project, "text/hud-prototype.tsv"), font)
+	if e != nil {
+		t.Fatal(e)
+	}
+	frames := NewCaveFrames(b)
+	var art *CaveTerrain
+	if dir := os.Getenv("ZELIARD_CAVE_ART"); dir != "" {
+		art, e = NewCaveTerrain(dir)
+		if e != nil {
+			t.Fatal(e)
+		}
+	}
+	hdDraws := 0
+	equal := func(name string) {
+		if !bytes.Equal(a.Bytes(oracle.Far(0, 0), 1<<20), b.Bytes(oracle.Far(0, 0), 1<<20)) || a.Regs() != b.Regs() || !bytes.Equal(a.Indexed(), b.Indexed()) || a.Palette() != b.Palette() || a.Steps() != b.Steps() || a.Cycles() != b.Cycles() || !reflect.DeepEqual(a.FileOps(), b.FileOps()) || !reflect.DeepEqual(a.KeyReads(), b.KeyReads()) || !bytes.Equal(a.HeldKeys(), b.HeldKeys()) {
+			t.Fatal("適配層改動完整原版", name)
+		}
+	}
+	equal("initial")
+	var selected *CavePresentation
+	var observations []map[string]any
+	draws, used, held, cleared := 0, 0, 0, 0
+	present := func() {
+		draws++
+		raw := b.Indexed()
+		_, _, rgb := b.ScreenRGB()
+		selected = frames.Present(raw, rgb, false)
+		if selected == nil {
+			if frames.captured > 0 {
+				cleared++
+			}
+			return
+		}
+		used++
+		if !caveFrameEqual(raw, selected.SourceIndexed) {
+			held++
+		}
+		for y := 0; y < 200; y++ {
+			for x := 0; x < 320; x++ {
+				if x >= 48 && x < 272 && y >= 14 && y < 158 {
+					continue
+				}
+				i := y*320 + x
+				if raw[i] != selected.Indexed[i] || !bytes.Equal(rgb[i*3:i*3+3], selected.RGB[i*3:i*3+3]) {
+					t.Fatal("呈現改動遊戲區外", b.Steps(), x, y)
+				}
+			}
+		}
+	}
+	run := func(n uint64) {
+		if n > 160000000-b.Steps() {
+			t.Fatal("固定指令預算超出")
+		}
+		for n > 0 {
+			chunk := n
+			if b.Steps() >= 97000000 && chunk > 20000 {
+				chunk = 20000
+			}
+			for _, o := range machines {
+				if e := o.Run(chunk); e != nil {
+					t.Fatal(e)
+				}
+			}
+			n -= chunk
+			present()
+		}
+	}
+	num := func(s string) uint64 {
+		n, e := strconv.ParseUint(s, 0, 64)
+		if e != nil {
+			t.Fatal(e)
+		}
+		return n
+	}
+	commands, e := os.ReadFile(path)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = os.MkdirAll(out, 0755); e != nil {
+		t.Fatal(e)
+	}
+	for _, line := range strings.Split(string(commands), "\n") {
+		f := strings.Fields(line)
+		if len(f) == 0 || strings.HasPrefix(f[0], "#") {
+			continue
+		}
+		switch f[0] {
+		case "run":
+			run(num(f[1]))
+		case "key", "keys":
+			var scans []uint8
+			for _, s := range strings.Split(f[1], ",") {
+				if num(s) > 255 {
+					t.Fatal("掃描碼越界")
+				}
+				scans = append(scans, uint8(num(s)))
+			}
+			for _, o := range machines {
+				for _, s := range scans {
+					o.KeyDown(s)
+				}
+			}
+			run(num(f[2]))
+			for _, o := range machines {
+				for _, s := range scans {
+					o.KeyUp(s)
+				}
+			}
+		case "shot":
+			equal(f[1])
+			before := b.Bytes(oracle.Far(0, 0), 1<<20)
+			point := map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "memory_sha256": townBackgroundHash(before), "indexed_sha256": townBackgroundHash(b.Indexed()), "state_equal": true, "presentation": frames.State()}
+			if selected != nil {
+				if _, e := decodeCaveFrameWithPaints(selected.Memory, selected.BodyMemory, selected.SourceIndexed, selected.Paints); e != nil {
+					t.Fatal("選出來源無法重建", e)
+				}
+				for suffix, data := range map[string][]byte{"memory": selected.Memory, "body.memory": selected.BodyMemory, "indexed": selected.SourceIndexed, "rgb": selected.RGB, "palette": selected.Palette} {
+					if e = os.WriteFile(filepath.Join(out, f[1]+".presented."+suffix), data, 0644); e != nil {
+						t.Fatal(e)
+					}
+				}
+				point["source_steps"] = selected.Steps
+				point["body_steps"] = selected.BodySteps
+			}
+			if art != nil {
+				if selected != nil {
+					canvas := caveOriginalCanvas(selected)
+					if !art.Draw(canvas, selected, image.Point{}) {
+						t.Fatal("正常來源HD被拒絕", f[1])
+					}
+					hdDraws++
+					beforeText := cloneTownBytes(canvas.Pix)
+					raw, pal := b.Indexed(), b.Palette()
+					dialogue.Draw(canvas, raw, pal, image.Point{})
+					labels.ObserveFrame(raw, pal)
+					labels.Draw(canvas, raw, pal, image.Point{})
+					hud.Draw(canvas, raw, pal, image.Point{})
+					for y := 42; y < 474; y++ {
+						for x := 144; x < 816; x++ {
+							i := canvas.PixOffset(x, y)
+							if !bytes.Equal(beforeText[i:i+4], canvas.Pix[i:i+4]) {
+								t.Fatal("中文覆寫HD遊戲區", f[1], x, y)
+							}
+						}
+					}
+					file, err := os.Create(filepath.Join(out, f[1]+".png"))
+					if err != nil {
+						t.Fatal(err)
+					}
+					if err = png.Encode(file, canvas); err != nil {
+						file.Close()
+						t.Fatal(err)
+					}
+					if err = file.Close(); err != nil {
+						t.Fatal(err)
+					}
+					point["terrain_hd_drawn"] = true
+					point["Chinese_overwrites_game_pixels"] = 0
+				} else {
+					canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
+					old := cloneTownBytes(canvas.Pix)
+					if art.Draw(canvas, nil, image.Point{}) || !bytes.Equal(old, canvas.Pix) {
+						t.Fatal("洞窟HD蓋住非洞窟來源", f[1])
+					}
+				}
+			}
+			if strings.HasPrefix(f[1], "return-town") && selected != nil {
+				t.Fatal("回城未撤除洞窟來源")
+			}
+			if !bytes.Equal(before, b.Bytes(oracle.Far(0, 0), 1<<20)) {
+				t.Fatal("呈現改寫原版")
+			}
+			observations = append(observations, point)
+		default:
+			t.Fatal("未知鍵序", line)
+		}
+	}
+	equal("final")
+	if frames.captured == 0 || used == 0 || len(b.Unimplemented()) != 0 || len(b.HeldKeys()) != 0 || len(b.Wrote()) != 0 {
+		t.Fatal("正常路徑不完整", frames.captured, used, b.Unimplemented(), b.HeldKeys(), b.Wrote())
+	}
+	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = os.WriteFile(filepath.Join(out, "receipt.json"), append(data, '\n'), 0644); e != nil {
+		t.Fatal(e)
+	}
+}

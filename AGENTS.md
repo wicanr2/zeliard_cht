@@ -180,6 +180,13 @@
 | [tools/combat.commands](tools/combat.commands) | 正常冷F7入Malicia、出劍、交戰、第一寶石、跳躍與蹲下鍵序 |
 | [docs/spec/011-cave-hd.md](docs/spec/011-cave-hd.md) | 洞窟地形、角色、武器與動態圖層的覆繪閘門 |
 | [tools/cave_hd_preview.py](tools/cave_hd_preview.py) | Docker內從原版完成快照合成洞窟HD離線研究圖，不接正式前端 |
+| [docs/spec/012-cave-frame-sources.md](docs/spec/012-cave-frame-sources.md) | 洞窟完成來源、圖層解碼、守衛與呈現生命週期 |
+| [internal/prototype/hd/cave_sources.go](internal/prototype/hd/cave_sources.go) | 規格012的原版地形、動態物件、主角與武器色號解碼 |
+| [internal/prototype/hd/cave_frames.go](internal/prototype/hd/cave_frames.go) | 規格012的完成來源選擇與撤除；高清美術另由011追蹤 |
+| [internal/prototype/hd/cave_terrain.go](internal/prototype/hd/cave_terrain.go) | 規格011的Malicia地形合成；動態、主角與武器保留原貌 |
+| [internal/prototype/hd/cave_frames_pair_test.go](internal/prototype/hd/cave_frames_pair_test.go) | 正常鍵序與已記錄GUI原生日誌的完整原版唯讀配對；不取代實際視窗驗收 |
+| [internal/prototype/hd/cave_frames_test.go](internal/prototype/hd/cave_frames_test.go) | 洞窟真實來源、增量遮罩、時間界限、深複製與失配退回 |
+| [internal/prototype/hd/cave_terrain_test.go](internal/prototype/hd/cave_terrain_test.go) | 洞窟高清直接取樣、角色保留、素材身份與原子退回 |
 | [internal/prototype/overlay/combat_path_test.go](internal/prototype/overlay/combat_path_test.go) | 原版交戰與中文狀態列的完整原版狀態、區外及來源驗證 |
 | [internal/prototype/hd/item_shop.go](internal/prototype/hd/item_shop.go) | 道具店四組已觀察畫格與局部動畫覆繪 |
 | [internal/prototype/hd/item_shop_test.go](internal/prototype/hd/item_shop_test.go) | 道具店HD來源、動畫範圍、原子退回及區外不寫入驗證 |

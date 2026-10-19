@@ -191,3 +191,66 @@ func TestTownGroundAssetIdentity(t *testing.T) {
 		}
 	}
 }
+
+func TestTownGroundReturnedPhaseReset(t *testing.T) {
+	s, _ := sceneryTestInputs(t)
+	study := os.Getenv("ZELIARD_CAVE_STUDY")
+	if study == "" {
+		t.Fatal("missing return source")
+	}
+	tools := filepath.Join(study, "cave-current-tools-v5")
+	g, err := NewTownGround(s, filepath.Join(tools, "sky-reference.indexed"), filepath.Join(tools, "ground-handpaint-v1.png"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	read := func(suffix string) []byte {
+		b, e := os.ReadFile(filepath.Join(study, "return-replay-v5/last-town."+suffix))
+		if e != nil {
+			t.Fatal(e)
+		}
+		return b
+	}
+	memory, raw, pal, rgb := read("memory"), read("indexed"), read("palette"), read("rgb")
+	if townBackgroundHash(memory) != "db512d91d79d856b8a94779c573623c8a4d1aebc48fbaa7d96f1dfb9bac12e9f" {
+		t.Fatal("return source hash")
+	}
+	beforeMemory := cloneTownBytes(memory)
+	p, r, e := memory[0x1b10:0x11b10], memory[0x11b10:0x21b10], memory[0x21b10:0x31b10]
+	phase, ok := g.phases(raw, rgb)
+	if !ok || phase != [2]int{0, 0} {
+		t.Fatal("return phase", phase, ok)
+	}
+	_, canvas := skyOriginal(raw, pal)
+	before := cloneTownBytes(canvas.Pix)
+	if !g.Draw(canvas, 0x13, p, r, e, raw, rgb, pal, image.Point{}) {
+		t.Fatal("return ground refused")
+	}
+	changed := 0
+	for y := 0; y < 600; y++ {
+		for x := 0; x < 960; x++ {
+			i := canvas.PixOffset(x, y)
+			if bytes.Equal(canvas.Pix[i:i+4], before[i:i+4]) {
+				continue
+			}
+			changed++
+			if x < 144 || x >= 816 || y < 426 || y >= 474 {
+				t.Fatal("outside ground", x, y)
+			}
+		}
+	}
+	if changed == 0 || !bytes.Equal(beforeMemory, memory) {
+		t.Fatal("no HD or source changed")
+	}
+	for _, offset := range []int{142*320 + 48, 149*320 + 271, 150*320 + 48, 157*320 + 271} {
+		mutated := cloneTownBytes(raw)
+		mutated[offset] ^= 1
+		if _, ok := g.phases(mutated, rgb); ok {
+			t.Fatal("accepts modified indexed", offset)
+		}
+		altered := cloneTownBytes(rgb)
+		altered[offset*3] ^= 1
+		if _, ok := g.phases(raw, altered); ok {
+			t.Fatal("accepts modified RGB", offset)
+		}
+	}
+}

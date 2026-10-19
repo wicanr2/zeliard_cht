@@ -31,6 +31,74 @@ func sceneryTestInputs(t *testing.T) (*TownScenery, string) {
 	return s, base
 }
 
+func TestTownSceneryReturnReservedPlayerGap(t *testing.T) {
+	s, _ := sceneryTestInputs(t)
+	study := os.Getenv("ZELIARD_CAVE_STUDY")
+	if study == "" {
+		t.Skip("須掛載正常回城來源；skip不算驗收")
+	}
+	for _, name := range []string{"return-town", "return-town-idle"} {
+		t.Run(name, func(t *testing.T) {
+			read := func(suffix string) []byte {
+				b, e := os.ReadFile(filepath.Join(study, "lifecycle-return-v1", name+suffix))
+				if e != nil {
+					t.Fatal(e)
+				}
+				return b
+			}
+			memory, raw, palette := read(".memory"), read(".indexed"), read(".palette")
+			original := cloneTownBytes(memory)
+			p, r, e := memory[0x1b10:0x11b10], memory[0x11b10:0x21b10], memory[0x21b10:0x31b10]
+			for _, id := range p[0x6a3b:0x6a77] {
+				if id > 45 {
+					t.Fatal("主角來源超出已證實46格", id)
+				}
+			}
+			rgb, canvas := skyOriginal(raw, palette)
+			before := cloneTownBytes(canvas.Pix)
+			frame, err := s.decode(0x13, p, r, e, raw, rgb)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !s.Draw(canvas, 0x13, p, r, e, raw, rgb, image.Point{}, true) {
+				t.Fatal("回城前景HD拒絕")
+			}
+			changed := 0
+			for y := 0; y < 600; y++ {
+				for x := 0; x < 960; x++ {
+					i := canvas.PixOffset(x, y)
+					if bytes.Equal(before[i:i+4], canvas.Pix[i:i+4]) {
+						continue
+					}
+					changed++
+					if x < 144 || x >= 816 || y < 234 || y >= 426 {
+						t.Fatal("前景區外寫入", x, y)
+					}
+					if frame.opaque[((y-234)/3)*224+(x-144)/3] {
+						t.Fatal("覆寫回城角色", x, y)
+					}
+				}
+			}
+			if changed == 0 || !bytes.Equal(memory, original) {
+				t.Fatal("前景無效或改寫來源")
+			}
+			r[0x68a0] ^= 1
+			if _, err = s.decode(0x13, p, r, e, raw, rgb); err != nil {
+				t.Fatal("未使用保留區仍被當成來源", err)
+			}
+			r[0x68a0] ^= 1
+			for _, off := range []int{0x6000, 0x689f, 0x8000, 0xd7ff} {
+				r[off] ^= 1
+				_, err = s.decode(0x13, p, r, e, raw, rgb)
+				r[off] ^= 1
+				if err == nil {
+					t.Fatal("使用區改動被接受", off)
+				}
+			}
+		})
+	}
+}
+
 func TestTownSceneryOriginalFramesAndActorIsolation(t *testing.T) {
 	s, base := sceneryTestInputs(t)
 	cases := []string{"normal-v1/cold-town", "normal-v1/restored", "normal-v1/citizen-near", "normal-v1/citizen-outside", "normal-v1/citizen-page", "normal-v1/citizen-last", "scene-cave-v1/cave-near", "scene-cave-v1/cave-entered"}

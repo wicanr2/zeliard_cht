@@ -2,6 +2,18 @@
 
 狀態：CONFORMED，限固定版本Muralla已列正常路徑的可撤回三倍地面試作。其他地面、角色、正式倍率／預設與發行平台未在此驗收。
 
+回城增量另列下一節，已通過限定驗收；不外推其他城鎮。
+
+## 回城地面相位勘誤
+
+增量狀態：CONFORMED，限候選0227c040的正常Up回城，索引`R009-ground-phase`。正常Up回城的camera179與地面相位不符合原先全域推論。`return-replay-v5/last-town.*`的主段、資源、extra、色號雜湊均與失敗GUI已呈現來源相同。上／下八列用原camera公式分別差970／926像素，但各自唯一相符的112像素循環位移皆為0。相同camera數字不能單獨決定地面相位。
+
+修訂契約：仍先驗完整城鎮來源及前景，再各自搜尋上下八列的0..111位移。只有全部色號及RGB恰好符合一個位移才接受；零個或多個均整層退回。高清取樣直接使用該原生位移乘3，不改素材、原版畫面、碰撞或存檔。舊camera公式保留為已列行走路徑的證據，不再外推回城。
+
+`ground-return-proof-v1.json`保存原版／GUI來源身份及獨立相位核對。隔離`ground-return-study-v1/`的39個pass事件無skip／fail，包含既有原貌／高清取樣、來源失配及新真實回城來源、四個邊界色號／RGB失配與區外不寫入；審查為`ready-ground-return-review-v1.json`。正式實作後仍須正常Up回城GUI及同來源高清取樣才可把增量標為CONFORMED。
+
+接入後`current-pair-v7/`回城十點完整原版相同，`gui-current-return-v7/`正常Up回城退出0，洞窟撤除且城鎮前景／地面／主角恢復。`pixel-current-v9/receipt.json`按當次原版唯一相位及素材預乘alpha核對32256地面高清像素零差，actualX完整遊戲畫布與程式擷取相同。輸入、原件及自建存檔／mtime不變；收尾見`workplace/cave-hd-v1/runtime-index-v7.json`。
+
 ## 範圍與來源
 
 只覆繪 Muralla 原生 `(48,142)-(272,158)` 地面畫帶。維持已選定的手繪奇幻，沿用可撤回的三倍顯示試作。正式倍率、預設與發行平台沒有在本規格定案。

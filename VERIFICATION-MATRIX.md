@@ -13,7 +13,10 @@
 | 城鎮右移重播 | 通過，限 6600 萬指令 | 冷開機、3000 cycles、固定 IRQ1 序列；畫面色號、色盤、PNG 與末端軌跡相同；`workplace/town-replay-comparison.json` |
 | 前端建置及 go vet | 通過 | Go 1.24.13、Ebitengine 2.9.9、本地 dosgolem 快照；GOMAXPROCS=2 |
 | 洞窟角色／武器下層 | 正常原版研究通過，限已列樣本 | `cave-hd-v1/composition-proof-v3.json`與`left-composition-proof-v1.json`核54＋13份角色全框、17＋5份32×32武器零差，含重複來源，不稱67姿態。三觀測版本25live點皆與首戰完整相同，左向8共用前段相同。快照各保存來源時間，不拼造當次1MiB；其他裝備／魔法未驗 |
-| 洞窟地形HD離線候選 | 四張離線圖及CLI通過，011仍DRAFT | `cave-hd-v1/previews-v1/receipt.json`核四個完成來源，每張64000色號先完整重建零差，原貌角色／武器opaque與區外零差，五中文標籤原版位圖相同。三素材及提示詞在art-index-v1.json。岩面包絡是明示美術規則；未正式接入、未做新GUI，不稱全洞窟HD完成 |
+| 洞窟地形HD離線候選 | 前輪四張離線圖及CLI通過 | `cave-hd-v1/previews-v1/receipt.json`核四個完成來源，每張64000色號先重建零差，角色／武器opaque與區外零差。當輪011仍DRAFT、未接前端；後續候選另見下列，不更換舊收據身份 |
+| 洞窟地形與增量覆寫 | v7配對、正常視窗及獨立像素通過，限Malicia | `cave-current-unit-final-v7.jsonl`203pass事件、5個需另外環境的skip明列。`current-journal-pair-v7/receipt.json`3349筆完整1MiB／暫存器／色號／色盤／時間／輸入相同，267完成事件零拒絕，674 HD繪製含30個增量來源。`current-pair-v7/`35點相同、21張HD；三路v7 GUI均退出0，移動／首戰零拒絕，回城兩筆換場撤除。`pixel-current-v9/`兩張各290304地形高清像素零差，原版重建及actualX完整遊戲畫布相符。角色／武器仍原貌 |
+| 首寶石參考圖勘誤 | 舊v7旗標無效；v8正常視窗及獨立正反參考通過 | `gem-reference-review-v8.json`證實advance-strike-2實為0，不能作1參考。v8第一拾取與原版pickup-attempt-left-1的1逐像素相同，初始0為反例；最終畫面2與當次原版色號相同。v8無狀態注入、無重擲，300完成事件零拒絕；`pixel-current-v10/`另核該次地形290304像素零差。所有舊GUI收據保留，不改寫錯誤旗標 |
+| 回城地面相位 | v7正常視窗與獨立高清取樣通過 | `gui-current-return-v7/`實際Up回城，洞窟HD撤除，城鎮前景／地面／主角恢復。`pixel-current-v9/receipt.json`32256地面高清像素依原版唯一相位與素材alpha核對零差，actualX與程式擷取相同。較早像素工具的起點／alpha錯誤保留，屬驗證工具缺口；不作產品缺陷或通過證據 |
 | 首場戰鬥中文狀態列 | 原版與中文配對及正常GUI通過，限此路徑 | `workplace/combat-v1/entry-v3/`及`pair-v3/`正常冷F7入Malicia、出劍／交戰／拾第一寶石／跳與蹲，25點完整原版相同；19洞窟點生命／地點／金幣／寶石中文，原版數字與狀態列外0差。`gui-v1/`同29699／31475退出0，首劍／交戰／寶石0→1、73圖與285HUD區域通過；GUI拾取時點與固定指令原版分開記錄，後段跳／蹲未證實，另以下列交戰前路徑補驗。主入口a691未改；亂數種子欄位未知，不宣稱掉落或傷害規則對拍。洞窟HD未接入 |
 | 洞窟正常跳躍與蹲下 | 原版及正常GUI通過，限交戰前路徑 | `movement-original-v1/`正常冷F7入洞、Left離門、Up跳／落地／Down蹲／放開恢復，12點／7共用前段相同。GUI `movement-v2/`同43055／65371退出0，500輸入不變，根端五圖目視，金幣1000／寶石0，沒有戰鬥。v1的參考圖幾何錯誤保留失敗，未送洞內跳蹲；未以重跑首寶石取代補驗 |
 | Muralla樹木／建物／岩壁與招牌HD | 通過，限已列正常前景試作 | def76固定62來源；四路徑45點完整原版相同。GUI nav3同83751／9726退出0，三招牌、第二F7、正常短按對齊及Up入Malicia；main3同66607／19124退出0，居民兩頁／關閉、rejected0、金幣1000。兩路569固定輸入、持鍵空，根端另讀九張actualX；完整入口為coherent-frame-v1/current-audit-v1.json。原90fbb產品來源拒絕與def76 v2舊模板工具失敗保留，角色／地面仍原貌，不稱連續影片無閃爍 |

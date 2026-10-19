@@ -2,6 +2,8 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
+使用者已要求恢復開發。v7的Malicia地形、原版增量覆寫與正常回城已通過配對、實際視窗及獨立像素驗證。寶石參考圖勘誤另列；全遊戲中文與HD仍在開發。
+
 ## 目前狀態表
 
 | 項目 | 現況 | 證據與限制 |
@@ -16,8 +18,8 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 洞窟011 DRAFT與四張HD離線預覽完成 | 角色54＋13份、武器17＋5份色號重建零差；三素材及可重跑工具已具備。a691與67來源未改，洞窟HD尚未正式接入 |
-| HD | 手繪奇幻邊框、室內人物、完整遠山、Muralla前景／地面與主角八姿態prototype | 既有場景已驗切換、重讀、居民兩頁與入洞。主角已驗正常行走／重讀／切換及居民兩頁後恢復；phase4、居民與洞窟尚未HD，正式倍率／預設待確認 |
+| 本輪工作 | v7洞窟地形與回城限定驗收通過 | 3349筆固定日誌完整原版相同、267完成事件零拒絕、674 HD繪製；正常35點配對相同。v7移動／首戰／回城及修正參考圖的v8首寶石GUI通過。獨立地形與地面像素零差，主入口同步0227；收尾入口為runtime-index-v7.json |
+| HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形已接入 | 洞窟地形1..14可選覆繪，主角／武器／動態物件仍原貌。未知角色分支安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -41,7 +43,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步依規格011補洞窟呈現生命週期、動態物件與美術映射審查，再進READY與正式接入。已列角色／武器下層與離線合成不重開；4192未在兩條正常鍵序執行，不當作必經初始批次。首場交戰／第一寶石及交戰前跳／蹲已完成限定驗證，不重新探索鍵序。[主角規格](docs/spec/010-town-player-hd.md)已限定CONFORMED，八鍵正常來源、下層／alpha與兩路GUI已驗。沿既有城鎮繪製批次、重讀來源及洞口導航，不重新探索。其後接其餘片頭與物品共用消費端、其餘角色HD。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步接其餘片頭與物品共用消費端、洞窟角色／物件HD。012增量覆寫、E8／FF39／FF3A與回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -51,9 +53,53 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 工具與本地證據入口
 
-- 本輪洞窟唯一索引為workplace/cave-hd-v1/research-index-v1.json，正常原版不變與CLI等價核對在capture-and-preview-audit-v1.json；現行收尾為current-audit-v1.json。美術／提示詞為art-index-v1.json，四圖目視為visual-review-v1.json，遠端同步為repository-sync-v1.json。previews-v2沿相同四圖，僅修正receipt的岩面包絡說明；原版零色色號不具通用透明語意。
+以下按研究版本保留證據入口。舊候選與舊失敗保持原身份；目前主入口與下一步以上方狀態表為準。
 
-- 洞窟HD沿[規格011](docs/spec/011-cave-hd.md)，目前DRAFT。新研究集中`workplace/cave-hd-v1/`，與已封存首戰／移動收據分開；`frames_v1.go`及`frames-v1/`觀察初始／一般批次、主角下層與武器完成點，正式a691與67來源不改。
+- 洞窟呈現生命週期與動態格的窄研究沿`workplace/cave-hd-v1/lifecycle_probe_v1.go`與`lifecycle-v1/`。v2另核7114／714C完成及703C／7136開始，輸出`lifecycle-v2/`；`lifecycle-return-v1.commands`沿正常入洞再Up回城，輸出`lifecycle-return-v1/`。只讀觀測，不接正式前端。
+- 動態地圖至圖格的獨立解碼沿同根`decode_dynamic_map_v1.py`／`dynamic-map-proof-v1.json`，取前輪已封存的3123來源，不重跑原版或猜物件種類。
+- 新完成點的完整重建沿`decode_lifecycle_actor_v1.py`、`prove_lifecycle_composition_v1.py`與`decode_lifecycle_map_v1.py`，各用lifecycle-v2的真實來源；彙總為`lifecycle-composition-proof-v1.json`及`lifecycle-map-proof-v1.json`。
+- 隔離Go整畫格解碼試作v1把整個資源段當不可變，169事件因未消費區域變動而拒絕，保留`full-frame-v1/`。v2改為主角與完成時刻各自取真實來源，仍以整區重建驗證，沿`full_frame_v2.go`／`full_frame_probe_v2.go`與`full-frame-v2/`。未審查前不進正式前端。
+- 來源與呈現依[規格012](docs/spec/012-cave-frame-sources.md)，審查為`ready-layer-review-v1.json`，回填護欄為`resolution-index-lifecycle-v1.json`。單元測試沿`cave-unit-v2.jsonl`，正常兩機配對輸出集中`layer-pair-v1/`。前端主入口仍為a691，尚未使用新呈現器。
+- 地形正式接入前的規格011審查為同根`ready-terrain-review-v1.json`；使用前輪兩張候選及已驗原版圖格身份，不重新生成素材。READY全文與實作／驗證各保存自己的身份。
+- 地形接入後的像素與退回驗證沿`cave-terrain-unit-v1.jsonl`，候選前端為`workplace/cave-hd-v1/zeliard-cave-preview-v1`，建置記錄`cave-build-v1.log`。尚未驗候選時不覆寫a691主入口。
+- GUI候選另沿`zeliard-cave-preview-v2`與`cave-build-v2.log`，只補完成來源的主角位置觀測。唯讀地形／中文配對在`terrain-pair-v1/`；GUI工具集中`cave-gui-tools-v1/`，輸出`gui-terrain-v1/`，先凍結再執行，不覆寫舊GUI收據。
+- 同一GUI候選另以`gui-combat-terrain-v1/`抽首戰／第一寶石，以`gui-return-terrain-v1/`抽正常回城。三路共用唯讀`cave-gui-tools-v1/`，各自獨立程序、輸出及收據；不追加戰鬥重試。
+- GUI及收尾使用`candidate-identity-v1.json`／`candidate-sources-v1/`的固定來源。最後觀測欄位加入後的同來源配對為`canonical-pair-v1/`及`cave-canonical-pair-v1.jsonl`。未通過配對前，三路GUI工具維持準備狀態。
+- GUI像素核對工具為`cave-gui-tools-v1/cave_pixel_oracle_v1.py`，沿先於Go實作的Python地圖、主角與取樣證據；預檢輸出`pixel-preflight-v1/`。它只產生預期圖與比較收據，不拼造原版記憶體或修改素材。
+- 首戰GUI gui-combat-terrain-v1/在第二段前進出劍因洞窟來源撤除而停止，保留failure及66張PNG；較早一張已見第一寶石1與HD。新窄研究沿hurt-normal-v1.commands及hurt-normal-v1/，只接在已驗25點後繼續正常前進／出劍與等待，觀察E8等原始欄位，不猜語意或重擲亂數。
+- 回城GUI gui-return-terrain-v1/已切回城鎮模組，但前景／地面守衛拒絕。頭段與mask相同，差異在Town主角未使用的11B1:68A0..8000保留區。隔離驗證沿return-study-v1/，只先改來源守衛副本並檢查原版回城兩點，不直接修改正式守衛。
+- 回城使用區的READY審查與回填為return-ready-review-v1.json／return-resolution-index-v1.json，正式守衛依007修訂。診斷候選zeliard-cave-preview-v3新增拒絕候選及live來源擷取；cave-diagnostic-unit-v3.jsonl與cave-build-v3.log記其驗證，既有v1 GUI與73來源快照不覆寫。
+- 診斷候選v4另加-input-trace，記真實IRQ輸入邊沿與逐次RunCycles／音訊取出，供原版冷重播，並修正只載洞窟素材時的工具列HD入口。zeliard-cave-preview-v4與cave-build-v4.log不覆寫舊候選；診斷工具／輸出各為cave-diagnostic-tools-v4/及gui-diagnostic-v4/。
+- 診斷版固定來源另存diagnostic-candidate-identity-v4.json／diagnostic-sources-v4/。此視窗只收集拒絕來源與guest-inputs.jsonl，不當作首戰HD驗收通過，也不重試到出現特定結果。
+- 原生輸入日誌的冷重播工具為同根`input_trace_replay_v1.go`，輸出`input-replay-v4/`。先核對每步暫存器與最終全部記憶體，再以事先固定的正常按鍵延伸觀測；不注入狀態。
+- FF39新增來源先依012的DRAFT增量隔離於`full_frame_v3.go`；固定同日誌與延伸的重播輸出`input-replay-v5/`，獨立單一來源檢查為`ff39-proof-v1.json`。未核對前不進正式解碼。
+- FF39的READY審查沿`ready-ff39-review-v1.json`；下一候選為`zeliard-cave-preview-v5`，測試與建置沿`cave-current-unit-v5.jsonl`／`cave-build-v5.log`。三條正常GUI工具凍結於`cave-current-tools-v5/`，各自輸出`gui-current-movement-v5/`、`gui-current-combat-v5/`、`gui-current-return-v5/`，保留舊失敗身份。
+- v5同來源正常首戰與回城的35點唯讀配對集中`current-pair-v5/`，命令為既有entry-v3及lifecycle-return-v1；不重開鍵序研究。
+- v5兩條GUI未完成，原日誌直接冷重播至`combat-replay-v5/`及`return-replay-v5/`，保存真實拒絕來源與最後城鎮完成點。不把沒有最終GUI記憶體擷取的失敗路徑稱為完整RAM對拍；只核每筆暫存器／週期。
+- 新圖像分支隔離研究沿`full_frame_v4.go`／`prove_actor_profiles_v2.py`與`actor-profiles-proof-v2.json`；完整固定重播分別輸出`combat-profile-replay-v6/`、`return-profile-replay-v6/`。回城地面相位研究沿`ground-return-proof-v1.json`，保留009舊camera假定與勘誤。
+- 回城地面隔離副本為`ground-return-study-v1/`，只在該目錄改寫草案；`ground-return-draft-test-v1.jsonl`、`ready-ground-return-review-v1.json`記其測試與READY審查。正常GUI仍使用各自固定候選。
+- 角色增量READY審查為`ready-actor-profiles-review-v2.json`。候選v6及固定來源另存`zeliard-cave-preview-v6`／`current-candidate-identity-v6.json`／`current-sources-v6/`。只重驗受實作變更影響的首戰、回城與正常配對，v5移動收據保留原身份。
+- v6固定視窗工具為`cave-current-tools-v6/`，實際首戰及回城分別輸出`gui-current-combat-v6/`／`gui-current-return-v6/`。失敗分支先暫停並擷取真實live／完成來源，再退出，方便對同一筆日誌重播；不重試到通過。正常35點回歸集中`current-pair-v6/`。
+- v6回城GUI通過；首戰在第一段回頭拾取出現116像素整區失配，已保留真實拒絕來源。定位沿`combat-rejected-pixels-v6.json`；冷重播原日誌至`combat-rejected-replay-v6/`，不重新跑GUI取另一個結果。
+- 增量覆寫只讀研究沿`input_trace_replay_writes_v3.go`與`combat-write-replay-v6/`，只監看已定位時間及原生角色底部VGA，不改寫原版，也不接正式呈現。
+- 原版3272靜態格覆寫的隔離解碼為`full_frame_v5.go`，觀測工具`input_trace_replay_paints_v4.go`，固定同日誌輸出`combat-paint-replay-v7/`。以真實3272呼叫參數推導覆寫區，不由最終顏色猜可見性。
+- 同一來源另證實3599動態圖格會在舊主角之後覆寫遮罩像素。隔離v6解碼及`input_trace_replay_paints_v5.go`同時記錄兩類真實覆寫，輸出`combat-paint-replay-v8/`。v7剩餘50／51像素與動態圖格逐點一致，舊失敗保留。
+- 增量覆寫獨立證據為`prove_native_paints_v1.py`／`native-paints-proof-v1.json`，READY審查為`ready-native-paints-review-v1.json`。候選及測試沿v7身份，後續正式呈現攜帶來源呼叫與遮罩，不改原生日誌。
+- 接入候選為`zeliard-cave-preview-v7`，單元／建置為`cave-current-unit-v7.jsonl`／`cave-build-v7.log`。唯讀回歸輸出`current-pair-v7/`；固定舊失敗日誌配對輸出`current-journal-pair-v7/`，正常GUI工具與結果使用`cave-current-tools-v7/`／`gui-current-combat-v7/`。
+- 本次接入收尾使用`runtime-index-v7.json`／`current-runtime-audit-v7.json`，腳本為`audit_runtime_v7.py`，與前輪0df離線研究索引分開。資料與收據維持ignored workplace，原件／快照／字型／存檔另核雜湊。
+- 已驗候選的主入口同步記於`mainalias-runtime-sync-v7.json`；Git／私人遠端的提交後核對另記`repository-runtime-sync-v7.json`。
+- 新日誌測試加入後的同來源單元／靜態檢查另記`cave-current-unit-final-v7.jsonl`／`cave-vet-final-v7.log`。自有檔案清單固定於`current-owned-files-v7.json`，不含任何原版或本地素材。
+- v7同一候選另驗移動／跳蹲，輸出`gui-current-movement-v7/`；三路GUI不互換原版收據。最新像素核對沿`verify_current_pixels_v9.py`與`pixel-current-v9/`，使用各自實際完成來源與增量紀錄。
+- R-gem-reference：v7首戰工具把`advance-strike-2.indexed`的寶石0當成1，故first_gem_bitmap判定無效，HD與原版配對仍各自有效。正確1參考為原版`pickup-attempt-left-1.indexed`，已人工讀圖。修正工具另凍結於`cave-gem-tools-v8/`，結果`gui-gem-combat-v8/`；候選程式仍v7不變，移除按住中抓圖造成的輸入超時，保留所有舊收據。
+- 寶石勘誤的獨立像素核對沿`verify_gem_reference_v8.py`／`gem-reference-review-v8.json`。根端目視的有限樣本另記`root-runtime-visual-review-v7.json`，不把未逐張讀過的圖算作人工驗收。
+- 修正寶石GUI的完整地形取樣另記`verify_current_pixels_v10.py`／`pixel-current-v10/`，沿v9方法核對v8首戰自己的原版完成來源，不借用v7首戰畫面。
+- 現行像素核對工具`verify_current_pixels_v6.py`輸出`pixel-current-v6/`，分開v5移動、v6首戰診斷最終擷取、v6回城actualX地面，不把不同路徑合成同狀態收據。
+- 像素工具v6把含工具列擷取誤當600列而停止，屬驗證座標錯誤。v7依實際PNG的680／600列選畫面起點，輸出`pixel-current-v7/`，不改候選或圖面。
+- 像素工具v8依既有ground_check的預乘alpha契約補回原版地面作底，輸出`pixel-current-v8/`。v7未處理alpha的停止保留，不歸類為產品缺陷。
+
+- 前輪洞窟離線研究索引為workplace/cave-hd-v1/research-index-v1.json，該輪收尾為current-audit-v1.json，僅對應0df2c7e的未接入狀態。美術／提示詞為art-index-v1.json，四圖目視為visual-review-v1.json，當輪遠端同步為repository-sync-v1.json。previews-v2沿相同四圖，僅修正receipt的岩面包絡說明；原版零色色號不具通用透明語意。
+
+- 洞窟HD沿[規格011](docs/spec/011-cave-hd.md)，本輪地形接入為限定READY。研究集中`workplace/cave-hd-v1/`，與已封存首戰／移動收據分開；前輪`frames_v1.go`及`frames-v1/`保留早期觀測身份。正式主入口仍為a691，候選已擴至73來源。
 - 洞窟地形美術研究同放`cave-hd-v1/`，`terrain-reference-v1.png`從正常原版圖塊解碼；`terrain-prompt-v1.txt`及`terrain-generation-v1.json`保存內建imagegen提示詞、參考身份、產物及權利分類。只作DRAFT離線研究，不接正式路徑。
 - 洞窟目前合成證據為同目錄`frames_v3.go`／`frames-v3/`、`decode_body_sources_v3.py`及`composition-proof-v3.json`。正常左向出劍補證使用`frames-left-v1.commands`／`frames-left-v1/`，仍冷F7與正常離門，不注入原版狀態。地形第二候選及完整提示詞沿`terrain-generation-v2.json`／`terrain-prompt-v2.txt`，離線圖沿`terrain-preview-v2.json`。
 - 連續岩面材質入口為同目錄`rock-material-generation-v1.json`／`rock-material-prompt-v1.txt`。目前地形離線研究沿`preview_terrain_v5.py`／`terrain-preview-v5.json`，以明示完成來源清除原版角色／武器、繪地形後再還原原貌角色，核對整張原版可重建及中文標籤來源。不當作正式接入或GUI驗收。

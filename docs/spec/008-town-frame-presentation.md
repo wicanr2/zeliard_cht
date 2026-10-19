@@ -68,6 +68,8 @@ IDA 原始來源顯示 67D8／6852 分別更新 camera 及 FF2A，再呼叫 cs:o
 
 ## 限定範圍的驗收
 
+回城守衛增量R007-return-resource沿[規格007](007-town-scenery-hd.md)的勘誤，已限定CONFORMED。只排除有原始讀取邊界證據的11B1:68A0..8000保留區；完成點、撤除、完整像素與原版狀態檢查不改。候選0227c040的`current-pair-v7/`回城十點完整原版相同，`gui-current-return-v7/`正常Up回城退出0並恢復前景／地面／主角。兩筆換場撤除如實保留；其他城鎮未驗。
+
 `scene-prototype-v1/coherent-frame-v1/candidate-identity-v2.json`固定候選def76c62、52Go／62來源及14鍵序，007／008的READY全文另存。`source-audit-v2.json`核對四路徑45個完整1MiB及14欄Regs、11066次呈現、315中途保留、523完成快照、未涵蓋0；原版色號、色盤、虛擬時間、檔案及鍵盤記錄相同。68內部pass事件及來源邊界／失配退回通過，沒有放寬像素容忍。
 
 正常X視窗`gui-coherent-nav-v3/`同83751／9726退出0，291固定輸入不變；三招牌與第二F7後HD恢復，洞口由232經一組正常Left50k／release250k對齊224，再按Up進入Malicia。終態模組與已驗洞窟相同，Town快照撤除且沒有presented副檔名。`gui-coherent-v3/`同66607／19124退出0，278輸入不變，居民完整兩頁／關閉、glyph248／rejected0、金幣1000及持鍵空。兩路均由capture-tail正常結束，不稱Ctrl+Q退出驗收。

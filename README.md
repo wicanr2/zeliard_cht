@@ -27,6 +27,8 @@
 
 入口為 [cmd/zeliard-preview](cmd/zeliard-preview/main.go)。提供本地手繪試作圖時，工具列可切換原貌與 HD 圖面；沒有素材時標示待製作。手把需先由系統完成配對或辨識，再到工具列選擇裝置並逐項綁定；尚未進行實體手把驗收。
 
+Malicia 洞窟地形試作另加 `-cave-art-dir /project/workplace/cave-hd-v1`，目錄須含身份相符的 `terrain-handpaint-v2.png` 與 `rock-material-v1.png`。目前替換已確認的地形1..14，主角、武器與動態物件保留原貌。正常入洞、首戰拾取、跳蹲、原貌切換及回城已抽驗；原貌與HD共用原版完成畫格。未知來源、缺圖或整區重建不符時保留原貌。素材僅存本機，範圍見[洞窟地形規格](docs/spec/011-cave-hd.md)及[完成畫格規格](docs/spec/012-cave-frame-sources.md)。
+
 建置後在 Docker 內執行：
 
 ```sh

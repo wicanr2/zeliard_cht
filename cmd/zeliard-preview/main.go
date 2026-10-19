@@ -2,6 +2,7 @@
 package main
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -53,6 +54,8 @@ type game struct {
 	capturePath          string
 	captureRequest       string
 	observePath          string
+	inputTrace           string
+	inputTraceError      string
 	captured             bool
 	captureTail          int
 	intro                *xlate.Layer
@@ -69,6 +72,9 @@ type game struct {
 	townSceneryHD        *hd.TownScenery
 	townSceneryMatch     bool
 	townFrames           *hd.TownFrames
+	caveFrames           *hd.CaveFrames
+	caveTerrainHD        *hd.CaveTerrain
+	caveTerrainMatch     bool
 	townGroundHD         *hd.TownGround
 	townGroundMatch      bool
 	townPlayerHD         *hd.TownPlayer
@@ -132,7 +138,7 @@ func (g *game) scanDevices() {
 		}
 	}
 	if !connected && g.selected >= 0 {
-		g.edges.Sync(g.o, nil)
+		g.edges.Sync(g, nil)
 		g.selected = -1
 		g.previousButtons = nil
 		g.listening = ""
@@ -155,7 +161,7 @@ func (g *game) nextDevice() {
 		}
 	}
 	d := g.devices[(idx+1)%len(g.devices)]
-	g.edges.Sync(g.o, nil)
+	g.edges.Sync(g, nil)
 	g.selected = d.id
 	g.settings.Selected = d.key
 	g.previousButtons = nil
@@ -249,13 +255,13 @@ func (g *game) Update() error {
 	}
 	defer func() { g.previousButtons = buttons; g.previousActions = actions }()
 	if !ebiten.IsFocused() {
-		g.edges.Sync(g.o, nil)
+		g.edges.Sync(g, nil)
 		return nil
 	}
 	just := func(a string) bool { return actions[a] && !g.previousActions[a] }
 	if !g.panel && just("toolbar") {
 		g.panel = true
-		g.edges.Sync(g.o, nil)
+		g.edges.Sync(g, nil)
 	}
 	x, y := ebiten.CursorPosition()
 	point := image.Pt(x, y)
@@ -263,20 +269,20 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
 		g.panel = !g.panel
 		g.listening = ""
-		g.edges.Sync(g.o, nil)
+		g.edges.Sync(g, nil)
 	}
 	if click && point.In(image.Rect(548, 8, 740, 40)) {
 		g.paused = !g.paused
-		g.edges.Sync(g.o, nil)
+		g.edges.Sync(g, nil)
 	}
 	if g.panel {
-		g.edges.Sync(g.o, nil)
+		g.edges.Sync(g, nil)
 		if g.listening != "" {
 			g.captureBinding(buttons, axes)
 			return nil
@@ -319,7 +325,7 @@ func (g *game) Update() error {
 		return nil
 	}
 	if g.paused {
-		g.edges.Sync(g.o, nil)
+		g.edges.Sync(g, nil)
 		return nil
 	}
 	desired := map[uint8]bool{}
@@ -333,8 +339,11 @@ func (g *game) Update() error {
 			desired[scan] = true
 		}
 	}
-	g.edges.Sync(g.o, desired)
-	if err := g.o.RunCycles(g.cycles * 1000 / 60); err != nil {
+	g.edges.Sync(g, desired)
+	beforeSteps, beforeCycles := g.o.Steps(), g.o.Cycles()
+	budget := g.cycles * 1000 / 60
+	if err := g.o.RunCycles(budget); err != nil {
+		g.traceRun(beforeSteps, beforeCycles, budget, false, err)
 		var exited *oracle.ExitError
 		if errors.As(err, &exited) {
 			return ebiten.Termination
@@ -343,7 +352,62 @@ func (g *game) Update() error {
 	}
 	// 雛形尚未接音效裝置；仍取出音訊，避免執行器埠紀錄持續成長。
 	g.audio.Render()
+	g.traceRun(beforeSteps, beforeCycles, budget, true, nil)
 	return nil
+}
+
+func (g *game) trace(event map[string]any) {
+	if g.inputTrace == "" {
+		return
+	}
+	data, err := json.Marshal(event)
+	if err == nil {
+		var f *os.File
+		f, err = os.OpenFile(g.inputTrace, os.O_WRONLY|os.O_APPEND, 0644)
+		if err == nil {
+			_, err = f.Write(append(data, '\n'))
+			closeErr := f.Close()
+			if err == nil {
+				err = closeErr
+			}
+		}
+	}
+	if err != nil {
+		g.inputTraceError = err.Error()
+		log.Printf("輸入日誌寫入失敗：%v", err)
+	}
+}
+
+func saveCavePaints(path string, paints []hd.CavePaint) error {
+	data, err := json.MarshalIndent(paints, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, append(data, '\n'), 0644)
+}
+
+func (g *game) KeyDown(scan uint8) { g.traceKey(scan, true) }
+func (g *game) KeyUp(scan uint8)   { g.traceKey(scan, false) }
+func (g *game) traceKey(scan uint8, pressed bool) {
+	steps, cycles := g.o.Steps(), g.o.Cycles()
+	if pressed {
+		g.o.KeyDown(scan)
+	} else {
+		g.o.KeyUp(scan)
+	}
+	if g.inputTrace != "" {
+		g.trace(map[string]any{"kind": "key", "frame": g.frames, "scan": scan, "pressed": pressed, "before_steps": steps, "before_cycles": cycles, "after_steps": g.o.Steps(), "after_cycles": g.o.Cycles()})
+	}
+}
+func (g *game) traceRun(steps, cycles, budget uint64, audio bool, err error) {
+	if g.inputTrace == "" {
+		return
+	}
+	message := ""
+	if err != nil {
+		message = err.Error()
+	}
+	g.trace(map[string]any{"kind": "run", "frame": g.frames, "cycle_budget": budget, "before_steps": steps, "before_cycles": cycles, "after_steps": g.o.Steps(), "after_cycles": g.o.Cycles(), "after_regs": g.o.Regs(), "audio_render": audio, "error": message})
 }
 
 var keyboard = map[ebiten.Key]uint8{
@@ -379,6 +443,14 @@ func (g *game) Draw(screen *ebiten.Image) {
 			rgb, townRaw = presented.RGB, presented.Indexed
 		}
 	}
+	var cavePresented *hd.CavePresentation
+	if g.caveFrames != nil {
+		blocked := g.townDialogue != nil && g.townDialogue.State()["key"] != ""
+		cavePresented = g.caveFrames.Present(raw, rawRGB, blocked)
+		if cavePresented != nil && presented == nil {
+			rgb, townRaw = cavePresented.RGB, cavePresented.Indexed
+		}
+	}
 	if g.observePath != "" {
 		held := g.o.HeldKeys()
 		var rejections []map[string]int
@@ -401,6 +473,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"town_background_hd_matched": g.townBackgroundMatch,
 			"town_scenery_hd_matched":    g.townSceneryMatch,
 			"town_frame_presentation":    g.townFrames.State(),
+			"cave_frame_presentation":    g.caveFrames.State(),
+			"cave_terrain_hd_matched":    g.caveTerrainMatch,
+			"input_trace_error":          g.inputTraceError,
 			"town_ground_hd_matched":     g.townGroundMatch,
 			"town_player_hd_matched":     g.townPlayerMatch,
 			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
@@ -475,6 +550,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.hdMatched = g.hdMatched || g.townPlayerMatch
 	}
 	g.kingHDMatched, g.kingHDPose = false, -1
+	g.caveTerrainMatch = false
+	if g.hdEnabled && g.caveTerrainHD != nil && cavePresented != nil && w == 320 && h == 200 {
+		g.caveTerrainMatch = g.caveTerrainHD.Draw(g.canvas, cavePresented, image.Pt(0, barHeight))
+		g.hdMatched = g.hdMatched || g.caveTerrainMatch
+	}
 	if g.hdEnabled && g.kingHD != nil && w == 320 && h == 200 {
 		g.kingHDMatched, g.kingHDPose = g.kingHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.kingHDMatched
@@ -528,7 +608,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil {
+	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -593,10 +673,34 @@ func (g *game) Draw(screen *ebiten.Image) {
 			if err := os.WriteFile(g.capturePath+".indexed", g.o.Indexed(), 0644); err != nil {
 				log.Printf("色號擷取失敗：%v", err)
 			}
+			originalMemory := g.o.Bytes(oracle.Far(0, 0), 1<<20)
+			if err := os.WriteFile(g.capturePath+".memory", originalMemory, 0644); err != nil {
+				log.Printf("當次原版記憶體擷取失敗：%v", err)
+			}
 			if presented != nil {
 				for suffix, data := range map[string][]byte{".presented.indexed": presented.Indexed, ".presented.source.indexed": presented.SourceIndexed, ".presented.primary": presented.Primary, ".presented.resources": presented.Resources, ".presented.extra": presented.Extra, ".presented.palette": presented.Palette} {
 					if err := os.WriteFile(g.capturePath+suffix, data, 0644); err != nil {
 						log.Printf("完整畫格來源擷取失敗：%v", err)
+					}
+				}
+			}
+			if cavePresented != nil {
+				if err := saveCavePaints(g.capturePath+".cave.paints.json", cavePresented.Paints); err != nil {
+					log.Printf("洞窟增量繪製紀錄失敗：%v", err)
+				}
+				for suffix, data := range map[string][]byte{".cave.presented.indexed": cavePresented.Indexed, ".cave.source.indexed": cavePresented.SourceIndexed, ".cave.source.memory": cavePresented.Memory, ".cave.body.memory": cavePresented.BodyMemory, ".cave.palette": cavePresented.Palette} {
+					if err := os.WriteFile(g.capturePath+suffix, data, 0644); err != nil {
+						log.Printf("洞窟完成來源擷取失敗：%v", err)
+					}
+				}
+			}
+			if rejected := g.caveFrames.RejectedSource(); rejected != nil {
+				if err := saveCavePaints(g.capturePath+".cave.rejected.paints.json", rejected.Paints); err != nil {
+					log.Printf("洞窟拒絕增量紀錄失敗：%v", err)
+				}
+				for suffix, data := range map[string][]byte{".cave.rejected.memory": rejected.Memory, ".cave.rejected.body.memory": rejected.BodyMemory, ".cave.rejected.indexed": rejected.Indexed, ".cave.rejected.palette": rejected.Palette} {
+					if err := os.WriteFile(g.capturePath+suffix, data, 0644); err != nil {
+						log.Printf("洞窟拒絕來源擷取失敗：%v", err)
 					}
 				}
 			}
@@ -627,12 +731,18 @@ func (g *game) Draw(screen *ebiten.Image) {
 					}
 					return nil
 				}(),
-				"merchant_hd_matched": g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose,
+				"original_memory_sha256": fmt.Sprintf("%x", sha256.Sum256(originalMemory)),
+				"original_regs":          g.o.Regs(),
+				"original_source_kind":   "live CPU/VGA; may be within drawing batch; distinct from cave completed/rejected source",
+				"merchant_hd_matched":    g.merchantHDMatched, "merchant_hd_pose": g.merchantHDPose,
 				"bank_hd_matched": g.bankHDMatched, "bank_hd_pose": g.bankHDPose,
 				"item_shop_hd_matched": g.itemShopHDMatched, "item_shop_hd_pose": g.itemShopHDPose,
 				"town_sky_hd_matched": g.townSkyHDMatched, "town_background_hd_matched": g.townBackgroundMatch,
 				"town_scenery_hd_matched": g.townSceneryMatch,
 				"town_frame_presentation": g.townFrames.State(),
+				"cave_frame_presentation": g.caveFrames.State(),
+				"cave_terrain_hd_matched": g.caveTerrainMatch,
+				"input_trace_error":       g.inputTraceError,
 				"town_ground_hd_matched":  g.townGroundMatch,
 				"town_player_hd_matched":  g.townPlayerMatch,
 				"town_background_cache":   g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224), "town_background_module": g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64)})
@@ -670,6 +780,7 @@ func main() {
 	capture := flag.String("capture", "", "GUI 測試擷取路徑，完成後結束")
 	captureRequest := flag.String("capture-request", "", "GUI 測試：等待指定訊號檔存在再擷取，取代更新次數條件")
 	observePath := flag.String("observe", "", "可選：每秒寫入唯讀執行進度，供 GUI 驗證診斷")
+	inputTrace := flag.String("input-trace", "", "可選：本地原版輸入／週期日誌，不覆寫既有檔案")
 	frames := flag.Int("capture-frames", 120, "GUI 測試擷取前更新次數")
 	panel := flag.Bool("show-controller", false, "GUI 測試啟動時展開手把頁")
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
@@ -689,6 +800,7 @@ func main() {
 	townSceneryArt := flag.String("town-scenery-art-dir", "", "可選：Muralla三段手繪前景圖目錄，搭配town-background-memory")
 	townGroundArt := flag.String("town-ground-art", "", "可選：Muralla雙層手繪地面PNG，搭配已驗前景與town-sky-reference")
 	townPlayerArt := flag.String("town-player-art-dir", "", "可選：Muralla主角八姿態手繪圖目錄，搭配已驗前景HD")
+	caveArt := flag.String("cave-art-dir", "", "可選：Malicia手繪地形圖目錄，角色與物件保留原貌")
 	townSignsText := flag.String("town-signs-text", "", "可選：Muralla招牌中文TSV，搭配前景HD")
 	kingRefA := flag.String("king-reference-a", "", "可選：本地原版國王姿態 A 的 screen.bin")
 	kingRefB := flag.String("king-reference-b", "", "可選：本地原版國王姿態 B 的 screen.bin")
@@ -769,6 +881,25 @@ func main() {
 	o.SetDOSBoxCycles(*cycles)
 	g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, cycles: *cycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), texture: ebiten.NewImage(width, height)}
 	g.observePath = *observePath
+	if *inputTrace != "" {
+		trace, err := os.OpenFile(*inputTrace, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err = trace.Close(); err != nil {
+			log.Fatal(err)
+		}
+		g.inputTrace = *inputTrace
+		g.trace(map[string]any{"kind": "header", "cycles_per_ms": *cycles, "audio_sample_rate": 44100, "initial_memory_sha256": fmt.Sprintf("%x", sha256.Sum256(o.Bytes(oracle.Far(0, 0), 1<<20))), "initial_regs": o.Regs(), "source_kind": "native key edges and RunCycles journal; no state injection"})
+	}
+	if *caveArt != "" {
+		g.caveTerrainHD, err = hd.NewCaveTerrain(*caveArt)
+		if err != nil {
+			log.Printf("洞窟地形HD未載入，保留原貌：%v", err)
+		} else {
+			g.caveFrames = hd.NewCaveFrames(g.o)
+		}
+	}
 	if *hdRef != "" || *hdArt != "" {
 		g.hd, err = hd.NewFrame(*hdRef, filepath.Join(filepath.Dir(*hdRef), "palette.bin"), *hdArt)
 		if err != nil {
