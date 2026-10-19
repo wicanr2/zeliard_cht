@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-主入口fab8f646，98份Go、測試與譯表固定。023正常洞窟探索的七姿態補圖已限定CONFORMED，主角圖組增至37姿態。022送返後城鎮HD、021中文、29物件、十武器及020入口收據保持原身份；全遊戲中文與HD仍在開發。
+主入口4209f976，99份Go、測試與譯表固定。024裝備頁盾牌第二行中文與原數字保留已限定CONFORMED；023的37個主角姿態、022城鎮HD、021中文、29物件、十武器及020入口收據保持原身份。全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -20,7 +20,7 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 023七個正常探索主角來源已限定CONFORMED | 主入口fab8f646／98來源。45具名無skip／fail，18點完整原版配對、18份5225472高清像素與既有22份通過；實際X攀繩、3494日誌重播及獨立圖面零差 |
+| 本輪工作 | 024盾牌第二行中文與原數字已限定CONFORMED | 主入口4209f976／99來源。五個來源存檔均正常F7至Muralla，取得過程未知。修正第二行空白區被後畫數字改動而撤除中文；10具名、八點新配對、49點Magia回歸、四張獨立全圖及實際X、4291筆日誌通過 |
 | 接續工作 | 正常洞窟其餘圖像與中文、其他物品來源 | 022五bytes造成的城鎮HD拒絕已閉合，不追無關寫入原因。其他主角／武器／物件及洞窟仍待擴充，已驗配色保留原色。Sabre未正常取得，不改金額或猜效果；未走物品／法術仍候選 |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角37姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
@@ -46,7 +46,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步推正常洞窟其餘可見圖像、其他物品與候選中文。022已完成送返後Muralla城鎮HD恢復，AE00..D000僅排除於已驗Muralla圖形profile，未知ID240以上仍拒絕；五bytes寫入原因不影響本適配層，不另開無關研究。021四字段、兩位置肖像與回鎮撤除已閉合，不重開GUI工具的歷史失敗。Malicia至Muralla入口沿[020](docs/spec/020-cave-portal-hd.md)限定閉合，不重開矩陣、字牌或首戰尾段數字檢查。主角30姿態、十武器與29物件來源沿[017](docs/spec/017-cave-player-hd.md)、[018](docs/spec/018-cave-weapon-hd.md)及[019](docs/spec/019-cave-object-hd.md)限定閉合；五張主角、一張武器及四張物件PNG身份固定，兩個主角配色保留原色。原25主角及原28物件取樣不變，不重開14／15補圖勘誤。共用文字分類與Magia垂直鏈已依[規格016](docs/spec/016-shared-inventory-text.md)閉合，不重開指標表或首瓶藥水研究。Sabre正常使用先滿足金幣條件；不可改金額或把資金不足當使用驗收。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+接續正常洞窟其餘可見圖像、其他物品／法術及候選中文。原包五份存檔已各經正常F7讀取，均在Muralla，不能再把它們當作後段城鎮入口；來源存檔取得過程保持未知。已有持有物品可供接續觀察，但未正常使用者仍是候選。024僅閉合004dad的字母區與原數字保留，不解釋數字公式。017／023的37主角姿態與六圖組、018十武器、019的29物件、020入口、021四字段及022回鎮HD均保持原收據，不重開已閉合相位、動畫或五bytes寫入原因。Sabre仍須正常取得足夠金幣，不改金額。113純文字居民中112、53場景中40及五混合入口仍待正常路徑；混合入口先確認文字片段、重新分派與確認框生命週期，不猜原版控制。正式字級、術語、HD倍率／預設、音訊及實體手把驗收仍待處理。證據見[RESEARCH-LOG.md](RESEARCH-LOG.md)與[VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -55,6 +55,10 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- 024現行入口為`workplace/prose-v1/shield-unit-v1/candidate-identity.json`、`current-audit.json`及`actual-pixels.json`；99來源快照在`shield-candidate-sources-v1/`。原版差分為`shield_probe_v1.go`與`shield-source-v1/`，實作前READY為`source-saves-build-v1/shield-ready-review-v2.json`，原v1的數字語意稱呼已追加勘誤。`shield-unit-v1/tests.jsonl`、`receipt.json`、`independent-pixels.json`與`shield-regression-v1/`驗10具名、八點新配對、49點既有流程及2304000獨立像素。GUI為`shield-tools-v1/`、`shield-gui-v1/`，實際日誌重生為`shield_gui_replay_v1.go`及`shield-gui-pair-v1/`，共4291筆；四實際面板1161216及同時刻數字4896像素零差。舊fab主入口備份在`shield-unit-v1/previous-main-fab8f646`，Git／Docker收尾為`shield-unit-v1/repository-sync.json`。只驗已列來源存檔的`004dad`顯示，不代表其他盾牌或從新局取得。
+
+- 後段中文的定位入口為`workplace/prose-v1/source_save_inventory_v1.go`，建置及輸出為`source-saves-build-v1/`、`source-saves-v1/`。五份來源USR的SHA沿`workplace/source-manifest.json`，唯讀掛載來源、另複製到各自scratch並保存mtime。每份冷啟動／F7最多140M指令，僅觀察所在地與檔案讀取；不使用機器快照還原、記憶體注入或推測來源存檔的取得經過。原五混合腳本的靜態證據沿`mixed-control-notes.json`，尚未據此更改正式中文顯示。
 
 - 023現行入口為`workplace/cave-hd-v1/expedition-unit-v1/candidate-identity.json`及同目錄的`tests.jsonl`、`pixels-receipt.json`、`pair-receipt.json`；98份固定來源在`expedition-candidate-sources-v1/`。實作前READY為`expedition-build-v2/ready-review.json`，原版與獨立盤點為`expedition-source-v2/`、`expedition-inventory-v2/`；七圖固定登錄與18份獨立合成為`expedition-art-preview-v2/`及`expedition-composition-preview-v1/`。正常鍵序為`tools/cave-expedition.commands`。實際GUI工具／輸出為`expedition-tools-v1/`及`expedition-gui-v1/`，3494筆日誌與獨立像素為`expedition-gui-pair-v2/`、`expedition-gui-pixels-v2/`。45具名、18點完整原版配對與攀繩視窗通過，主入口fab8f646；前d72備份在`expedition-unit-v1/previous-main-d72e260a`。最後輸入／來源／擁有權稽核為`expedition-unit-v1/current-audit.json`，Git／Docker收尾另存`repository-sync.json`。不重開021／022已閉合工作。
 

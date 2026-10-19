@@ -1,5 +1,7 @@
 # 共用物品與裝備文字
 
+盾牌第二行的前置空白與原版後畫數字已由[024改以字母區驗證](024-shield-inventory-label.md)。原72來源、108譯文及Magia收據保持身份；024只在既有六個第二行來源中導出字母安全區，已正常驗證`004dad`，不代表其餘裝備已取得。
+
 狀態：CONFORMED，限共用來源分類、Magia正常使用及已列退回。READY審查為`workplace/item-use-v1/shared-ready-review-v1.json`，收尾為`shared-current-audit-v1.json`。其餘未正常取得的物品、裝備、魔法與LEVEL／EXP入口仍是候選。既有藥水使用及裝備頁證據沿[原試作契約](001-runtime-overlay.md)及[裝備索引](../inventory-source-index.json)。
 
 ## 固定輸入

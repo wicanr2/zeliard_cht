@@ -228,6 +228,30 @@
         "workplace/item-use-v1/trace-v2/label-trace.jsonl",
         "workplace/inventory-ida-v1/evidence.json"
       ]
+    },
+    {
+      "address": "0xa7bd",
+      "level": "已證實",
+      "semantic": "原始call sub_A844，位於盾牌第二行文字之後；四份正常來源的呼叫前原圖與文字完成相同。數字玩法語意不推定。",
+      "evidence": [
+        "workplace/inventory-ida-v1/evidence.json",
+        "workplace/prose-v1/shield-source-v1/SAVEM3/receipt.json",
+        "workplace/prose-v1/shield-source-v1/SAVEM/receipt.json",
+        "workplace/prose-v1/source-saves-build-v1/shield-ready-review-v2.json",
+        "docs/spec/024-shield-inventory-label.md"
+      ]
+    },
+    {
+      "address": "0xa7c0",
+      "level": "已證實",
+      "semantic": "原始call返回後定位；已列來源新增83個原生數字像素，字母區(238,105)-(268,113)不變。只確認繪製順序與區域，不解釋數值公式。",
+      "evidence": [
+        "workplace/inventory-ida-v1/evidence.json",
+        "workplace/prose-v1/shield-source-v1/SAVEM3/receipt.json",
+        "workplace/prose-v1/shield-source-v1/SAVEM/receipt.json",
+        "workplace/prose-v1/source-saves-build-v1/shield-ready-review-v2.json",
+        "docs/spec/024-shield-inventory-label.md"
+      ]
     }
   ]
 }

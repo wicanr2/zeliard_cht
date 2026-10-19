@@ -29,6 +29,7 @@ type labelSource struct {
 	inventoryWhite bool
 	bankTitle      bool
 	itemTitle      bool
+	leftPadding    int
 }
 type labelStamp struct {
 	source                         *labelSource
@@ -189,14 +190,23 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 			return nil, fmt.Errorf("介面來源須以 NUL 或 FF 結束：%s", row[0])
 		}
 		charWidth := 5
+		leftPadding := 0
 		inventory, inventoryWhite := false, false
 		if parts[0] == "zelres2" && module == 0x401e {
 			kind, known := inventoryKinds[off]
 			if !known {
 				return nil, fmt.Errorf("未分類的裝備文字來源：%s", row[0])
 			}
-			inventory = kind != inventorySmallWhite
+			inventory = kind != inventorySmallWhite && kind != inventoryShieldSecondLine
 			inventoryWhite = kind == inventoryLargeWhite
+			if kind == inventoryShieldSecondLine {
+				for off+leftPadding < end && data[off+leftPadding] == ' ' {
+					leftPadding++
+				}
+				if leftPadding != 5 && leftPadding != 6 || end-off-leftPadding != 6 {
+					return nil, fmt.Errorf("盾牌第二行的空白與文字範圍不符")
+				}
+			}
 		}
 		if inventory {
 			charWidth = 8
@@ -207,6 +217,9 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 		originalLines := strings.Split(string(data[off:end]), "\r")
 		if charWidth == 5 && len(originalLines) != 1 {
 			return nil, fmt.Errorf("ASCIIZ 不支援換行")
+		}
+		if leftPadding > 0 {
+			originalLines[0] = originalLines[0][leftPadding:]
 		}
 		text := strings.ReplaceAll(row[1], `\n`, "\n")
 		lines := strings.Split(text, "\n")
@@ -233,7 +246,7 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 		if bankTitle || itemTitle {
 			rawEnd = end
 		}
-		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:rawEnd]...), text: []rune(text), inventory: inventory, inventoryWhite: inventoryWhite, bankTitle: bankTitle, itemTitle: itemTitle}
+		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:rawEnd]...), text: []rune(text), inventory: inventory, inventoryWhite: inventoryWhite, bankTitle: bankTitle, itemTitle: itemTitle, leftPadding: leftPadding}
 	}
 	o.OnCall(oracle.Far(0x01b1, 0x22db), func(q *oracle.Oracle) { l.begin(q, 5) })
 	o.OnCall(oracle.Far(0x01b1, 0x2308), func(q *oracle.Oracle) { l.finish(q, 5) })
@@ -339,6 +352,14 @@ func (l *Labels) begin(o *oracle.Oracle, charWidth int) {
 			y = int(o.CX() & 255)
 		}
 		lines := strings.Split(string(s.raw[:len(s.raw)-1]), "\r")
+		// 024：原版在盾牌第二行的前置空白後畫數字，只覆繪字母區。
+		if s.leftPadding > 0 {
+			if charWidth != 5 || len(lines) != 1 || s.leftPadding >= len(lines[0]) {
+				return
+			}
+			x += s.leftPadding * charWidth
+			lines[0] = lines[0][s.leftPadding:]
+		}
 		maxChars := 0
 		for _, line := range lines {
 			maxChars = max(maxChars, len(line))

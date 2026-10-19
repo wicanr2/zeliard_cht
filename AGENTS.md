@@ -105,6 +105,10 @@
 
 ## 文件索引與權責
 
+[盾牌名稱與數字規格](docs/spec/024-shield-inventory-label.md)保存前置空白、後畫數字與中文安全區的證據閘門；來源存檔只經原版F7讀取隔離副本，取得過程保持未知。
+
+[盾牌文字測試](internal/prototype/overlay/shield_test.go)驗六來源分類、縮小後的容量、兩個正常F7來源存檔的開關／重開、完整原版狀態與數字像素保留。
+
 新增補圖入口：[正常洞窟探索主角補圖規格](docs/spec/023-cave-expedition-player-hd.md)與[獨立圖面及退回測試](internal/prototype/hd/cave_expedition_test.go)。本地原版來源與獨立重建沿CONTEXT的接續探索入口。
 
 [洞窟正常探索鍵序](tools/cave-expedition.commands)保留首次冷F7與原版按鍵，不包含原版資料、還原狀態或注入。
