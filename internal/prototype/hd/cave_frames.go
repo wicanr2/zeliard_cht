@@ -108,13 +108,17 @@ func caveFrameSource(in caveFrameInput) bool {
 	if caveWord(p, 0xff2c) != 0x11b1 {
 		return false
 	}
+	// 規格027：只接完整核對過的兩個64byte前綴，未知值仍拒絕。
+	prefix := townBackgroundHash(p[0xc000:0xc040])
+	if prefix != "3f5edbc8b51aa017211fb0ca808f807a1ade51d95e14b49dadf593e90ada24eb" && prefix != "6c853b5dab1da5682a959dd804b0f23e5acdc3aa67099596335e1293694f03b2" {
+		return false
+	}
 	for _, guard := range []struct {
 		source []byte
 		hash   string
 	}{
 		{p[0x302c:0x4f8c], "018193b8bc08668248cd7b831c9b5be1b26743fadfbf534ea09b7066b7dd5310"},
 		{p[0x6f9b:0x7183], "26dedabe338c9c2f6ebaeb8e26f5095486ce3c8863a02316420e72ed3e44aac5"},
-		{p[0xc000:0xc040], "3f5edbc8b51aa017211fb0ca808f807a1ade51d95e14b49dadf593e90ada24eb"},
 		{in.palette, "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c"},
 	} {
 		if townBackgroundHash(guard.source) != guard.hash {

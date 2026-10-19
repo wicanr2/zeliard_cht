@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "input_name": "cave-entered.primary",
+  "input_sha256": "12d91918212c4688a575bc31d395c133c7232f99ead769c7cfbc680333545c93",
+  "address_space": "IDA binary base0，對應dosgolem 01B1段內偏移；runtime候選另列雜湊，不是SAR檔案偏移",
+  "entries": [
+    {"address": "0x3d22", "level": "已證實", "semantic": "sub_39B9內原始loc_3D22依0093回傳圖像分類；今回僅驗0093=2、分類1的正常分支", "evidence": ["workplace/prose-v1/cave-shield-ida-v1/query.json", "workplace/prose-v1/cave-shield-inventory-v1/receipt.json", "docs/spec/027-cave-shield-profile-hd.md"]},
+    {"address": "0x3b18", "level": "已證實", "semantic": "非攻擊後手的分類呼叫與模板選取；限53份候選及逐次SI／CX／ES核對", "evidence": ["workplace/prose-v1/cave-shield-ida-v1/query.json", "workplace/prose-v1/cave-shield-source-v1/receipt.json", "workplace/prose-v1/cave-shield-inventory-v1/receipt.json"]},
+    {"address": "0x3ae4", "level": "已證實", "semantic": "向右出劍後手分類1的24h步距；原生圖層與完整遊戲區重建零差", "evidence": ["workplace/prose-v1/cave-shield-ida-v1/query.json", "workplace/prose-v1/cave-shield-inventory-v1/receipt.json"]},
+    {"address": "0x3c86", "level": "已證實", "semantic": "向左前手的分類呼叫與模板選取；非攻擊與已觀察出劍分支分開核對", "evidence": ["workplace/prose-v1/cave-shield-ida-v1/query.json", "workplace/prose-v1/cave-shield-inventory-v1/receipt.json"]},
+    {"address": "0x3cdc", "level": "已證實", "semantic": "原始3CDC圖格迴圈，從ES:SI讀取圖格ID，4FF2為九格暫存區索引；今回各模板另核正常原版呼叫", "evidence": ["docs/spec/012-cave-frame-sources.md", "workplace/combat-v1/ida-cave-v3.json"]}
+  ]
+}

@@ -262,7 +262,7 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 		}
 	}
 	// 主角僅接受已觀測之裝備／姿態分支，未知來源安全拒絕。
-	if bp[0x93] != 0 || bp[0xff41] != 0 {
+	if (bp[0x93] != 0 && bp[0x93] != 2) || bp[0xff41] != 0 {
 		return nil, fmt.Errorf("unobserved actor profile")
 	}
 	profiles := 0
@@ -275,6 +275,11 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 	}
 	if profiles > 1 {
 		return nil, fmt.Errorf("unobserved combined actor profile")
+	}
+	// 規格027僅驗0093=2的一般持盾動作，未驗特殊姿態組合。
+	shield := bp[0x93] == 2
+	if shield && profiles != 0 {
+		return nil, fmt.Errorf("unobserved combined shield profile")
 	}
 	if bp[0xff40] != 0 && bp[0xff40] != 255 {
 		return nil, fmt.Errorf("actor attack flag")
@@ -320,8 +325,14 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 		if bp[0xc2]&1 != 0 {
 			back = 0x61b9 + 0x24 + offset
 			front = 0x625b + offset
+			if shield {
+				front += 0x24
+			}
 		} else {
 			back = 0x62c7 + offset
+			if shield {
+				back += 0x24
+			}
 			front = 0x6117 + 0x24 + offset
 		}
 	} else {
@@ -335,6 +346,14 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 			front += 0x1b
 		} else {
 			front += int(bp[0xe7]&3) * 9
+		}
+		// loc_3D22分類1：向右盾在後手，向左盾在前手。
+		if shield {
+			if bp[0xc2]&1 == 0 {
+				back = 0x6117 + 0x6c + int(bp[0xff38]&9)
+			} else {
+				front = 0x61b9 + 0x6c + int(bp[0xff38]&9)
+			}
 		}
 	}
 	count, start := 9, 0

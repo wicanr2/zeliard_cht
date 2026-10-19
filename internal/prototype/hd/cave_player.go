@@ -1,10 +1,12 @@
-// 洞窟主角37個已驗姿態。來源、透明登錄與遮擋契約見規格017及023。
+// 洞窟主角54個已驗姿態。來源、透明登錄與遮擋契約見規格017、023及027。
 package hd
 
 import (
+	"bytes"
 	"fmt"
 	"image"
 	"image/color"
+	"image/png"
 	"path/filepath"
 )
 
@@ -52,6 +54,23 @@ var cavePlayerRegistrations = []cavePlayerRegistration{
 	{"19fabad81a43edd6108a46f0dd091137bfcda2a9e04497277714af52ca002201", image.Rect(538, 515, 783, 895), image.Rect(4, 2, 20, 24), "f323c806506b263fac2d09ccb6a6ad91775b264fa41199389045a68ea12f8fd3"},
 	{"55adeb9c9dd4bcdf75ae503ca91f564b325fd4331202f73fea8e224efed4987a", image.Rect(918, 617, 1238, 910), image.Rect(2, 8, 20, 24), "d976d2b4e8b2d6a4fb802fad3ac50bf64033542156041a48b69d2f6378fcd402"},
 	{"eb7307bb6a7270d82ca058afc46655c942c3d00dce2a3bd8bb16f61a8c100b6a", image.Rect(32, 1079, 434, 1219), image.Rect(0, 16, 20, 24), "3f148dfa6019717f0eb981f0b5a15b5ecf3cedfdbfd9062982a1084ec0efced0"},
+	{"0f679017ecc1056f351ffe5f593aebc8ab387104ad2bb48ef49153d57a728245", image.Rect(44, 88, 225, 348), image.Rect(3, 0, 22, 24), "02cec1ddac6029635b187c51d051bb3b76a0f3c672dcd04f4c5e754c3e9e3496"},
+	{"fca3d24d4f7337fb31cd034a1ed667824aaf482cf03b41a3a463450eefe78a4c", image.Rect(302, 90, 485, 348), image.Rect(2, 0, 21, 24), "4e435b01dbf2dbf60632b89d446cb7f189ab1e79f082775c6ded74a51aeaeb79"},
+	{"e9df75a21e30b86a2f74ebced52143a6fce79c84b5ab26e81f0feb1c50e9ec8c", image.Rect(549, 89, 753, 344), image.Rect(2, 0, 23, 24), "86397b7e2656c94325c8b8b11aa9f33af1e2536d8f3eb6ec556bb2295ec8931c"},
+	{"a8cc961baa767a0b752281b020aeaa7651dcc9caaf268437c97ec3a0ef4fc31c", image.Rect(802, 95, 1018, 348), image.Rect(2, 1, 23, 24), "8e36ad6c0622f876fcf99f3bb83c39cf022fbe4ec8fd29a7f824c5d7ee27fa09"},
+	{"f797754c9a7d69b389d3aef87b5879714ff66a587bc5c9d1db9140d8ddd38613", image.Rect(1072, 90, 1260, 341), image.Rect(2, 0, 23, 24), "e41e5bfe47df8d977f193217b86933fc5b882559f63a3e3da0dcb5573178644e"},
+	{"dcc3d3643461ca18df1fe4ff582a92d8fcb94d67ee35552eb42d3b15785636c2", image.Rect(1311, 93, 1523, 343), image.Rect(2, 1, 24, 24), "290aa49e87bc93ab2aa1df0975ecd015b890500524ec0a354d324be144fbfead"},
+	{"a1316100e601802e07dfd5b0b9e5b32bfc36358bc11e929afe6a7a219cb98b07", image.Rect(39, 385, 235, 648), image.Rect(2, 0, 21, 24), "245f37586d1563115dad73eb5bc2150824e84bbadce24d581e1128cd44fca0c1"},
+	{"fca5774041878ef416c3d06a97e584b6398d0d0a4b6538cc722b4145440cc059", image.Rect(268, 378, 497, 643), image.Rect(2, 0, 21, 24), "05fe2e5f306b6787f14c8d6335260a2a2ccc7bba4c3c5f82e5961b5bb64998b6"},
+	{"05080329443b32a15140f7df712fb93d6489f5889a6f85238654f6b4b4509c83", image.Rect(542, 383, 738, 646), image.Rect(1, 0, 22, 24), "5e2becb4736757eb36e10a8e1498459e001fa547b204f170809d3cffb7406d56"},
+	{"a485b6781040d25678e79a8ff67f5e75ef35b074e17b1b25e5fa1ca5c0c4b241", image.Rect(766, 385, 1002, 643), image.Rect(0, 1, 22, 24), "d3c287bd2c417994b70a6e5a6983f998ddf5f5fb47aaa63ddd92c155d501532d"},
+	{"a2fc5ff7f3d64f78c0334eca8c5f0b9fb470c5e899627df1175496d4a5f67c4e", image.Rect(1056, 383, 1250, 648), image.Rect(1, 0, 22, 24), "67e3c80510d76509716c1b1025eb0689e6c3faff8c954815c537d892a6e800d4"},
+	{"4097a2d8e7a6cf82e3cfcede02240cf64f0f2ae173aba2fe7493f735e2d1e251", image.Rect(1306, 383, 1506, 648), image.Rect(3, 0, 22, 24), "0b931ffc5edc8632f5ed9a419fe9db1363d229f32948e30fb1de114725980a04"},
+	{"03992760e6db0eec6b44cbf28dccb7276ff27f550e4e7946f89578df85bf2a0b", image.Rect(35, 691, 252, 949), image.Rect(3, 0, 22, 24), "b9010c85ea83c60ecc62e07877a2b6e122d4e70709dc16c83ab800e0117bd8a9"},
+	{"2a055f848d8a173ec43e52ac48c2fedac1b6767674b3b1a17e979326f33aaa38", image.Rect(304, 679, 483, 918), image.Rect(1, 0, 22, 22), "f533c33e810cda5b0c829a8c89cedd2954715f72956f4bafe3c68aa53fe3258c"},
+	{"58a554ead34d56d8d686d01d0418f8e09e94ef2dc72445216d172372fb9e923d", image.Rect(556, 683, 751, 933), image.Rect(1, 0, 22, 24), "f0768403ea3d64398f0bc21fbf825cce2253d4b31a49c4aafd251cda4dfa9a87"},
+	{"3deabdb1bd9da91cc083ed10b806f3e403c10bdfd7a16c63872bbe04a98ff56c", image.Rect(808, 686, 1002, 945), image.Rect(1, 0, 22, 24), "09609caa8233801ccf13d298d29616bb384406bd911b15fdf6c5a55ec3ce6216"},
+	{"0624a1da236e5645ab9dba5b0876f79bcc8c8c3656de96cef901d500262ccbde", image.Rect(1035, 759, 1277, 947), image.Rect(1, 8, 22, 24), "4b3a2dc5e3e746e1d0a9f792521bc944739d860be5ee65c16b01c1fb2846425b"},
 }
 
 type cavePlayerPose struct {
@@ -67,7 +86,7 @@ type cavePlayerCrop struct {
 
 func (c cavePlayerCrop) Bounds() image.Rectangle { return c.box }
 
-// NewCavePlayer先驗六張固定圖面及全部37個取樣，再交出可用圖組。
+// NewCavePlayer先驗七張固定圖面及全部54個取樣，再交出可用圖組。
 func NewCavePlayer(dir string) (*CavePlayer, error) {
 	atlas, err := caveArtwork(filepath.Join(dir, "player-atlas-handpaint-v1.png"), "a2ca6c6de0bdb07c7a97ae301ab66eab9c623b93da14ac5ec2cf7b2dc0930662")
 	if err != nil {
@@ -94,6 +113,18 @@ func NewCavePlayer(dir string) (*CavePlayer, error) {
 		return nil, err
 	}
 	player := &CavePlayer{poses: map[string]*cavePlayerPose{}}
+	shieldData, err := checked(filepath.Join(dir, "player-shield-atlas-handpaint-v2.png"), "ea679274d3f144bef9841e660a26b0ec4a860957cb19989d98102c87f7f9633a", 16<<20)
+	if err != nil {
+		return nil, err
+	}
+	config, err := png.DecodeConfig(bytes.NewReader(shieldData))
+	if err != nil || config.Width != 1536 || config.Height != 1024 {
+		return nil, fmt.Errorf("持盾主角圖面尺寸不符")
+	}
+	shield, err := png.Decode(bytes.NewReader(shieldData))
+	if err != nil {
+		return nil, err
+	}
 	for n, r := range cavePlayerRegistrations {
 		source := atlas
 		if n >= 14 {
@@ -110,6 +141,9 @@ func NewCavePlayer(dir string) (*CavePlayer, error) {
 		}
 		if n >= 30 {
 			source = expedition
+		}
+		if n >= 37 {
+			source = shield
 		}
 		if r.crop.Empty() || !r.crop.In(source.Bounds()) || r.native.Empty() || !r.native.In(image.Rect(0, 0, 24, 24)) || player.poses[r.key] != nil {
 			return nil, fmt.Errorf("主角美術登錄不符")

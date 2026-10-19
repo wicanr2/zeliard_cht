@@ -2,11 +2,11 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-主入口ae87b6b7，101份Go、測試、譯表與依賴檔固定。026洞窟名稱的已觀察前綴與正常切換已限定CONFORMED；025刀劍／刀劍油、024盾牌、023的37個主角姿態、022城鎮HD、021中文、29物件、十武器及020入口收據保持原身份。全遊戲中文與HD仍在開發。
+主入口816634ad，102份Go、測試、譯表與依賴檔固定。[027持盾洞窟HD](docs/spec/027-cave-shield-profile-hd.md)已限定CONFORMED：17個新姿態，累計54個主角來源姿態。53份原生及高清獨立合成、122次完整原版配對與正常視窗通過；未驗特殊組合安全退回。026、025、024、023及其他既有收據保持原身份。全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
-接續探索取得18幅正常原版來源，獨立重建580608原生像素零差。七個主角姿態已補圖，另1個配色變化保持原貌；見[規格023](docs/spec/023-cave-expedition-player-hd.md)。45具名、18點完整配對及實際攀繩視窗通過，尚未走到下一洞窟。
+本輪補上17個持盾姿態，原版172個完成畫格中取53份獨立來源，1709568原生及30528000高清整幅像素零差。26具名測試含正常冷F7完整原版配對通過；正常視窗另有三個同原版切換。原版資料、玩法及存檔不改。
 
 | 項目 | 現況 | 證據與限制 |
 |---|---|---|
@@ -20,9 +20,9 @@
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 026洞窟名稱前綴與正常切換已限定CONFORMED | 主入口ae87b6b7／101來源。13具名、23完整配對點、5760000獨立像素、3654實際日誌、五個同時刻HUD共342720像素通過。279720原數字及文字區外像素不變；來源取得及原欄位意義仍未知 |
-| 接續工作 | 來源SAVEM1的洞窟裝備分支與HD來源，再推進其餘中文 | HUD已閉合，不重開C013／C014寫入原因。CaveFrames仍對FFFF前綴拒絕，解碼另限定0093=0，而此正常來源0093=2；先觀察原版完成來源與附加圖層讀取，再審查HD，不能套用HUD不讀前綴的證據到整張洞窟。刀劍油買入及其他物品／法術仍待驗 |
-| HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角37姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
+| 本輪工作 | 027持盾洞窟HD已限定CONFORMED | 主入口816634ad／102來源。17新姿態、53份原生及高清合成、26具名、122完整原版配對、15觀察點、172完成畫格。實際日誌3678筆，三次HD／原貌／HD切換通過；全部退回事件另核原因，不稱整段零退回 |
+| 接續工作 | 未驗特殊裝備組合及其他中文／HD | 027保留0093=2配合FF3A的特殊姿態原貌，已保存真實來源。先判斷正常玩家功能依賴，再走窄RE及規格；不重開026前綴、已閉合數字區或無關效果公式。其他物品／法術及其餘居民仍待完成 |
+| HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角54姿態，其中17個持盾姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
 
@@ -46,7 +46,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-先以正常SAVEM1冷F7與已驗入洞鍵序，觀察洞窟完成來源及0093=2的角色圖層。`internal/prototype/hd/cave_frames.go`目前只接受C000的3f5ed前綴；`cave_sources.go`另拒絕非零0093。026只證明名稱繪字不讀前綴，不能據此開通整張HD。先做最小充分原版讀取／圖層與完整原圖重建證據，再走READY；不追C013／C014無關寫入或重開已閉合HUD、刀劍、盾牌數字區。025刀劍油使用已驗，正常買入仍待；原包五份存檔均在Muralla、取得未知。113居民中112、53場景中40及五混合入口仍待正常路徑；正式字級、術語、HD倍率／預設、音訊及實體手把驗收仍待處理。證據見[RESEARCH-LOG.md](RESEARCH-LOG.md)與[VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+027已閉合其限定範圍，不重做53份與既有026／025／024驗收。正常離洞出現0093=2且FF3A=255的特殊組合，依規格保留原貌；真實來源及來源／主體守衛退回已保存，可作下一窄任務入口。其餘居民、場景名稱、混合控制腳本、物品／魔法與洞窟美術仍待正常路徑抽樣；正式字級、術語、HD倍率／預設、音訊及實體USB／藍牙手把驗收仍待完成。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -55,6 +55,8 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- [027持盾洞窟HD](docs/spec/027-cave-shield-profile-hd.md)原版入口為`workplace/prose-v1/cave_shield_probe_v1.go`、`cave_shield_actions_v1.commands`及`cave-shield-source-v1/`，172個完成畫格／53份候選。`cave_shield_inventory_v1.py`／`cave-shield-inventory-v1/receipt.json`獨立重建1709568原生像素零差。IDA9.4沿既有py312映像，`cave-shield-ida-v1/query.json`保存原始強推論，`cave-shield-ida-v2/query.json`自動合併[已分級索引](docs/cave-shield-source-index.json)；原始`sub_39B9`及362條指令不改名。READY先存`cave-shield-ready-v1.json`；素材及完整提示詞見`cave-shield-art-v3/registration.json`、`generation.json`，原圖在`workplace/cave-hd-v1/player-shield-atlas-handpaint-v2.png`。`cave_shield_composition_v2.py`／`cave-shield-composition-v2/`核53整圖30528000像素；v1路徑錯誤保留。`cave-shield-unit-v1/`記26具名、122完整原版配對與vet／build，主入口816634ad。102來源身份與快照為`cave-shield-candidate-identity-v1.json`、`cave-shield-candidate-sources-v1/`。正常視窗`cave_shield_gui_v2.py`／`cave-shield-gui-v2/`，v1累計退回檢查過嚴的失敗保留；`cave-shield-gui-preflight-v1.json`記分類修正。實際日誌及全部退回核對為`cave-shield-gui-pair-v2/`，3678筆；v1重播的候選重複引用勘誤保留。實際像素入口`cave_shield_gui_pixels_v1.py`／`cave-shield-gui-pixels-v1/`，三個時刻HD與原貌各870912像素、重複整畫布1728000與中文HUD205632像素零差。來源／擁有權／連結稽核、舊主入口備份及同步見`cave-shield-unit-v1/current-audit.json`、`mainalias-sync.json`與`previous-main-ae87b6b7`。原始資料與完整收據只留本機，不作Release。
 
 - [026洞窟名稱前綴](docs/spec/026-cave-hud-source-prefix.md)原版入口為`workplace/prose-v1/hud_prefix_probe_v1.go`／`hud-prefix-source-v1/`，各擷取的輸入、工具及位址身份在同目錄`identity.json`。分析v2核兩次21位元組讀取、前綴0次讀取及完整字形；v1路徑metadata錯誤保留。READY先存`hud-prefix-ready-review-v1.json`；`hud_prefix_navigation_probe_v1.go`／`hud-prefix-navigation-v1/`正常對齊後，v2審查補原始0083診斷。`hud-prefix-unit-v1/`未對齊失敗保留，現行`hud-prefix-unit-v2/`驗13具名、23完整配對點、十整圖5760000獨立像素及vet／build。身份`hud-prefix-candidate-identity-v1.json`／`hud-prefix-candidate-sources-v1/`固定101來源，GUI為`hud_prefix_gui_v1.py`／`hud-prefix-gui-v1/`；根端目視五圖。`hud_prefix_gui_replay_v1.go`／`hud-prefix-gui-pair-v1/`核3654筆及五個真實暫停快照，`hud_prefix_actual_pixels_v1.py`／`hud-prefix-unit-v2/actual-pixels.json`核342720完整HUD與279720原數字／區外像素零差。稽核為同目錄`current-audit.json`、主入口同步／備份為`mainalias-sync.json`／`previous-main-439baeea`，Git／Docker收尾為`repository-sync.json`。此項已閉合；HD裝備分支另追。
 

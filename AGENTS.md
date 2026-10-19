@@ -162,6 +162,8 @@
 | [internal/prototype/overlay/town_test.go](internal/prototype/overlay/town_test.go) | 正常交談配對、113筆容量與來源失配拒絕驗證 |
 | [docs/hud-source-index.json](docs/hud-source-index.json) | 狀態列來源、原版完成字形、安全區與證據等級 |
 | [docs/spec/026-cave-hud-source-prefix.md](docs/spec/026-cave-hud-source-prefix.md)、[原包存檔鍵序](tools/cave-hud-source-save.commands)、[自建存檔鍵序](tools/cave-hud-prefix.commands)、[配對測試](internal/prototype/overlay/hud_prefix_test.go) | 名稱前綴、原版讀取範圍與兩條正常回鎮／重入路徑；原始0083僅供診斷 |
+| [docs/spec/027-cave-shield-profile-hd.md](docs/spec/027-cave-shield-profile-hd.md) | 0093=2、FFFF前綴與原版洞窟角色圖層；來源、素材及HD接入閘門 |
+| [docs/cave-shield-source-index.json](docs/cave-shield-source-index.json) | 固定IDA輸入的盾牌圖層分類、原始定位、推論等級及證據；新匯出自動合併 |
 | [internal/prototype/overlay/hud.go](internal/prototype/overlay/hud.go) | 當次入口唯一驗證來源的狀態列覆繪，不改原版數值或輸入 |
 | [internal/prototype/overlay/hud_scene_test.go](internal/prototype/overlay/hud_scene_test.go) | 正常室內名稱配對及候選來源的唯一匹配／失配退回測試 |
 | [text/intro-prototype.json](text/intro-prototype.json) | 片頭單句的覆繪試作譯文，不代表完整翻譯 |
@@ -221,6 +223,7 @@
 | [docs/spec/011-cave-hd.md](docs/spec/011-cave-hd.md) | 洞窟地形、角色、武器與動態圖層的覆繪閘門 |
 | [tools/cave_hd_preview.py](tools/cave_hd_preview.py) | Docker內從原版完成快照合成洞窟HD離線研究圖，不接正式前端 |
 | [docs/spec/012-cave-frame-sources.md](docs/spec/012-cave-frame-sources.md) | 洞窟完成來源、圖層解碼、守衛與呈現生命週期 |
+| [internal/prototype/hd/cave_shield_test.go](internal/prototype/hd/cave_shield_test.go) | 027持盾53份原生／HD獨立合成、未知來源拒絕與正常冷F7完整原版配對 |
 | [internal/prototype/hd/cave_sources.go](internal/prototype/hd/cave_sources.go) | 規格012的原版地形、動態物件、主角與武器色號解碼 |
 | [internal/prototype/hd/cave_frames.go](internal/prototype/hd/cave_frames.go) | 規格012的完成來源選擇與撤除；高清美術另由011追蹤 |
 | [internal/prototype/hd/cave_terrain.go](internal/prototype/hd/cave_terrain.go) | 規格011的Malicia地形合成；動態、主角與武器保留原貌 |
