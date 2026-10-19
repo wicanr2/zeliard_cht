@@ -10,6 +10,7 @@ import (
 )
 
 var sageBox = image.Rect(56, 23, 152, 87)
+var sageReturnBox = image.Rect(112, 23, 208, 87)
 
 const sageArtSHA = "a1fa3b745422f59153239b903591db104c5c3fb320c18ee7f5181a247c33a5aa"
 
@@ -23,12 +24,16 @@ type Sage struct {
 }
 
 func sageCrop(raw []byte, channels int) []byte {
+	return sageCropAt(raw, channels, sageBox)
+}
+
+func sageCropAt(raw []byte, channels int, box image.Rectangle) []byte {
 	if len(raw) != nativeWidth*nativeHeight*channels {
 		return nil
 	}
-	out := make([]byte, sageBox.Dx()*sageBox.Dy()*channels)
-	for y := sageBox.Min.Y; y < sageBox.Max.Y; y++ {
-		copy(out[(y-sageBox.Min.Y)*sageBox.Dx()*channels:], raw[(y*nativeWidth+sageBox.Min.X)*channels:(y*nativeWidth+sageBox.Max.X)*channels])
+	out := make([]byte, box.Dx()*box.Dy()*channels)
+	for y := box.Min.Y; y < box.Max.Y; y++ {
+		copy(out[(y-box.Min.Y)*box.Dx()*channels:], raw[(y*nativeWidth+box.Min.X)*channels:(y*nativeWidth+box.Max.X)*channels])
 	}
 	return out
 }
@@ -81,21 +86,38 @@ func NewSage(referenceA, referenceB, palette, artwork string) (*Sage, error) {
 }
 
 func (s *Sage) Draw(dst *image.RGBA, indexed, rgb []byte, origin image.Point) (bool, int) {
-	idx, col := sageCrop(indexed, 1), sageCrop(rgb, 3)
-	for pose := range s.indices {
-		if !bytes.Equal(idx, s.indices[pose]) || !bytes.Equal(col, s.rgb[pose]) {
-			continue
-		}
-		at := origin.Add(sageBox.Min.Mul(scale))
-		for y := scale; y < (sageBox.Dy()-1)*scale; y++ {
-			for x := scale; x < (sageBox.Dx()-1)*scale; x++ {
-				if s.animated[y/scale*sageBox.Dx()+x/scale] {
-					continue
-				}
-				dst.Set(at.X+x, at.Y+y, s.art.At(x, y))
-			}
-		}
-		return true, pose
+	if s == nil || dst == nil {
+		return false, -1
 	}
-	return false, -1
+	selected := -1
+	var box image.Rectangle
+	// 兩位置均有完整原版證據；先唯一匹配，全部守衛通過後才繪製。
+	for _, candidate := range []image.Rectangle{sageBox, sageReturnBox} {
+		idx, col := sageCropAt(indexed, 1, candidate), sageCropAt(rgb, 3, candidate)
+		for pose := range s.indices {
+			if !bytes.Equal(idx, s.indices[pose]) || !bytes.Equal(col, s.rgb[pose]) {
+				continue
+			}
+			if selected >= 0 {
+				return false, -1
+			}
+			selected, box = pose, candidate
+		}
+	}
+	if selected < 0 {
+		return false, -1
+	}
+	at := origin.Add(box.Min.Mul(scale))
+	if !(image.Rectangle{Min: at, Max: at.Add(image.Pt(box.Dx()*scale, box.Dy()*scale))}).In(dst.Bounds()) {
+		return false, -1
+	}
+	for y := scale; y < (box.Dy()-1)*scale; y++ {
+		for x := scale; x < (box.Dx()-1)*scale; x++ {
+			if s.animated[y/scale*box.Dx()+x/scale] {
+				continue
+			}
+			dst.Set(at.X+x, at.Y+y, s.art.At(x, y))
+		}
+	}
+	return true, selected
 }

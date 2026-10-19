@@ -482,6 +482,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 		}
 	}
 	if g.observePath != "" {
+		observedPalette := make([]byte, 0, 768)
+		for _, c := range g.o.Palette() {
+			observedPalette = append(observedPalette, c[:]...)
+		}
 		held := g.o.HeldKeys()
 		var rejections []map[string]int
 		var quotation, bankDialogue, itemPurchase, itemSale, itemExplanation map[string]any
@@ -512,6 +516,12 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"cave_weapon_hd":             g.caveWeaponState(),
 			"cave_objects_hd":            g.caveObjectState(),
 			"cave_portal_hd":             g.cavePortalState(),
+			"dialogue":                   g.dialogue.State(),
+			"oracle_memory_sha256":       fmt.Sprintf("%x", sha256.Sum256(g.o.Bytes(oracle.Far(0, 0), 1<<20))),
+			"oracle_indexed_sha256":      fmt.Sprintf("%x", sha256.Sum256(raw)),
+			"oracle_palette_sha256":      fmt.Sprintf("%x", sha256.Sum256(observedPalette)),
+			"sage_hd_matched":            g.sageHDMatched,
+			"sage_hd_pose":               g.sageHDPose,
 			"input_trace_error":          g.inputTraceError,
 			"town_ground_hd_matched":     g.townGroundMatch,
 			"town_player_hd_matched":     g.townPlayerMatch,
@@ -792,6 +802,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"cave_weapon_hd":          g.caveWeaponState(),
 				"cave_objects_hd":         g.caveObjectState(),
 				"cave_portal_hd":          g.cavePortalState(),
+				"dialogue":                g.dialogue.State(),
 				"input_trace_error":       g.inputTraceError,
 				"town_ground_hd_matched":  g.townGroundMatch,
 				"town_player_hd_matched":  g.townPlayerMatch,
