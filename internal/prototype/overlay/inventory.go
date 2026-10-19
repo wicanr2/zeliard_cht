@@ -27,7 +27,7 @@ func (l *Labels) beginInventory(o *oracle.Oracle) {
 				continue
 			}
 			ah := uint8(o.AX() >> 8)
-			white := s.offset == 0xa92 || s.offset == 0xa9a || s.offset == 0xaac || s.offset == 0xb72 || s.offset == 0xc44 || s.offset == 0xc4b
+			white := s.inventoryWhite
 			if white && ah != 1 || !white && ah != 2 && ah != 3 {
 				return
 			}

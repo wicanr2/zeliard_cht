@@ -2,7 +2,7 @@
 
 更新日期：2026-10-19，Asia/Taipei。
 
-51行製作名單與六行收尾中文已通過原版配對、實際視窗及獨立像素核對，與首章、魔王及故事正文能正常銜接，主入口已同步fca020a3。Malicia地形與回城成果保持已驗身份；全遊戲中文與HD仍在開發。
+共用物品文字已按原版指標表分類，新增60筆候選；Magia石的買入、選用、使用及空欄已通過原版配對、實際視窗及獨立像素，主入口同步4766810c。片頭、Malicia地形與回城成果保持已驗來源身份；全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
@@ -12,13 +12,14 @@
 | GitHub | 私人 [wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 主機gh可用，保持PRIVATE；最近提交與遠端核對見WORKLOG |
 | 本地 Git | 已初始化 `main`，設定 `origin` | 環境 placeholder 已不存在；使用 GitHub noreply 信箱作本儲存庫提交身份 |
 | 遊戲包 | 已安全解包與逐檔盤點 | 30 個壓縮項目，含目錄；29 個檔案，清單在本地 `workplace/source-manifest.json` |
-| 中文手冊 | RAR 已列目錄，17 張 JPG | 已人工讀外封面及第 1、5–8、10、13 頁；另含地圖等掃描，17 張不等於 17 頁 |
+| 中文手冊 | RAR 已列目錄，17 張 JPG | 已人工讀外封面及第 1、5–13 頁；物品操作五張掃描另核RAR大小／CRC。另含地圖等掃描，17 張不等於 17 頁 |
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 首場交戰／第一寶石及跳／蹲另已通過原版、中文配對與正常視窗；不代表全遊戲已驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
 | 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 三組捲字015限定CONFORMED | 首章30／名單51／收尾6行，95點完整原版相同，90張獨立中文排版、90次AND途中及首章舊入口通過。正常GUI三組1300列與故事5083字形零拒絕；44826筆實際日誌冷重跑及末端全部RAM／Regs／VGA相同，九張actualX共5184000像素零差，根端人工看九張。主入口fca020a3、83來源；收尾入口為intro-narration-v1/scroll-current-audit-v1.json |
+| 本輪工作 | 共用物品016限定CONFORMED | 72來源分類、60新候選，Magia49點全部原版狀態相同；5616呈現、五張中文288萬像素零差，GUI v2五面板1484820像素零差。舊藥水48點／裝備11點回歸、五頂層及十二子項通過；原件與存檔不變。候選4766810c／85來源，主入口已同步；收尾沿item-use-v1/shared-current-audit-v1.json |
+| 接續工作 | 洞窟角色／物件HD及其餘正常中文路徑 | Sabre1,200高於起始1,000，v1只驗資金不足；正常第一寶石的銀行報價6，未取得Sabre，不改金額或猜效果。其他未走過的物品與法術來源仍是候選 |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形已接入 | 洞窟地形1..14可選覆繪，主角／武器／動態物件仍原貌。未知角色分支安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -43,7 +44,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步接物品共用文字消費端，再推洞窟角色／物件HD。小字22DB與彩色AA2B已在[裝備來源索引](docs/inventory-source-index.json)定位，先沿已驗購買／物品頁鍵序擴一條正常分支，不把已知白名單當作全物品覆蓋。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+下一步推洞窟角色／物件HD，並沿正常探索取得其他物品、校驗候選中文。共用文字分類與Magia垂直鏈已依[規格016](docs/spec/016-shared-inventory-text.md)閉合，不重開指標表或首瓶藥水研究。Sabre正常使用先滿足金幣條件；不可改金額或把資金不足當使用驗收。三組捲字、故事正文、魔王三行與012增量覆寫、E8／FF39／FF3A及回城地面相位已閉合，不重開研究或鍵序。5混合居民入口先閉合文字片段／確認框生命週期，不猜語意。113居民中112、53場景中40未正常走過，正式字級、術語與素材待校訂。證據見 [RESEARCH-LOG.md](RESEARCH-LOG.md) 與 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -54,6 +55,16 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 ## 工具與本地證據入口
 
 以下按研究版本保留證據入口。舊候選與舊失敗保持原身份；目前主入口與下一步以上方狀態表為準。
+
+- 共用物品文字沿既有`workplace/item-use-v1/`接續，來源盤點為`shared-inventory-source-v1.py`／`shared-inventory-source-v1.json`。正常原版工具為`shared-probe-v1.go`，鍵序及輸出分別為`shared-magia-v1.commands`／`shared-magia-v1/`與`shared-sabre-v1.commands`／`shared-sabre-v1/`；譯表與正式接入須依[規格016](docs/spec/016-shared-inventory-text.md)審查。
+- 共用物品的手冊研究沿同根`shared-manual-v1.py`／`shared-manual-v1/`，逐檔對RAR原始大小與CRC核既有掃描副本，掃描只供本地術語核對，不入Git。既有7z映像缺RAR codec，已找到所需既有副本，不重試舊unar選檔。原生字形與完成區驗證另沿`shared-glyph-proof-v1.py`／`shared-glyph-proof-v1.json`。
+- Sabre的1,200售價高於起始1,000；`shared-sabre-v1/`保留正常資金不足結果。正常戰鬥取得寶石及換錢的接續研究沿`shared-probe-v2.go`、`shared-funding-v1.commands`／`shared-funding-v1/`，不改金額或亂數。補齊AC32的A35B讀取端與試譯容量審查沿`shared-ready-review-v1.py`／`shared-ready-review-v1.json`及`shared-labels-candidate-v1.tsv`。
+- 016正式配對與候選沿`shared-test-v1.jsonl`／`shared-pair-v1/`，原版戰鬥回門的連續鍵序延伸為`shared-funding-v2.commands`／`shared-funding-v2/`，保留v1尚未走回門口的畫面。
+- 第一寶石後正常回城及銀行換錢延伸為`shared-funding-v3.commands`／`shared-funding-v3/`。016候選建置與檢查沿`zeliard-preview-shared-v1`、`shared-build-v1.log`、`shared-vet-v1.log`；獨立中文像素沿`shared-pixels-v1.py`／`shared-pixels-v1.json`。來源凍結及GUI入口為`shared-freeze-v1.py`、`shared-candidate-identity-v1.json`／`shared-candidate-sources-v1/`及`shared-gui-v1.py`／`shared-gui-v1/`。
+- 016首輪測試誤把完整遮擋但仍保留的舊標籤數視為可見殘留，保留`shared-failed-test-v1.go.txt`、v1日誌及部分畫面。關閉驗收改依實際像素完全還原，沿`shared-test-v2.jsonl`／`shared-pair-v2/`乾淨重跑，不改正式繪圖生命週期。
+- 既有藥水使用及裝備頁回歸沿`shared-regression-v1.jsonl`／`shared-regression-v1/`。本輪自有檔案清單保存於`shared-owned-files-v1.list`，供來源及提交邊界核對。
+- 共用物品收尾沿`shared-audit-v1.py`／`shared-current-audit-v1.json`、根端實際圖目視清單`shared-root-visual-review-v1.json`。候選、主入口同步及私人遠端身份分開保存為`shared-mainalias-sync-v1.json`、`shared-repository-sync-v1.json`；通過前不覆寫舊fca020a3入口。
+- GUI v1已驗城鎮物品頁，洞口驗證工具沿舊藥水路徑假設四次Right8m已走至右側角色範圍，但實圖角色仍在左側，未送Up即停止。v1原身份及失敗保留；`shared-gui-v2.py`／`shared-gui-v2/`延長正常右行至八段有界預算，仍只在固定洞門與完整角色像素同時吻合後送Up，不改產品守衛。候選程式與85來源不變，GUI腳本身份另存`shared-candidate-identity-v2.json`，來源快照仍指v1。
 
 - 其餘片頭中文先沿`workplace/intro-narration-v1/`研究，入口為`probe_intro_v1.go`與`original-natural-v1/receipt.json`。只走無輸入自然片頭，觀察原版繪字與模組來源；未達READY不改正式覆繪。
 - 同研究區`probe_intro_v2.go`／`original-title-space-v2/`在正常200m標題送一次Space，再自然觀察後續流程。魔王宣言的來源在同一SAR1模組末段，與首章32C9捲動端分開追蹤。

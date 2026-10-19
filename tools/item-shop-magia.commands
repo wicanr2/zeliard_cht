@@ -1,0 +1,189 @@
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+shot cold-town
+key 0x41 500000
+run 2000000
+shot load-list
+key 0x15 150000
+run 1500000
+shot load-name
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+shot load-name-entered
+key 0x1c 100000
+run 16000000
+shot restored
+key 0x4b 8000000
+run 1000000
+key 0x4b 4000000
+run 1000000
+shot item-nav0
+key 0x4b 250000
+run 250000
+shot item-fine-1
+key 0x4b 250000
+run 250000
+shot item-fine-2
+key 0x4b 250000
+run 250000
+shot item-fine-3
+key 0x4b 250000
+run 250000
+shot item-fine-4
+key 0x4b 250000
+run 250000
+shot item-fine-5
+key 0x4b 250000
+run 250000
+shot item-fine-6
+key 0x4b 250000
+run 250000
+shot item-fine-7
+key 0x4b 250000
+run 250000
+shot item-fine-8
+key 0x4b 250000
+run 250000
+shot item-fine-9
+key 0x4b 250000
+run 250000
+shot item-fine-10
+key 0x4b 250000
+run 250000
+shot item-fine-11
+key 0x4b 250000
+run 250000
+shot item-fine-12
+key 0x4b 250000
+run 250000
+shot item-fine-13
+key 0x48 250000
+run 20000000
+shot item-greeting
+key 0x50 100000
+run 1500000
+shot buy-selected
+key 0x39 500000
+run 12000000
+shot item-list
+key 0x50 100000
+run 1500000
+shot shared-item-selected
+key 0x39 500000
+run 16000000
+shot first-item-quote
+key 0x50 100000
+run 1500000
+shot after-buy-no-selected
+key 0x39 500000
+run 8000000
+shot after-buy-no
+key 0x1c 500000
+run 1000000
+shot item-inventory-in-shop
+key 0x48 100000
+run 1500000
+shot item-outside-selected
+key 0x39 500000
+run 10000000
+shot item-farewell
+run 1000000
+shot item-farewell-ready
+key 0x39 500000
+run 4000000
+shot item-outside
+key 0x1c 500000
+run 1000000
+shot item-inventory
+key 0x1c 500000
+run 2000000
+shot item-inventory-closed
+key 0x4d 8000000
+run 1000000
+shot right-coarse-1
+key 0x4d 8000000
+run 1000000
+shot right-coarse-2
+key 0x4d 8000000
+run 1000000
+shot right-coarse-3
+key 0x4d 8000000
+run 1000000
+shot right-coarse-4
+key 0x4b 250000
+run 250000
+shot gate-fine-left-1
+key 0x4b 250000
+run 250000
+shot gate-fine-left-2
+key 0x4b 250000
+run 250000
+shot gate-fine-left-3
+key 0x4b 250000
+run 250000
+shot gate-aligned
+key 0x48 250000
+run 20000000
+shot cave-ready
+key 0x1c 500000
+run 1000000
+shot cave-item-inventory
+key 0x4d 100000
+run 1500000
+shot cave-shared-selected
+key 0x39 500000
+run 1000000
+shot cave-shared-used
+key 0x1c 500000
+run 2000000
+shot cave-use-closed
+key 0x1c 500000
+run 1000000
+shot cave-inventory-empty
+key 0x1c 500000
+run 2000000
+shot cave-inventory-closed
+key 0x48 250000
+run 20000000
+shot use-return-town

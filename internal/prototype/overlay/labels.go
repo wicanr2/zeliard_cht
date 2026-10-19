@@ -19,15 +19,16 @@ import (
 )
 
 type labelSource struct {
-	offset    int
-	base      uint16
-	prefix    []byte
-	width     int
-	raw       []byte
-	text      []rune
-	inventory bool
-	bankTitle bool
-	itemTitle bool
+	offset         int
+	base           uint16
+	prefix         []byte
+	width          int
+	raw            []byte
+	text           []rune
+	inventory      bool
+	inventoryWhite bool
+	bankTitle      bool
+	itemTitle      bool
 }
 type labelStamp struct {
 	source                         *labelSource
@@ -103,6 +104,10 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 			}
 		}
 		files[id] = b
+	}
+	inventoryKinds, err := inventorySourceKinds(files["zelres2"].data)
+	if err != nil {
+		return nil, err
 	}
 	l := &Labels{font: font, sources: map[string]*labelSource{}, paint: observePaint(o), original: o, itemListPrefix: append([]byte(nil), files["zelres2"].data[0x1a588:0x1a5c8]...), itemListCache: map[int]*listLabel{}}
 	tsv, err := os.ReadFile(catalog)
@@ -184,7 +189,15 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 			return nil, fmt.Errorf("介面來源須以 NUL 或 FF 結束：%s", row[0])
 		}
 		charWidth := 5
-		inventory := parts[0] == "zelres2" && module == 0x401e && (off == 0x4a1d || off == 0x4a2e || off == 0x4a37 || off == 0x4a3f || off == 0x4ab0 || off == 0x4ab8 || off == 0x4aca || off == 0x4b90 || off == 0x4c62 || off == 0x4c69)
+		inventory, inventoryWhite := false, false
+		if parts[0] == "zelres2" && module == 0x401e {
+			kind, known := inventoryKinds[off]
+			if !known {
+				return nil, fmt.Errorf("未分類的裝備文字來源：%s", row[0])
+			}
+			inventory = kind != inventorySmallWhite
+			inventoryWhite = kind == inventoryLargeWhite
+		}
 		if inventory {
 			charWidth = 8
 		}
@@ -220,7 +233,7 @@ func NewLabels(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*Labels
 		if bankTitle || itemTitle {
 			rawEnd = end
 		}
-		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:rawEnd]...), text: []rune(text), inventory: inventory, bankTitle: bankTitle, itemTitle: itemTitle}
+		l.sources[row[0]] = &labelSource{offset: off - module, base: base, prefix: append([]byte(nil), data[module:module+64]...), width: charWidth, raw: append([]byte(nil), data[off:rawEnd]...), text: []rune(text), inventory: inventory, inventoryWhite: inventoryWhite, bankTitle: bankTitle, itemTitle: itemTitle}
 	}
 	o.OnCall(oracle.Far(0x01b1, 0x22db), func(q *oracle.Oracle) { l.begin(q, 5) })
 	o.OnCall(oracle.Far(0x01b1, 0x2308), func(q *oracle.Oracle) { l.finish(q, 5) })

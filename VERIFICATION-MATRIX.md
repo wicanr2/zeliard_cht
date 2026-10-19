@@ -4,6 +4,7 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 共用物品文字與Magia正常使用 | 016限定CONFORMED | 72來源分類、60新候選，Magia49點全部RAM／Regs／VGA／時間／輸入／檔案操作相同，存檔不變；5616呈現、兩種原子退回及四種catalog拒絕通過。五張獨立中文畫布2880000像素零差；GUI v2五穩定面板1484820像素零差、根端逐張目視，正常退出0。舊藥水48點、裝備11點及服務catalog回歸通過，五頂層／十二子項無skip。4766810c／85來源，入口為item-use-v1/shared-current-audit-v1.json；未正常取得物品仍候選，Sabre使用未驗。GUI只開標籤，不稱整段GUI全RAM或HD重驗，v1導航工具失敗保留 |
 | 原始 ZIP CRC | 通過 | 30 個項目，含遊戲程式與 js-dos 設定 |
 | ZIP／RAR SHA-256 | 通過 | 見 [CONTEXT.md](CONTEXT.md) |
 | 中文手冊故事來源 | 通過 | 人工核對第 1、7–8 頁，見 [RESEARCH-LOG.md](RESEARCH-LOG.md) |

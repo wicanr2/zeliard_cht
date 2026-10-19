@@ -158,6 +158,9 @@
 | [docs/spec/013-intro-narration.md](docs/spec/013-intro-narration.md) | 其餘片頭顯示來源與魔王三行宣言的試作閘門 |
 | [docs/spec/014-intro-story.md](docs/spec/014-intro-story.md) | 完整故事的58片段、52清框與唯讀中文生命週期 |
 | [docs/spec/015-intro-scroll-blocks.md](docs/spec/015-intro-scroll-blocks.md) | 首章、製作名單與六行收尾的來源、視窗與捲動生命週期 |
+| [docs/spec/016-shared-inventory-text.md](docs/spec/016-shared-inventory-text.md) | 物品、裝備及使用訊息的共用來源分類與顯示閘門 |
+| [internal/prototype/overlay/inventory_sources.go](internal/prototype/overlay/inventory_sources.go)、[測試](internal/prototype/overlay/inventory_sources_test.go) | 規格016的指標表字型分類、來源拒絕及正常物品中文配對 |
+| [tools/item-shop-magia.commands](tools/item-shop-magia.commands) | 自建存檔冷F7、正常買入Magia Stone、選用、移除及回城鍵序 |
 | [text/intro-credits-prototype.tsv](text/intro-credits-prototype.tsv) | 製作名單51行來源鍵與試譯，保留人名及空白行 |
 | [text/intro-outro-prototype.tsv](text/intro-outro-prototype.tsv) | 故事後六行捲動文字試譯 |
 | [internal/prototype/overlay/scroll_blocks_test.go](internal/prototype/overlay/scroll_blocks_test.go) | 三組捲字正常原版配對、獨立排版、途中呈現與退回驗證 |
