@@ -35,6 +35,7 @@ type device struct {
 type game struct {
 	o                    *oracle.Oracle
 	audio                *oracle.Audio
+	output               *audioOutput
 	font                 bitmap.Font
 	labels               map[string]string
 	settings             controls.Settings
@@ -239,6 +240,7 @@ func (g *game) captureBinding(buttons []bool, axes []float64) {
 }
 
 func (g *game) Update() error {
+	defer g.audioLifecycle()
 	if g.captured {
 		g.captureTail++
 		if g.captureTail >= 60 {
@@ -352,9 +354,12 @@ func (g *game) Update() error {
 		}
 		return err
 	}
-	// 雛形尚未接音效裝置；仍取出音訊，避免執行器埠紀錄持續成長。
-	g.audio.Render()
+	// 原版取樣只在更新執行緒取得；播放端不持有原版執行器。
+	pcm := g.audio.Render()
 	g.traceRun(beforeSteps, beforeCycles, budget, true, nil)
+	if err := g.output.submit(pcm); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -523,6 +528,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"sage_hd_matched":            g.sageHDMatched,
 			"sage_hd_pose":               g.sageHDPose,
 			"input_trace_error":          g.inputTraceError,
+			"audio_output":               g.output.state(),
 			"town_ground_hd_matched":     g.townGroundMatch,
 			"town_player_hd_matched":     g.townPlayerMatch,
 			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
@@ -805,6 +811,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"cave_portal_hd":          g.cavePortalState(),
 				"dialogue":                g.dialogue.State(),
 				"input_trace_error":       g.inputTraceError,
+				"audio_output":            g.output.state(),
 				"town_ground_hd_matched":  g.townGroundMatch,
 				"town_player_hd_matched":  g.townPlayerMatch,
 				"town_background_cache":   g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224), "town_background_module": g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64)})
@@ -843,6 +850,8 @@ func main() {
 	captureRequest := flag.String("capture-request", "", "GUI 測試：等待指定訊號檔存在再擷取，取代更新次數條件")
 	observePath := flag.String("observe", "", "可選：每秒寫入唯讀執行進度，供 GUI 驗證診斷")
 	inputTrace := flag.String("input-trace", "", "可選：本地原版輸入／週期日誌，不覆寫既有檔案")
+	audioMode := flag.String("audio", "off", "原版音效試作：off 或 ebiten；正式預設待確認")
+	audioWAV := flag.String("audio-wav", "", "可選：將原版生成取樣另存新WAV；不是裝置監聽錄音")
 	frames := flag.Int("capture-frames", 120, "GUI 測試擷取前更新次數")
 	panel := flag.Bool("show-controller", false, "GUI 測試啟動時展開手把頁")
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
@@ -901,6 +910,9 @@ func main() {
 	}
 	itemPalette := flag.String("item-palette", "", "可選：道具店原版色盤")
 	flag.Parse()
+	if *audioMode != "off" && *audioMode != "ebiten" {
+		log.Fatal("-audio 須為 off 或 ebiten")
+	}
 	if *orig == "" || *fontPath == "" || *userDir == "" || *cycles < 60 || *cycles > 10000 || *frames < 1 {
 		log.Fatal("須指定 -orig、-font、-user-dir；cycles 範圍 60–10000")
 	}
@@ -915,6 +927,16 @@ func main() {
 	rel, err := filepath.Rel(root, userRoot)
 	if err != nil || !(rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator))) {
 		log.Fatal("使用者目錄不可位於原版資料目錄內")
+	}
+	if *audioWAV != "" {
+		path, e := filepath.Abs(*audioWAV)
+		if e != nil {
+			log.Fatal(e)
+		}
+		relative, e := filepath.Rel(root, path)
+		if e != nil || !(relative == ".." || strings.HasPrefix(relative, ".."+string(filepath.Separator))) {
+			log.Fatal("原版音訊記錄不可位於原版資料目錄內")
+		}
 	}
 	if err := os.MkdirAll(filepath.Join(userRoot, "game"), 0700); err != nil {
 		log.Fatal(err)
@@ -1131,9 +1153,15 @@ func main() {
 		}
 	}
 	ebiten.SetWindowTitle(g.label("title"))
+	g.output, err = newAudioOutput(*audioMode, *audioWAV)
+	if err != nil {
+		log.Fatal(err)
+	}
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetRunnableOnUnfocused(true)
-	if err := ebiten.RunGame(g); err != nil {
+	runErr := ebiten.RunGame(g)
+	closeErr := g.output.close()
+	if err := errors.Join(runErr, closeErr); err != nil {
 		log.Fatal(err)
 	}
 }

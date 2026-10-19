@@ -966,3 +966,14 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - GUI v6擷取內容另由shield-transition-gui-pair-v6/重播3044筆日誌；shield_transition_postmortem_pixels_v1.py與shield-transition-gui-pixels-v6/驗四次實際切換、HD與原貌各1161216像素零差。狀態明列EXIT_UNCONFIRMED，不取代v7成功退出驗收。重播初次因空輸出缺少.pending而在執行原版前拒絕，原身份保存在shield-transition-gui-pair-v6-preflight.json，補齊標記後重跑。
 - 現行shield-transition-unit-v3記31具名、3686完整原版配對、四個新姿態完成及vet／build；三個舊輸出測試skip不計通過。104來源固定，主入口01da4dfb。GUI v7以現有工具列在正常Up過程暫停，不改CPU時鐘、原版流程或機器狀態；四次原貌切換及回鎮／重入通過。
 - 實際視窗日誌3068筆重播、五暫停原版狀態及四呈現來源相同；HD／原貌各1161216、重複畫布2304000與中文HUD274176像素零差。原始USR及mtime不變，沒有注入、還原、公開素材或Release。Git、來源擁有權、回填與Docker收尾見本輪unit收據。
+
+
+## 2026-10-20：029原版音訊輸出
+
+- 載入knowledge-router、retro-remake-spec-gated-workflow、retro-platform-spec-first、文件職責與reverse-engineer-retro-game-remake技能。讀固定oracle.Audio及Ebitengine2.9.9原碼，參考psychic-war串流分層；不沿用速度檔位、取樣裁切或快照還原。
+- 原版冷啟動前綴698筆取得511929取樣，先保存audio-output-ready-v1.json，再實作可選-audio off|ebiten、獨立有界佇列及新檔-audio-wav。預設off；不改現有cycles、原版規則、時鐘或存檔。
+- sound-race八項通過，第九項原版完整698配對另跑成功，無skip計入；vet／build通過。42bdeaf6與110份Go／測試／譯表／依賴檔固定後才執行GUI，期間沒有修改產品或凍結工具。
+- transport-v1完成兩次播放生命週期及原版WAV比對，但ffmpeg正常SIGINT退出255被工具當失敗。原身份及勘誤保留；v2採有界自然錄音退出0。明確以44100 Hz監聽，避免Pulse預設48000 Hz重取樣混入格式比對；沿既有d831720f音效image，不新建重複工具鏈。
+- 正常GUI-v1冷啟動與Space，驗暫停／恢復、失焦／恢復、手把設定／返回；四播放器生命週期、三種完整原版凍結與清空佇列，正常退出0。710筆日誌及全部520749取樣／完整WAV重播相同；監聽左右聲道一致、十二個512音框片段相符。
+- 已證實1904751欠載音框。未量測無觀察負載，不宣稱根因或穩定播放完成；下一步量測固定正常工作量並修正節奏。1.37秒人耳試音已提出，尚待使用者回覆；實體裝置與全遊戲音樂未驗。
+- 原始PCM、監聽、原生日誌與完整收據留忽略目錄。主入口備份／同步、來源擁有權／連結、Git／Docker收尾另存本輪unit；沒有Release或全遊戲完成聲明。

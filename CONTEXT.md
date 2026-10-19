@@ -2,11 +2,11 @@
 
 更新日期：2026-10-20，Asia/Taipei。
 
-主入口01da4dfb，104份Go、測試、譯表與依賴檔固定。[028持盾離洞](docs/spec/028-cave-shield-transition-hd.md)已限定CONFORMED，累計55個主角姿態。補上雙朝向共用的背面持盾，修正呈現器在原版批次開始前清掉新主體的問題。舊呈現仍撤除，未知來源仍拒絕。既有027及其他收據保持原身份，全遊戲中文與HD仍在開發。
+主入口42bdeaf6，110份Go、測試、譯表與依賴檔固定。029已接入可選音效播放，格式／隔離／生命週期與虛擬裝置限定驗收通過；即時節奏仍因大量欠載而未完成。[028持盾離洞](docs/spec/028-cave-shield-transition-hd.md)已限定CONFORMED，累計55個主角姿態。補上雙朝向共用的背面持盾，修正呈現器在原版批次開始前清掉新主體的問題。舊呈現仍撤除，未知來源仍拒絕。既有027及其他收據保持原身份，全遊戲中文與HD仍在開發。
 
 ## 目前狀態表
 
-本輪四份原生ABI與129024像素、四份獨立高清整幅2304000像素零差。31具名測試、3686次完整原版配對與實際失敗視窗日誌回歸通過；正常視窗另驗雙朝向背面姿態、回鎮撤除及重入。
+本輪九項具名測試通過，其中八項含競態偵測；698次完整原版狀態配對。實際視窗710筆原生日誌及全部520749個取樣重播相同，暫停、失焦與手把頁凍結並清空播放佇列。裝置欠載1904751音框，須接續修正。028圖面與配對保持原收據。
 
 | 項目 | 現況 | 證據與限制 |
 |---|---|---|
@@ -17,11 +17,11 @@
 | 中文手冊 | RAR 已列目錄，17 張 JPG | 已人工讀外封面及第 1、5–13 頁；物品操作五張掃描另核RAR大小／CRC。另含地圖等掃描，17 張不等於 17 頁 |
 | dosgolem | 正常新局、國王領賞、長老存檔與冷讀檔已驗 | 首場交戰／第一寶石及跳／蹲另已通過原版、中文配對與正常視窗；不代表全遊戲已驗 |
 | 架構 | 使用者已選定直接執行原版再覆繪 | 參考 psychic-war，不另建玩法重製引擎；見 [架構規格](docs/spec/001-runtime-overlay.md) |
-| 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；音效輸出尚未接入 |
+| 前端 | `workplace/bin/zeliard-preview` 已建置，GUI 雛形可啟動 | 中文工具列、手把綁定設定；可選音效已接入，穩定節奏未完成 |
 | 中文 | 工具列、首章、魔王、故事正文、製作名單／收尾、國王、長老、存讀、商店、裝備、使用、狀態列及居民交談 prototype | 首章30／名單51／收尾6行與故事58片段、47頁已驗，故事Space跳過另有收據。113居民純文字試譯、一位居民完整兩頁及續頁／還原已驗。其他112居民與40新增場景名未正常走過；專名與字級待校訂 |
 | 銀行中文 | 最新35點配對及正常視窗通過 | 查詢0、存100、領50、查詢50、無alma寶石及離店950；標題、問句與數字圖形已驗，ledger存檔持久性及其他分支未驗 |
-| 本輪工作 | 028持盾離洞已限定CONFORMED | 主入口01da4dfb／104來源。四完成回呼、同一新姿態54，31具名、3686完整原版配對；2580筆原失敗日誌回歸零拒絕。正常視窗3068筆日誌、兩個背面54與兩個站立37時刻的HD／原貌切換通過 |
-| 接續工作 | 其他未驗組合、其餘中文與場景HD | FF3A持盾及新主體生命週期已由028閉合，不重開同一問題。E8／FF39及其他裝備組合、其餘居民／場景／物品文字與洞窟美術仍待正常路徑；實體手把與正式設計待完成 |
+| 本輪工作 | 029格式／隔離／生命週期限定CONFORMED，主入口42bdeaf6／110來源 | 九具名、698完整原版配對、710筆實際日誌與全部生成WAV相同；正常視窗四播放生命週期、三種暫停凍結與退出0。虛擬裝置片段相同，但1904751欠載音框須修，見[029](docs/spec/029-runtime-audio.md)；人耳及實體裝置未驗 |
+| 接續工作 | 音效欠載量測與修正、其他未驗組合、其餘中文與場景HD | FF3A持盾及新主體生命週期已由028閉合，不重開同一問題。E8／FF39及其他裝備組合、其餘居民／場景／物品文字與洞窟美術仍待正常路徑；實體手把與正式設計待完成 |
 | HD | 手繪奇幻邊框、室內人物、遠山、Muralla前景／地面與主角八姿態；Malicia地形、主角55姿態，包含17個一般持盾及1個雙朝向共用的離洞姿態、十武器與29物件圖像已接入 | 地形1..14、主角、武器與物件可選覆繪；已驗配色提示保留原貌。未知來源安全回退；其餘洞窟、phase4、居民與正式倍率／預設待完成 |
 | 手把 | 裝置選擇、重綁定、保存、死區及斷線釋放雛形 | 純輸入測試通過；尚無實體 USB／藍牙驗收 |
 | 文件 | AGENTS、README 與 LICENSE 已建立 | 故事背景已核對中文手冊；自有內容採 RRSAL-1.0，原版資料不入庫 |
@@ -46,7 +46,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-028已閉合雙朝向持盾離洞及新主體生命週期，不重做同一問題或既有027／026驗收。下一步推進未驗特殊組合、其餘居民／混合控制腳本／場景與物品文字，以及其餘洞窟美術。正式字級、術語、HD倍率／預設、音訊及實體USB／藍牙手把仍待完成；未驗項不當成完成。
+029已閉合有限播放層，但實際視窗欠載1904751音框。下一步比較無觀察與重度觀察的固定更新工作量，找出原版執行、覆繪與診斷成本，再修正即時播放。不得用改取樣率、隱藏丟樣或額外原版執行掩蓋。028雙朝向持盾離洞及新主體生命週期已閉合，不重做既有驗收。其餘未驗特殊組合、居民／混合控制腳本／場景與物品文字，以及洞窟美術繼續保留。正式字級、術語、HD倍率／預設、音訊及實體USB／藍牙手把仍待完成；未驗項不當成完成。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 
@@ -55,6 +55,8 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 獨立逐像素核對為 `workplace/merchant-hd-v1/pixel-verification-v2.json`，確認三個原貌肖像與原版RGB來源相同、HD與指定圖面取樣相同、遊戲畫布內框外0差、原貌完整還原。三組暫停steps／cycles不變；最終HD開啟但商人不匹配、持鍵空、capture-tail退出0。84筆按放均確認、最長0.19秒。GUI保留兩筆舊對話安全退回，paragraph14／first_difference290及paragraph12／first_difference422，不稱零失配。第二訪問的報價也見交叉雙臂，不依流程名稱硬綁姿態，不推測原因。三姿態不等於完整商人動畫。
 
 ## 工具與本地證據入口
+
+- [029原版音訊](docs/spec/029-runtime-audio.md)入口為`workplace/prose-v1/audio_output_probe_v1.go`及`audio-output-source-v1/`，698筆冷啟動前綴、511929取樣；READY先存`audio-output-ready-v1.json`。`audio-output-unit-v1/`保存八項競態測試、原版完整配對第九項及vet／build；`audio-output-candidate-identity-v1.json`／`audio-output-candidate-sources-v1/`固定110來源與42bdeaf6。實際音效工具為`audio_device_game_v1.go`、`audio_pulse_transport_v2.py`與`audio_monitor_verify_v1.py`；`audio-output-pulse-v2/`核正式audio.go、虛擬PulseAudio與監聽，v1正常SIGINT退出255被腳本當失敗的勘誤保留。`audio_normal_gui_v1.py`／`audio-output-gui-v1/`驗四播放生命週期、三種原版凍結與正常退出0；`audio_gui_replay_v1.go`／`audio-output-gui-pair-v1/`核710筆及520749取樣／完整WAV相同。`audio_normal_monitor_verify_v1.py`核十二個512音框片段；重度觀察下1904751欠載音框是未完成品質，不外推穩定播放。人耳試音為`audio-output-pulse-v2/monitor-sample.wav`，尚待使用者回覆；物理裝置未驗。根端目視、來源／擁有權／連結、主入口備份／同步及Git收尾分別在unit目錄的`root-visual-review.json`、`current-audit.json`、`mainalias-sync.json`及`repository-sync.json`；整理工具為`audio_finalize_v1.py`、`audio_audit_v1.py`。完整PCM及收據只留忽略目錄，不作Release。
 
 - [028持盾離洞](docs/spec/028-cave-shield-transition-hd.md)限定雙朝向共用姿態54與可信新主體保留。原版入口為`workplace/prose-v1/shield_transition_probe_v2.go`／`shield-transition-source-v2/`，`shield-transition-inventory-v1/`驗四完成、原生ABI及129024原生像素；IDA9.4分級輸出為`shield-transition-ida-v1/query.json`。素材登錄與完整提示詞在`shield-transition-art-v1/registration.json`、`generation.json`，四份2304000獨立高清像素見`shield-transition-composition-v1/`。主入口01da4dfb、104來源與142固定輸入見`shield-transition-candidate-identity-v7.json`，程式快照沿`shield-transition-candidate-sources-v2/`。`shield-transition-unit-v3/`驗31具名、3686完整原版配對及vet／build；`shield-transition-lifecycle-v2/`重播原失敗2580筆日誌，舊呈現撤除、新主體保留、拒絕為0及十個守衛邊界通過。正常輸入觀察為`shield_transition_input_probe_v1.go`／`shield-transition-input-v1/`，轉向與場景等待以新完成來源判定。實際視窗`shield_transition_gui_v7.py`／`shield-transition-gui-v7/`，日誌重播`shield-transition-gui-pair-v7/`共3068筆，五暫停原版狀態與四呈現來源相同。`shield_transition_gui_pixels_v7.py`／`shield-transition-gui-pixels-v7/`驗HD與原貌各1161216、重複畫布2304000及中文HUD274176像素零差。較早規格回填見[對照表](docs/re-resolution-backlinks.tsv)，根端目視見`shield-transition-unit-v3/root-visual-review.json`；來源／擁有權／連結稽核及主入口／Git同步在`shield-transition-unit-v3/current-audit.json`、`mainalias-sync.json`與`repository-sync.json`。失敗、READY回退與腳本修正歷程見WORKLOG；原始資料與完整收據只留本機，不作Release。
 

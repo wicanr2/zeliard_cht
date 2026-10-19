@@ -225,6 +225,11 @@
 | [docs/spec/012-cave-frame-sources.md](docs/spec/012-cave-frame-sources.md) | 洞窟完成來源、圖層解碼、守衛與呈現生命週期 |
 | [internal/prototype/hd/cave_shield_test.go](internal/prototype/hd/cave_shield_test.go) | 027持盾53份原生／HD獨立合成、未知來源拒絕與正常冷F7完整原版配對 |
 | [docs/spec/028-cave-shield-transition-hd.md](docs/spec/028-cave-shield-transition-hd.md) | 正常離洞時持盾FF3A姿態、原版來源重用與高清連續顯示閘門 |
+| [docs/spec/029-runtime-audio.md](docs/spec/029-runtime-audio.md) | 同一原版音源的取樣、前端播放、緩衝與停止政策閘門 |
+| [internal/prototype/sound/stream.go](internal/prototype/sound/stream.go)、[測試](internal/prototype/sound/stream_test.go) | 029的有界取樣緩衝、雙聲道浮點輸出、欠載／溢位與並行安全 |
+| [internal/prototype/sound/wav.go](internal/prototype/sound/wav.go)、[測試](internal/prototype/sound/wav_test.go) | 029的原版單聲道來源錄音、新檔保護及完整取樣驗證 |
+| [internal/prototype/sound/original_pair_test.go](internal/prototype/sound/original_pair_test.go) | 029正常冷開機前綴的698次完整原版狀態、PCM及播放緩衝隔離比對 |
+| [cmd/zeliard-preview/audio.go](cmd/zeliard-preview/audio.go) | 029可選播放器、暫停／失焦／手把頁停止與新來源恢復 |
 | [docs/re-resolution-backlinks.tsv](docs/re-resolution-backlinks.tsv) | 固定模組雜湊與原始位址對應的後續證據、舊規格及必要回填標記 |
 | [internal/prototype/hd/cave_shield_transition_test.go](internal/prototype/hd/cave_shield_transition_test.go) | 028四份真實完成、直接高清合成、主體重用與正常原版完整狀態配對 |
 | [internal/prototype/hd/cave_transition_lifecycle_test.go](internal/prototype/hd/cave_transition_lifecycle_test.go) | 028實際視窗日誌在Draw時刻的主體生命週期、舊呈現撤除與原版狀態回歸 |
