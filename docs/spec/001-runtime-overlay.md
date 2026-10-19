@@ -184,6 +184,19 @@ GUI 診斷可用 `-capture-request` 等待指定訊號檔，再走原有 Draw �
 
 ## 銀行未交易告別與手繪肖像 prototype
 
+### 無存款提款與長老普通告別補譯
+
+狀態：CONFORMED，限兩段純文字顯示。先完成來源審查及READY，再實作。證據入口見CONTEXT的`bank-text-gaps-v1/`。原始`ZELRES2.SAR` SHA-256為`bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1`，dosgolem凍結來源882份摘要`2a5ad11a6c67b1e1d8a16d61830d8565f262ab38566f49d6ff076a721be58ada`，Go1.24.13。從既有實際正常GUI日誌冷開機重播，逐筆暫存器與時間相同，核對來源完整bytes及每個已完成字形。
+
+| 已證實來源 | SAR2檔案範圍，右端不含 | dosgolem記憶體起點 | 原版文字末端及尾碼 |
+|---|---|---|---|
+| 無存款提款拒絕 | `019f95..019fe3`，payload起點`019462` | `01B1:AB33` | 75個原文字元，`FF 01 0C` |
+| 長老普通告別 | `01cab2..01cace`，payload起點`01bcc6` | `01B1:ADEC` | 25個原文字元，`11 FF FF` |
+
+只增加兩個穩定來源鍵及UTF-8 TSV試譯，沿既有`Dialogue`的`711B`／`7120`繪字觀察器、來源payload與完整script守衛、三行安全區及失配退回。原版金額、控制尾碼、選項、按鍵及存檔完全由原版處理。來源→TSV→唯讀覆繪→正常拒絕提款／告別→回城鎮，須核完整原版狀態、區外像素及金幣1000不變；未知來源與畫面不得殘留中文。正式字級、其他銀行分支與全遊戲不在此限定驗收內。
+
+顯示入口1fd120ad從030的112份固定來源建置，只套本節的對話來源、譯表及回歸測試差異，不納入尚未通過的031音效候選。新增17點正常原版配對、既有35點存提款回歸、實際視窗7052筆與9個完整原版停點通過。9張整幅5184000像素與共用Go合成相符；兩張新文字頁196560像素另以Python、TSV及Unifont獨立核對，31824原版金幣欄像素不變。正常離店、長老回鎮及DOS退出0已驗，未知畫面退回亦通過。通過後才更新本地主入口，舊程式及其相容譯表保持原身份，不將舊銀行存讀收據換名成新入口證據。
+
 仍為DRAFT。未交易告別的原版來源為SAR2 `[0x1A0BD,0x1A0FF)`，對應 `01B1:AC5B..AC9C`，61個實際字形及尾部控制碼已由正常冷F7路徑核對。試譯鍵為 `zelres2.file.01a0bd`，沿既有對話層顯示。正常待續游標為AC9Bh、旗標0，再送Space離店，金幣維持1000。它與交易後告別分開，來源入口在 `workplace/bank-hd-v1/no-purchase-source-v1/`，固定鍵序為 [bank-no-purchase.commands](../../tools/bank-no-purchase.commands)。
 
 - HD入口為 [hd/bank.go](../../internal/prototype/hd/bank.go)。使用 `-bank-reference-a`、`-bank-reference-b`、`-bank-reference-c`、`-bank-palette`及 `-bank-art-a`、`-bank-art-b`、`-bank-art-c`，三組原圖與手繪圖須全部核對身份及尺寸。

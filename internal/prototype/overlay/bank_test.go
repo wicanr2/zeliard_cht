@@ -32,8 +32,34 @@ func TestBankNoPurchaseDepartureReadOnly(t *testing.T) {
 	testWeaponShopNormalPath(t, "../../../tools/bank-no-purchase.commands", 12)
 }
 
+func TestBankEmptyAccountAndSageFarewellReadOnly(t *testing.T) {
+	if os.Getenv("ZELIARD_BANK_SAVE") == "" {
+		t.Skip("須掛載自己正常建立的起始存檔")
+	}
+	if out := os.Getenv("ZELIARD_SHOP_OUTPUT"); out != "" {
+		t.Setenv("ZELIARD_SHOP_OUTPUT", filepath.Join(out, "bank-text-gaps"))
+	}
+	testWeaponShopNormalPath(t, "../../../tools/bank-text-gaps.commands", 17)
+}
+
 func assertBankCheckpoint(t *testing.T, name string, d *Dialogue, l *Labels, o *oracle.Oracle, dst *image.RGBA, drawn bool) {
 	t.Helper()
+	if key := map[string]string{"empty-withdraw-refused": "zelres2.file.019f95", "sage-ordinary-farewell": "zelres2.file.01cab2"}[name]; key != "" {
+		if !drawn || !d.active || d.current < 0 || d.paragraphs[d.current].key != key || d.visible != len(d.paragraphs[d.current].text) || d.bank.active || o.Word(oracle.Far(0x01b1, 0x86)) != 1000 {
+			t.Fatal("無存款提款或長老普通告別的中文、來源或原版金額不符", name, d.State(), d.BankState())
+		}
+		unknown := append([]byte(nil), o.Indexed()...)
+		unknown[100*320+55] ^= 128
+		isolated := *d
+		canvas := image.NewRGBA(dst.Bounds())
+		before := append([]byte(nil), canvas.Pix...)
+		if isolated.Draw(canvas, unknown, o.Palette(), image.Point{}) || isolated.active || !bytes.Equal(before, canvas.Pix) {
+			t.Fatal("補譯遇未知畫面未完整退回", name)
+		}
+	}
+	if name == "sage-outside" && (drawn || d.Active() || o.Word(oracle.Far(0x01b1, 0x86)) != 1000) {
+		t.Fatal("長老普通告別後仍有中文或原版金額改動")
+	}
 	if name == "no-purchase-farewell" || name == "no-purchase-farewell-ready" {
 		if !drawn || d.current < 0 || d.paragraphs[d.current].key != "zelres2.file.01a0bd" || d.visible != len(d.paragraphs[d.current].text) || o.Word(oracle.Far(0x01b1, 0xff4c)) != 0xac9b || o.Word(oracle.Far(0x01b1, 0x86)) != 1000 {
 			t.Fatal("銀行未交易告別的來源、完整中文或金額不符")
