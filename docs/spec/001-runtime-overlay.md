@@ -180,7 +180,7 @@ GUI 診斷可用 `-capture-request` 等待指定訊號檔，再走原有 Draw �
 
 銀行新存檔持續性已補正常原版觀察與中文配對。從自建SAVETEST冷F7，存100、領50、離店950，再走回長老另存LEDGER，正常Ctrl+Q及Y退出；第二次冷開機正常F7讀LEDGER，再查存款50及離店950。兩側各自交易與存讀，56個完整1MiB／暫存器／VGA／色盤／時間／持鍵／FileOps／KeyReads相同；各自產生的256-byte存檔SHA-256均為`c3b21bcfe48c5b68fe2051bc9e818c054d7ea9e604ea2df6742b0186fb9444ba`。沒有共用中途狀態、快照還原或帳戶注入，正式覆繪與譯表不改。
 
-此段的[正常鍵序](../../tools/bank-persistence.commands)及[回歸測試](../../internal/prototype/overlay/bank_persistence_test.go)另核來源畫面與冷讀後的原版數字字形，收據入口見CONTEXT的`bank-persistence-unit-v1/`。實際X視窗的完整另存／退出／冷讀與獨立完整排版仍待驗，離線探針圖不冒充視窗成果。餘額1、提空、有寶石兌換及其他城鎮尚未驗。未交易告別及銀行HD依下節接入，不稱所有銀行文字或整個中文化完成。
+此段的[正常鍵序](../../tools/bank-persistence.commands)及[回歸測試](../../internal/prototype/overlay/bank_persistence_test.go)另核來源畫面與冷讀後的原版數字字形，收據入口見CONTEXT的`bank-persistence-unit-v1/`。實際X視窗的正常另存／退出／冷讀已另行驗證，來源為GUI v4的正常存檔進程與GUI v5的正常冷讀進程；v4中斷的第二進程不計通過。實際新檔SHA-256為`c3e68b98908a5f4423222af68a9e55c12c0e4a156bb4792e0b499f5d5cc463ad`，與先前固定鍵序c3b21bcf分開保存，不改寫舊身份。27653筆真實按放／執行日誌、37個完整原版暫停點與銀行／對話狀態相同；重播原版自行重生新檔，再由下一個冷啟動讀取。37張實際遊戲區與共用Go覆繪合成共21312000像素相同；兩張查詢頁另以TSV、Unifont及原版完成的數字圖形獨立核196560像素，31824原版950金幣欄像素不變。這不是37圖全部獨立排版或新增HD驗收。餘額1、提空、有寶石兌換及其他城鎮尚未驗。未交易告別及銀行HD依下節接入，不稱所有銀行文字或整個中文化完成。
 
 ## 銀行未交易告別與手繪肖像 prototype
 
