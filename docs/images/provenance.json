@@ -1,0 +1,340 @@
+{
+  "scope": "使用者指定的 README 圖片；僅文件縮圖，不包含原始遊戲或完整解析度素材",
+  "font": {
+    "name": "NotoSansCJK-Regular.ttc",
+    "sha256": "b76b0433203017ca80401b2ee0dd69350349871c4b19d504c34dbdd80541690a",
+    "ttc_index": 3
+  },
+  "tool": {
+    "script_sha256": "1730dd262c8fd4a4dc259602de62d5c814f24fda414894188658466726628d01",
+    "pillow": "9.4.0"
+  },
+  "comparison_receipts": [
+    "workplace/cave-hd-v1/gui-current-return-v6/receipt.json",
+    "workplace/prose-v1/services-v1/hd-gui-v2/receipt.json"
+  ],
+  "current_screenshots_receipt": "workplace/music-release-v1/gui-v4/receipt.json",
+  "receipt_sha256": {
+    "workplace/cave-hd-v1/gui-current-return-v6/receipt.json": "c4d5e89ff5b3efc3e957f4cf422a0f65e694d232fabe048012d6bfcc85db355d",
+    "workplace/prose-v1/services-v1/hd-gui-v2/receipt.json": "35b350c430e402393f759fdb8855e02884e2028f6a7e0d91fbd8ad3229591202",
+    "workplace/music-release-v1/gui-v4/receipt.json": "4ca5558faf5e382dd1afaea69fd57652d6cc5bb590f7d22af9f41b96a319fffb"
+  },
+  "sources": {
+    "workplace/cave-hd-v1/gui-current-return-v6/returned-town-original.png": [
+      {
+        "sha256": "8a54d8c96d6d3e5ebbd618e8e8213f3c2c80e4b5fd29ae8d58ceb8481400f88c",
+        "crop": [
+          0,
+          48,
+          960,
+          648
+        ]
+      },
+      {
+        "sha256": "8a54d8c96d6d3e5ebbd618e8e8213f3c2c80e4b5fd29ae8d58ceb8481400f88c",
+        "crop": [
+          144,
+          486,
+          816,
+          528
+        ]
+      }
+    ],
+    "workplace/cave-hd-v1/gui-current-return-v6/returned-town-HD.png": [
+      {
+        "sha256": "d49b09bafecbeab244e8722b6122d4ac1c37e9e6e3f5c34e80c114e3f6d8d9cc",
+        "crop": [
+          0,
+          48,
+          960,
+          648
+        ]
+      }
+    ],
+    "workplace/prose-v1/services-v1/hd-gui-v2/boot1/church-frame-1-original.png": [
+      {
+        "sha256": "446c20272ac2a662adeaffdfa47de622b4813ef3b4c58cbd111ecdbbcabebf16",
+        "crop": [
+          0,
+          48,
+          960,
+          648
+        ]
+      }
+    ],
+    "workplace/prose-v1/services-v1/hd-gui-v2/boot1/church-frame-1-hd.png": [
+      {
+        "sha256": "eb6086198624ee88f6d0ba661eb546739d6fcfaad586b126e66bf215642a3ec7",
+        "crop": [
+          0,
+          48,
+          960,
+          648
+        ]
+      }
+    ],
+    "workplace/music-release-v1/gui-v4/boot1/town-HD.png": [
+      {
+        "sha256": "7502112ae8e5f1966e0038c978518759c1924444957f361a32eade6ab4e2851f"
+      }
+    ],
+    "workplace/music-release-v1/gui-v4/boot1/first-cave-HD.png": [
+      {
+        "sha256": "016ace370f5318756b3b5bd160f5b029e0671148715847fb2af01057779bba83"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/king/probe-king-memory-84m/palette.bin": [
+      {
+        "sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/king/probe-king-memory-84m/screen.bin": [
+      {
+        "sha256": "1cacedee397822e5c46c439ebf47726fd949e2a0253765c66ef07953d013369b",
+        "crop": [
+          112,
+          23,
+          208,
+          87
+        ]
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/king/hd-king-prototype.png": [
+      {
+        "sha256": "d6be3a9fa2c93da491485e4167bc941f75367b8142ae1b3b6131dfffe6e78a70"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/town/sage.palette": [
+      {
+        "sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/town/sage-a.indexed": [
+      {
+        "sha256": "00042c91e4a41d80aa2223c30310b15ebdbfd4c73062e3dda0f6a1e1e622c7d7",
+        "crop": [
+          56,
+          23,
+          152,
+          87
+        ]
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/town/sage-handpaint.png": [
+      {
+        "sha256": "a1fa3b745422f59153239b903591db104c5c3fb320c18ee7f5181a247c33a5aa"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/merchant/greeting.palette": [
+      {
+        "sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/merchant/greeting.indexed": [
+      {
+        "sha256": "7388180509117c907d2f0d1a32ddafe6f9529e4fa790028f2a7ef7b42da2e52a",
+        "crop": [
+          56,
+          23,
+          152,
+          87
+        ]
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/merchant/merchant-prototype.png": [
+      {
+        "sha256": "2660fc7892f9a5229d4cee3723e992146992a460a1678197793cc890b0dfb59b"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/bank/bank-greeting.palette": [
+      {
+        "sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/bank/bank-greeting.indexed": [
+      {
+        "sha256": "ef95c986b6ed2e6fbbb0d093406b4e3ce0bf3185102c3bbd53bf6b88f834f845",
+        "crop": [
+          56,
+          23,
+          152,
+          87
+        ]
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/bank/bank-raised-prototype.png": [
+      {
+        "sha256": "89ff8e0d13fcc4b7a0cc1a56c8103f89d3cdf588a076ee4ee2c77ece998f8e7c"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/item/item-greeting.palette": [
+      {
+        "sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/item/item-greeting.indexed": [
+      {
+        "sha256": "b7218bead49bc038d9b95c6016966f460909d3c72edce34da31673e6587fc10e",
+        "crop": [
+          56,
+          23,
+          152,
+          87
+        ]
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/item/item-shop-base-prototype.png": [
+      {
+        "sha256": "8f62986f755db681a9b1e036a3349102aa8d35952f32805249ada836e774b3fa"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/church/reference/church-entered.palette": [
+      {
+        "sha256": "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/church/reference/church-entered.indexed": [
+      {
+        "sha256": "e148d69a7a88c04d9e3d9ec881da2936d5251abe4ffe46e289efc15aa15947cd",
+        "crop": [
+          112,
+          23,
+          208,
+          87
+        ]
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/church/art/church-rest-handpaint-v1.png": [
+      {
+        "sha256": "bf1f010947176a746edfc558c7bb4587058241357e671b6ee13c4b3bdcb741d7"
+      }
+    ],
+    "workplace/town-hd-v1/foreground-v1/background-native.png": [
+      {
+        "sha256": "3d2c796c998927f0b982a0c7b68f202a0f916aea79cb2622d2c1c9fe3865206d"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/town/background-handpaint-v2.png": [
+      {
+        "sha256": "3a6791169fb9fa28f3fac63310155249654ce3e80da21e6fec5b9d80bdf0d160"
+      }
+    ],
+    "workplace/town-hd-v1/foreground-v1/muralla-foreground-native.png": [
+      {
+        "sha256": "83ba465b17de1ffbaa0ba7ebc4a1e127d5273611e5139c8f95aa50784e3881bc"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/town/scenery-art/town-middle-art-v2.png": [
+      {
+        "sha256": "0f8d7d3509293fb70fc400c12ce0b5e69e13b0ae96752928f44d9f3e35f21c1c"
+      }
+    ],
+    "workplace/cave-hd-v1/player-source-v1/reference-atlas.png": [
+      {
+        "sha256": "feedfe052b302257f15c02086788038707f7fbf1f2da9374953d95dc72ba9138"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/cave/player-atlas-handpaint-v1.png": [
+      {
+        "sha256": "a2ca6c6de0bdb07c7a97ae301ab66eab9c623b93da14ac5ec2cf7b2dc0930662"
+      }
+    ],
+    "workplace/cave-hd-v1/weapon-inventory-v1/source-sheet.png": [
+      {
+        "sha256": "66e0d615f63eb5138d18b42a3a89b5edcff5168e9a3a8b4582ea3a04373ebc3e"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/cave/weapon-atlas-handpaint-v1.png": [
+      {
+        "sha256": "8ea1753a36e44f51dd9ba4732613095479a4ceabddd96c43a9336b1bc7b68e66"
+      }
+    ],
+    "workplace/cave-hd-v1/object-art-reference-v1/green-source-sheet.png": [
+      {
+        "sha256": "5a52a6cac4266e86412146ee1d671190bc38dc797dd4ba273fdf18fc7a059ab9"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/cave/object-green-handpaint-v1.png": [
+      {
+        "sha256": "314991d63cb3e6f04cace19929919183f497982660a638c464015d8d91367172"
+      }
+    ],
+    "workplace/cave-hd-v1/object-art-reference-v1/red-source-sheet.png": [
+      {
+        "sha256": "951604649f520e9125f991c2d9de9db97e8f3ea41236d7c77bb6d1925ccf6e7f"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/cave/object-red-handpaint-v1.png": [
+      {
+        "sha256": "a515202a34cb7bd2f42f95d8caf19ac3b13a1aa0e7208b37fb9cd709990af55f"
+      }
+    ],
+    "workplace/cave-hd-v1/object-art-reference-v1/effects-source-sheet.png": [
+      {
+        "sha256": "5270a8814a177079e838a4fb27ba962d52fe6ef6042e452f5dd4df791dd5ff88"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/cave/object-effects-handpaint-v1.png": [
+      {
+        "sha256": "aec83e6729ab077e23610d972a8790198b4837814b0986f99f2b98a0cd65d4f6"
+      }
+    ],
+    "workplace/cave-hd-v1/portal-source-v1/reference.png": [
+      {
+        "sha256": "0abb508e2447fb43219eeca9a2ed6006f109cfa0a5b07ebf2abd4f31feb1a035"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/cave/portal-handpaint-v1.png": [
+      {
+        "sha256": "3a2e060f2726b7acc71ee0a29968cf6586900ed683bf79dffef0d6e6d645e843"
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/town/ground-handpaint-v1.png": [
+      {
+        "sha256": "ea2b08001d76d6ed739e48a6ec6695db2bda05a4c843c9e573977b8ffcc45074"
+      }
+    ],
+    "workplace/cave-hd-v1/gui-current-movement-v7/entry-terrain-original-a.png": [
+      {
+        "sha256": "7f40eec018bf00d39e09dd9d506481e5397636eee2263683db2db8c0ebfbbad3",
+        "crop": [
+          144,
+          96,
+          816,
+          222
+        ]
+      }
+    ],
+    "workplace/music-release-v1/release-build/data/assets/cave/rock-material-v1.png": [
+      {
+        "sha256": "09d331a411515a441790479646484467ca529517adc3f3cc235936921e57bf8f"
+      }
+    ]
+  },
+  "outputs": {
+    "original-hd-comparison.jpg": {
+      "sha256": "80ab5c97ad79ef10d54ce0d0a6ba4a71bab8af02dc715b95625cd7d6347ee590",
+      "width": 1600,
+      "height": 1240,
+      "bytes": 1143573
+    },
+    "gameplay-hd.jpg": {
+      "sha256": "5b638229a49ddb3264b3717662042604e6232035c453d10defb77edc2d752db0",
+      "width": 1600,
+      "height": 704,
+      "bytes": 489623
+    },
+    "original-assets-overview.jpg": {
+      "sha256": "7943ae5a037c91bbf3951aea1a01d3dc3ebe71365602b9f76cf1ac4cb1c2a254",
+      "width": 1600,
+      "height": 1420,
+      "bytes": 782109
+    },
+    "hd-assets-overview.jpg": {
+      "sha256": "c87116c470e7e7a98d845c4a88acdb57a3001f6698f43adaab701ee282a293d9",
+      "width": 1600,
+      "height": 1420,
+      "bytes": 700844
+    }
+  }
+}

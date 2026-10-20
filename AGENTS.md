@@ -158,6 +158,8 @@
 | [docs/spec/030-native-rgb-presentation.md](docs/spec/030-native-rgb-presentation.md)、[internal/prototype/bitmap/rgb.go](internal/prototype/bitmap/rgb.go)、[整幅比較測試](internal/prototype/bitmap/rgb_test.go) | 原版三倍RGB底圖的逐像素等價加速，不改HD與中文順序 |
 | [.gitattributes](.gitattributes) | 保留製作名單TSV空欄的分隔Tab；欄數、空白來源與字型由捲字譯表驗證器檢查 |
 | [README.md](README.md) | 故事背景、穩定入口、使用方式與現況摘要 |
+| [docs/images/provenance.json](docs/images/provenance.json) | README 四張文件預覽圖的來源雜湊、裁切與輸出身份；原始素材留在本機 |
+| [tools/readme_images.py](tools/readme_images.py) | 在具 Pillow 的 Docker 內製作 README 圖片，以 `--project`、`--output`、`--font` 指定唯讀來源、可寫圖片目錄及 Noto Sans CJK 字型 |
 | [LICENSE](LICENSE) | 自有程式與文件的 RRSAL-1.0 完整條款及原版素材排除範圍 |
 | [CONTEXT.md](CONTEXT.md) | 有日期的目前狀態、決策、來源及下一步 |
 | [WORKLIST.md](WORKLIST.md) | 可執行工作與完成條件 |
@@ -312,6 +314,7 @@
 - 儲存庫為 `https://github.com/wicanr2/zeliard_cht`，遠端名稱 `origin`，主分支 `main`。
 - 使用者另已明確授權使用主機 `/home/anr2/.local/bin/gh`，不重複索取此授權。當執行環境仍拒絕主機存取時，記錄政策阻塞，不搬運憑證或宣稱憑證失效。
 - 不提交原版 EXE、資料、音樂、美術、字型、手冊掃描、原始 ZIP／RAR 或含原版資料的收據。私人儲存庫也遵守此邊界。
+- 2026-10-20 使用者另指定 README 加入原版／HD 截圖及素材總覽。此例外只涵蓋 `docs/images/` 的四張文件縮圖及來源清單；不擴張至原始遊戲、完整解析度素材、手冊掃描或封包，也不代表取得公開散布權。
 - 自有程式與文件採 RRSAL-1.0。建立 LICENSE 時讀 `/home/anr2/.codex/knowledge-base/local/rrsal-1.0.md`，使用技能的 `assets/project-template/LICENSE` 全文，只替換占位符。
 - 正式封包只放 `dist-all/<版本>/`。子目錄依 `/home/anr2/.codex/knowledge-base/local/retro-remake-dist-all-output.md`，建立前重讀。
 - 版號固定為 `v.<主版>.<次版>.<修訂版>-YYYYMMDD`。定版前讀 `/home/anr2/.codex/knowledge-base/local/retro-remake-release-versioning.md`；不移動或覆寫已發布 tag。
