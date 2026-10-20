@@ -51,11 +51,14 @@ def main():
     back = p/"workplace/full-hd-v1/town-back-audit-v1.json"
     interior = p/"workplace/full-hd-v1/interior-final-audit-v2.json"
     back_report, interior_report = json.loads(back.read_text()), json.loads(interior.read_text())
+    sage = p/"workplace/full-hd-v1/sage-frames-final-audit-v1.json"
+    sage_report = json.loads(sage.read_text())
+    assert sage_report["status"] == "PASS_SAGE_SOURCE_ART_NORMAL_GUI"
     assert back_report["status"] == "SOURCE_ART_NORMAL_PASSED_GUI_PENDING"
     assert interior_report["status"] == "PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI"
     # 舊收據保留原程式身份。來源後續有修訂時，必須由具名新稽核銜接，不能把舊GUI換稱新程式。
     latest_sources, replacement_evidence, source_revisions = {}, {}, []
-    for audit_path, audit in ((back, back_report), (interior, interior_report)):
+    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report)):
         for row in audit["source_files"]:
             latest_sources[row["path"]] = row["sha256"]
             replacement_evidence[row["path"]] = str(audit_path.relative_to(p))
@@ -72,6 +75,7 @@ def main():
             assert sha((p/row["path"]).read_bytes()) == row["sha256"]
     validate_audit(back, back_report)
     validate_audit(interior, interior_report)
+    validate_audit(sage, sage_report)
     interior_path = p/"workplace/full-hd-v1/interior-layout-v2/receipt.json"
     interior_sources = {row["graphics_record"]:row for row in json.loads(interior_path.read_text())["records"]}
     runtime_catalog = p/"workplace/full-hd-v1/cave-mpp1-final-audit-v1.json"
@@ -146,8 +150,11 @@ def main():
                     item["hd_coverage"] = "connected_structural_verified_normal_path_pending"
                     item["normal_path"] = "112圖格及七表項／四種圖像已接固定圖組，結構合成與退回通過；旅館正常到達、事件與GUI待驗"
                 else:
-                    item["hd_coverage"] = "partial_scoped_candidate_verified"
-                    item["normal_path"] = "長老166圖格7968bytes與正常RAM相同，基底6144像素已核；既有兩畫格HD沿前版，其他表與圖格未全量接入"
+                    item["hd_coverage"] = "connected_scoped_normal_path_verified"
+                    item["normal_path"] = "166圖格、八手勢及兩高清動畫相位已接，正常查看力量八手勢配對與代表GUI、離店通過；置中手勢及其他城鎮正常路徑未驗"
+                    item["sage_frames"] = {"tiles":166,"hand_poses":8,"registered_images":16,"structural_variants":38,
+                                           "normal_points":sage_report["normal_points"],"evidence":str(sage.relative_to(p)),
+                                           "limits":"interior_source仍保存前輪基底圖表身份；完整圖塊表及手勢來源另沿規格040"}
             if archive == "ZELRES3.SAR" and entry["index"] in cave_maps:
                 source = cave_maps[entry["index"]]
                 item["map_source"] = {k: source[k] for k in ("width", "height", "columns_sha256", "family_candidate", "selector_offset", "selector_raw")}
@@ -161,6 +168,7 @@ def main():
                          "verified_cave_map_cells": cave_report["decoded_map_cells"], "cave_terrain_source_tiles": cave_report["terrain_tiles"],
                          "interior_source_tiles":sum(x["tile_count"] for x in interior_sources.values()),
                          "new_hut_inn_source_tiles":247,"normal_bound_interior_resources":2,
+                         "sage_hand_poses":8,"sage_registered_images":16,"sage_structural_variants":38,
                          "classification_candidates": dict(Counter(x["classification"] for x in catalog))},
               "limits": ["194是SAR容器記錄數，尚不是美術素材分母；不換算HD完成百分比",
                          "not_assessed表示尚未將既有局部HD與此全量記錄逐項對應，不否定前版已驗成果",
@@ -203,7 +211,7 @@ def main():
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "maps":31,"terrain_profiles":11,
                                       "evidence":str(runtime_catalog.relative_to(p)),
                                       "limits":"來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"}],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path)],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage)],
               "source_revisions":source_revisions,
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     for family,count,visible,record in (("MPP8",43,40,81),("MPP9",38,38,82),("MPPA",20,19,83),("MPPB",5,5,84)):
@@ -224,6 +232,9 @@ def main():
         {"key":"interior.hut","status":"scoped_normal_path_and_gui_verified","spec":"docs/spec/039-interior-resources.md",
          "source_record":"zelres2.record.19","evidence":str(interior.relative_to(p)),"registered_images":1,
          "limits":"只驗正常進小屋看石像及離開，不把旅館或其他劇情分支算完成。"},
+        {"key":"interior.sage.hands","status":"scoped_normal_path_and_gui_verified","spec":"docs/spec/040-sage-frames-hd.md",
+         "source_record":"zelres2.record.25","evidence":str(sage.relative_to(p)),"registered_images":16,"hand_poses":8,
+         "limits":"正常Muralla查看力量八手勢及代表GUI已核；置中手勢與其他城鎮正常路徑未驗，不外推全遊戲HD。"},
         {"key":"interior.inn","status":"connected_structural_verified_normal_path_pending","spec":"docs/spec/039-interior-resources.md",
          "source_record":"zelres2.record.24","evidence":str(interior.relative_to(p)),"registered_images":4,
          "limits":"七表項按像素共用四張圖；正常入口、觸發與GUI未驗，不宣稱正常旅館完成。"}]:

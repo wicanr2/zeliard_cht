@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "file": "KENJPRO.BIN",
+  "sha256": "ab2a46c7b6918b360a3db214935e73477b6ec7e9b04ae84f4790685cc7e86e9f",
+  "address_space": "IDA9.4 base A000＝模組檔案偏移0；正常來源另核01B1段",
+  "evidence": "workplace/full-hd-v1/sage-frames-ida-v2/sage-frames-evidence.json；sage-frames-layout-v1/receipt.json；sage-frames-normal-v4/receipt.json",
+  "entries": [
+    {"address":"0xa02a","level":"已證實","semantic":"將圖像原點BB12設為0717，即56,23；不能把可寫BB12納入固定來源守衛。","source":"IDA原始bytes；正常16畫格來源"},
+    {"address":"0xa990","level":"已證實","semantic":"A9B6的12×8圖塊表，依BB12繪製96×64基底。","source":"IDA sub_A990；正常基底6144像素逐一相同"},
+    {"address":"0xaa16","level":"已證實","semantic":"AL乘32，選AA47起的8×4手勢表；原點BB12加0210，即基底內16,16。","source":"IDA sub_AA16；8張來源及正常手勢0..7"},
+    {"address":"0xa1d1","level":"已證實","semantic":"依A1FD三項表0,1,2呼叫手勢繪製端，原版等待與輸入保留。","source":"IDA sub_A1D1；正常查看力量選單"},
+    {"address":"0xa200","level":"已證實","semantic":"從A1FE反向讀兩項手勢，再清原版暫存旗標。旗標只作導航，不推定玩家數值語意。","source":"IDA sub_A200；正常空白續頁"},
+    {"address":"0xaba9","level":"已證實","semantic":"ABFF八項循環表5,6,7,6,5,4,3,4，原版決定選圖及時序。","source":"IDA sub_AB47；正常手勢3..7來源"},
+    {"address":"0xabdf","level":"已證實","semantic":"依原版旗標選ABFB或ABFD兩項動畫圖格表。","source":"IDA sub_AB47；166格引用分母"},
+    {"address":"0xabee","level":"已證實","semantic":"單一8×8動畫圖格放在BB12加0718，即基底內56,24；不猜未驗的表情或魔法含義。","source":"IDA ABEE..ABF6；正常畫格及原版圖格匹配"}
+  ],
+  "tables": [
+    {"address":"0xa9b6","bytes":96,"level":"已證實","semantic":"12×8基底圖塊表"},
+    {"address":"0xaa47","bytes":256,"level":"已證實","semantic":"八張8×4手勢表"},
+    {"address":"0xabfb","bytes":4,"level":"已證實","semantic":"兩組單圖格動畫表"},
+    {"address":"0xabff","bytes":8,"level":"已證實","semantic":"循環手勢選擇表"},
+    {"address":"0xa1fd","bytes":3,"level":"已證實","semantic":"起手三階段表"}
+  ]
+}

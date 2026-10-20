@@ -2,11 +2,27 @@
 
 更新日期：2026-10-21，Asia/Taipei。
 
+## 目前狀態表
+
+| 項目 | 目前結果 |
+|---|---|
+| 更新 | 2026-10-21，長老八手勢HD接入；完整目標仍進行中 |
+| 目前候選 | `workplace/full-hd-v1/sage-frames-runtime-v1/zeliard-preview`，SHA-256 `73b6b11dd042734c6e3d5359889c296403bb8eaab1f853599c5a15dce63bf71e` |
+| 來源與圖面 | KENJYA166圖格全數引用，八手勢、兩高清相位共16張288×192圖；[規格040](docs/spec/040-sage-frames-hd.md)限定CONFORMED |
+| 最近測試 | 四項新測試與六項回歸無skip／fail；3986352獨立高清像素、24點正常完整原版狀態、八手勢、vet及build通過 |
+| 實際視窗 | 冷F7進長老、查看力量、可見0與3至7、兩組原貌切回1152000像素相同；正常離店與DOS退出0，存檔不變，根端已目視 |
+| 收尾證據 | `workplace/full-hd-v1/sage-frames-final-audit-v1.json`，由[長老稽核工具](tools/hd_sage_audit.py)重生至新檔 |
+| 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
+
+長老圖組以 `-sage-frames-art-dir workplace/full-hd-v1/sage-frames-complete-v2`選載，實際啟動命令見同根`sage-frames-gui-v1/receipt.json`。完整內建imagegen提示詞、十二次請求、23份引用雜湊及八個選用結果在`sage-frames-art-v1/generation-v3.json`；原版圖塊／正常來源為`sage-frames-layout-v1/`、`sage-frames-normal-v4/`，格式化後工具的獨立重播為`sage-frames-normal-v5/`。19張原圖相同，但scratch副本mtime不同，RAM兩byte與DOS時間欄相同，不將它當完整同狀態重播。正式24點配對另以兩個獨立原版機器驗證。置中手勢、其他城鎮與其餘美術仍待補，不重做已完成的八手勢。
+
+## 目標與前輪來源
+
 目前目標已由使用者擴大為「完成全遊戲HD」，狀態為進行中。沿既有手繪奇幻與dosgolem覆繪架構，原貌／規則／存檔不改。第一洞窟完成仍是上一版交付範圍，不能作為這次目標的完成依據。完整覆蓋入口為 [規格034](docs/spec/034-full-game-hd.md)，原版三個SAR的194筆記錄已完成邊界與雜湊盤點，圖像分類及覆蓋分母尚在建立。
 
 本輪完成小屋石像HD的正常路徑，旅館四種圖像另已接入，[規格039](docs/spec/039-interior-resources.md)分別列小屋限定CONFORMED、旅館READY待正常到達及GUI。兩資源247個圖格均由原版索引表覆蓋，五張手繪圖及六次完整內建imagegen請求在`workplace/full-hd-v1/interior-art-v1/generation-v2.json`，註冊在`interior-complete-v2/`。四項測試無skip／fail，523836個合成像素、五點正常完整原版狀態、vet及build通過。GUI從冷新局正常走到城堡亭台、Up進小屋看石像、空白離開；小屋原圖與HD各156672像素獨立相同，兩組原貌切回1152000遊戲區像素相同，正常DOS退出0，根端已目視。旅館仍只有原版靜態consumer與結構合成，不當正常到達。
 
-目前候選為`workplace/full-hd-v1/interior-runtime-v1/zeliard-preview`，SHA-256 `19ba636f317a5ebce2866f518f0ae1c7f000e1155d28d6f9948a553dbce729c2`。以`-interior-art-dir workplace/full-hd-v1/interior-complete-v2`選載固定圖組，其他標準參數見`interior-gui-v1/receipt.json`的啟動命令。收尾入口`workplace/full-hd-v1/interior-final-audit-v2.json`由[室內稽核](tools/hd_interior_audit.py)重生。正常原始來源為`hut-normal-v2/`及`home-normal-v1/`，完整圖表與兩個正常資源的6480／7968bytes、17408／6144像素綁定在`interior-layout-v2/receipt.json`；IDA9.4資料庫及分級匯出在`interior-ida-v2/`。這些皆位於`workplace/full-hd-v1/`。封包、版號、影片與README縮圖未更新。
+前輪候選為`workplace/full-hd-v1/interior-runtime-v1/zeliard-preview`，SHA-256 `19ba636f317a5ebce2866f518f0ae1c7f000e1155d28d6f9948a553dbce729c2`。以`-interior-art-dir workplace/full-hd-v1/interior-complete-v2`選載固定圖組，其他標準參數見`interior-gui-v1/receipt.json`的啟動命令。收尾入口`workplace/full-hd-v1/interior-final-audit-v2.json`由[室內稽核](tools/hd_interior_audit.py)重生。正常原始來源為`hut-normal-v2/`及`home-normal-v1/`，完整圖表與兩個正常資源的6480／7968bytes、17408／6144像素綁定在`interior-layout-v2/receipt.json`；IDA9.4資料庫及分級匯出在`interior-ida-v2/`。這些皆位於`workplace/full-hd-v1/`。封包、版號、影片與README縮圖未更新。
 
 前輪新增城鎮主角背向圖與接入，[規格038](docs/spec/038-town-player-back.md)保持READY，實際視窗待驗。正常進門時居民標記已還原成底圖，舊解碼器多畫居民，已依IDA9.4與兩張正常來源修正。兩朝向共用48×72背向手繪圖，保留舊八姿態，未載入或來源失配時退回。原版28672像素完全相同、獨立HD6912像素在每色2階整數取捨內相符，兩條冷新局進門完整原版狀態相同；三項新測試、十項回歸、19個Castle／Muralla正常點、vet及建置通過。三次GUI未捕捉到短暫背向畫格，不算GUI通過，不為此改原版時序。
 

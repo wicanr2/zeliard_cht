@@ -1124,3 +1124,13 @@ IDA9.4對每個BIN採base A000對應檔案偏移0，未與SAR偏移混用。sub_
 已證實的正常小屋入口：冷新局城堡01B1:C009指向C3CA，原始兩筆為95、1及52、0。先保留原數值，再正常右行至世界位置760並Up，實際載入OMOYA及顯示石像，才將95、1與此入口關聯。正常hut-stable完整RAM SHA為54ee22787d0acfe9f07331543cd1a0ce06bfbd2f2842adef1a526e9c3768c98e，轉換6480bytes及17408像素與原圖相同。正常長老完整RAM SHA為9846e900784145498af99f4589a19503fb96dd9821a54ce7525aa5850aed14d1，另核7968bytes及6144像素。這兩條來源不代替旅館正常可達性。
 
 手繪圖由內建imagegen生成，六次完整請求及五張選定圖保存在interior-art-v1/generation-v2.json。Python3.11.2、Pillow9.4.0及既有整數面積取樣註冊到3倍，不先縮成原版。小屋姿態修正與旅館共用背景限制為明示外觀處理，原版表及程式不改。GUI小屋原版／HD各156672像素與獨立PNG完全相同，正常原版配對及GUI另列；旅館仍為靜態構圖與來源守衛。證據入口為[039](docs/spec/039-interior-resources.md)及interior-final-audit-v2.json，不宣稱全室內完成。
+
+## 2026-10-21 長老八手勢與動畫圖格
+
+已證實：SAR2 record17 KENJPRO.BIN共6973bytes，SHA-256 `ab2a46c7b6918b360a3db214935e73477b6ec7e9b04ae84f4790685cc7e86e9f`。record25 KENJYA.GRP解壓7968bytes，SHA-256 `f9693d20d2eb14542dc68a21336e260f585cc4c97054bb1b385e07c20cfc996d`；三平面轉換SHA-256 `98fa4a0855443baf6e44bd52ae24e393ce6e147d2fce47d9a75713e60797eae8`。正常來源核完整圖格buffer及6144個基底像素。
+
+IDA9.4的BIN位址以A000為base，檔案偏移另減A000，不與SAR檔案偏移混用。sub_A990讀A9B6的12×8基底；sub_AA16讀AA47起八張8×4手勢表，原點BB12加0210。ABEE的單圖格原點BB12加0718；ABFB起四項圖格與前述表合計引用全部166格。A1FD起手0,1,2及ABFF循環5,6,7,6,5,4,3,4均留原版控制，不由前端重定動畫時序。[分級索引](docs/sage-frame-source-index.json)保留原始位址及證據，`sage-frames-ida-v4/`保存17函式、五表、DB及自動合併索引。
+
+正常冷F7自建存檔、Up進長老、直接選查看力量，擷取16張完整來源及三張混合畫格，八手勢全數命中；38個結構候選只作原圖匹配集合，不推定每種組合都會產生。資料與收據在 `workplace/full-hd-v1/sage-frames-layout-v1/`、`sage-frames-normal-v4/`。BB12..BB3C是原版可寫資料，固定來源守衛只含A000..BB11；已用正常來源核對，不能將可寫原點或旗標當固定程式雜湊。
+
+獨立重播v5的19張原圖與v4一致，RAM只在實體0x257F、0x2580兩byte不同。兩byte的little-endian word分別等於各scratch USR修改時間的DOS packed時間，公式為hour<<11 | minute<<5 | second//2；此為擷取輸入metadata差異，不將兩輪來源擷取稱完整同狀態。正式顯示隔離證據另由兩個獨立原版機器24點完整狀態配對提供。完整輸入、工具與圖面雜湊見[規格040](docs/spec/040-sage-frames-hd.md)及 `workplace/full-hd-v1/sage-frames-final-audit-v1.json`。

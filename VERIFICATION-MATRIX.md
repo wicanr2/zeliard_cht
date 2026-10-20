@@ -510,3 +510,17 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 建置與覆蓋台帳 | 通過 | Go1.24.13、vet／build；新來源與來源修訂鏈已重生，未更新三平台封包或影片 |
 
 程式interior-runtime-v1/zeliard-preview的SHA-256為19ba636f317a5ebce2866f518f0ae1c7f000e1155d28d6f9948a553dbce729c2，位於workplace/full-hd-v1/。同根interior-final-audit-v2.json由[室內稽核](tools/hd_interior_audit.py)重生至新檔，狀態PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI。039小屋限定CONFORMED、旅館READY；全遊戲HD仍未完成。
+
+## 2026-10-21 長老完整手勢HD
+
+| 範圍 | 結果與限制 |
+|---|---|
+| 原版來源 | 固定KENJPRO模組及KENJYA166圖格；八張手勢表與四動畫格全數引用。IDA9.4保存17函式、五圖表、原始bytes及分級索引 |
+| 圖面 | 16張288×192直接3倍圖；76結構畫面3986352像素與獨立註冊圖相同，區外與原版外框不變 |
+| 正常來源 | 16完整畫格接受、三混合畫格原子拒絕；正常八手勢均有來源，38結構組合不當逐項正常出現 |
+| 原版配對 | 兩個獨立dosgolem冷F7、查看力量及離店共24點，完整RAM、暫存器、色號、色盤、steps、cycles、檔案與持鍵相同 |
+| 實際視窗 | 觀察0與3至7；兩組原貌／HD／切回，1152000遊戲區像素恢復相同，原圖110592及高清104904像素與獨立來源相同；存檔不變、正常DOS退出0，根端已目視 |
+| 回歸 | 舊長老兩位置、小屋與旅館六項頂層測試無skip／fail；新四項測試、vet及build通過 |
+| 身份 | 候選SHA-256 `73b6b11dd042734c6e3d5359889c296403bb8eaab1f853599c5a15dce63bf71e`；實際視窗與正式圖組見[規格040](docs/spec/040-sage-frames-hd.md) |
+
+收尾入口 `workplace/full-hd-v1/sage-frames-final-audit-v1.json`。置中手勢與其他城鎮正常路徑未驗，音訊關閉，不外推全部逐幀GUI、全遊戲HD或新版封包已完成。來源工具格式化後的19張獨立重播原圖相同；scratch副本mtime不同，RAM兩byte與DOS時間欄相同，該重播不稱完整同狀態。

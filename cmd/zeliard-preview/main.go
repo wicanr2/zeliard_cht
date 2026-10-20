@@ -99,6 +99,7 @@ type game struct {
 	kingHDMatched        bool
 	kingHDPose           int
 	sageHD               *hd.Sage
+	sageFramesHD         *hd.SageFrames
 	sageHDMatched        bool
 	sageHDPose           int
 	merchantHD           *hd.Merchant
@@ -297,7 +298,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -638,7 +639,20 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.hdMatched = g.hdMatched || g.kingHDMatched
 	}
 	g.sageHDMatched, g.sageHDPose = false, -1
-	if g.hdEnabled && g.sageHD != nil && w == 320 && h == 200 {
+	g.sageFramesHD.Clear()
+	if g.hdEnabled && g.sageFramesHD != nil && w == 320 && h == 200 {
+		p := g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
+		r := g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
+		var palette []byte
+		for _, color := range g.o.Palette() {
+			palette = append(palette, color[:]...)
+		}
+		g.sageHDMatched = g.sageFramesHD.Draw(g.canvas, g.o.VideoMode(), p, r, raw, rawRGB, palette, image.Pt(0, barHeight))
+		if g.sageHDMatched {
+			g.sageHDPose = g.sageFramesHD.State()["pose"].(int)
+		}
+		g.hdMatched = g.hdMatched || g.sageHDMatched
+	} else if g.hdEnabled && g.sageHD != nil && w == 320 && h == 200 {
 		g.sageHDMatched, g.sageHDPose = g.sageHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.sageHDMatched
 	}
@@ -707,7 +721,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil {
+	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -809,6 +823,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"oracle_palette_sha256":      fmt.Sprintf("%x", sha256.Sum256(observedPalette)),
 			"sage_hd_matched":            g.sageHDMatched,
 			"sage_hd_pose":               g.sageHDPose,
+			"sage_frames_hd":             g.sageFramesHD.State(),
 			"input_trace_error":          g.inputTraceError,
 			"audio_output":               g.output.state(),
 			"town_ground_hd_matched":     g.townGroundMatch,
@@ -1033,6 +1048,7 @@ func main() {
 	sageRefB := flag.String("sage-reference-b", "", "可選：本地原版長老畫格 B")
 	sagePalette := flag.String("sage-palette", "", "可選：本地原版長老色盤")
 	sageArt := flag.String("sage-art", "", "可選：本地手繪長老 PNG")
+	sageFramesArt := flag.String("sage-frames-art-dir", "", "可選：長老八手勢與高清動畫的固定圖組")
 	merchantRefA := flag.String("merchant-reference-a", "", "可選：武器商人原版迎客畫格")
 	merchantRefB := flag.String("merchant-reference-b", "", "可選：武器商人原版告別畫格")
 	merchantRefC := flag.String("merchant-reference-c", "", "可選：武器商人未購物告別原版畫格")
@@ -1306,7 +1322,12 @@ func main() {
 			log.Printf("國王 HD 圖組未載入，保留原貌：%v", err)
 		}
 	}
-	if *sageRefA != "" || *sageRefB != "" || *sagePalette != "" || *sageArt != "" {
+	if *sageFramesArt != "" {
+		g.sageFramesHD, err = hd.NewSageFrames(root, *sageFramesArt)
+		if err != nil {
+			log.Printf("長老完整手勢圖組未載入，保留原貌：%v", err)
+		}
+	} else if *sageRefA != "" || *sageRefB != "" || *sagePalette != "" || *sageArt != "" {
 		g.sageHD, err = hd.NewSage(*sageRefA, *sageRefB, *sagePalette, *sageArt)
 		if err != nil {
 			log.Printf("長老 HD 圖面未載入，保留原貌：%v", err)

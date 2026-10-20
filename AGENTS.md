@@ -111,6 +111,18 @@
 
 ## 文件索引與權責
 
+- [長老手勢規格040](docs/spec/040-sage-frames-hd.md)：長老室內未覆蓋圖塊、手勢及正常路徑的增量契約。
+- [長老動畫IDA匯出](tools/ida_sage_frames.py)：固定KENJPRO模組的原始函式、bytes及分級語意匯出。
+- [長老正常來源擷取](tools/hd_sage_probe.go)：正常鍵序的手勢與來源擷取，不注入原版狀態。
+- [長老完整圖塊來源](tools/hd_sage_sources.py)：八手勢與四動畫圖格的覆蓋、結構組合及正常來源綁定。
+- [長老手勢位址索引](docs/sage-frame-source-index.json)：原始位址、圖塊表及證據分級；IDA匯出自動合併。
+- [長老手繪圖組註冊](tools/hd_sage_register.py)：八手勢、兩高清動畫圖面及不變區驗證，完整圖面留本機。
+- [長老完整手勢合成](internal/prototype/hd/sage_frames.go)：規格040的唯讀完整來源匹配與3倍合成。
+- [長老手勢驗證](internal/prototype/hd/sage_frames_test.go)：38結構來源、正常來源、原子拒絕及八手勢原版狀態配對。
+- [長老正常鍵序](tools/sage-hd.commands)：冷F7自建存檔、查看力量與離開，不注入狀態。
+- [長老實際視窗抽測](tools/hd_sage_smoke.py)：正常查看力量、代表手勢、工具列原貌切回與正常退出。
+- [長老收尾稽核](tools/hd_sage_audit.py)：來源、圖組、原版狀態、實際畫面與目前程式身份的完整證據入口。
+
 本次音色與三平台交付研究入口為 `workplace/music-release-v1/`，見 CONTEXT。`internal/prototype/fm/` 載入作品中立的音源動態函式庫；`third_party/nuked-opl3/` 保存固定來源、LGPL 條款與重建所需橋接程式，不適用本專案的 RRSAL。
 
 `cmd/zeliard-preview/bundle.go` 負責原生封包的資料定位與獨立使用者存檔，未指定 `-orig` 才套用。封包提供原版音源核心可替換機制，不限制替換 LGPL 函式庫所需的除錯與逆向。
