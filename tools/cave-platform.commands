@@ -1,0 +1,92 @@
+# 正常冷F7包內SAVEM1，交戰後跳上平台、升降再升及離開；不注入狀態。
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x41 500000
+run 2000000
+key 0x15 150000
+run 1500000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x1c 100000
+run 16000000
+key 0x4d 8000000
+run 250000
+key 0x48 250000
+run 20000000
+shot cave-entered
+key 0x4b 4000000
+run 200000
+shot rope-top
+key 0x50 5000000
+run 200000
+shot rope-bottom
+key 0x39 100000
+run 400000
+key 0x39 100000
+run 400000
+key 0x39 100000
+run 400000
+key 0x39 100000
+run 400000
+key 0x39 100000
+run 400000
+shot fight-clear
+key 0x4d 500000
+run 100000
+shot jump-origin
+key 0x49 1000000
+run 500000
+shot platform-board
+key 0x48 2000000
+run 100000
+shot platform-raised
+key 0x50 2000000
+run 100000
+shot platform-lowered
+key 0x48 2000000
+run 100000
+shot platform-reraised
+key 0x4d 3500000
+run 500000
+shot platform-leave-edge

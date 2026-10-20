@@ -301,8 +301,13 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 	root, project := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_PROJECT")
 	savePath := os.Getenv("ZELIARD_CAVE_SAVE")
 	save, e := os.ReadFile(savePath)
-	if e != nil || townBackgroundHash(save) != "78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb" {
-		t.Fatal("自建存檔不符", e)
+	saveHash := townBackgroundHash(save)
+	maxSteps := uint64(160000000)
+	if saveHash == "03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c" {
+		// 043固定包內SAVEM1的正常平台往返；前史未知，不當新局全流程。
+		maxSteps = 240000000
+	} else if e != nil || saveHash != "78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb" {
+		t.Fatal("正常來源存檔不符", e)
 	}
 	info, e := os.Stat(savePath)
 	if e != nil {
@@ -515,7 +520,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		}
 	}
 	run := func(n uint64) {
-		if n > 160000000-b.Steps() {
+		if b.Steps() > maxSteps || n > maxSteps-b.Steps() {
 			t.Fatal("固定指令預算超出")
 		}
 		for n > 0 {
@@ -587,6 +592,9 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 			}
 		case "shot":
 			equal(f[1])
+			if strings.HasPrefix(f[1], "platform-") && selected == nil {
+				t.Fatal("平台正常點缺少可呈現的完成來源", f[1], frames.State())
+			}
 			before := b.Bytes(oracle.Far(0, 0), 1<<20)
 			point := map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "memory_sha256": townBackgroundHash(before), "indexed_sha256": townBackgroundHash(b.Indexed()), "state_equal": true, "presentation": frames.State()}
 			if selected != nil {
@@ -645,6 +653,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 					}
 					point["Chinese_overwrites_game_pixels"] = 0
 					point["portal_hd"] = art.PortalState()
+					point["common_hd"] = art.CommonState()
 				} else {
 					canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
 					old := cloneTownBytes(canvas.Pix)
@@ -679,7 +688,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		}
 	}
 	playerCoverage := map[string]any{"source_frames": len(seenPlayerFrames), "known_frames": playerKnown, "fully_occluded_frames": playerHidden, "missing_visible_frames": playerMissing, "keys": seenPlayerKeys, "missing_sources": missingPlayerSources, "scope": "正常完成來源盤點；缺素材保留原貌，未稱全動畫HD"}
-	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "weapon_coverage": weaponCoverage.summary(), "object_coverage": objectCoverage.summary(), "save_unchanged": true, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角／武器HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
+	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "weapon_coverage": weaponCoverage.summary(), "object_coverage": objectCoverage.summary(), "save_unchanged": true, "source_save_sha256": saveHash, "max_steps": maxSteps, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角／武器HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
 	if e != nil {
 		t.Fatal(e)
 	}

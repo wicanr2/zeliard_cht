@@ -1,5 +1,10 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+平台來源、圖面及拒絕回歸測試：[cave_common_test.go](internal/prototype/hd/cave_common_test.go)，契約見[規格043](docs/spec/043-cave-common-scenery.md)。
+正常平台HD配對命令：[verify_cave_platform.sh](tools/verify_cave_platform.sh)，在既有Go工具容器內執行，所需掛載與輸出見WORKLOG。
+平台實際視窗：[hd_cave_platform_smoke.py](tools/hd_cave_platform_smoke.py)，沿既有Xvfb入口，只送正常鍵盤與工具列操作。
+平台收尾稽核：[hd_cave_platform_audit.py](tools/hd_cave_platform_audit.py)，核來源、測試、高清像素及原貌切回，歷史收據保留身份。
+
 ## 每次開工
 
 對使用者的回覆與新文件預設使用繁體中文，句子簡短、直接。`~/.claude` 維持唯讀；外部方法由 Codex 知識路由選擇，不回寫上游。
@@ -126,6 +131,10 @@
 - [後續城鎮正常路徑探針](tools/hd_town_path_probe.go)：只送正常按鍵，保存完整原版快照及新城鎮完成點；`--save`只選固定雜湊USR，副本沿SAVETEST檔名、保留bytes及mtime。`shot`可能落在繪製中，`cave`另取已核01B1:7114完成來源，不寫入位置、道具或存檔狀態。
 - [洞窟共用圖格規格043](docs/spec/043-cave-common-scenery.md)及[來源擷取](tools/hd_cave_common_sources.py)：核DCHR39格與正常資源段11B1:8C00..934F，分開已見平台64..66與其餘用途。使用既有Pillow映像產生原圖及來源收據，DRAFT不接正式前端。
 - [共用平台候選註冊](tools/hd_cave_common_art.py)：以既有NumPy／Pillow映像直接取樣內建生成原圖至72×24，再依原版平台包絡裁切及分成64～66三格。保存提示詞、SHA、裁切及透明缺口，未經正常配對與GUI不計HD完成。
+- [共用洞窟分級索引](docs/cave-common-source-index.json)與[IDA匯出](tools/ida_cave_common.py)：固定正常平台段，保存DCHR descriptor、載入及平台表／圖格查找的原始位址、函式、bytes、xref與推論等級，不修改原版控制。
+- [平台正常鍵序](tools/cave-platform.commands)：冷F7讀固定包內SAVEM1副本、交戰後跳上平台及升降再升，不注入狀態；正常配對工具僅接受既有自建USR或此固定SHA來源，後者前史未知。[魔法石路徑](tools/cave-platform-magia.commands)另保存已觀察的呈現來源缺口，不能以一般路徑代替魔法效果驗收。
+- [平台來源與圖面審查](tools/hd_cave_platform_contract.py)：核IDA消費端、31份C004三byte表、72個靜態表項、正常升降與1287個不透明HD像素。只作043限定READY依據，不代替正式配對與GUI。
+- [共用平台HD](internal/prototype/hd/cave_common.go)：043的原子載入、固定DCHR／程式、三byte平台表及快取三格守衛；從工具列既有HD切換顯示，不改原版平台控制。
 - [十份城鎮來源重建](tools/hd_town_sources.py)：按原版descriptor選CPAT／MPAT／DPAT及背景程式，輸出原始前景與明列未核圖格；靜態圖不代替正常畫面。
 - [後續城鎮美術準備](tools/hd_town_art.py)：按八份原圖準備固定分格、參考雜湊與內建生成提示詞；未核Pureza圖格與正常接入另列，不直接進正式前端。
 - [後續城鎮階段稽核](tools/hd_town_stage_audit.py)：核十地圖17784格、八份生成候選、提示詞與原版路徑收據；新城鎮未到達時保持待驗，不升HD完成。

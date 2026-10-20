@@ -1356,3 +1356,15 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - `town-resources-stage-audit-v4.json`核八份歷史／現行正常探針、兩次內建生成與既有八候選、39格來源及平台註冊；舊來源用當次保存的probe-source.go及固定雜湊，不換成新來源身份。覆蓋JSON仍in_progress，正式可玩程式仍5cec8f8f，沒有更新封包、影片或README縮圖。
 - 收尾驗證、擁有權、容器及Git同步結果保存 `town-path-runtime-v4/repository-sync.json`。完整目標保持active；下一步先補平台51透明像素、核共用消費端並推043 READY，再接正常HD配對與GUI，續取Satono及後段來源。
 - 收尾來源46檔及註冊5檔逐byte重生相同，階段稽核及覆蓋JSON重生相同；四個Python AST、文件連結、新檔AGENTS入口、Go探針build／vet及正式二進位身份通過。`verification.json`的手填檔案數44更正於`verification-v2.json`為實際列舉46，原檔保留。全工作根root-owned與`.md`目錄零筆，本專案容器已回收，遠端回讀PRIVATE。只提交自有程式、文件與去原始內容的覆蓋台帳。
+
+## 2026-10-21 綠色平台HD接入與正常升降
+
+- 前一輪只核對並回報狀態，分類為無進展；本輪沿現行工作樹接續完整目標。命中規格閘門與復古重製驗收路由，載入技能、規格閘門、驗證reference與文件職責；原有IDA及imagegen工作沿當次保存的請求與證據，不另開代理。
+- 內建imagegen另生成全不透明材質，原cache保留，完整提示詞、兩份引用與輸出SHA在 `cave-common-art-v2/generation-v2.json`。直接取樣成72×24並依原版非零包絡裁形，1287有效像素全不透明，框外零寫入；三格重接相同。v1的51透明像素候選保留歷史身份。
+- IDA9.4沿既有image，在UID1000與網路關閉的容器內核七窄範圍及三表，保留函式與位址；第一次archive byte誤當1起算的assert保留。v3正確descriptor為02 37 DCHR.GRP 00。C004..C006為三byte表項而非四byte，31圖共72項，正常平台表列17→24→17；原控制程式、完整1872bytes及兩份來源均進守衛。043經 `cave-platform-contract-v2/` 審查READY後才實作。
+- 新增 `-cave-common-art` 與平台可選載圖、完整快取三格及表位置守衛。來源、表、缺圖或損壞均原子退回；其他共用ID仍沿既有拒絕，動態／主角／武器／中文合成順序不改。`cave_common_test.go`的五個真實正常來源逐像素核6435個高清像素；缺圖及九種來源失配、左右畫面外三格守衛通過。左右裁切僅結構測試，不當正常可達。
+- `verify_cave_platform.sh` 在 `dosgolem-go-ebiten:1.24-r1`、2GiB／2CPU／128程序／外層300秒、UID1000執行。掛專案至/project唯讀、full-hd-v1至/output可寫、gocache可寫、dosgolem/gomodcache唯讀，網路關閉。28項圖面回歸、一項新邊界與三項正常／來源測試無skip／fail，vet與build通過。正常配對十點完整RAM／暫存器／畫面／色盤／時間／I/O／輸入相同，USR bytes／mtime不變；211完成來源、42繪製中來源拒絕、954呈現，十點皆有HD。
+- 魔法石版本另保存 `cave-platform-magia.commands` 與 `cave-platform-source-pair-v1/`，三個平台目標點沒有可呈現來源，不把普通平台通過替代該缺口。普通SAVEM1路徑記錄18個未匹配主角畫格及十個可見武器來源鍵；原始快照與來源SHA已由正常配對收據索引，後續直接沿此補圖，不重蒐相同姿態。
+- GUI沿 `fd2-promo:20261017-r1`、2GiB／2CPU／192程序／外層480秒／內層450秒、UID1000，專案與AppDir唯讀、明確GUI輸出可寫，網路關閉。v1把主角原點與平台足部欄位混用，v2誤以PageUp代替前端預設Numpad9，均保留原腳本與失敗狀態。v3正常冷F7、沿繩下行、交戰、斜跳上平台、升降再升及離開，四組原貌切回、DOS退出0、USR bytes／mtime不變；trap／finally回收Xvfb與遊戲。沒有改原版規則或輸入映射。
+- 收尾稽核最初漏計32像素底部狀態帶，修正為960×680視窗中的960×600遊戲區後乾淨重跑。四組切回2304000原版像素相同，5148實際HD像素獨立相同，根端已目視升起平台。入口 `cave-platform-final-audit-v1.json`，候選SHA `2734aeabeaae1a7c7429479ce90a3b33439a453f90378e137d67cf158629859b`。043只升MP10普通平台限定CONFORMED；完整目標仍active，封包、影片、版號與README縮圖未改身份。
+- 覆蓋JSON由 `hd_catalog.py`重生，最新平台稽核銜接歷史來源雜湊，舊GUI與v1註冊不換名。當前README只更新穩定範圍，逐輪命令及失敗留本日誌。收尾檔案、Docker清理、遠端PRIVATE及提交／推送回讀結果另存 `cave-platform-runtime-v1/repository-sync.json`。

@@ -24,6 +24,8 @@ type CaveTerrain struct {
 	mpp9        *caveTerrainArt
 	mppa        *caveTerrainArt
 	mppb        *caveTerrainArt
+	common      *caveCommonArt
+	commonState map[string]any
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -164,6 +166,10 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		s.weaponState = nil
 		s.objectState = nil
 		s.portalState = nil
+		s.commonState = nil
+		if s.common != nil {
+			s.commonState = map[string]any{"loaded": true, "matched": false}
+		}
 		if s.player != nil {
 			s.playerState = map[string]any{"loaded": true, "matched": false, "occluded": false}
 		}
@@ -269,7 +275,38 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	}
 	var nativePortals []image.Point
 	portalChecked := false
+	commonPresent := false
 	for _, c := range d.Cells {
+		if c.ID >= 64 && c.ID <= 66 {
+			commonPresent = true
+			break
+		}
+	}
+	var commonPositions []image.Point
+	if commonPresent {
+		if s.common == nil {
+			return false
+		}
+		var commonOK bool
+		commonPositions, commonOK = caveCommonPlacements(f.Memory, f.BodyMemory, d.Cells)
+		if !commonOK || len(commonPositions) == 0 {
+			return false
+		}
+		for i := range s.common.tiles {
+			if len(s.common.tiles[i]) != 576 {
+				return false
+			}
+			decoded[64+i], e = caveStatic(r, byte(64+i))
+			if e != nil {
+				return false
+			}
+		}
+	}
+	for _, c := range d.Cells {
+		if c.ID >= 64 && c.ID <= 66 && commonPresent {
+			grid[(c.Y-14)/8][(c.X-48)/8] = c.ID
+			continue
+		}
 		if extraArt && int(c.ID) >= limit {
 			// MPP1仍含規格020已驗的共用入口格，僅保留完整矩陣內的原版下層。
 			if legacyThrough != 15 {
@@ -358,8 +395,13 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	}
 	for _, cell := range d.Cells {
 		id := int(cell.ID)
-		if id == 0 || id >= limit {
+		isCommon := commonPresent && id >= 64 && id <= 66
+		if id == 0 || id >= limit && !isCommon {
 			continue
+		}
+		tilePixels := tiles[id]
+		if isCommon {
+			tilePixels = s.common.tiles[id-64]
 		}
 		gx, gy := cell.X-48, cell.Y-14
 		for y := 0; y < 24; y++ {
@@ -371,7 +413,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 				} else if !(extraArt && (textIDs[id] || id >= textFirst && id <= textLast)) && decoded[id][(y/3)*8+x/3] == 0 {
 					continue
 				}
-				c := tiles[id][y*24+x]
+				c := tilePixels[y*24+x]
 				if materialIDs[id] {
 					ring := cell.Address - 0xe000
 					tx, ty := ring%36*24+x, ring/36*24+y
@@ -422,6 +464,9 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		weaponPose.draw(dst, d, origin)
 	} else {
 		paintNative(d.Weapon)
+	}
+	if s.common != nil {
+		s.commonState = map[string]any{"loaded": true, "matched": commonPresent, "empty": !commonPresent, "placements": commonPositions, "source_steps": f.Steps, "body_steps": f.BodySteps}
 	}
 	return true
 }

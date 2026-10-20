@@ -6,6 +6,7 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| MP10綠色升降平台64～66 | 043限定CONFORMED | 候選2734aeab；1872bytes共用來源、原控制程式及31圖72項三byte表已核，1287有效HD像素無透明缺口。28項圖面、一項左右裁切守衛、三項正常／來源測試、vet／build通過。正常十點完整RAM／暫存器／畫面／色盤／steps／cycles／I/O／輸入相同，6435獨立HD像素；GUI v3冷F7跳上／升降／再升／離開、四組原貌切回2304000像素與5148獨立HD像素相同，正常DOS退出0、USR bytes／mtime不變，根端已目視。入口`workplace/full-hd-v1/cave-platform-final-audit-v1.json`。左右部分裁切僅結構守衛測試；魔法石路徑三個平台點來源拒絕、18個主角畫格及十個武器來源鍵缺圖仍待補，不當全共用圖格或全遊戲完成 |
 | 後續八城鎮來源及美術候選 | 042 DRAFT，未接正式前端 | 十地圖17784格、原版descriptor與地形／背景選擇、IDA9.4九函式／五表已核，CPAT／MPAT的7536／11616bytes與既有正常來源相同。八次內建生成、16份參考與輸出SHA完整保存；八張完整候選已目視，review-v1明列Esco錯誤招牌、Pureza未知標記及Dorado柱材質，接縫／門洞／透明邊緣待校準。Pureza第316欄八個ID191用途未知。四份正常按鍵探針USR bytes／mtime不變，但未到達新城鎮，不算正常HD驗收。入口`workplace/full-hd-v1/town-resources-stage-audit-v2.json`；正式程式、封包與影片未更新 |
 | 武器店已知八姿態與離店回城 | 041限定CONFORMED | 候選5cec8f8f，254引用圖格、十張圖524520獨立高清像素，購買／告別49點完整原版狀態、USR bytes／mtime相同。十項具名及四項舊室內／商人／長老回歸、vet／build通過。GUI v4三組原貌切回1728000遊戲區像素相同，原圖165888與高清157356像素獨立相同；正常回城遠山／前景／地面／主角HD及DOS退出0，根端已目視。Muralla有效遮罩只核240格，128bytes尾端不影響圖面，有效最後位元組仍拒絕；非空未引用139、140用途未知。入口`workplace/full-hd-v1/merchant-frames-final-audit-v1.json`；其他城鎮、特殊事件、敵人及首領未完成，未更新封包 |
 | 原版配樂／三平台封包／影片 | 本輪限定完成，v.0.2.0-20261020 | 原版MSCADLIB＋Nuked-OPL3，100ms實際時間模式，136份固定來源、九張正常視窗、Linux AppImage／Windows Wine啟動及macOS通用架構、60秒影片技術與目視通過；見dist-all同版smoke與promo。Windows／macOS真機、實體手把及喇叭未驗；非全遊戲中文／HD或零丟樣聲明 |

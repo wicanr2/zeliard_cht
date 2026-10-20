@@ -159,6 +159,20 @@
       "limits": "固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"
     },
     {
+      "key": "cave.common.green_platform",
+      "source_record": "zelres3.record.54",
+      "status": "scoped_normal_path_and_gui_verified",
+      "spec": "docs/spec/043-cave-common-scenery.md",
+      "evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "registered_tiles": [
+        64,
+        65,
+        66
+      ],
+      "transparent_inside_mask": 0,
+      "limits": "僅MP10正常平台與原貌切回；魔法石來源缺口、其他共用圖格及後段正常路徑待補。"
+    },
+    {
       "key": "cave.terrain.MPP1",
       "status": "connected_structural_verified_normal_path_scoped",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
@@ -295,20 +309,6 @@
         "sha256": "fa572b4f0ad9af5296366dcb79c24784361ea7b36296fe7ea55f19babfe674dd",
         "status": "sign_and_four_windows_corrected_not_connected"
       }
-    },
-    {
-      "key": "cave.common.green_platform",
-      "source_record": "zelres3.record.54",
-      "status": "registered_candidate_not_connected",
-      "spec": "docs/spec/043-cave-common-scenery.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
-      "registered_tiles": [
-        64,
-        65,
-        66
-      ],
-      "transparent_inside_mask": 51,
-      "limits": "正常來源及192原生像素已核；HD完整原版配對與GUI待驗。"
     }
   ],
   "proofs": [
@@ -371,6 +371,10 @@
     {
       "path": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
       "sha256": "9640e6c79cad7c6dfa0760b835bab7e3777b6d9e824d7987f94ff2811f6ff1ed"
+    },
+    {
+      "path": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "sha256": "db034b588abe9fd9914f40025cfe728f9cc0a56c69446611e12fff1ba25a1fdd"
     }
   ],
   "source_revisions": [
@@ -378,8 +382,8 @@
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/town-back-audit-v1.json",
       "historical_sha256": "7e1641657ca1b198d496aaea84502e2cf8e7aeffdade651cb85502abf13af73a",
-      "current_sha256": "10bb86c8b4813bd4379e504ac572f1f88290ab8db5d172c8cc1c45b43bd304aa",
-      "replacement_evidence": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "current_sha256": "2919a8794c72a4a9133ea600f8f4baac0676ae4f98209ce2c702f6c436802c24",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -394,48 +398,112 @@
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/interior-final-audit-v2.json",
       "historical_sha256": "733c210d45724dcf6978c3f944bf94cc727740e8c79992e521d5d29be4c4d8bf",
-      "current_sha256": "10bb86c8b4813bd4379e504ac572f1f88290ab8db5d172c8cc1c45b43bd304aa",
-      "replacement_evidence": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "current_sha256": "2919a8794c72a4a9133ea600f8f4baac0676ae4f98209ce2c702f6c436802c24",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/interior-final-audit-v2.json",
       "historical_sha256": "7aa6fe044bcca04e00935b32a2a5a8b90dd86454a03c1473002bd8d584ac252e",
-      "current_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
-      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "current_sha256": "15b87dda1f52e44812b46c2a45a31ef20e6ae81c520f7911974d9acdba199f1b",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/sage-frames-final-audit-v1.json",
       "historical_sha256": "a359b2414fb3d8d35556dc6a38303a3ce25987b31ff2bc18e4b6134a42bf32d7",
-      "current_sha256": "10bb86c8b4813bd4379e504ac572f1f88290ab8db5d172c8cc1c45b43bd304aa",
-      "replacement_evidence": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "current_sha256": "2919a8794c72a4a9133ea600f8f4baac0676ae4f98209ce2c702f6c436802c24",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/sage-frames-final-audit-v1.json",
       "historical_sha256": "44e76dee7ff991f28b7bccc7c9f9165b2019dfb78855c5f37edcc56f5a3adbb9",
-      "current_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
-      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "current_sha256": "15b87dda1f52e44812b46c2a45a31ef20e6ae81c520f7911974d9acdba199f1b",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "cmd/zeliard-preview/main.go",
+      "historical_audit": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "historical_sha256": "10bb86c8b4813bd4379e504ac572f1f88290ab8db5d172c8cc1c45b43bd304aa",
+      "current_sha256": "2919a8794c72a4a9133ea600f8f4baac0676ae4f98209ce2c702f6c436802c24",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
       "historical_sha256": "d6b9c8ee99331606a8a6643c54cac6db665ec16c00d15a75383391107bc893e4",
-      "current_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
-      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "current_sha256": "15b87dda1f52e44812b46c2a45a31ef20e6ae81c520f7911974d9acdba199f1b",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_town_stage_audit.py",
+      "historical_audit": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "historical_sha256": "5f7f7e50c215bbcf98da45a4b3c38360f1f96889427664fe6c6d6879f036e8c9",
+      "current_sha256": "528de3eeba2e681cba7c4ee9392001333fe7566fafc6440bc3a35fdb543935cd",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_catalog.py",
+      "historical_audit": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "historical_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
+      "current_sha256": "15b87dda1f52e44812b46c2a45a31ef20e6ae81c520f7911974d9acdba199f1b",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_cave_common_art.py",
+      "historical_audit": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "historical_sha256": "9f5094be9e60f07b7775aaa373d9c0a737335708b12e8d83e887a89c560d9e66",
+      "current_sha256": "687ce31bf08050bdd5c50a985bd19430cbdf912d27bfad3cde9a47aac65ebcfd",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
       "historical_sha256": "1aba5d7813e95905faf145fc82aff56c2ca5f1b87dacdd542916df0906c501b1",
-      "current_sha256": "10bb86c8b4813bd4379e504ac572f1f88290ab8db5d172c8cc1c45b43bd304aa",
-      "replacement_evidence": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "current_sha256": "2919a8794c72a4a9133ea600f8f4baac0676ae4f98209ce2c702f6c436802c24",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "internal/prototype/hd/cave_frames_pair_test.go",
+      "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
+      "historical_sha256": "aac63307e1cce166047391343a38b6405fe75a6e69fcce41d1afa4f0249517c4",
+      "current_sha256": "80c337c2d9dfd31d088d242dbafcce320c711ff7f42d3dac6201a938518c3a53",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "internal/prototype/hd/cave_remaining_families_test.go",
+      "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
+      "historical_sha256": "aa0b660750dcdbad574663eb64fcef0b305f0c762f7dd5bae0b012eef4b15253",
+      "current_sha256": "ae6eaf524d7423847c53557720841a6a7ce91f4252dc31fed03eb35b3cea7c7e",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "internal/prototype/hd/cave_terrain.go",
+      "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
+      "historical_sha256": "7332f773f60d6576e6ea1d42a606ef7f86a212c353d94d12c123a1bca8e6d60c",
+      "current_sha256": "d0b5e5ed2c24857fbb73ef32d3ac9e6fdb31066cdf6d2fa22a3b954c504422a3",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_cave_catalog_smoke.py",
+      "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
+      "historical_sha256": "2608a9397e4df930bca905330227e3840e6b33abb8db1d7fe149745f59a438f6",
+      "current_sha256": "7d73bd2799a3781796c5b3c168fa7bd4747f117cd33326ce6eedd4323dfd81f1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -474,8 +542,8 @@
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/castle-final-audit-v2.json",
       "historical_sha256": "15612c0fed1b27c3b020ea8cb20d231285e43c7c5aa7ae4fa51f2863c6773b3d",
-      "current_sha256": "10bb86c8b4813bd4379e504ac572f1f88290ab8db5d172c8cc1c45b43bd304aa",
-      "replacement_evidence": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "current_sha256": "2919a8794c72a4a9133ea600f8f4baac0676ae4f98209ce2c702f6c436802c24",
+      "replacement_evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     }
   ],
@@ -4814,8 +4882,8 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "source_bound_platform_candidate_other_consumers_pending",
-      "normal_path": "正常平台來源已核，原版平台升起及離開通道可重播；平台三格已註冊候選，51個包絡內透明像素及正式接入／GUI待驗。既有Muralla入口沿020，不當39格皆完成HD",
+      "hd_coverage": "partial_scoped_normal_path_and_gui_verified",
+      "normal_path": "綠色平台64～66已接入，正常跳上／升降／離開、十點完整原版配對與實際視窗通過。魔法石來源缺口及其餘共用圖格待補；既有Muralla入口沿020，不當39格皆完成HD",
       "decoder": {
         "kind": 7,
         "bytes": 1872,
@@ -4832,6 +4900,17 @@
         "normal_points": 10,
         "normal_platform_pixels": 192,
         "evidence": "workplace/full-hd-v1/cave-common-sources-v2/receipt.json"
+      },
+      "green_platform": {
+        "ids": [
+          64,
+          65,
+          66
+        ],
+        "normal_points": 10,
+        "platform_points": 5,
+        "opaque_hd_pixels": 1287,
+        "evidence": "workplace/full-hd-v1/cave-platform-final-audit-v1.json"
       }
     },
     {

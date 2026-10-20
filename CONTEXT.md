@@ -6,16 +6,18 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，共用洞窟39格來源、平台註冊候選及Esco修正；完整目標仍進行中 |
-| 目前候選 | `workplace/full-hd-v1/merchant-frames-runtime-v3/zeliard-preview`，SHA-256 `5cec8f8fef9ce64799b6bafcf2e868e74c03bc2b4be1ab11a62767b590e67123` |
-| 來源與圖面 | ARMOR256圖格中254格引用，八姿態與兩局部動畫共十張282×186圖；139、140非空但用途未知；[規格041](docs/spec/041-merchant-frames-hd.md)限定CONFORMED |
-| 最近測試 | 十項具名與四項舊室內／商人／長老回歸無skip／fail；524520獨立高清像素、49點正常完整原版狀態、有效遮罩邊界、vet及build通過 |
-| 實際視窗 | 冷F7進武器店、三組原貌切回1728000像素相同；七個來源鍵可見，正常離店四層城鎮HD恢復、DOS退出0，存檔不變，根端已目視 |
-| 收尾證據 | `workplace/full-hd-v1/merchant-frames-final-audit-v1.json`，由[武器店稽核工具](tools/hd_merchant_audit.py)重生至新檔 |
-| 本輪研究 | [規格043](docs/spec/043-cave-common-scenery.md)保持DRAFT；DCHR39格1872bytes與十個正常來源相同，平台192原生像素相同。平台三格候選及Esco修正已保存，正常HD接入待驗；042仍DRAFT |
+| 更新 | 2026-10-21，綠色平台64～66接入、正常升降與視窗通過；完整目標仍進行中 |
+| 目前候選 | `workplace/full-hd-v1/cave-platform-runtime-v1/zeliard-preview`，SHA-256 `2734aeabeaae1a7c7429479ce90a3b33439a453f90378e137d67cf158629859b` |
+| 來源與圖面 | DCHR39格1872bytes、31圖72項三byte平台表與IDA9.4七窄範圍／三表已核；72×24平台圖的1287有效像素全不透明；[規格043](docs/spec/043-cave-common-scenery.md)限MP10平台CONFORMED |
+| 最近測試 | 28項圖面回歸、一項左右裁切守衛與三項正常／來源測試無skip／fail；6435獨立高清像素、十點完整原版狀態、vet及build通過 |
+| 實際視窗 | 冷F7正常跳上、升降、再升及離開平台；四組原貌切回2304000像素相同，5148高清像素獨立相同，DOS退出0，存檔bytes／mtime不變，根端已目視 |
+| 收尾證據 | `workplace/full-hd-v1/cave-platform-final-audit-v1.json`，由[平台稽核工具](tools/hd_cave_platform_audit.py)重生至新檔 |
+| 待補 | 魔法石路徑三個平台點無可呈現來源；正常SAVEM1路徑另記18個未匹配主角畫格與十個可見武器來源鍵。其他共用圖格、城鎮與後段仍待補；042仍DRAFT |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
 
-目前收尾入口為 `workplace/full-hd-v1/town-resources-stage-audit-v4.json`，由[階段稽核](tools/hd_town_stage_audit.py)重生，v1至v3保留身份。共用洞窟來源在 `cave-common-sources-v2/`；DCHR解壓buffer與正常11B1:8C00..934F相同。平台64～66另核192原生RGB像素。內建生成的完整提示詞、引用及輸出SHA在 `cave-common-art-v1/generation-v1.json`，72×24及三格24×24註冊候選在 `cave-common-registration-v1/manifest.json`，包絡內仍有51個透明像素，正式HD守衛、完整原版配對及GUI未做。下一步先補平台圖面透明缺口，核共用圖格消費端，再依043準備READY接入；不將平台畫面整張退回原貌當作已完成HD。
+目前收尾入口為 `workplace/full-hd-v1/cave-platform-final-audit-v1.json`，覆蓋JSON已銜接現行來源，歷史城鎮階段稽核v1至v4保留身份。共用洞窟來源仍在 `cave-common-sources-v2/`；不透明材質原圖、完整提示詞與引用SHA在 `cave-common-art-v2/generation-v2.json`，註冊在 `cave-common-registration-v2/manifest.json`。原51透明像素候選保留，現行包絡內為零。以 `-cave-common-art workplace/full-hd-v1/cave-common-registration-v2`選載，需既有 `-cave-art-dir`；圖集共存另沿[正常配對命令](tools/verify_cave_platform.sh)。GUI完整命令在 `cave-platform-gui-v3/receipt.json`。本輪音訊關閉，未重建封包或影片。
+
+正常配對為 `cave-platform-hd-pair-v1/cave-platform/receipt.json`，211次完成來源、42次繪製中來源拒絕、954次呈現，十個具名點皆有來源與HD。未匹配的主角、武器來源及其SHA已由該收據索引，不重新蒐集相同姿態。魔法石版本鍵序另存 [cave-platform-magia.commands](tools/cave-platform-magia.commands)，來源配對為 `cave-platform-source-pair-v1/`，三個平台點沒有完成來源；不以普通平台通過代替此缺口。下一步補這些來源與其餘共用圖格，續走Satono、後段城鎮與洞窟正常路徑。
 
 正常探針新增固定雜湊USR選項及完成來源擷取；`town-path-savem1-v1/`至v4均已結束。SAVEM1由原版F7讀回，生命200、有Wise Man's劍／盾與魔法石，沒有鞋子。平台須站到中央；v3已正常升起、離開至右側通道，v4以相同鍵序重播的首點RAM／暫存器／畫面／色盤／steps／cycles相同，再正常降下及升起，平台列17→24→17，兩張升起原圖相同。這不是HD配對或GUI，沒有到達Satono，也未取得新鑰匙，不重跑已保存的錯誤站位。早期完成點的held_keys混用觀察時刻，v4起改存完成時刻，另列observed_held_keys；舊收據保留身份。
 

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "input_name": "正常SAVEM1平台升起的primary.segment",
+  "input_sha256": "5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b",
+  "address_space": "IDA binary base0=dosgolem正常完成來源01B1段內偏移；SAR解壓buffer另列，不混用位址基準",
+  "entries": [
+    {"address": "0x7ebb", "level": "已證實", "semantic": "ES由原版FF2C取得資源段；正常來源為11B1", "evidence": ["workplace/combat-v1/ida-cave-v3.json", "workplace/full-hd-v1/cave-common-sources-v2/receipt.json"]},
+    {"address": "0x7ec0", "level": "已證實", "semantic": "DCHR載入前SI指向9C13原始descriptor", "evidence": ["workplace/combat-v1/ida-cave-v3.json", "workplace/full-hd-v1/cave-common-sources-v2/receipt.json"]},
+    {"address": "0x7ec3", "level": "已證實", "semantic": "DCHR目的偏移DI=8C00；1872bytes與正常RAM相同", "evidence": ["workplace/combat-v1/ida-cave-v3.json", "workplace/full-hd-v1/cave-common-sources-v2/receipt.json"]},
+    {"address": "0x7ec8", "level": "已證實", "semantic": "AL=2呼叫原始CS:010C資源介面；不另命名共用載入常式", "evidence": ["workplace/combat-v1/ida-cave-v3.json"]},
+    {"address": "0x8074", "level": "已證實", "semantic": "Up路徑查64至66下層，選C004表，經8352移三格至上一列並清舊列；80F3遞減原表的列後以3F遮罩", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json", "workplace/full-hd-v1/town-path-savem1-v4/receipt.json"]},
+    {"address": "0x7fdc", "level": "已證實", "semantic": "Down路徑查64至66下層，選C004表；8024經8352移三格至下一列並清舊列，806B遞增原表列後以3F遮罩", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json", "workplace/full-hd-v1/town-path-savem1-v4/receipt.json"]},
+    {"address": "0x814c", "level": "已證實", "semantic": "依序比對DL、DL+1、DL+2並回傳DH為1、0、FF；本次DL40即64至66，供8109還原平台起欄", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json"]},
+    {"address": "0x8109", "level": "已證實", "semantic": "以word80+byte83+4+DH並依C002環回，列為(byte82+byte84+3)&3F；搜尋DI的word欄及byte列，步幅3", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json", "workplace/full-hd-v1/town-path-savem1-v4/receipt.json"]},
+    {"address": "0x8137", "level": "已證實", "semantic": "原始add di,3；平台表每項為word欄、byte列，非4byte", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json"]},
+    {"address": "0x806b", "level": "已證實", "semantic": "原始inc byte ptr [di+2]，後接and 3F；保留原運算元，不改原版欄位名", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json"]},
+    {"address": "0x80f3", "level": "已證實", "semantic": "原始dec byte ptr [di+2]，後接and 3F；保留原運算元", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json"]},
+    {"address": "0x8357", "level": "已證實", "semantic": "靜態地圖項直接mov [di],dl；動態項分支改寫ED20+低7位所存下層，見8361原運算元", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json"]},
+    {"address": "0xc004", "level": "已證實", "semantic": "綠色平台三byte表指標；下個C006指標界定本次31地圖的表尾，末兩byte均FFFF", "evidence": ["workplace/full-hd-v1/cave-common-ida-v2/evidence.json", "workplace/full-hd-v1/cave-map-sources-v1/receipt.json"]},
+    {"address": "0x9c13", "level": "已證實", "semantic": "原始descriptor為SAR3、第55筆的1起算編號與DCHR.GRP；對應0起算record54", "evidence": ["docs/hd-coverage.json", "workplace/full-hd-v1/cave-common-sources-v2/receipt.json"]}
+  ]
+}

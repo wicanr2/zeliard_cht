@@ -1178,3 +1178,17 @@ CPAT157格及MPAT242格轉換的7536／11616bytes與前輪正常圖格來源SHA�
 內建imagegen生成平台原圖1254×1254及完整提示詞，保存於 `cave-common-art-v1/generation-v1.json`。註冊候選直接從主體框(128,514)-(1130,752)取樣至72×24，再套本平台原生非零包絡及分三格；未經24×8縮圖。1287個包絡像素中51個仍透明，列為圖面／註冊缺口。完整SHA與三格接縫重接驗證在 `cave-common-registration-v1/manifest.json`，原圖及原始cache均保留，043仍DRAFT。
 
 Esco另用內建imagegen修正首片局部WEAPON招牌及原版單排四長窗。第二版RGBA1536×1024，SHA-256 `fa572b4f0ad9af5296366dcb79c24784361ea7b36296fe7ea55f19babfe674dd`，已目視；完整提示詞及兩引用SHA在 `town-world-art-v1/ESMP-correction-v2.request.json`，產物收據同根。接縫、門洞及正常遊戲接入尚未完成。最新階段稽核v4保留全部舊來源身份，正式可玩程式與舊封包不變。
+
+## 2026-10-21 綠色平台載入、三byte表與HD驗證
+
+固定EXE與dosgolem身份沿011及本地release-build快照。IDA9.4的base0輸入為 `cave-common-ida-v1/primary.segment`，SHA-256 `5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b`，取正常01B1段，不能與檔案偏移混用。七個窄範圍、三表及原始函式名／bytes／交叉參照在 `cave-common-ida-v3/evidence.json` 與i64；分級索引為 `docs/cave-common-source-index.json`。
+
+已證實：01B1:7EBB..7ECC設定來源descriptor 9C13、目的8C00及AL2，呼叫010C載入DCHR。descriptor bytes為02 37 44 43 48 52 2E 47 52 50 00，archive byte從0、record byte從1起算，對應SAR3 record54。初次assert採錯起算保留失敗，不推翻後續來源綁定。
+
+已證實：C004指向綠色平台表、C006界定表尾。每項word欄加byte列，共三byte，原01B1:8137的 `add di,3` 為直接消費端；尾端FFFF。Down的806B增加[di+2]、Up的80F3減少[di+2]，列依64環回。31份真實地圖共72表項，全部欄值小於圖寬、列值小於64。正常MP10兩項為(48,24)、(221,44)，升起首項到17、降回24、再升17。表項數不證明72次正常到達。
+
+已證實：原8109計算平台欄為word80+byte83+4+DH，依C002寬環回；列為(byte82+byte84+3)&63。814C對64、65、66分別給DH=1、0、FF，8352寫回循環地圖或原始[bx-12E0h]對應的動態下層。語意附於原位址，沒有改名取代原始運算元。控制區01B1:7FDC..8162 SHA-256 `494c0a9b65acd0d48ef6ede08f336d06b9ebdab9e6c418865d5f4c392437ebff`，正式守衛同時驗完整與主體來源。
+
+普通平台正常鍵序另存 `tools/cave-platform.commands`，固定SAVEM1以冷F7載入，沒有用魔法石或注入狀態。Go1.24.13、cycles3000，兩個獨立原版執行器十點完整狀態相同，五平台點有完成來源，HD後RAM與USR不變。圖面三格1287個有效HD像素全不透明，五點6435個像素及GUI四點5148個像素獨立相同。實際原貌切回2304000遊戲區像素相同，正常DOS退出0。43規格收尾入口 `cave-platform-final-audit-v1.json`，僅證明MP10普通平台垂直鏈。
+
+魔法石路徑 `cave-platform-source-pair-v1/` 三個目標點未選出完成來源，第一點遊戲區有138像素不符，根因仍未知；普通路徑另有42次繪製中來源拒絕。18個未匹配主角畫格與十個可見武器來源鍵均由 `cave-platform-hd-pair-v1/cave-platform/receipt.json` 索引。這些為實際HD缺口，未修完前不宣稱全遊戲完成。

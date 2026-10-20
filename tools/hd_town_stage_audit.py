@@ -118,7 +118,8 @@ def main():
     registration_path = root / 'cave-common-registration-v1/manifest.json'
     registration = read(registration_path)
     assert registration['status'] == 'REGISTERED_GREEN_PLATFORM_CANDIDATE_NOT_CONNECTED'
-    assert registration['script_sha256'] == sha(p/'tools/hd_cave_common_art.py')
+    # v1保存舊註冊器身份；不透明材質v2及目前來源由平台新稽核銜接。
+    assert registration['script_sha256'] == '9f5094be9e60f07b7775aaa373d9c0a737335708b12e8d83e887a89c560d9e66'
     assert registration['source_sha256'] == sha(common_path)
     assert registration['generation_sha256'] == sha(common_generation_path)
     assert registration['target_size'] == [72, 24] and registration['outside_mask_written_pixels'] == 0

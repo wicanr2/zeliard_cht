@@ -62,12 +62,15 @@ def main():
     common_path = p/"workplace/full-hd-v1/cave-common-sources-v2/receipt.json"
     common_report = json.loads(common_path.read_text())
     assert common_report["status"] == "PASS_DCHR_NORMAL_RAM_BINDING_SOURCE_ONLY"
+    platform = p/"workplace/full-hd-v1/cave-platform-final-audit-v1.json"
+    platform_report = json.loads(platform.read_text())
+    assert platform_report["status"] == "PASS_GREEN_PLATFORM_SOURCE_ART_NORMAL_GUI"
     assert sage_report["status"] == "PASS_SAGE_SOURCE_ART_NORMAL_GUI"
     assert back_report["status"] == "SOURCE_ART_NORMAL_PASSED_GUI_PENDING"
     assert interior_report["status"] == "PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI"
     # 舊收據保留原程式身份。來源後續有修訂時，必須由具名新稽核銜接，不能把舊GUI換稱新程式。
     latest_sources, replacement_evidence, source_revisions = {}, {}, []
-    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report), (merchant, merchant_report), (towns, towns_report)):
+    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report), (merchant, merchant_report), (towns, towns_report), (platform, platform_report)):
         for row in audit["source_files"]:
             latest_sources[row["path"]] = row["sha256"]
             replacement_evidence[row["path"]] = str(audit_path.relative_to(p))
@@ -87,6 +90,7 @@ def main():
     validate_audit(sage, sage_report)
     validate_audit(merchant, merchant_report)
     validate_audit(towns, towns_report)
+    validate_audit(platform, platform_report)
     town_sources_path = p/"workplace/full-hd-v1/town-resources-source-v1/receipt.json"
     town_sources = {row["record"]:row for row in json.loads(town_sources_path.read_text())["maps"]}
     interior_path = p/"workplace/full-hd-v1/interior-layout-v2/receipt.json"
@@ -157,8 +161,10 @@ def main():
                     "tiles":39, "first_id":64, "last_id":102, "runtime_bytes_verified":1872,
                     "source_sha256":common_report["source_sha256"], "packed_sha256":common_report["packed_sha256"],
                     "normal_points":10, "normal_platform_pixels":192, "evidence":str(common_path.relative_to(p))}
-                item["hd_coverage"] = "source_bound_platform_candidate_other_consumers_pending"
-                item["normal_path"] = "正常平台來源已核，原版平台升起及離開通道可重播；平台三格已註冊候選，51個包絡內透明像素及正式接入／GUI待驗。既有Muralla入口沿020，不當39格皆完成HD"
+                item["hd_coverage"] = "partial_scoped_normal_path_and_gui_verified"
+                item["normal_path"] = "綠色平台64～66已接入，正常跳上／升降／離開、十點完整原版配對與實際視窗通過。魔法石來源缺口及其餘共用圖格待補；既有Muralla入口沿020，不當39格皆完成HD"
+                item["green_platform"] = {"ids":[64,65,66],"normal_points":10,"platform_points":5,
+                                          "opaque_hd_pixels":1287,"evidence":str(platform.relative_to(p))}
             if archive == "ZELRES2.SAR" and entry["index"] in interior_sources:
                 source = interior_sources[entry["index"]]
                 item["interior_source"] = {k:source[k] for k in ("name","program_record","program_sha256","graphics_sha256","packed_sha256","tile_count","covered_tile_ids","unreferenced_tile_ids","normal_binding","frames","source_level")}
@@ -252,7 +258,7 @@ def main():
                                   "status":"not_connected_normal_path_and_calibration_pending","spec":"docs/spec/042-all-town-resources.md",
                                   "evidence":str(towns.relative_to(p)),"unresolved_tile_ids":row["unresolved_tile_ids"]}
                                  for record,row in town_sources.items() if record>=38],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage, merchant, towns, town_sources_path)],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage, merchant, towns, town_sources_path, platform)],
               "source_revisions":source_revisions,
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     for family,count,visible,record in (("MPP8",43,40,81),("MPP9",38,38,82),("MPPA",20,19,83),("MPPB",5,5,84)):
@@ -261,11 +267,11 @@ def main():
             "spec":"docs/spec/037-all-cave-terrain-hd.md","source_record":f"zelres3.record.{record}",
             "evidence":str(runtime_catalog.relative_to(p)),"registered_tiles":count,"visible_tiles":visible,
             "limits":"固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"})
-    report["art_candidates"].append({
+    report["runtime_components"].insert(-1, {
         "key":"cave.common.green_platform", "source_record":"zelres3.record.54",
-        "status":"registered_candidate_not_connected", "spec":"docs/spec/043-cave-common-scenery.md",
-        "evidence":str(towns.relative_to(p)), "registered_tiles":[64,65,66],
-        "transparent_inside_mask":51, "limits":"正常來源及192原生像素已核；HD完整原版配對與GUI待驗。"})
+        "status":"scoped_normal_path_and_gui_verified", "spec":"docs/spec/043-cave-common-scenery.md",
+        "evidence":str(platform.relative_to(p)), "registered_tiles":[64,65,66],
+        "transparent_inside_mask":0, "limits":"僅MP10正常平台與原貌切回；魔法石來源缺口、其他共用圖格及後段正常路徑待補。"})
     next(row for row in report["art_candidates"] if row["key"]=="ESMP")["correction"] = towns_report["art_corrections"][0]
     report["runtime_components"].insert(-1, {
         "key":"cave.terrain.MPP1","status":"connected_structural_verified_normal_path_scoped",
