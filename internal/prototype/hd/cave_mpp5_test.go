@@ -91,13 +91,13 @@ func TestCaveMPP5AtomicLoadAndRefusal(t *testing.T) {
 	b := iceStudy(t)
 	loaded, ice, peligro, mpp3 := art.mpp5, art.ice, art.peligro, art.mpp3
 	broken := t.TempDir()
-	if err := os.WriteFile(filepath.Join(broken, "mpp5-tiles-v1.png"), iceRead(t, filepath.Join(b, "cave-mpp5-complete-v1/mpp5-tiles-v1.png")), 0653); err != nil {
+	if err := os.WriteFile(filepath.Join(broken, "mpp5-tiles-v1.png"), iceRead(t, filepath.Join(b, "cave-mpp5-complete-v1/mpp5-tiles-v1.png")), 0644); err != nil {
 		t.Fatal(err)
 	}
 	if err := art.LoadMPP5(broken); err == nil || art.mpp5 != loaded || art.ice != ice || art.peligro != peligro || art.mpp3 != mpp3 {
 		t.Fatal("缺材質破壞已載圖集")
 	}
-	if err := os.WriteFile(filepath.Join(broken, "mpp5-material-v1.png"), []byte("broken"), 0653); err != nil {
+	if err := os.WriteFile(filepath.Join(broken, "mpp5-material-v1.png"), []byte("broken"), 0644); err != nil {
 		t.Fatal(err)
 	}
 	if err := art.LoadMPP5(broken); err == nil || art.mpp5 != loaded {

@@ -15,6 +15,7 @@ ice_art = os.environ.get("ZELIARD_CAVE_ICE_ART", "")
 peligro_art = os.environ.get("ZELIARD_CAVE_PELIGRO_ART", "")
 mpp3_art = os.environ.get("ZELIARD_CAVE_MPP3_ART", "")
 mpp5_art = os.environ.get("ZELIARD_CAVE_MPP5_ART", "")
+mpp6_art = os.environ.get("ZELIARD_CAVE_MPP6_ART", "")
 assert candidate.is_file()
 original_start = start
 
@@ -34,6 +35,8 @@ def start():
                 command.extend(["-cave-mpp3-art", mpp3_art])
             if mpp5_art:
                 command.extend(["-cave-mpp5-art", mpp5_art])
+            if mpp6_art:
+                command.extend(["-cave-mpp6-art", mpp6_art])
         return original_popen(command, *args, **kwargs)
     subprocess.Popen = launch
     try:
@@ -66,23 +69,18 @@ def align_town_entrance():
     raise RuntimeError("正常步行未對齊洞口")
 
 
-def align_cave_exit():
-    def delta(s):
-        source = s.get("cave_frame_presentation") or {}
-        portals = (s.get("cave_portal_hd") or {}).get("placements") or []
-        if not portals or "source_actor_x" not in source:
-            return None
-        # 原生角色24寬、入口40寬，對齊中心需將角色左界放入口左界+8。
-        return source["source_actor_x"]-portals[0]["X"]-8
+def align_cave_exit(target):
+    # 以正常入洞時的原版觀察值作輸入目標，不依較早圖面推算門框命中區。
+    # 只送方向鍵，不寫原版座標、場景或記憶體。
     for _ in range(24):
-        value = delta(wait("可見原版入口", lambda s: delta(s) is not None, 15))
-        # 已進門框附近時先由正常Up嘗試；成功仍須後續原版回城判定。
-        if abs(value) <= 16:
+        s = wait("正常洞窟來源", ready, 15)
+        value = s["native_primary_0080"]+s["native_primary_0083"]
+        if value == target:
             return
-        scan = 0x4b if value > 0 else 0x4d
+        scan = 0x4b if value > target else 0x4d
         edge(scan,True)
         try:
-            wait("正常走回入口中心", lambda s: delta(s) is not None and delta(s) != value, 5)
+            wait("正常走回入洞位置", lambda s: s["native_primary_0080"]+s["native_primary_0083"] != value, 5)
         finally:
             edge(scan,False)
         advance(100000)
@@ -155,13 +153,15 @@ try:
     key(0x48, 250000)
     advance(20000000)
     hd(True)
+    entry_state = wait("記錄正常入洞位置", ready, 30)
+    exit_target = entry_state["native_primary_0080"]+entry_state["native_primary_0083"]
     compare("cave-entry")
     key(0x4b, 500000)
     advance(500000)
     compare("cave-walking")
     key(0x4d, 500000)
     advance(500000)
-    align_cave_exit()
+    align_cave_exit(exit_target)
     key(0x48, 250000)
     advance(20000000)
     wait("正常回城及撤除洞窟", lambda s: not (s.get("cave_frame_presentation") or {}).get("used") and s["town_scenery_hd_matched"], 30)
@@ -182,6 +182,8 @@ try:
               "peligro_art_directory": peligro_art,
               "mpp3_art_directory": mpp3_art,
               "mpp5_art_directory": mpp5_art,
+              "mpp6_art_directory": mpp6_art,
+              "exit_target_primary_sum": exit_target,
               "script_sha256": h(Path(__file__)), "helper_sha256": h(helper),
               "boots": boots, "shots": shots, "pairs": pairs, "normal_DOS_exit": 0,
               "limits": "只驗MPP1正常冷讀、入洞、步行、HD切回及回城；未驗其他洞窟或新冰窟美術"}

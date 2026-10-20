@@ -20,6 +20,12 @@ PROFILES = {
                        "b":[23,*range(26,35),39,40],"c":list(range(45,53))},
              "maps":["MP50","MP51","MP5D"],"text_ids":[],
              "text":"","generation":"generation.json"},
+    "MPP6": {"count":36,"material_ids":[3,4,5,7,8],"secondary_material_ids":[9,10,11,12,13],
+             "sheets":{"a":[1,2,*range(14,23),24],"b":[25,*range(29,37)]},
+             "material_reference":"material-reference.png","text_reference":"label-original.png",
+             "material_fit":"repeat","preview_marker":26,
+             "maps":["MP60","MP61","MP62","MP6D"],"text_ids":[26,27,28,23,6],
+             "text":"DORADO","generation":"generation.json"},
 }
 
 
@@ -38,7 +44,7 @@ def source(project,key):
         im = Image.open(path).convert("RGBA")
         assert hashlib.sha256(im.tobytes()).hexdigest() == row["rgba_sha256"]
         natives[row["id"]] = im
-    ids = cfg["material_ids"]+[i for group in cfg["sheets"].values() for i in group if i not in cfg["text_ids"]]+cfg["text_ids"]
+    ids = cfg["material_ids"]+cfg.get("secondary_material_ids",[])+[i for group in cfg["sheets"].values() for i in group if i not in cfg["text_ids"]]+cfg["text_ids"]
     assert sorted(ids) == list(range(1,cfg["count"]+1))
     return base,profile,natives,cfg
 
@@ -60,12 +66,20 @@ def prepare(project,key,out):
         x,y = n%columns*256,n//columns*256
         d.text((x+8,y+6),str(i),fill="white")
         im.paste(natives[i].resize((192,192),Image.Resampling.NEAREST),(x+32,y+40))
-    im.save(out/"green-material-reference.png")
+    im.save(out/cfg.get("material_reference","green-material-reference.png"))
+    if cfg.get("secondary_material_ids"):
+        im = Image.new("RGB",(768,512))
+        d = ImageDraw.Draw(im)
+        for n,i in enumerate(cfg["secondary_material_ids"]):
+            x,y = n%3*256,n//3*256
+            d.text((x+8,y+6),str(i),fill="white")
+            im.paste(natives[i].resize((192,192),Image.Resampling.NEAREST),(x+32,y+40))
+        im.save(out/"secondary-material-reference.png")
     if cfg["text_ids"]:
         strip = Image.new("RGBA",(len(cfg["text_ids"])*8,8))
         for n,i in enumerate(cfg["text_ids"]):
             strip.paste(natives[i],(n*8,0))
-        strip.resize((1000,200),Image.Resampling.NEAREST).save(out/"label-34-38-original.png")
+        strip.resize((1000,200),Image.Resampling.NEAREST).save(out/cfg.get("text_reference","label-34-38-original.png"))
     meta = {"schema":1,"profile":key,"source_sha256":profile["source_sha256"],**cfg,
             "references":[{"file":f.name,"sha256":sha(f)} for f in out.glob("*.png")],
             "limits":["原圖等比例展示供imagegen參考，不計HD產物。","視覺分類不推定圖格用途、碰撞或事件；字帶另依實際相鄰順序核對。"]}
@@ -73,17 +87,18 @@ def prepare(project,key,out):
     print(key,"SOURCE_REFERENCES",len(natives))
 
 
-def render_preview(grid,natives,tiles,texture,material_ids):
+def render_preview(grid,natives,tiles,texture,material_ids,secondary_texture=None,secondary_material_ids=()):
+    all_material_ids = set(material_ids)|set(secondary_material_ids)
     masks = {i:np.any(np.asarray(im)[:,:,:3] != 0,axis=2) for i,im in natives.items()}
     envelope = np.zeros((144,224),dtype="uint8")
     for x in range(28):
         y = 0
         while y < 18:
-            if int(grid[y,x]) not in material_ids:
+            if int(grid[y,x]) not in all_material_ids:
                 y += 1
                 continue
             first = y
-            while y < 18 and int(grid[y,x]) in material_ids:
+            while y < 18 and int(grid[y,x]) in all_material_ids:
                 y += 1
             for dx in range(8):
                 occupied = [yy for yy in range(first*8,y*8) if masks[int(grid[yy//8,x])][yy%8,dx]]
@@ -92,15 +107,18 @@ def render_preview(grid,natives,tiles,texture,material_ids):
     original = Image.new("RGB",(672,432))
     hd = Image.new("RGBA",(672,432),(0,0,0,255))
     tex = np.asarray(texture)
+    secondary_tex = np.asarray(secondary_texture) if secondary_texture is not None else None
     for y in range(18):
         for x in range(28):
             i = int(grid[y,x])
             if not i:
                 continue
             original.paste(natives[i].resize((24,24),Image.Resampling.NEAREST),(x*24,y*24))
-            if i in material_ids:
+            if i in all_material_ids:
                 xs,ys = (x+4)*24+np.arange(24),y*24+np.arange(24)
-                block = Image.fromarray(tex[np.minimum(ys,1535-ys)[:,None],np.minimum(xs,863-xs)[None,:]])
+                chosen_tex = secondary_tex if i in secondary_material_ids else tex
+                assert chosen_tex is not None
+                block = Image.fromarray(chosen_tex[np.minimum(ys,1535-ys)[:,None],np.minimum(xs,863-xs)[None,:]])
                 mask = Image.fromarray(envelope[y*8:y*8+8,x*8:x*8+8]).resize((24,24),Image.Resampling.NEAREST)
                 hd.paste(block,(x*24,y*24),mask)
             else:
@@ -119,10 +137,25 @@ def register(project,key,out):
         path = art_dir/row["file"]
         assert sha(path) == row["sha256"]
         images[row["key"]] = Image.open(path).convert("RGBA")
-    assert set(images) == {"material",*("details_"+k for k in cfg["sheets"]),*(["label"] if cfg["text_ids"] else [])}
+    assert set(images) == {"material",*("details_"+k for k in cfg["sheets"]),*(["label"] if cfg["text_ids"] else []),*(["secondary_material"] if cfg.get("secondary_material_ids") else [])}
     assert images["material"].getchannel("A").getextrema() == (255,255)
-    texture = images["material"].convert("RGB").resize((432,768),Image.Resampling.LANCZOS)
+    def fit_material(im):
+        im = im.convert("RGB")
+        if cfg.get("material_fit") != "repeat":
+            return im.resize((432,768),Image.Resampling.LANCZOS)
+        # 保留原生生成圖的材質比例，以完整水平週期填入HD查表。
+        piece = im.resize((432,max(1,round(im.height*432/im.width))),Image.Resampling.LANCZOS)
+        result = Image.new("RGB",(432,768))
+        for y in range(0,768,piece.height):
+            result.paste(piece,(0,y))
+        return result
+    texture = fit_material(images["material"])
     texture.save(out/(key.lower()+"-material-v1.png"))
+    secondary_texture = None
+    if cfg.get("secondary_material_ids"):
+        assert images["secondary_material"].getchannel("A").getextrema() == (255,255)
+        secondary_texture = fit_material(images["secondary_material"])
+        secondary_texture.save(out/(key.lower()+"-secondary-material-v1.png"))
     masks = {i:np.any(np.asarray(im)[:,:,:3] != 0,axis=2) for i,im in natives.items()}
     tiles,rows = {},{}
     for group,ids in cfg["sheets"].items():
@@ -154,13 +187,16 @@ def register(project,key,out):
         sprite.alpha_composite(strip.crop((n*24,0,(n+1)*24,24)))
         tiles[i] = sprite
         rows[i] = {"id":i,"kind":"graphic_label","text":cfg["text"],"art_crop":crop,"strip_part":n,
-                   "superseded_detail":rows[i]}
-    for n,i in enumerate(cfg["material_ids"]):
+                   "superseded_detail":rows.get(i)}
+    for n,i in enumerate(cfg["material_ids"]+cfg.get("secondary_material_ids",[])):
         x,y = n%18*24,n//18*24
-        sprite = texture.crop((x,y,x+24,y+24)).convert("RGBA")
+        chosen_texture = secondary_texture if i in cfg.get("secondary_material_ids",[]) else texture
+        sprite = chosen_texture.crop((x,y,x+24,y+24)).convert("RGBA")
         sprite.putalpha(Image.fromarray(np.repeat(np.repeat(masks[i],3,axis=0),3,axis=1).astype("uint8")*255))
         tiles[i] = sprite
         rows[i] = {"id":i,"kind":"continuous_material","contact_sample":[x,y]}
+        if cfg.get("secondary_material_ids"):
+            rows[i]["material_group"] = 2 if i in cfg["secondary_material_ids"] else 1
     assert sorted(tiles) == list(range(1,cfg["count"]+1))
     atlas = Image.new("RGBA",(cfg["count"]*24,24))
     contact = Image.new("RGB",(1024,((cfg["count"]+7)//8)*128),"#1d2733")
@@ -187,13 +223,13 @@ def register(project,key,out):
         assert sha(path) == row["columns_sha256"]
         columns = np.frombuffer(path.read_bytes(),dtype="uint8").reshape((row["width"],64))
         # 固定原始圖格ID為離線構圖錨點，不推定文字或事件含義。
-        marker = np.argwhere(columns == 35)
+        marker = np.argwhere(columns == cfg.get("preview_marker",35))
         if not len(marker):
             marker = np.argwhere(columns == 15)
         cx,cy = (int(marker[0,0])-10,int(marker[0,1])-8) if len(marker) else (10,8)
         grid = np.array([[int(columns[(cx+x)%row["width"],(cy+y)%64]) for x in range(28)] for y in range(18)],dtype="uint8")
         assert int(grid.max()) <= cfg["count"]
-        original,hd = render_preview(grid,natives,tiles,texture,set(cfg["material_ids"]))
+        original,hd = render_preview(grid,natives,tiles,texture,set(cfg["material_ids"]),secondary_texture,set(cfg.get("secondary_material_ids",[])))
         name = row["name"].removesuffix(".MDT")
         grid.tofile(out/(name+"-grid.bin"))
         original.save(out/(name+"-offline-original.png"))
@@ -206,6 +242,9 @@ def register(project,key,out):
               "atlas_sha256":sha(atlas_path),"material_sha256":sha(out/(key.lower()+"-material-v1.png")),
               "generation_sha256":sha(generation_path),"script_sha256":sha(Path(__file__)),
               "limits":["原圖格／構圖只作結構資料，正常玩家可達性及事件未驗。","連續材質僅限明列ID，不以大範圍覆蓋其他圖樣。","無字帶的家族不新增字樣；不推定事件或官方中文譯名。"]}
+    if cfg.get("secondary_material_ids"):
+        report["secondary_material_ids"] = cfg["secondary_material_ids"]
+        report["secondary_material_sha256"] = sha(out/(key.lower()+"-secondary-material-v1.png"))
     (out/"manifest.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(report["status"],key,report["atlas_sha256"],report["material_sha256"])
 

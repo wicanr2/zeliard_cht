@@ -13,8 +13,11 @@ import (
 type caveTerrainArt struct {
 	tiles               [128][]color.NRGBA
 	material            []color.NRGBA
+	secondaryMaterial   []color.NRGBA
 	count               int
 	materialIDs         [128]bool
+	secondaryIDs        [128]bool
+	textIDs             [128]bool
 	textFirst, textLast int
 }
 

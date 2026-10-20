@@ -330,14 +330,15 @@
 - [冰窟註冊研究](tools/hd_register_ice.py)將角色無關的MPP4原圖、手繪圖面與不透明材質合成三份地圖離線預覽；不改原始AI圖、不接正式前端，圖形文字與光球缺口另列。
 - [冰窟完整圖集](tools/hd_complete_ice.py)補齊HELADA五格標示及兩格藍白光球，保存21格高清圖集、材質、來源與三份離線預覽；正常事件用途及冰窟玩家路徑仍須另驗。
 - [MPP2手繪素材流程](tools/hd_peligro_art.py)按實際來源準備標示與11個獨立圖格參考，後續註冊維持原始來源與正常玩家路徑分列；原圖與生成圖只留本機。
-- [洞窟家族素材流程](tools/hd_cave_family_art.py)目前支援MPP3的43格與MPP5的52格來源，按明列ID分開連續材質及逐格圖樣，保存原生外形、輸入／產物SHA與各三份離線地圖，不以候選場景名猜寫文字。MPP5使用`eob-audio-capture:20261009-r3`的NumPy／Pillow執行；既有Pillow專用映像不含NumPy。
+- [洞窟家族素材流程](tools/hd_cave_family_art.py)支援MPP3的43格、MPP5的52格及MPP6的36格來源，按明列ID分開材質與逐格圖樣。MPP6另有第二材質、非連號字帶及四份地圖；保存原生外形與輸入／產物SHA，不以候選場景名猜寫文字。使用`eob-audio-capture:20261009-r3`的NumPy／Pillow執行；既有Pillow專用映像不含NumPy。
 - [MPP5圖面載入](internal/prototype/hd/cave_mpp5.go)按037固定52格、20個材質ID及32個細部；[MPP5測試](internal/prototype/hd/cave_mpp5_test.go)核三份結構地圖、全格、原子拒絕及四家族共存，正常到達另驗。
+- [MPP6圖面載入](internal/prototype/hd/cave_mpp6.go)按037固定36格、金黃／紫岩雙材質與非連號DORADO字帶；[MPP6測試](internal/prototype/hd/cave_mpp6_test.go)核四份結構地圖、全格、第二材質原子拒絕及五家族共存，正常到達另驗。
 - [MPP3圖面載入](internal/prototype/hd/cave_mpp3.go)按037固定43格、九個材質ID與完整BOSQUE字帶；[MPP3測試](internal/prototype/hd/cave_mpp3_test.go)核結構像素、全43格、界限及三家族共存，正常到達另驗。
 - [MPP2圖面載入](internal/prototype/hd/cave_peligro.go)按037固定34格圖面與材質，與冰窟共用整組載入；[MPP2測試](internal/prototype/hd/cave_peligro_test.go)核三份結構快照、尾端九格及來源／載入拒絕，不能當正常到達證據。
-- [洞窟家族稽核](tools/hd_cave_family_audit.py)接受MPP2／MPP3／MPP5，核原始靜態地圖格、完整註冊、合成像素、MPP1正常回歸及實際視窗；舊收據重生須用當輪來源工作樹與相符driver。新增家族先補037來源及接入契約，不以任意參數跳過守衛。
+- [洞窟家族稽核](tools/hd_cave_family_audit.py)接受MPP2／MPP3／MPP5／MPP6，核原始靜態地圖格、完整註冊、合成像素、MPP1正常回歸及實際視窗；舊收據重生須用當輪來源工作樹與相符driver。新增家族先補037來源及接入契約，不以任意參數跳過守衛。
 - [冰窟圖面載入](internal/prototype/hd/cave_ice.go)依037固定SHA與尺寸原子載入，地形依完整來源身份選擇；[冰窟圖面測試](internal/prototype/hd/cave_ice_test.go)區分離線像素、合成結構來源與正常MPP1回歸，不把合成快照當正常冰窟。
 - [冰窟圖集收尾稽核](tools/hd_ice_audit.py)核21格資產、三份結構快照像素、MPP1正常35點及實際視窗身份；冰窟正常玩家路徑維持待驗，不升全家族HD完成。
-- [洞窟來源視窗回歸](tools/hd_cave_catalog_smoke.py)以新版候選正常冷讀、入洞、HD切回及回城，保存來源鍵、實際命令與圖片。可由ZELIARD_GUI_BINARY、ZELIARD_CAVE_ICE_ART、ZELIARD_CAVE_PELIGRO_ART、ZELIARD_CAVE_MPP3_ART及ZELIARD_CAVE_MPP5_ART選候選與新增圖集；不外推未到達家族。
+- [洞窟來源視窗回歸](tools/hd_cave_catalog_smoke.py)以新版候選正常冷讀、入洞、HD切回及回城，保存來源鍵、實際命令與圖片。可由ZELIARD_GUI_BINARY、ZELIARD_CAVE_ICE_ART、ZELIARD_CAVE_PELIGRO_ART、ZELIARD_CAVE_MPP3_ART、ZELIARD_CAVE_MPP5_ART及ZELIARD_CAVE_MPP6_ART選候選與新增圖集；不外推未到達家族。
 - [洞窟辨識收尾稽核](tools/hd_cave_catalog_audit.py)核目前程式、來源測試、正常35點、實際視窗還原與冰窟離線候選的各別身份；不將美術候選或結構fixture計為全家族正常HD完成。
 - [全洞窟地形來源](tools/hd_cave_sources.py) 擷取SAR3的MPP1..MPPB原生圖格與分組總覽；[規格037](docs/spec/037-all-cave-terrain-hd.md)分開正常RAM已核與結構候選。輸出留`workplace/full-hd-v1/cave-terrain-sources-v1/`，不把解圖當HD完成。
 - [洞窟存檔來源探針](tools/hd_cave_save_probe.go) 在兩個獨立dosgolem冷讀包內四份USR，只用原版按鍵擷取場景與圖像來源；存檔前史未知，不當新局全流程或HD驗收。

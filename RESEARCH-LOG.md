@@ -1051,3 +1051,14 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 原圖不覆寫。四張內建imagegen原圖直接註冊為52個24×24圖格、1248×24圖帶與432×768材質；圖帶SHA為`58e76f6b1ef046960a2fabcf4f3268bb1df514d23d9e500ae6a80e2a49b7e02b`，材質為`d640e43e0b4dec2aa3235a2b038a64cbb7b18cac9fe139c09ed19b1229633c8b`。三圖及額外水面預覽已目視，沒有將原圖像素放大當新手繪。
 - MPP5三圖870912像素、全52格及原子拒絕通過，同時載入MPP2／MPP3／冰窟後各三圖870912像素與Malicia舊圖通過。結構快照只組合資料，不執行VM，不當正常原版MPP5可達證據。
 - 候選`7d623290989ca2790a50ac893248a97e8a1a62d677850fce517c8179af420cad`的正常MPP1首戰／回城35點完整原版狀態、USR與mtime相同，實際視窗v2兩組切回1152000遊戲區像素相同並正常回城、退出0。正常MPP5進出、捲動、事件及全遊戲HD仍待完成。
+
+## 2026-10-20 MPP6雙材質與非連號字帶
+
+SAR3記錄79的解壓SHA-256 `44dc5d86e69709bbe571b1cf86008a745a91e80d897437b68aeecc4cbe8b4325`，預期dosgolem實模式11B1:8000的48-byte header為`9e25d4d349978ee06e5b05efdb291ce8e70a363f5a269c34bf395a28f87f5fc3`，8030起36×48bytes為`a90b2faacf3e4895cdfef2690805d80fec4ddd9141a791dc64d42d93e3abe812`。來源及選擇端沿037的原版解壓、01B1:7E9B／7ECD證據；不新增推測性命名，正常MPP6載入仍未知。
+
+- 工具為`tools/hd_cave_family_art.py`、固定eob-audio-capture:20261009-r3、Python 3.11.2、NumPy 1.24.2、Pillow 9.4.0與Go1.24.13。腳本、來源與產物SHA在`cave-mpp6-complete-v2/manifest.json`、`cave-mpp6-art-v1/generation.json`及`cave-mpp6-final-audit-v1.json`。
+- 已證實的靜態資料：MP60／MP61／MP62／MP6D同選MPP6；30、31、34、35、36未出現於四份網格，事件用途未知。金黃磚牆ID3、4、5、7、8與紫岩9..13是外觀分組，不作碰撞或玩法語意。
+- MP60／MP61原始相鄰五格順序26、27、28、23、6。完整40×8字帶目視為DORADO，不能以連號範圍覆繪。先前CEMENTO候選在生成前訂正，候選與勘誤保留於`cave-mpp6-source-v1/references/`；黑色色號只含部分字形，不能單獨判字。[攻略地名列表](https://gamefaqs.gamespot.com/pc/575849-zeliard/faqs/13336)只輔助比對Dorado拼字，不作像素、正常可達或官方中文譯名證據。
+- 五張選定原圖由內建imagegen產生，紫岩及details_b第二版修畫風；七次請求及所有輸入／輸出SHA均保留。圖帶864×24 SHA為`059853dce8d844f218194172e1d6bc1a586371750191f729993e849a4d2e6703`；432×768金黃材質為`d96f553170cf4870f68ec20811dfeb424ab4bed935e881dbea298b567ec2f59b`，紫岩為`5916121f2097de409fc8e744f7af64c8ac8f3764b08c881c44b87bd4b7839c6a`。按生成圖比例取樣並垂直重複，不把原生8×8放大冒稱HD；原圖及初版拉伸研究不覆寫。
+- 四圖1161216像素、全36格、雙材質與非連號字帶、缺第二材質及其他原子拒絕通過。五個新增家族共存，舊四家族各三圖及Malicia回歸通過。結構快照不執行VM，不當正常MPP6可達證據。
+- 候選`52c0716372c7b527efb0b062ce7db2fabb0d515aa1b0409a120fe894b290226d`的MPP1正常首戰／回城35點完整原版狀態、USR與mtime相同。實際視窗v2兩組切回1152000遊戲區像素相同並正常回城、退出0；v1門框邊緣Up未轉場保留原身份。正常MPP6進出、捲動、事件及全遊戲HD仍待完成。

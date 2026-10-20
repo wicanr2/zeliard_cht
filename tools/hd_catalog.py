@@ -48,9 +48,9 @@ def main():
     assert planar_report["status"] == "PASS_EXTRACTED_ORIGINAL_PLANAR" and len(planar_report["records"]) == 80
     assert all(x["matched"] and x["exit_code"] == 0 for x in planar_report["records"])
     assert grp_report["status"] == "PASS_FOUR_NORMAL_RESOURCE_BINDINGS"
-    runtime_catalog = p/"workplace/full-hd-v1/cave-mpp5-final-audit-v1.json"
+    runtime_catalog = p/"workplace/full-hd-v1/cave-mpp6-final-audit-v1.json"
     runtime_catalog_report = json.loads(runtime_catalog.read_text())
-    assert runtime_catalog_report["status"] == "PASS_MPP5_STRUCTURAL_AND_MPP1_REGRESSION"
+    assert runtime_catalog_report["status"] == "PASS_MPP6_STRUCTURAL_AND_MPP1_REGRESSION"
     for source in runtime_catalog_report["source_files"]+runtime_catalog_report["proofs"]:
         assert sha((p/source["path"]).read_bytes()) == source["sha256"]
     current_sources = {r["path"]:r["sha256"] for r in runtime_catalog_report["source_files"]}
@@ -109,9 +109,9 @@ def main():
                 source = terrain_sources[entry["index"]]
                 item["cave_terrain_source"] = {k: source[k] for k in ("key", "tiles", "source_sha256", "packed_sha256", "status", "runtime_bytes_verified")}
                 item["cave_terrain_source"]["evidence"] = str(terrain_path.relative_to(p))
-                if entry["index"] in (75,76,77,78):
+                if entry["index"] in (75,76,77,78,79):
                     item["hd_coverage"] = "connected_structural_verified_normal_path_pending"
-                    item["normal_path"] = "MPP2／MPP3／MPP5／冰窟正常進出、捲動與事件待驗；結構像素見037，MPP1回歸另列"
+                    item["normal_path"] = "MPP2／MPP3／MPP5／MPP6／冰窟正常進出、捲動與事件待驗；結構像素見037，MPP1回歸另列"
             if archive == "ZELRES3.SAR" and entry["index"] in cave_maps:
                 source = cave_maps[entry["index"]]
                 item["map_source"] = {k: source[k] for k in ("width", "height", "columns_sha256", "family_candidate", "selector_offset", "selector_raw")}
@@ -153,6 +153,10 @@ def main():
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "source_record": "zelres3.record.78",
                                       "evidence": str(runtime_catalog.relative_to(p)), "registered_tiles":52,
                                       "limits": "52格、20個材質ID及32個細部已接；三份結構快照、全格及四家族共存通過；正常進出／捲動及48..52事件用途待驗，不當全洞窟完成"},
+                                     {"key": "cave.terrain.MPP6", "status": "connected_structural_verified_normal_path_pending",
+                                      "spec": "docs/spec/037-all-cave-terrain-hd.md", "source_record": "zelres3.record.79",
+                                      "evidence": str(runtime_catalog.relative_to(p)), "registered_tiles":36,
+                                      "limits": "36格、金黃／紫岩雙材質與非連號DORADO字帶已接；四份結構快照、全格及五家族共存通過；正常進出／捲動與尾端圖樣事件用途待驗，不當全洞窟完成"},
                                      {"key": "cave.source.catalog", "status": "implemented_scoped_sampling",
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "maps":31,"terrain_profiles":11,
                                       "evidence":str(runtime_catalog.relative_to(p)),

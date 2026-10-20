@@ -17,6 +17,7 @@ type CaveTerrain struct {
 	peligro     *caveTerrainArt
 	mpp3        *caveTerrainArt
 	mpp5        *caveTerrainArt
+	mpp6        *caveTerrainArt
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -180,6 +181,8 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	r := f.Memory[0x11b10:0x21b10]
 	tiles, material, limit, extraArt := s.tiles, s.material, 15, false
 	var materialIDs [128]bool
+	var secondaryIDs, textIDs [128]bool
+	var secondaryMaterial []color.NRGBA
 	for id := 3; id <= 8; id++ {
 		materialIDs[id] = true
 	}
@@ -200,6 +203,8 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			art = s.mpp3
 		case "MPP5":
 			art = s.mpp5
+		case "MPP6":
+			art = s.mpp6
 		default:
 			return false
 		}
@@ -208,6 +213,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		}
 		tiles, material, extraArt = art.tiles, art.material, true
 		limit, materialIDs, textFirst, textLast = art.count+1, art.materialIDs, art.textFirst, art.textLast
+		secondaryMaterial, secondaryIDs, textIDs = art.secondaryMaterial, art.secondaryIDs, art.textIDs
 	}
 	if !cavePaintTimeline(f.Paints, f.BodySteps, f.BodyCycles, f.Steps, f.Cycles) {
 		return false
@@ -231,6 +237,9 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		return false
 	}
 	for id := 1; id < limit; id++ {
+		if secondaryIDs[id] && (!materialIDs[id] || len(secondaryMaterial) != 432*768) {
+			return false
+		}
 		if len(tiles[id]) != 576 {
 			return false
 		}
@@ -315,7 +324,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 					if !rock[(gy+y/3)*224+gx+x/3] {
 						continue
 					}
-				} else if !(extraArt && id >= textFirst && id <= textLast) && decoded[id][(y/3)*8+x/3] == 0 {
+				} else if !(extraArt && (textIDs[id] || id >= textFirst && id <= textLast)) && decoded[id][(y/3)*8+x/3] == 0 {
 					continue
 				}
 				c := tiles[id][y*24+x]
@@ -325,6 +334,9 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 					tx = min(tx, 863-tx)
 					ty = min(ty, 1535-ty)
 					c = material[ty*432+tx]
+					if secondaryIDs[id] {
+						c = secondaryMaterial[ty*432+tx]
+					}
 				}
 				px, py := cell.X*3+x+origin.X, cell.Y*3+y+origin.Y
 				old := dst.RGBAAt(px, py)
