@@ -480,3 +480,18 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 建置與離線重生 | 通過 | Go1.24.13、vet與build；補充圖面23檔及兩參考重生相同；三平台封包未更新 |
 
 候選為workplace/full-hd-v1/cave-mpp1-runtime-v2/zeliard-preview，SHA-256 `54d3741fb4ab9c6ff05d0b8db601b4da4a03dfc5f0eb2e46d8ec0a515d4234eb`。收尾入口cave-mpp1-final-audit-v1.json由[MPP1稽核](tools/hd_mpp1_audit.py)重生至新檔。舊收據保留原身份，後段正常路徑與其餘美術仍未完成。
+
+## 2026-10-21 城鎮主角背向HD
+
+| 驗證 | 結果 | 範圍與限制 |
+|---|---|---|
+| 原版來源 | 28672像素完全相同 | 兩條正常城堡進門完成來源；居民標記已還原，無位置或姿態注入 |
+| 背向圖面 | 兩朝向共用48×72，重生相同 | 內建imagegen原圖及提示詞沿town-neutral-art-v1；舊八姿態不變 |
+| 獨立HD合成 | 6912像素通過 | Python由底圖、世界圖及背向圖重建，每色2階容差限整數alpha；原版驗證無容差 |
+| 正常進門合成 | 兩條原版完整狀態相同 | 冷新局、方向鍵與Up，在完成回呼實際合成；非實際視窗 |
+| 拒絕與載入 | 通過 | 缺圖、損圖、未載入、未知姿態／居民配置／資源變動原子拒絕；不改來源 |
+| Castle／Muralla回歸 | 19點通過 | 13個城堡往返點及6個Muralla居民點；十項既有測試及三項新測試無skip／fail |
+| 實際背向視窗 | 待驗 | GUI v1／v2／v3均未捕捉短暫姿態，不能用正常完成回呼或離線圖補稱GUI通過 |
+| 建置與清理 | 通過 | Go1.24.13、vet／build；Python語法、來源索引與擁有權通過，無本專案殘留容器 |
+
+候選town-back-runtime-v4/zeliard-preview的SHA-256為47242da727080f1ca5c59726d0192ef625faf54762490d6cdc40516fe3ef2b43，位於workplace/full-hd-v1/。同根town-back-audit-v1.json狀態SOURCE_ART_NORMAL_PASSED_GUI_PENDING，由[背向稽核](tools/hd_town_back_audit.py)重生至新檔。038保持READY；其餘城鎮、美術與新封包尚未完成。

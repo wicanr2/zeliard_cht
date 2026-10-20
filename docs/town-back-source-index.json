@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "input_name": "workplace/full-hd-v1/castle-edge-ida-v1/primary.segment",
+  "input_sha256": "aed45060ee02eafa07b41891d326ac0217a8afdd2957d79b401369a8bb2fc11d",
+  "address_space": "IDA binary base0＝此快照dosgolem01B1段內偏移；1MiB RAM檔案定位另加1B10",
+  "entries": [
+    {
+      "address": "0x6A28",
+      "level": "已證實",
+      "semantic": "原運算元MOV AL,byte_E7。後續倍乘6選擇6A3B或6A59的主角圖格表；兩朝向phase4均取20、22、24、21、23、25。",
+      "evidence": ["docs/spec/038-town-player-back.md", "workplace/full-hd-v1/town-back-ida-v3/evidence.json", "workplace/full-hd-v1/town-back-source-audit-v1/native-check.json"]
+    },
+    {
+      "address": "0x6C6B",
+      "level": "已證實",
+      "semantic": "保留MOV [BX],AL。sub_6C4E以居民記錄[SI+3]的底圖還原C01C加欄號乘8；兩個正常進門phase4快照的四居民標記均已還原。",
+      "evidence": ["docs/spec/038-town-player-back.md", "workplace/full-hd-v1/town-back-ida-v3/evidence.json", "workplace/full-hd-v1/town-back-source-audit-v1/native-check.json"]
+    }
+  ]
+}

@@ -568,76 +568,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			rgb, townRaw = cavePresented.RGB, cavePresented.Indexed
 		}
 	}
-	if g.observePath != "" {
-		churchMatched, churchFrame := false, -1
-		if g.hdEnabled && g.churchHD != nil && w == 320 && h == 200 {
-			churchMatched, churchFrame = g.churchHD.Match(raw, rawRGB)
-		}
-		observedPalette := make([]byte, 0, 768)
-		for _, c := range g.o.Palette() {
-			observedPalette = append(observedPalette, c[:]...)
-		}
-		held := g.o.HeldKeys()
-		var rejections []map[string]int
-		var quotation, bankDialogue, itemPurchase, itemSale, itemExplanation map[string]any
-		var townDialogue map[string]any
-		if g.townDialogue != nil {
-			townDialogue = g.townDialogue.State()
-		}
-		if g.dialogue != nil {
-			rejections = g.dialogue.Rejections
-			quotation = g.dialogue.QuotationState()
-			bankDialogue = g.dialogue.BankState()
-			itemPurchase = g.dialogue.ItemPurchaseState()
-			itemSale = g.dialogue.ItemSaleState()
-			itemExplanation = g.dialogue.ItemExplanationState()
-		}
-		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "keyboard_panel": g.keyboardPanel, "keyboard_bindings": g.settings.Keyboard, "input_gate": g.releaseGate, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "held_keys": held, "frames": g.frames,
-			"town_dialogue": townDialogue,
-			"hd_enabled":    g.hdEnabled, "town_sky_hd_matched": g.townSkyHDMatched,
-			"town_background_hd_matched": g.townBackgroundMatch,
-			"town_scenery_hd_matched":    g.townSceneryMatch,
-			"town_frame_presentation":    g.townFrames.State(),
-			"intro_threat":               g.introThreat.State(),
-			"intro_story":                g.introStory.State(),
-			"intro_scroll":               g.scroll.State(),
-			"cave_frame_presentation":    g.caveFrames.State(),
-			"cave_terrain_hd_matched":    g.caveTerrainMatch,
-			"cave_player_hd":             g.cavePlayerState(),
-			"cave_weapon_hd":             g.caveWeaponState(),
-			"cave_objects_hd":            g.caveObjectState(),
-			"cave_portal_hd":             g.cavePortalState(),
-			"dialogue":                   g.dialogue.State(),
-			"oracle_memory_sha256":       fmt.Sprintf("%x", sha256.Sum256(g.o.Bytes(oracle.Far(0, 0), 1<<20))),
-			"oracle_indexed_sha256":      fmt.Sprintf("%x", sha256.Sum256(raw)),
-			"oracle_palette_sha256":      fmt.Sprintf("%x", sha256.Sum256(observedPalette)),
-			"sage_hd_matched":            g.sageHDMatched,
-			"sage_hd_pose":               g.sageHDPose,
-			"input_trace_error":          g.inputTraceError,
-			"audio_output":               g.output.state(),
-			"town_ground_hd_matched":     g.townGroundMatch,
-			"town_player_hd_matched":     g.townPlayerMatch,
-			"town_residents_hd_matched":  g.townActorsMatch,
-			"town_residents_hd":          g.townActorsHD.State(),
-			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
-			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
-			"native_primary_0083":        g.o.Byte(oracle.Far(0x1b1, 0x0083)),
-			"native_primary_0080":        g.o.Word(oracle.Far(0x1b1, 0x0080)),
-			"church_hd_matched":          churchMatched,
-			"church_hd_frame":            churchFrame,
-			"native_primary_0082":        g.o.Byte(oracle.Far(0x1b1, 0x0082)),
-			"native_primary_0084":        g.o.Byte(oracle.Far(0x1b1, 0x0084)),
-			"native_primary_0090":        g.o.Word(oracle.Far(0x1b1, 0x0090)),
-			"native_primary_00b2":        g.o.Word(oracle.Far(0x1b1, 0x00b2)),
-			"native_primary_4fed":        g.o.Word(oracle.Far(0x1b1, 0x4fed)),
-			"text_cursor":                g.o.Word(oracle.Far(0x01b1, 0xff4c)),
-			"advance_input_flags":        int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
-		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。
-		// 先寫同目錄暫存檔再換名，觀察者只會讀到完整快照。
-		if err := os.WriteFile(g.observePath+".tmp", append(data, '\n'), 0644); err == nil {
-			_ = os.Rename(g.observePath+".tmp", g.observePath)
-		}
-	}
+
 	draw.Draw(g.canvas, g.canvas.Bounds(), &image.Uniform{color.RGBA{18, 23, 32, 255}}, image.Point{}, draw.Src)
 	if w == 320 && h == 200 && len(rgb) == 320*200*3 {
 		bitmap.DrawRGB3(g.canvas, rgb, image.Pt(0, barHeight))
@@ -820,6 +751,77 @@ func (g *game) Draw(screen *ebiten.Image) {
 			g.drawKeyboardPanel()
 		}
 	}
+	// 診斷快照在本次合成後寫入，避免短暫姿態混到上一張HD狀態。
+	if g.observePath != "" {
+		churchMatched, churchFrame := false, -1
+		if g.hdEnabled && g.churchHD != nil && w == 320 && h == 200 {
+			churchMatched, churchFrame = g.churchHD.Match(raw, rawRGB)
+		}
+		observedPalette := make([]byte, 0, 768)
+		for _, c := range g.o.Palette() {
+			observedPalette = append(observedPalette, c[:]...)
+		}
+		held := g.o.HeldKeys()
+		var rejections []map[string]int
+		var quotation, bankDialogue, itemPurchase, itemSale, itemExplanation map[string]any
+		var townDialogue map[string]any
+		if g.townDialogue != nil {
+			townDialogue = g.townDialogue.State()
+		}
+		if g.dialogue != nil {
+			rejections = g.dialogue.Rejections
+			quotation = g.dialogue.QuotationState()
+			bankDialogue = g.dialogue.BankState()
+			itemPurchase = g.dialogue.ItemPurchaseState()
+			itemSale = g.dialogue.ItemSaleState()
+			itemExplanation = g.dialogue.ItemExplanationState()
+		}
+		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "keyboard_panel": g.keyboardPanel, "keyboard_bindings": g.settings.Keyboard, "input_gate": g.releaseGate, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "held_keys": held, "frames": g.frames,
+			"town_dialogue": townDialogue,
+			"hd_enabled":    g.hdEnabled, "town_sky_hd_matched": g.townSkyHDMatched,
+			"town_background_hd_matched": g.townBackgroundMatch,
+			"town_scenery_hd_matched":    g.townSceneryMatch,
+			"town_frame_presentation":    g.townFrames.State(),
+			"intro_threat":               g.introThreat.State(),
+			"intro_story":                g.introStory.State(),
+			"intro_scroll":               g.scroll.State(),
+			"cave_frame_presentation":    g.caveFrames.State(),
+			"cave_terrain_hd_matched":    g.caveTerrainMatch,
+			"cave_player_hd":             g.cavePlayerState(),
+			"cave_weapon_hd":             g.caveWeaponState(),
+			"cave_objects_hd":            g.caveObjectState(),
+			"cave_portal_hd":             g.cavePortalState(),
+			"dialogue":                   g.dialogue.State(),
+			"oracle_memory_sha256":       fmt.Sprintf("%x", sha256.Sum256(g.o.Bytes(oracle.Far(0, 0), 1<<20))),
+			"oracle_indexed_sha256":      fmt.Sprintf("%x", sha256.Sum256(raw)),
+			"oracle_palette_sha256":      fmt.Sprintf("%x", sha256.Sum256(observedPalette)),
+			"sage_hd_matched":            g.sageHDMatched,
+			"sage_hd_pose":               g.sageHDPose,
+			"input_trace_error":          g.inputTraceError,
+			"audio_output":               g.output.state(),
+			"town_ground_hd_matched":     g.townGroundMatch,
+			"town_player_hd_matched":     g.townPlayerMatch,
+			"town_residents_hd_matched":  g.townActorsMatch,
+			"town_residents_hd":          g.townActorsHD.State(),
+			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
+			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
+			"native_primary_0083":        g.o.Byte(oracle.Far(0x1b1, 0x0083)),
+			"native_primary_0080":        g.o.Word(oracle.Far(0x1b1, 0x0080)),
+			"church_hd_matched":          churchMatched,
+			"church_hd_frame":            churchFrame,
+			"native_primary_0082":        g.o.Byte(oracle.Far(0x1b1, 0x0082)),
+			"native_primary_0084":        g.o.Byte(oracle.Far(0x1b1, 0x0084)),
+			"native_primary_0090":        g.o.Word(oracle.Far(0x1b1, 0x0090)),
+			"native_primary_00b2":        g.o.Word(oracle.Far(0x1b1, 0x00b2)),
+			"native_primary_4fed":        g.o.Word(oracle.Far(0x1b1, 0x4fed)),
+			"text_cursor":                g.o.Word(oracle.Far(0x01b1, 0xff4c)),
+			"advance_input_flags":        int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
+		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。
+		// 先寫同目錄暫存檔再換名，觀察者只會讀到完整快照。
+		if err := os.WriteFile(g.observePath+".tmp", append(data, '\n'), 0644); err == nil {
+			_ = os.Rename(g.observePath+".tmp", g.observePath)
+		}
+	}
 	g.texture.WritePixels(g.canvas.Pix)
 	screen.DrawImage(g.texture, nil)
 	captureReady := g.frames >= g.captureFrame
@@ -987,6 +989,7 @@ func main() {
 	townSceneryArt := flag.String("town-scenery-art-dir", "", "可選：Muralla三段手繪前景圖目錄，搭配town-background-memory")
 	townGroundArt := flag.String("town-ground-art", "", "可選：Muralla雙層手繪地面PNG，搭配已驗前景與town-sky-reference")
 	townPlayerArt := flag.String("town-player-art-dir", "", "可選：Muralla主角八姿態手繪圖目錄，搭配已驗前景HD")
+	townPlayerBackArt := flag.String("town-player-back-art", "", "可選：城鎮主角背向手繪圖目錄，搭配town-player-art-dir")
 	townResidentsArt := flag.String("town-residents-art-dir", "", "可選：Muralla五類居民40姿態手繪圖集，搭配城鎮主角與前景HD")
 	castleMemory := flag.String("castle-memory", "", "可選：城堡正常冷新局固定1MiB參考，搭配castle-art-dir與完整遠山")
 	castleArt := flag.String("castle-art-dir", "", "可選：城堡3倍世界圖與四姿態旗幟PNG目錄，搭配castle-memory")
@@ -1263,6 +1266,11 @@ func main() {
 		g.townPlayerHD, err = hd.NewTownPlayer(g.townSceneryHD, *townPlayerArt)
 		if err != nil {
 			log.Printf("城鎮主角HD未載入，保留原貌：%v", err)
+		}
+	}
+	if *townPlayerBackArt != "" {
+		if err = g.townPlayerHD.LoadBackPose(*townPlayerBackArt); err != nil {
+			log.Printf("城鎮背向HD未載入，保留既有圖面：%v", err)
 		}
 	}
 	if *townResidentsArt != "" {

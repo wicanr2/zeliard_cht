@@ -339,6 +339,12 @@
 - [MPP1補充圖面](tools/hd_mpp1_art.py)註冊第15格及SATONO／MURALLA兩圖牌；1..14與岩面不重畫，來源與接入契約見037。舊圖集第15格實際透明，不能當可用美術。
 - [MPP1載入器](internal/prototype/hd/cave_mpp1.go)原子補齊15..25並沿既有14格及材質；[MPP1測試](internal/prototype/hd/cave_mpp1_test.go)核三份獨立構圖、25格、相容與拒絕，不把Satono靜態圖牌當正常到達。
 - [MPP1稽核](tools/hd_mpp1_audit.py)核補充圖面、十一家族共存與正常第一洞窟回歸；三份靜態構圖與正常路徑分列，收據入口在CONTEXT。
+- [城鎮主角背向姿態](docs/spec/038-town-player-back.md)記錄phase4兩朝向相同的原版來源、美術、正常路徑與接入閘門；不推定其他姿態或場景已完成。
+- [城鎮背向素材工具](tools/hd_town_back_art.py)從固定TMAN表重建兩朝向原圖，直接將手繪圖取樣為48×72；面積取樣沿hd_mpp1_art.py的整數權重，不修改原圖或原版。
+- [城鎮背向姿態測試](internal/prototype/hd/town_player_back_test.go)核正常進門兩朝向的完整原版畫格、圖面與退回；原版來源與限制沿038，不以注入phase值代替正常路徑。
+- [背向來源索引](docs/town-back-source-index.json)及[IDA匯出](tools/ida_town_back_evidence.py)保存主角表與居民底圖還原的原始位址、bytes及分級語意，從既有城堡資料庫的一次性副本匯出。
+- [背向視窗抽測](tools/hd_town_back_smoke.py)沿既有城堡GUI工具，在Docker內走正常進門、暫停與原貌切回；輸出只放workplace，不以離線圖代替實際視窗。
+- [背向稽核](tools/hd_town_back_audit.py)核來源、圖面、正常原版配對與實際視窗，將GUI待驗和已通過項目分開；輸出至workplace的新檔，不覆寫舊收據。
 - [MPP3圖面載入](internal/prototype/hd/cave_mpp3.go)按037固定43格、九個材質ID與完整BOSQUE字帶；[MPP3測試](internal/prototype/hd/cave_mpp3_test.go)核結構像素、全43格、界限及三家族共存，正常到達另驗。
 - [MPP2圖面載入](internal/prototype/hd/cave_peligro.go)按037固定34格圖面與材質，與冰窟共用整組載入；[MPP2測試](internal/prototype/hd/cave_peligro_test.go)核三份結構快照、尾端九格及來源／載入拒絕，不能當正常到達證據。
 - [洞窟家族稽核](tools/hd_cave_family_audit.py)接受MPP2／MPP3／MPP5／MPP6／MPP7，核原始靜態地圖格、完整註冊、合成像素、MPP1正常回歸及實際視窗；MPP7另核全零資源與十一尾端圖樣的RGBA差異。舊收據重生須用當輪來源工作樹與相符driver。新增家族先補037來源及接入契約，不以任意參數跳過守衛。

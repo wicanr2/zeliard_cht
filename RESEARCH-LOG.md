@@ -1100,3 +1100,15 @@ SAR3記錄80的解壓SHA-256 `89bf9b7d268985362e099b6b0db29c04ca4b48444857f70a7e
 正常首訪兩條鍵序在cave-mpp1-pair-v1/的cave-entered.presented.memory與body.memory顯示共用入口ID73、74、75、76、77、78、88..97。已證實的完整5×5矩陣及21個去重ID的資源包SHA仍為020的`3fd046b8c1281a013bfe1c8dfa627a663fec2eac5cebe7e3df025a63c1db6633`。來源、檔案SHA、原始矩陣、環形圖格位置及共用ID在cave-mpp1-source-v1/normal-common-evidence.json。這只回查既有Muralla入口，不由名稱猜一般MPAT索引或用途。完整矩陣與兩側資源守衛通過才能保留原版共用下層；孤立73、任意26及來源變動仍拒絕。
 
 新圖由內建imagegen製作，generation-v2.json保留三次完整請求與輸入／產物SHA；註冊圖帶SHA為`eeb7ce0286a08aafdca396379109a37dd6e03e163680fd58b2714ddfedcbe7cd`。Docker內Python3.11.2、Pillow9.4.0、NumPy1.24.2以分軸整數權重重建舊14格／材質，Go1.24.13以既有caveArea呈現，三份構圖870912像素相同。結構測試不執行VM；正常MPP1的35點及GUI另驗。Satono正常到達及後段家族仍未知。入口見[規格037](docs/spec/037-all-cave-terrain-hd.md)與workplace/full-hd-v1/cave-mpp1-final-audit-v1.json。
+
+## 2026-10-21 城鎮背向圖與正常進門居民
+
+已證實：正常城堡進門的兩個TMAN背向表為01B1:6A71及6A53，皆取20、22、24、21、23、25，原16×24 RGBA的SHA-256同為70ca7bed8492e9f7c4a49a951ba602782c57cc94ba62d3b07ee4b1ddd5fbf2d8。這是段內偏移，不當SAR檔案定位。完整原始記憶體、TMAN、遮罩及色盤SHA見[038](docs/spec/038-town-player-back.md)。正常快照兩份1MiB記憶體SHA分別為50ba7bef235d3c9ac684feffd86b2b318a9e9f43b9b45f1bdeb8184d9e19be0d及368b1ce2e672bfe5c48c88537401c3fbe5b3917c8a8216c60659cb5379ad9d00。
+
+已證實：這兩張來源的四筆居民記錄仍在，但C017起地圖各該欄第5列已還原為[SI+3]的底圖。IDA9.4由既有唯讀castle.i64建立一次性副本，原始輸入primary.segment為65536bytes，SHA-256 aed45060ee02eafa07b41891d326ac0217a8afdd2957d79b401369a8bb2fc11d。IDA base0對應此快照dosgolem01B1段內偏移，回1MiB檔案定位另加1B10。sub_6C4E在6C5A讀底圖、6C67算C01C加欄號乘8、6C6B以原MOV [BX],AL還原。原名與bytes及分級索引沿[town-back-source-index.json](docs/town-back-source-index.json)，匯出town-back-ida-v4/evidence.json自動合併語意。
+
+勘誤：TownScenery接受phase4編號不足以證明正常畫格可重建。首次兩個來源分別在96,40及64,40失配，原因是解碼器仍畫居民。以原版底圖加背向主角獨立重建28672色號像素完全相同後，才允許phase4的已驗居民還原形狀。未驗的混合居民配置保持拒絕，不從資料表存在推論可見。
+
+圖面沿內建imagegen保存於town-neutral-art-v1/generation.json，完整提示詞與兩參考SHA保留；48×72 PNG為d84525e69589decf0045cc32b35032eaea862c967e9876df5294cf208d3096f4，重生相同。Python3.11.2／Pillow9.4.0另核兩朝向共6912個HD像素，最大每色偏差2，來自整數alpha取捨，僅屬明示高清外觀容差，不用來容許原版畫面或原版狀態差異。
+
+已證實的正常路徑為兩個獨立dosgolem冷新局，以原版方向鍵從左右朝向走到主門再按Up；兩條都在完成回呼取得phase4並合成HD，完整原版狀態相同。實際Xvfb視窗尚未捕捉背向畫格，未知其可見時窗與前端取樣的關係，不因此宣稱已驗GUI或修改原版等待。其他城鎮與其餘phase4配置仍未知。稽核入口town-back-audit-v1.json明確保留此限制。

@@ -146,6 +146,10 @@ func (s *TownActors) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palett
 	if err != nil {
 		return false
 	}
+	actors, err = townScenePaintActors(p, actors)
+	if err != nil {
+		return false
+	}
 	type placed struct {
 		x   int
 		art *image.RGBA
@@ -207,6 +211,6 @@ func (s *TownActors) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palett
 		draw.Draw(patch, box, s.player.art[v.bit*5+v.phase], image.Point{}, draw.Over)
 	}
 	draw.Draw(dst, row, patch, row.Min, draw.Src)
-	s.state = map[string]any{"loaded": true, "matched": true, "residents": len(sprites), "keys": keys, "player_visible": v.visible}
+	s.state = map[string]any{"loaded": true, "matched": true, "residents": len(sprites), "keys": keys, "player_visible": v.visible, "player_phase": v.phase, "player_direction_bit": v.bit}
 	return true
 }

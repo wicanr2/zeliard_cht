@@ -74,6 +74,19 @@ func NewTownPlayer(scene *TownScenery, artwork string) (*TownPlayer, error) {
 	return s, nil
 }
 
+// LoadBackPose沿規格038選載；兩方向共用原版相同的背向姿態。
+func (s *TownPlayer) LoadBackPose(directory string) error {
+	if s == nil || s.scene == nil {
+		return fmt.Errorf("背向HD需要已載入城鎮主角")
+	}
+	im, err := castleImage(filepath.Join(directory, "town-player-back-v1.png"), "d84525e69589decf0045cc32b35032eaea862c967e9876df5294cf208d3096f4", 48, 72)
+	if err != nil {
+		return err
+	}
+	s.art[4], s.art[9] = im, im
+	return nil
+}
+
 type townPlayerFrame struct {
 	f             *townSceneFrame
 	underlay      []byte
@@ -83,7 +96,7 @@ type townPlayerFrame struct {
 }
 
 func (s *TownPlayer) prepare(mode uint8, p, r, e, raw, rgb, palette []byte) (*townPlayerFrame, error) {
-	if s == nil || len(p) != 65536 || p[0xe7] > 3 || !s.scene.frameSource(townFrameInput{mode: mode, primary: p, resources: r, extra: e, palette: palette}) {
+	if s == nil || len(p) != 65536 || p[0xe7] > 4 || (p[0xe7] == 4 && s.art[int(p[0xc2]&1)*5+4] == nil) || !s.scene.frameSource(townFrameInput{mode: mode, primary: p, resources: r, extra: e, palette: palette}) {
 		return nil, fmt.Errorf("主角來源拒絕")
 	}
 	f, err := s.scene.decode(mode, p, r, e, raw, rgb)
@@ -91,6 +104,10 @@ func (s *TownPlayer) prepare(mode uint8, p, r, e, raw, rgb, palette []byte) (*to
 		return nil, err
 	}
 	actors, err := f.scene.ownSources(p, r, e)
+	if err != nil {
+		return nil, err
+	}
+	actors, err = townScenePaintActors(p, actors)
 	if err != nil {
 		return nil, err
 	}

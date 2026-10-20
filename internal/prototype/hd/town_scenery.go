@@ -274,6 +274,24 @@ func townSceneActorRecords(p []byte) ([]townSceneActor, error) {
 	return actors, nil
 }
 
+// 規格038：正常進門phase4的居民標記均已還原，記錄只供底圖核對。
+// 其他phase4配置未驗，不能由居民表仍存在就補畫人物。
+func townScenePaintActors(p []byte, actors []townSceneActor) ([]townSceneActor, error) {
+	if len(p) != 65536 {
+		return nil, fmt.Errorf("居民呈現來源長度不符")
+	}
+	if p[0xe7] != 4 {
+		return actors, nil
+	}
+	for _, actor := range actors {
+		pos := 0xc01c + actor.x*8
+		if pos < 0xc01c || pos >= len(p) || actor.under >= 253 || int(p[pos]) != actor.under {
+			return nil, fmt.Errorf("未驗背向居民地圖配置")
+		}
+	}
+	return nil, nil
+}
+
 func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFrame, error) {
 	f, err := s.decodeOwn(mode, p, r, e, raw, rgb)
 	if err != nil && s.castleVariant != nil {
@@ -382,7 +400,11 @@ func (s *TownScenery) decodeOwn(mode uint8, p, r, e, raw, rgb []byte) (*townScen
 		}
 		return nil
 	}
-	for _, a := range actors {
+	paintActors, err := townScenePaintActors(p, actors)
+	if err != nil {
+		return nil, err
+	}
+	for _, a := range paintActors {
 		x := (a.x - camera - 4) * 8
 		if x <= -16 || x >= 224 {
 			continue
