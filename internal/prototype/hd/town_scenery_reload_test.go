@@ -69,6 +69,10 @@ func TestTownSceneryUnusedBytesAndSourceBoundaries(t *testing.T) {
 	for i := 0x74c0; i < 0x8000; i++ {
 		in.extra[i] ^= 0xa5
 	}
+	// 規格041：Muralla只讀地形0..239；離店會改到第242格遮罩。
+	for i := 0xd000 + townSceneTerrainTiles*8; i < 0xd800; i++ {
+		in.resources[i] ^= 0xa5
+	}
 	canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
 	if !s.Draw(canvas, in.mode, in.primary, in.resources, in.extra, in.indexed, in.rgb, image.Point{}, true) {
 		t.Fatal("保留區改變仍誤拒絕")
@@ -78,7 +82,7 @@ func TestTownSceneryUnusedBytesAndSourceBoundaries(t *testing.T) {
 	if frames.complete == nil {
 		t.Fatal("完整快照仍誤拒絕保留區")
 	}
-	for _, name := range []string{"npc-last-pixel", "npc-last-mask", "player-image", "player-mask", "unknown-group"} {
+	for _, name := range []string{"npc-last-pixel", "npc-last-mask", "player-image", "player-mask", "terrain-last-mask", "unknown-group"} {
 		t.Run(name, func(t *testing.T) {
 			input := copyTownInput(original)
 			switch name {
@@ -90,6 +94,8 @@ func TestTownSceneryUnusedBytesAndSourceBoundaries(t *testing.T) {
 				input.resources[0x6000] ^= 1
 			case "player-mask":
 				input.extra[0x8000] ^= 1
+			case "terrain-last-mask":
+				input.resources[0xd000+townSceneTerrainTiles*8-1] ^= 1
 			case "unknown-group":
 				input.primary[townSceneWord(input.primary, 0xc00f)+2] = 5
 			}

@@ -103,6 +103,7 @@ type game struct {
 	sageHDMatched        bool
 	sageHDPose           int
 	merchantHD           *hd.Merchant
+	merchantFramesHD     *hd.MerchantFrames
 	merchantHDMatched    bool
 	merchantHDPose       int
 	bankHD               *hd.Bank
@@ -298,7 +299,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.merchantFramesHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil) {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -657,7 +658,20 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.hdMatched = g.hdMatched || g.sageHDMatched
 	}
 	g.merchantHDMatched, g.merchantHDPose = false, -1
-	if g.hdEnabled && g.merchantHD != nil && w == 320 && h == 200 {
+	g.merchantFramesHD.Clear()
+	if g.hdEnabled && g.merchantFramesHD != nil && w == 320 && h == 200 {
+		p := g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
+		r := g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
+		var palette []byte
+		for _, color := range g.o.Palette() {
+			palette = append(palette, color[:]...)
+		}
+		g.merchantHDMatched = g.merchantFramesHD.Draw(g.canvas, g.o.VideoMode(), p, r, raw, rawRGB, palette, image.Pt(0, barHeight))
+		if g.merchantHDMatched {
+			g.merchantHDPose = g.merchantFramesHD.State()["pose"].(int)
+		}
+		g.hdMatched = g.hdMatched || g.merchantHDMatched
+	} else if g.hdEnabled && g.merchantHD != nil && w == 320 && h == 200 {
 		g.merchantHDMatched, g.merchantHDPose = g.merchantHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.merchantHDMatched
 	}
@@ -721,7 +735,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil {
+	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.merchantFramesHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -824,6 +838,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"sage_hd_matched":            g.sageHDMatched,
 			"sage_hd_pose":               g.sageHDPose,
 			"sage_frames_hd":             g.sageFramesHD.State(),
+			"merchant_frames_hd":         g.merchantFramesHD.State(),
 			"input_trace_error":          g.inputTraceError,
 			"audio_output":               g.output.state(),
 			"town_ground_hd_matched":     g.townGroundMatch,
@@ -1056,6 +1071,7 @@ func main() {
 	merchantArtA := flag.String("merchant-art-a", "", "可選：本地手繪武器商人迎客 PNG")
 	merchantArtB := flag.String("merchant-art-b", "", "可選：本地手繪武器商人告別 PNG")
 	merchantArtC := flag.String("merchant-art-c", "", "可選：本地手繪武器商人未購物告別 PNG")
+	merchantFramesArt := flag.String("merchant-frames-art-dir", "", "可選：武器店八姿態及兩局部動畫的固定圖組")
 	bankRefA := flag.String("bank-reference-a", "", "可選：銀行原版畫格 A")
 	bankRefB := flag.String("bank-reference-b", "", "可選：銀行原版畫格 B")
 	bankRefC := flag.String("bank-reference-c", "", "可選：銀行原版畫格 C")
@@ -1333,7 +1349,12 @@ func main() {
 			log.Printf("長老 HD 圖面未載入，保留原貌：%v", err)
 		}
 	}
-	if *merchantRefA != "" || *merchantRefB != "" || *merchantRefC != "" || *merchantPalette != "" || *merchantArtA != "" || *merchantArtB != "" || *merchantArtC != "" {
+	if *merchantFramesArt != "" {
+		g.merchantFramesHD, err = hd.NewMerchantFrames(root, *merchantFramesArt)
+		if err != nil {
+			log.Printf("武器店完整圖組未載入，保留原貌：%v", err)
+		}
+	} else if *merchantRefA != "" || *merchantRefB != "" || *merchantRefC != "" || *merchantPalette != "" || *merchantArtA != "" || *merchantArtB != "" || *merchantArtC != "" {
 		g.merchantHD, err = hd.NewMerchant(*merchantRefA, *merchantRefB, *merchantRefC, *merchantPalette, *merchantArtA, *merchantArtB, *merchantArtC)
 		if err != nil {
 			log.Printf("武器商人 HD 圖組未載入，保留原貌：%v", err)

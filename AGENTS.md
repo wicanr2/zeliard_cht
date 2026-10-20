@@ -111,6 +111,18 @@
 
 ## 文件索引與權責
 
+- [武器店動畫規格041](docs/spec/041-merchant-frames-hd.md)：武器店完整圖塊、動畫及正常路徑的增量契約。
+- [武器店動畫來源索引](docs/merchant-frame-source-index.json)：原始位址、圖塊表與證據分級。
+- [室內模組IDA匯出](tools/ida_room_frames.py)：依固定來源索引匯出原始函式、bytes、交叉參照及分級語意。
+- [室內正常畫格擷取](tools/hd_room_probe.go)：保存工具快照與存檔mtime的正常鍵序來源，不注入遊戲狀態。
+- [武器店完整來源](tools/hd_merchant_sources.py)：八姿態、兩組局部動畫、正常匹配與未引用圖格的台帳。
+- [武器店完整圖組註冊](tools/hd_merchant_register.py)：直接3倍圖面、既有基底及局部動畫的取樣契約。
+- [武器店完整姿態合成](internal/prototype/hd/merchant_frames.go)：規格041的唯讀完整來源及直接3倍圖面，不改原版選姿態。
+- [武器店完整姿態驗證](internal/prototype/hd/merchant_frames_test.go)：十張正常來源、原子退回、兩基底及購買／離店的原版狀態配對。
+- [武器店購買鍵序](tools/merchant-hd-purchase.commands)、[未購物離店鍵序](tools/merchant-hd-departure.commands)：正常冷F7自建存檔，不注入機器狀態。
+- [武器店實際視窗抽測](tools/hd_merchant_smoke.py)：正常局部動畫、未購物離店姿態、原貌切回與正常退出。
+- [武器店收尾稽核](tools/hd_merchant_audit.py)：核已知254個引用圖格、十張圖、正常交易／告別及實際視窗；未引用兩格不計完成。
+
 - [長老手勢規格040](docs/spec/040-sage-frames-hd.md)：長老室內未覆蓋圖塊、手勢及正常路徑的增量契約。
 - [長老動畫IDA匯出](tools/ida_sage_frames.py)：固定KENJPRO模組的原始函式、bytes及分級語意匯出。
 - [長老正常來源擷取](tools/hd_sage_probe.go)：正常鍵序的手勢與來源擷取，不注入原版狀態。

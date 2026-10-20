@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "file": "ARMRPRO.BIN",
+  "sha256": "f10d874783703f8385f36cc579b956b36e9d326af0c8c2150ee886647fe53961",
+  "address_space": "IDA9.4 base A000＝模組檔案偏移0；正常01B1段與SAR偏移另核",
+  "graphics_bytes": 12288,
+  "graphics_sha256": "b908b4b98dece29dfeba950cc8b996dcf89412bfa5a3286254d8ea5a5ca3a6ed",
+  "entries": [
+    {"address":"0xa004","level":"已證實","semantic":"載入ARMOR.GRP，2044入口轉換256圖格。","source":"IDA A004..A026；正常武器店R段12288bytes相同"},
+    {"address":"0xa05e","level":"已證實","semantic":"原版複製36bytes至BBFD，BBFD及其後可寫資料不能納入固定來源守衛。","source":"IDA A05E..A064；正常來源"},
+    {"address":"0xa9cf","level":"已證實","semantic":"AL選AA10起八組6byte描述，每組最多兩個rows/pointer區塊；逐列12格，自56,23繪96×64。","source":"IDA sub_A9CF；八份來源表與已核舊三個正常原圖"},
+    {"address":"0xa961","level":"已證實","semantic":"BC26非0且非7F/80時，AB68四組單欄兩列圖塊在88,55覆繪。","source":"IDA A961..A981；不推定動畫圖格語意"},
+    {"address":"0xa985","level":"已證實","semantic":"BC26為0時，AAD0四組單列兩欄圖塊在128,79覆繪。","source":"IDA A985..A9A3；不重製計時器"},
+    {"address":"0xa9bc","level":"已證實","semantic":"原版改BC26並顯示姿態1，後續原版轉換至姿態0或2；前端不改此旗標。","source":"IDA A9BC..A9CD、A941..A95F"},
+    {"address":"0xa6cb","level":"已證實","semantic":"原版事件3停常態動畫，依A6FD序列選姿態，最高位另寫FF75；不推定音效或交易語意。","source":"IDA A6CB..A6FB，僅靜態消費端，正常觸發另驗"},
+    {"address":"0xa8fd","level":"已證實","semantic":"原版事件9選姿態3；來源定位不等於該劇情已正常驗收。","source":"IDA A8FD..A8FF"}
+  ],
+  "tables": [
+    {"address":"0xaa10","bytes":48,"level":"已證實","semantic":"八組雙區塊圖像描述"},
+    {"address":"0xaad0","bytes":8,"level":"已證實","semantic":"四組兩欄動畫圖格"},
+    {"address":"0xab68","bytes":8,"level":"已證實","semantic":"四組兩列動畫圖格"},
+    {"address":"0xa6fd","bytes":9,"level":"已證實","semantic":"姿態3/4/5/5/6/6/7/7的序列及末端FF；最高位另由原版消費"}
+  ]
+}

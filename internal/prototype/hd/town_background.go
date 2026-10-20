@@ -21,7 +21,7 @@ type townBackgroundProfile struct {
 
 var townBackgroundProfiles = []townBackgroundProfile{
 	{"968819bb6c4906514b4fce3e2ce99764b73cfa003f48d7d57d4cf8b12da8ffb6", "4498209b563897a0748e566ab3f6092568f0dc715d3a06444702a1a16b4c8229", "1d37729d004341fd0752fd6c2eecac02f02e7a8281d9cbe6c69fb31870866fa1", "39d0bc2e7a1c1ac63a45ce37be5a08d075a39d79607816518512a8c503a0cda7", 256},
-	{"025bf2982660c942cbefed303ccdd0523ff824756a0fe0bb2587b99e0931e7ec", "889318f3979aaa81803facbf6d14ed4f7f45c78b4a7c2fe2881d64ea1e5da8c2", "0bdb78b2702490f3309f72ea3046fda2417bd088a9a6eec1c3f179fcad4cef71", "3c99e91e511b40beb89725b811da825b592d72b791cd936ef5682260e40ac677", townSceneTerrainTiles},
+	{"025bf2982660c942cbefed303ccdd0523ff824756a0fe0bb2587b99e0931e7ec", "889318f3979aaa81803facbf6d14ed4f7f45c78b4a7c2fe2881d64ea1e5da8c2", "433de06e8f07c80b1caeea08f55059acda00c6126971bff1745e03801bd872fa", "3c99e91e511b40beb89725b811da825b592d72b791cd936ef5682260e40ac677", townSceneTerrainTiles},
 }
 
 // TownBackground使用原版已畫圖塊快取與遮罩延伸遠山，不改前景。
@@ -100,7 +100,7 @@ func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed,
 	}
 	tileLimit := 0
 	for _, p := range townBackgroundProfiles {
-		if townBackgroundHash(primary[0xc000:0xc040]) == p.module && townBackgroundHash(resources[0x8100:0x8100+p.tiles*48]) == p.atlas && townBackgroundHash(resources[0xd000:0xd800]) == p.mask && townBackgroundHash(resources[0x8006:0x8106]) == p.flags {
+		if townBackgroundHash(primary[0xc000:0xc040]) == p.module && townBackgroundHash(resources[0x8100:0x8100+p.tiles*48]) == p.atlas && townBackgroundHash(resources[0xd000:0xd000+p.tiles*8]) == p.mask && townBackgroundHash(resources[0x8006:0x8106]) == p.flags {
 			tileLimit = p.tiles
 			break
 		}

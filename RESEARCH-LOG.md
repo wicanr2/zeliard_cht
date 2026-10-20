@@ -1134,3 +1134,17 @@ IDA9.4的BIN位址以A000為base，檔案偏移另減A000，不與SAR檔案偏�
 正常冷F7自建存檔、Up進長老、直接選查看力量，擷取16張完整來源及三張混合畫格，八手勢全數命中；38個結構候選只作原圖匹配集合，不推定每種組合都會產生。資料與收據在 `workplace/full-hd-v1/sage-frames-layout-v1/`、`sage-frames-normal-v4/`。BB12..BB3C是原版可寫資料，固定來源守衛只含A000..BB11；已用正常來源核對，不能將可寫原點或旗標當固定程式雜湊。
 
 獨立重播v5的19張原圖與v4一致，RAM只在實體0x257F、0x2580兩byte不同。兩byte的little-endian word分別等於各scratch USR修改時間的DOS packed時間，公式為hour<<11 | minute<<5 | second//2；此為擷取輸入metadata差異，不將兩輪來源擷取稱完整同狀態。正式顯示隔離證據另由兩個獨立原版機器24點完整狀態配對提供。完整輸入、工具與圖面雜湊見[規格040](docs/spec/040-sage-frames-hd.md)及 `workplace/full-hd-v1/sage-frames-final-audit-v1.json`。
+
+## 2026-10-21 武器店八姿態、局部動畫與離店回城
+
+已證實：SAR2 record12 ARMRPRO.BIN共7239bytes，SHA-256 `f10d874783703f8385f36cc579b956b36e9d326af0c8c2150ee886647fe53961`；record20 ARMOR.GRP解壓12288bytes，SHA-256 `3dcb0eb6230c4399e8a95b013c8d0c3d525329d4cb0e8664c0f91c760f7549c3`。原件SAR2身份沿[規格041](docs/spec/041-merchant-frames-hd.md)。IDA9.4的BIN以A000為base，檔案偏移另減A000；正常記憶體為dosgolem01B1段，不與SAR偏移混用。
+
+sub_A9CF依AA10八個6byte描述繪12欄、合計8列的96×64圖。AAD0在128,79繪兩欄一列局部動畫，AB68在88,55繪一欄兩列；八張基底加兩張唯一變體，共十張完整原圖。已知表引用254個圖格；139、140非空，但未被這些表使用，用途仍未知。`merchant-frames-ida-v2/`保存11函式、四表、資料庫及[分級索引](docs/merchant-frame-source-index.json)合併匯出。`merchant-frames-layout-v1/receipt.json`保存21個正常綁定、77個混合與45個來源變更候選，兩種拒絕分列。
+
+正常未購物告別先演出3至7手勢，再停在B23E續頁；第二次空白已離開武器店。GUI v2把手勢觀察放在第二次空白之後，故漏拍。AdLib來源重跑v3仍有相同完整原圖及模組／圖格雜湊，未把音源差異當成原因。GUI v3修正觀察順序後取得一般、局部動畫與告別手勢三組圖，但回城HD仍拒絕，失敗與實際城鎮圖保留。
+
+正常來源v5、v6均使用Go1.24.13、固定dosgolem快照及自建SAVETEST，保持USR bytes與mtime，沒有注入狀態。v6工具SHA-256 `30179cd1dd08244589ce4cc1f5dc9048ce59f52dc684fd3b75c3384e7f55df13`，每個正常shot另存完整RAM、色號與色盤。離店完整RAM SHA-256 `552fab89a168810c13ca886c208ce27cab9e4202965783d7c6a1bb962c625191`，色號SHA-256 `4b82b215be0abee02df31d03a3d8fdddc43019e1c1f3543c2dc2d27601cd29e0`。
+
+已證實：進店前與離店後十組Muralla守衛僅遮罩11B1:D000..D800不同，單一D794由0變41。沿022已驗地形ID0至239與D000＋ID×8＋列的讀取公式，D794屬第242格列4；240格有效遮罩D000..D780兩份SHA均為`433de06e8f07c80b1caeea08f55059acda00c6126971bff1745e03801bd872fa`。寫入用途未知。041補READY邊界後，Muralla只核有效遮罩；其他256格profile保留完整範圍，未知ID仍拒絕。沒有清零原版資料或為41增加白名單。
+
+十張HD圖在 `workplace/full-hd-v1/merchant-frames-complete-v2/`，完整八次內建imagegen請求及輸入／輸出SHA在 `merchant-frames-art-v1/generation-v2.json`。新姿態用完整畫面避免舊手掌殘留，兩個舊基底保持floor取樣，局部變體限定原動畫區。圖面與原始資料只留本機，正常配對、視窗與完成狀態另由041及當前CONTEXT記錄。

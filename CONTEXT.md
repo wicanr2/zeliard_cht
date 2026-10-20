@@ -6,15 +6,17 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，長老八手勢HD接入；完整目標仍進行中 |
-| 目前候選 | `workplace/full-hd-v1/sage-frames-runtime-v1/zeliard-preview`，SHA-256 `73b6b11dd042734c6e3d5359889c296403bb8eaab1f853599c5a15dce63bf71e` |
-| 來源與圖面 | KENJYA166圖格全數引用，八手勢、兩高清相位共16張288×192圖；[規格040](docs/spec/040-sage-frames-hd.md)限定CONFORMED |
-| 最近測試 | 四項新測試與六項回歸無skip／fail；3986352獨立高清像素、24點正常完整原版狀態、八手勢、vet及build通過 |
-| 實際視窗 | 冷F7進長老、查看力量、可見0與3至7、兩組原貌切回1152000像素相同；正常離店與DOS退出0，存檔不變，根端已目視 |
-| 收尾證據 | `workplace/full-hd-v1/sage-frames-final-audit-v1.json`，由[長老稽核工具](tools/hd_sage_audit.py)重生至新檔 |
+| 更新 | 2026-10-21，武器店已知八姿態HD與離店回城修復；完整目標仍進行中 |
+| 目前候選 | `workplace/full-hd-v1/merchant-frames-runtime-v3/zeliard-preview`，SHA-256 `5cec8f8fef9ce64799b6bafcf2e868e74c03bc2b4be1ab11a62767b590e67123` |
+| 來源與圖面 | ARMOR256圖格中254格引用，八姿態與兩局部動畫共十張282×186圖；139、140非空但用途未知；[規格041](docs/spec/041-merchant-frames-hd.md)限定CONFORMED |
+| 最近測試 | 十項具名與四項舊室內／商人／長老回歸無skip／fail；524520獨立高清像素、49點正常完整原版狀態、有效遮罩邊界、vet及build通過 |
+| 實際視窗 | 冷F7進武器店、三組原貌切回1728000像素相同；七個來源鍵可見，正常離店四層城鎮HD恢復、DOS退出0，存檔不變，根端已目視 |
+| 收尾證據 | `workplace/full-hd-v1/merchant-frames-final-audit-v1.json`，由[武器店稽核工具](tools/hd_merchant_audit.py)重生至新檔 |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
 
-長老圖組以 `-sage-frames-art-dir workplace/full-hd-v1/sage-frames-complete-v2`選載，實際啟動命令見同根`sage-frames-gui-v1/receipt.json`。完整內建imagegen提示詞、十二次請求、23份引用雜湊及八個選用結果在`sage-frames-art-v1/generation-v3.json`；原版圖塊／正常來源為`sage-frames-layout-v1/`、`sage-frames-normal-v4/`，格式化後工具的獨立重播為`sage-frames-normal-v5/`。19張原圖相同，但scratch副本mtime不同，RAM兩byte與DOS時間欄相同，不將它當完整同狀態重播。正式24點配對另以兩個獨立原版機器驗證。置中手勢、其他城鎮與其餘美術仍待補，不重做已完成的八手勢。
+武器店圖組以 `-merchant-frames-art-dir workplace/full-hd-v1/merchant-frames-complete-v2`選載，完整啟動命令見同根 `merchant-frames-gui-v4/receipt.json`。八次內建imagegen請求及參考／輸出SHA在 `merchant-frames-art-v1/generation-v2.json`，原版來源與IDA9.4證據為 `merchant-frames-layout-v1/`、`merchant-frames-normal-v1/`至v3及 `merchant-frames-ida-v2/`。正常v5／v6定位Muralla遮罩尾端單一D794變動；041沿022已核240格邊界排除128bytes未用尾端，沒有改原版資料。GUI早期抓圖順序錯誤與回城來源拒絕保留失敗，v4乾淨通過。其他城鎮、交談背景、敵人／首領、片頭與介面仍待補，不重做已驗姿態或把圖集備妥當全遊戲完成。
+
+前輪長老圖組以 `-sage-frames-art-dir workplace/full-hd-v1/sage-frames-complete-v2`選載，實際啟動命令見同根`sage-frames-gui-v1/receipt.json`。完整內建imagegen提示詞、十二次請求、23份引用雜湊及八個選用結果在`sage-frames-art-v1/generation-v3.json`；原版圖塊／正常來源為`sage-frames-layout-v1/`、`sage-frames-normal-v4/`，格式化後工具的獨立重播為`sage-frames-normal-v5/`。19張原圖相同，但scratch副本mtime不同，RAM兩byte與DOS時間欄相同，不將它當完整同狀態重播。正式24點配對另以兩個獨立原版機器驗證。置中手勢、其他城鎮與其餘美術仍待補，不重做已完成的八手勢。
 
 ## 目標與前輪來源
 
