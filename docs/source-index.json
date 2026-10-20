@@ -8,67 +8,156 @@
       "address": "0x300C",
       "level": "已證實",
       "semantic": "本次片頭快照的間接呼叫目的地 word，值為 32C9h",
-      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/probe-intro-consumer/stdout.txt", "workplace/ida-intro-v4/intro-evidence.json"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭單行-consumer",
+        "workplace/probe-intro-consumer/stdout.txt",
+        "workplace/ida-intro-v4/intro-evidence.json"
+      ]
     },
     {
       "address": "0x32C9",
       "level": "強推論",
       "semantic": "片頭單行字形緩衝建立；正式畫面定位與特效契約未解",
-      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/ida-intro-v4/intro-evidence.json", "workplace/probe-intro-consumer/stdout.txt"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭單行-consumer",
+        "workplace/ida-intro-v4/intro-evidence.json",
+        "workplace/probe-intro-consumer/stdout.txt"
+      ]
     },
     {
       "address": "0x32D8",
       "level": "已證實",
       "semantic": "首行呼叫中 lodsb 依 DS:SI 讀取原文字面，SI 由 6FF0h 遞增",
-      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/probe-intro-consumer/stdout.txt"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭單行-consumer",
+        "workplace/probe-intro-consumer/stdout.txt"
+      ]
     },
     {
       "address": "0x332C",
       "level": "已證實",
       "semantic": "本次片頭顯示呼叫；AX 由 0 至 9 推進，BX=0020h、CX=5078h，選取 CS:4511h 起的單行緩衝並寫入 MCGA 視訊區",
-      "evidence": ["RESEARCH-LOG.md#片頭顯示區定位", "workplace/probe-intro-display/stdout.txt", "workplace/ida-intro-display-utf8/intro-evidence.json"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭顯示區定位",
+        "workplace/probe-intro-display/stdout.txt",
+        "workplace/ida-intro-display-utf8/intro-evidence.json"
+      ]
     },
     {
       "address": "0x3369",
       "level": "已證實",
       "semantic": "本次前 11 次呼叫的畫面起點 AX 均為 2800h；接著移入 DI",
-      "evidence": ["RESEARCH-LOG.md#片頭顯示區定位", "workplace/probe-intro-display/stdout.txt"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭顯示區定位",
+        "workplace/probe-intro-display/stdout.txt"
+      ]
     },
     {
       "address": "0x339C",
       "level": "已證實",
       "semantic": "本次顯示迴圈首列 ES=A000h、DI=2800h、CX=0078h，列間 DI 增加 0140h；對應原生畫面 (0,32,320,120)",
-      "evidence": ["RESEARCH-LOG.md#片頭顯示區定位", "workplace/probe-intro-display/stdout.txt", "workplace/ida-intro-display-utf8/intro-evidence.json"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭顯示區定位",
+        "workplace/probe-intro-display/stdout.txt",
+        "workplace/ida-intro-display-utf8/intro-evidence.json"
+      ]
     },
     {
       "address": "0x33A0",
       "level": "已證實",
       "semantic": "本次首章顯示迴圈以 AND 9999h 保留目的背景位元；33A4 以 AND 6666h 選來源文字位元，33A6 OR 至視訊記憶體。只限已驗證首章 viewport，不外推其他美術層",
-      "evidence": ["RESEARCH-LOG.md#首章捲動中文試作", "workplace/ida-intro-display-indexed/intro-evidence.json", "workplace/intro-scroll-v2/receipt.json"]
+      "evidence": [
+        "RESEARCH-LOG.md#首章捲動中文試作",
+        "workplace/ida-intro-display-indexed/intro-evidence.json",
+        "workplace/intro-scroll-v2/receipt.json"
+      ]
     },
     {
       "address": "0x33B6",
       "level": "已證實",
       "semantic": "sub_332C 的原始 retn，bytes C3；首章逐列 viewport 複製完成的唯讀觀察點，原版仍自行執行返回",
-      "evidence": ["RESEARCH-LOG.md#首章捲動中文試作", "workplace/ida-intro-display-indexed/intro-evidence.json", "workplace/intro-scroll-v2/receipt.json"]
+      "evidence": [
+        "RESEARCH-LOG.md#首章捲動中文試作",
+        "workplace/ida-intro-display-indexed/intro-evidence.json",
+        "workplace/intro-scroll-v2/receipt.json"
+      ]
     },
     {
       "address": "0x6358",
       "level": "強推論",
       "semantic": "片頭文字行的推進及顯示調度；完整控制碼未解",
-      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/ida-intro-v4/intro-evidence.json"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭單行-consumer",
+        "workplace/ida-intro-v4/intro-evidence.json"
+      ]
     },
     {
       "address": "0x6363",
       "level": "已證實",
       "semantic": "mov si,6FF0h 設定含前導空格的首行起點",
-      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/ida-intro-v4/intro-evidence.json"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭單行-consumer",
+        "workplace/ida-intro-v4/intro-evidence.json"
+      ]
     },
     {
       "address": "0x6366",
       "level": "已證實",
       "semantic": "經 CS:300Ch 間接呼叫 32C9h；本次前兩次 SI 分別為 6FF0h、7010h",
-      "evidence": ["RESEARCH-LOG.md#片頭單行-consumer", "workplace/probe-intro-consumer/stdout.txt"]
+      "evidence": [
+        "RESEARCH-LOG.md#片頭單行-consumer",
+        "workplace/probe-intro-consumer/stdout.txt"
+      ]
+    },
+    {
+      "address": "0xDAD",
+      "level": "已證實",
+      "semantic": "零前綴壓縮資料的RLE類型分派，消費一byte並以低三位選DBC表；84筆固定資料以原常式驗解碼一致",
+      "evidence": [
+        "docs/spec/034-full-game-hd.md",
+        "workplace/full-hd-v1/ida-resident-v2/resident.json",
+        "workplace/full-hd-v1/decoder-oracle-v4/receipt.json"
+      ]
+    },
+    {
+      "address": "0xDBC",
+      "level": "已證實",
+      "semantic": "八個段內分派目的地DCC/DD1/E13/E34/E73/E9C/EBA/EF5；本輪真實候選只覆蓋類型0/1/5/6/7，不外推其餘三分支資料驗收",
+      "evidence": [
+        "docs/spec/034-full-game-hd.md",
+        "workplace/full-hd-v1/ida-resident-v2/resident.json",
+        "workplace/full-hd-v1/decoder-oracle-v4/receipt.json"
+      ]
+    },
+    {
+      "address": "0xEBA",
+      "level": "已證實",
+      "semantic": "類型6先讀二byte字典至FFFF，遇token後取下一byte長度加2；84筆收據中此類型與原常式逐byte一致",
+      "evidence": [
+        "docs/spec/034-full-game-hd.md",
+        "workplace/full-hd-v1/ida-resident-v2/resident.json",
+        "workplace/full-hd-v1/decoder-oracle-v4/receipt.json"
+      ]
+    },
+    {
+      "address": "0xEF5",
+      "level": "已證實",
+      "semantic": "類型7先讀標記；標記後依序是替換值與長度byte，長度加3。保留decoded-v1錯序候選，正式解碼用decoded-v2及oracle-v4",
+      "evidence": [
+        "docs/spec/034-full-game-hd.md",
+        "workplace/full-hd-v1/ida-resident-v2/resident.json",
+        "workplace/full-hd-v1/decoder-oracle-v4/receipt.json"
+      ]
+    },
+    {
+      "address": "0x2C2A",
+      "level": "強推論",
+      "semantic": "MCGA圖像前處理候選：複製CX乘48bytes後逐48bytes轉換；國王模組A021呼叫2044指向此處。GRP實際形狀及完整圖像解碼仍待核，不與RLE解壓等同",
+      "evidence": [
+        "docs/spec/034-full-game-hd.md",
+        "workplace/full-hd-v1/ida-resident-v2/resident.json",
+        "workplace/full-hd-v1/decoder-oracle-v4/receipt.json"
+      ]
     }
   ]
 }

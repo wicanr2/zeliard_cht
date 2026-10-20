@@ -22,6 +22,8 @@
 
 2026-10-18 使用者已選定直接以 dosgolem 執行原版，另指定參考 `/home/anr2/cht/psychic-war` 的中文與 HD 覆繪方式。後續選定比較圖 B「手繪奇幻」，只決定畫風。不另建玩法重製引擎，不再詢問已定架構或畫風。HD 正式倍率、預設主題、構圖及發行平台仍待確認。
 
+2026-10-20 使用者新目標為「完成全遊戲HD」。沿既有3倍畫布、手繪奇幻、dosgolem覆繪及已交付三平台方向擴充。第一洞窟只是前版完成範圍；現行完整覆蓋與抽樣閘門見 [規格034](docs/spec/034-full-game-hd.md)。不重問既定畫風或架構，不把安全退回原貌當成該素材已HD。
+
 ## 參考來源與適用範圍
 
 | 來源 | 用途 | 不可直接沿用 |
@@ -158,6 +160,15 @@
 | [docs/spec/030-native-rgb-presentation.md](docs/spec/030-native-rgb-presentation.md)、[internal/prototype/bitmap/rgb.go](internal/prototype/bitmap/rgb.go)、[整幅比較測試](internal/prototype/bitmap/rgb_test.go) | 原版三倍RGB底圖的逐像素等價加速，不改HD與中文順序 |
 | [.gitattributes](.gitattributes) | 保留製作名單TSV空欄的分隔Tab；欄數、空白來源與字型由捲字譯表驗證器檢查 |
 | [README.md](README.md) | 故事背景、穩定入口、使用方式與現況摘要 |
+| [docs/spec/034-full-game-hd.md](docs/spec/034-full-game-hd.md) | 全遊戲HD覆蓋範圍、完成閘門及資源盤點入口 |
+| [tools/hd_inventory.py](tools/hd_inventory.py) | Docker內固定三個SAR的194筆邊界、長度與雜湊盤點，分類不冒稱美術完成 |
+| [tools/ida_hd_resources.py](tools/ida_hd_resources.py) | IDA9.4一次性資料庫的常駐程式候選指令匯出，保留原始定位及未知等級 |
+| [docs/hd-coverage.json](docs/hd-coverage.json) | 全遊戲194筆容器記錄的唯一覆蓋台帳，分類候選與HD／正常路徑狀態分列 |
+| [tools/hd_catalog.py](tools/hd_catalog.py) | 核對原版、名稱descriptor及84筆原版解壓收據，重生覆蓋台帳；參數為`--project`及`--output` |
+| [tools/hd_decode.py](tools/hd_decode.py) | Docker內解開零前綴RLE候選，輸入由`--original`指定，既有空輸出目錄由`--output`指定 |
+| [tools/hd_decoder_oracle.go](tools/hd_decoder_oracle.go) | dosgolem執行擷取原版常式，比對84筆解壓bytes；參數為`-project`、`-decoded`及`-output`，不作正常玩家證據 |
+| [tools/hd_town_npc_sources.py](tools/hd_town_npc_sources.py) | 依007已驗模板及遮罩擷取五類40姿態的居民製圖來源，參數為`--project`與既有空`--output` |
+| [tools/hd_register_npcs.py](tools/hd_register_npcs.py) | Docker內以`--sources`、`--art`及空`--output`校準40姿態圖集；只產生候選註冊與預覽，不代表正式HD接入 |
 | [docs/images/provenance.json](docs/images/provenance.json) | README 四張文件預覽圖的來源雜湊、裁切與輸出身份；原始素材留在本機 |
 | [tools/readme_images.py](tools/readme_images.py) | 在具 Pillow 的 Docker 內製作 README 圖片，以 `--project`、`--output`、`--font` 指定唯讀來源、可寫圖片目錄及 Noto Sans CJK 字型 |
 | [LICENSE](LICENSE) | 自有程式與文件的 RRSAL-1.0 完整條款及原版素材排除範圍 |

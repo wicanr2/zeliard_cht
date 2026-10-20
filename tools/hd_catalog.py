@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+"""建立全遊戲HD覆蓋清單；原始位元組與圖面只留本機。"""
+import argparse
+import hashlib
+import json
+import re
+from collections import Counter
+from pathlib import Path
+
+from hd_inventory import EXPECTED, records
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--project", type=Path, required=True)
+    ap.add_argument("--output", type=Path, required=True)
+    args = ap.parse_args()
+    p = args.project
+    sha = lambda b: hashlib.sha256(b).hexdigest()
+    resident = p/"workplace/probe-intro-memory/memory-01B1_0000.bin"
+    resident_bytes = resident.read_bytes()
+    assert sha(resident_bytes) == "c9f188ea847e8d364ccf8dbc9f6a9b9c74e192c0c83bd7a012b552e6d89b13d8"
+    originals = {name: (p/"workplace/orig"/name).read_bytes() for name in EXPECTED}
+    for name, data in originals.items():
+        assert sha(data) == EXPECTED[name][1]
+    inputs = [(name, b, "SAR檔案從0起算偏移") for name, b in originals.items()]
+    inputs.append(("resident", resident_bytes[:0x1136], "固定快照dosgolem01B1段內偏移，亦為IDA base0"))
+    names = {}
+    for source, data, space in inputs:
+        for m in re.finditer(rb"([\x00-\x02])([\x01-\x60])([A-Za-z0-9_]{1,8}\.[A-Za-z0-9]{3})\x00", data):
+            archive, index = "ZELRES"+str(m[1][0]+1)+".SAR", m[2][0]-1
+            if index >= EXPECTED[archive][0]:
+                continue
+            names.setdefault((archive, index), []).append({
+                "name": m[3].decode("ascii"), "source": source, "offset": m.start(), "address_space": space,
+                "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對",
+            })
+    decoded = p/"workplace/full-hd-v1/decoded-v2/decoded-inventory.json"
+    oracle = p/"workplace/full-hd-v1/decoder-oracle-v4/receipt.json"
+    raw_report, oracle_report = json.loads(decoded.read_text()), json.loads(oracle.read_text())
+    assert oracle_report["status"] == "PASS_EXTRACTED_ORIGINAL_DECODER"
+    verified = {(x["archive"], x["index"]): x for x in oracle_report["records"]}
+    compressed = {(x["archive"], x["index"]): x for x in raw_report["records"]}
+    assert len(verified) == len(compressed) == 84
+    catalog = []
+    for archive, data in originals.items():
+        for entry in records(data):
+            key = archive, entry["index"]
+            labels = names.get(key, [])
+            suffixes = {Path(x["name"]).suffix.upper() for x in labels}
+            role = {".GRP": "graphics_candidate", ".MDT": "map_candidate", ".MSD": "audio_candidate", ".BIN": "program_candidate"}
+            classification = role[next(iter(suffixes))] if len(suffixes) == 1 and next(iter(suffixes)) in role else "unknown"
+            item = {"key": archive.lower().replace(".sar", "")+f".record.{entry['index']:02d}",
+                    "archive": archive, "record": entry["index"], "payload_offset": entry["payload_offset"],
+                    "payload_bytes": entry["bytes"], "payload_sha256": entry["sha256"],
+                    "classification": classification, "names": labels,
+                    "hd_coverage": "not_assessed", "normal_path": "not_assessed"}
+            if key in compressed:
+                d, v = compressed[key], verified[key]
+                raw = (decoded.parent/d["decoded_path"]).read_bytes()
+                actual = (oracle.parent/d["decoded_path"]).read_bytes()
+                assert d["result"] == "DECODED_CANDIDATE" and v["matched"] and v["exit_code"] == 0
+                assert raw == actual and sha(raw) == v["original_sha256"] == v["offline_sha256"]
+                item["decoder"] = {"kind": d["rle_kind"], "bytes": len(raw), "sha256": sha(raw),
+                                   "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"}
+            catalog.append(item)
+    report = {"schema": 1, "objective": "完成全遊戲HD", "status": "in_progress",
+              "scope_spec": "docs/spec/034-full-game-hd.md",
+              "counts": {"container_records": len(catalog), "named_candidates": sum(bool(x["names"]) for x in catalog),
+                         "verified_decoded_records": len(verified), "classification_candidates": dict(Counter(x["classification"] for x in catalog))},
+              "limits": ["194是SAR容器記錄數，尚不是美術素材分母；不換算HD完成百分比",
+                         "not_assessed表示尚未將既有局部HD與此全量記錄逐項對應，不否定前版已驗成果",
+                         "檔名／副檔名只作分類候選，不能單憑GRP或MDT宣稱已解圖、全部可達或已HD"],
+              "prior_hd_evidence": "VERIFICATION-MATRIX.md",
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle)],
+              "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
+    args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+    print(json.dumps(report["counts"], ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

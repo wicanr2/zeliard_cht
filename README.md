@@ -2,6 +2,8 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
+目前正擴充全遊戲 HD。完整覆蓋範圍見 [規格034](docs/spec/034-full-game-hd.md)，資源盤點與待核項目見 [覆蓋清單](docs/hd-coverage.json)。以下封包與截圖仍代表已交付的第一洞窟試玩範圍。
+
 已提供 Windows x86_64、macOS Intel／Apple Silicon 通用版與 Linux x86_64 AppImage。完整資料包包含原版遊戲及目前完成的繁體中文、手繪 HD 素材。驗收依使用者指定，以第一洞窟可玩及代表性對話、HD、工具列操作抽測為準，不宣稱全遊戲翻譯或美術完成。
 
 配樂改用原版 AdLib 驅動與可替換的 Nuked-OPL3 音源，保留原曲。封包採實際時間推進，卡頓時最多追趕100毫秒，暫停及失焦不追趕。實體USB／藍牙手把、Windows與macOS真機尚未驗收；Windows已通過Wine輔助啟動，macOS已驗通用架構及封包結構。詳見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。

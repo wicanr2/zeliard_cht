@@ -950,3 +950,21 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 固定EXE fe1c00b3、SAR2 bf7c792a與dosgolem 882份2a5ad11a沿CONTEXT完整雜湊。Go1.24.13，原版位址空間為dosgolem實模式01B1段內偏移；檔案偏移屬ZELRES2.SAR，不作EXE或IDA線性位址解讀。
 - 兩次正常冷讀存檔路徑均由22CD收到A2A6完整14 bytes，對應SAR2 header01a444／body01a448、module01a19e。入口原文SHA a7abf555、前綴77e9c7f2、字型f16d564f、繪字碼a4564867，完整值及兩次steps／cycles見church-scene-v1/pair/receipt.json。2344完成SI A2B4，字形b4d572d4及安全區(94,175,51,8)相同，證據等級已證實。
 - 實際視窗及獨立字形證據見同研究根gui-v1、replay-v1與pixels-v1.json。場景名稱顯示與原版規則分離，回鎮改用已驗Muralla來源；不從固定SAR檔案候選外推旅店可達。
+
+## 2026-10-20：全遊戲 HD 資源盤點與解壓常式
+
+- 輸入為固定三個SAR，完整SHA-256見CONTEXT及 [覆蓋台帳](docs/hd-coverage.json)。共194筆，40／58／96筆目錄及payload長度均連續至檔尾。來源位址為各SAR從0起算的檔案偏移，未改原版。
+- IDA9.4沿既有 `ida-pro-9.4-idapython:py312-v1`，輸入為 `probe-intro-memory/memory-01B1_0000.bin`，SHA-256 `c9f188ea847e8d364ccf8dbc9f6a9b9c74e192c0c83bd7a012b552e6d89b13d8`。一次性DB為binary base0、16位元，對應此快照dosgolem實模式01B1段內偏移。v2保留原始候選指令，v3合併 [分級位址索引](docs/source-index.json)，未證實語意附警示。
+- 已證實：DAD以來源首byte低三位選DBC的八項分派。從DAD至F16擷取的原始常式SHA-256為 `42f4f6392954f85fa2e8b5b1b1b3c0a1ca2c3f6ff2aab6e1126ed4c14d7a6d61`。測試MZ保留段內原始碼位址，只以框架設定來源、目的地及長度後呼叫DAD；不是原版正常遊戲路徑。
+- Go1.24.13、既有dosgolem隔離快照。`decoder-oracle-v4/receipt.json`記84筆原始stream／框架／輸出SHA、步數及週期，與Python離線解碼逐byte相同，全部DOS退出0。合計58,085,998道指令，單筆最高3,694,917道。真實資料涵蓋類型0、1、5、6、7，其餘三分支僅有原始指令定位。
+- 勘誤：`decoded-v1`把類型7的替換值與長度順序讀反，第一筆原常式比較揭露。EF5至F16的LODSB／XCHG原始指令顯示標記後依序是替換值與長度，長度加3。修正後 `decoded-v2` 全84筆與原常式相同。v1保留失敗身份。
+- 首次IDA輸出因locale為ASCII而留下空JSON，v2使用明確UTF-8後核工具9.4、輸入SHA及3,143筆候選定位。原常式首個2M指令預算不足以跑完字典逐項搜尋，依12KiB輸入與256項字典的指令上界改為32M，沒有改遊戲bytes。兩項是工具／預算問題，不作產品缺陷。
+- 強推論：名稱descriptor候選對應174筆記錄，依副檔名暫分80圖像、41地圖、17音樂及36程式，另20未知。記錄名稱包含31個洞窟地圖及10個城鎮地圖候選。名稱與副檔名只供追查，不證明全部可達或圖像已解完。
+- 未知：GRP內部形狀與圖形驅動前處理。國王A021透過2044指向2C2A，候選指令複製CX乘48bytes再轉換，但本輪未證明完整圖像語意。直接把解壓結果當六位元圖格的 `sixbit-candidates.jpg` 未成立，不當作原圖來源；RLE解壓成功與圖像解碼分開記錄。
+
+### 五類居民的手繪候選
+
+- 來源沿007已驗MCGA圖格及遮罩契約，固定1MiB SHA-256 `9dd3657107f25c097debf5f6be68137d055d98bda2e22a59f6b854d88be5fdd9`。資源11B1:4000為五組各八相位、每相位六個圖格ID，11B1:4100為圖格，21B1:7000為遮罩。原生16×24，40來源有34種RGBA；不宣稱40種姿態都已正常遇到。
+- `tools/hd_town_npc_sources.py` 重生 `town-npc-source-v2/`，40張RGBA均與初次擷取相同。五張原版4×2圖集供內建imagegen沿已確認B手繪奇幻風格重畫，原圖、全部提示詞及來源在 `town-npc-art/g0..g4-generation-v1.json`，產物1448×1086、真實alpha。只留本地，不加入Git或既有封包。
+- `town-npc-registration-v1/manifest.json`記每姿態裁切與原版alpha邊界，產生40張48×72註冊預覽。原RGBA相同的姿態共用相同候選，避免生成差異增加原版沒有的動畫。五組圖與註冊接觸表已目視；目前未驗正式合成、連續動畫、遮擋或實際視窗，不計HD接入完成。
+- 此階段收據為 `workplace/full-hd-v1/stage-audit.json`，入口是 [規格034](docs/spec/034-full-game-hd.md)。後續先接居民圖面及核GRP內部格式，不重開已驗的RLE常式或前版音樂。

@@ -1,0 +1,4327 @@
+{
+  "schema": 1,
+  "objective": "完成全遊戲HD",
+  "status": "in_progress",
+  "scope_spec": "docs/spec/034-full-game-hd.md",
+  "counts": {
+    "container_records": 194,
+    "named_candidates": 174,
+    "verified_decoded_records": 84,
+    "classification_candidates": {
+      "unknown": 20,
+      "program_candidate": 36,
+      "graphics_candidate": 80,
+      "audio_candidate": 17,
+      "map_candidate": 41
+    }
+  },
+  "limits": [
+    "194是SAR容器記錄數，尚不是美術素材分母；不換算HD完成百分比",
+    "not_assessed表示尚未將既有局部HD與此全量記錄逐項對應，不否定前版已驗成果",
+    "檔名／副檔名只作分類候選，不能單憑GRP或MDT宣稱已解圖、全部可達或已HD"
+  ],
+  "prior_hd_evidence": "VERIFICATION-MATRIX.md",
+  "proofs": [
+    {
+      "path": "workplace/probe-intro-memory/memory-01B1_0000.bin",
+      "sha256": "c9f188ea847e8d364ccf8dbc9f6a9b9c74e192c0c83bd7a012b552e6d89b13d8"
+    },
+    {
+      "path": "workplace/full-hd-v1/decoded-v2/decoded-inventory.json",
+      "sha256": "a3b29f60c4e7668379e64fd02a624dff0983fc1abefee18ffbb0adaaecc9e47a"
+    },
+    {
+      "path": "workplace/full-hd-v1/decoder-oracle-v4/receipt.json",
+      "sha256": "7d181b44d33d437e3ecbd1d45aeac80bc6a157a4cb02eba3aacca573aad5f3da"
+    }
+  ],
+  "archives": [
+    {
+      "name": "ZELRES1.SAR",
+      "sha256": "56a73b59e952dab47fb0171a3fb1cdb7d641baceafa97e2826057f877a590eb0"
+    },
+    {
+      "name": "ZELRES2.SAR",
+      "sha256": "bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1"
+    },
+    {
+      "name": "ZELRES3.SAR",
+      "sha256": "9c19b9c317d3006e11f8a5cad8ea1f226f8043e11c6467fa27f10eef33175ef0"
+    }
+  ],
+  "records": [
+    {
+      "key": "zelres1.record.00",
+      "archive": "ZELRES1.SAR",
+      "record": 0,
+      "payload_offset": 164,
+      "payload_bytes": 13865,
+      "payload_sha256": "64aebae24cd59e5aef7b06dde6da10f4cdf9303c4c3f98b1c4b79ea69ed95cfe",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.01",
+      "archive": "ZELRES1.SAR",
+      "record": 1,
+      "payload_offset": 14033,
+      "payload_bytes": 5504,
+      "payload_sha256": "9eb0b024d85f4c6a8b49dc93fdd4f8f82a02f9fb4b6e960af56bb68ae713d004",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "gdega.bin",
+          "source": "ZELRES2.SAR",
+          "offset": 95879,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.02",
+      "archive": "ZELRES1.SAR",
+      "record": 2,
+      "payload_offset": 19541,
+      "payload_bytes": 7704,
+      "payload_sha256": "f4c48bc8171dbf1ac81439425130dd249ef927dc013ab9bf8b49a472ca223260",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "gdcga.bin",
+          "source": "ZELRES2.SAR",
+          "offset": 95891,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.03",
+      "archive": "ZELRES1.SAR",
+      "record": 3,
+      "payload_offset": 27249,
+      "payload_bytes": 8138,
+      "payload_sha256": "83cc37f9615dd96138c9efceaa0f8dba4b9d4786ef450fd55053f891a919a51e",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "gdhgc.bin",
+          "source": "ZELRES2.SAR",
+          "offset": 95903,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.04",
+      "archive": "ZELRES1.SAR",
+      "record": 4,
+      "payload_offset": 35391,
+      "payload_bytes": 8857,
+      "payload_sha256": "d2d1e8a0f90dc2691c1e190b8dd4591db1fc6f6a2d833ba129e21498f17c0c9e",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "gdtga.bin",
+          "source": "ZELRES2.SAR",
+          "offset": 95928,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.05",
+      "archive": "ZELRES1.SAR",
+      "record": 5,
+      "payload_offset": 44252,
+      "payload_bytes": 8661,
+      "payload_sha256": "f9497d2a8749b84f5777c8cf00d28708410cea8a521b90c21ff7789e51bbf3d6",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "gdmcga.bin",
+          "source": "ZELRES2.SAR",
+          "offset": 95915,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.06",
+      "archive": "ZELRES1.SAR",
+      "record": 6,
+      "payload_offset": 52917,
+      "payload_bytes": 7293,
+      "payload_sha256": "3969efa7da08b810912f80aef5d96c1118b84999a40ffaedff871abf65c46c34",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.07",
+      "archive": "ZELRES1.SAR",
+      "record": 7,
+      "payload_offset": 60214,
+      "payload_bytes": 3916,
+      "payload_sha256": "21e676739067d74cafbc3756ff7ab5e2bf8227dc886b0f6c6f9007ea98181521",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.08",
+      "archive": "ZELRES1.SAR",
+      "record": 8,
+      "payload_offset": 64134,
+      "payload_bytes": 4564,
+      "payload_sha256": "90faaef7e28fd29a2d8787ceac1f4d97a0c09b6b5b634cd5ca9b89085dff0e64",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.09",
+      "archive": "ZELRES1.SAR",
+      "record": 9,
+      "payload_offset": 68702,
+      "payload_bytes": 4371,
+      "payload_sha256": "a60cdc799341cf7a0b13bf65aaa49df054cad4f27c341398184da1b31c35303f",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.10",
+      "archive": "ZELRES1.SAR",
+      "record": 10,
+      "payload_offset": 73077,
+      "payload_bytes": 5403,
+      "payload_sha256": "572f1907a853ee121da55f55e599babc4c065e83c760d77114f79c8d29a995b5",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.11",
+      "archive": "ZELRES1.SAR",
+      "record": 11,
+      "payload_offset": 78484,
+      "payload_bytes": 5359,
+      "payload_sha256": "0ee2a1841e99b904afbbe66f1aaee15910426cb92eb5b4772a0658ea186cfcf8",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.12",
+      "archive": "ZELRES1.SAR",
+      "record": 12,
+      "payload_offset": 83847,
+      "payload_bytes": 3225,
+      "payload_sha256": "7c355b45c3e0cad250348d63a819ea39eb59c10f0acb885495d522674f842b79",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.13",
+      "archive": "ZELRES1.SAR",
+      "record": 13,
+      "payload_offset": 87076,
+      "payload_bytes": 12810,
+      "payload_sha256": "c1e3dae70ab212f55af07c1cf0f8a3615cf3384964b6b02d3f1e252cc7fc6ce3",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ame.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13891,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 13277,
+        "sha256": "483e6a100afccf2825605d010f375dceae5ab43b191312921acb09ac2e59e936",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.14",
+      "archive": "ZELRES1.SAR",
+      "record": 14,
+      "payload_offset": 99890,
+      "payload_bytes": 7771,
+      "payload_sha256": "1ab8ed692c9ab4014e922c3b1baa5f5332a0b2d478b1f3b6821ad8e6d092bbc9",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "dmaou.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13813,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8313,
+        "sha256": "01bdabc48a3e0bc026bb50348fcc464d763afe326a734dcf55898ada571b2187",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.15",
+      "archive": "ZELRES1.SAR",
+      "record": 15,
+      "payload_offset": 107665,
+      "payload_bytes": 6872,
+      "payload_sha256": "cb0dc90d1b522a511d9380d98dbf6e32c9d2ca04af3aee2b142e98bf7e0915ab",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "hime.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13901,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 11837,
+        "sha256": "b8b777ddae358676171206fd67f0242415c6850eb7def28276dc423f11a197d4",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.16",
+      "archive": "ZELRES1.SAR",
+      "record": 16,
+      "payload_offset": 114541,
+      "payload_bytes": 8631,
+      "payload_sha256": "4f12b04de7e4a7a291f4ee61496f4c5f7df51dbe7631e03c556aac12fed1a394",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "himp.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288484,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 0,
+        "bytes": 8629,
+        "sha256": "00c89e559f5c4b81a8215e7a8659d32e0adca4b53cbfda556aff922d12849c3b",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.17",
+      "archive": "ZELRES1.SAR",
+      "record": 17,
+      "payload_offset": 123176,
+      "payload_bytes": 1466,
+      "payload_sha256": "01c9f551251b9d6a9460292e28552456524093675eccf7c90f704b8f0b6a37d1",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "hou.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13803,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1500,
+        "sha256": "e06ddcc9cafd20a4166d167f7f188074c7ef3fe5761a1ab62bd467818652302c",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.18",
+      "archive": "ZELRES1.SAR",
+      "record": 18,
+      "payload_offset": 124646,
+      "payload_bytes": 7607,
+      "payload_sha256": "699d514bc28d377fc378ac3bfd5c4d17202bed33eddce743d422006df0d7108b",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "isi.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13912,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8103,
+        "sha256": "abcf9e8c715c74cc7ba6d31f18ac94c6362fe417610a34ec4252cde4dbe48ee1",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.19",
+      "archive": "ZELRES1.SAR",
+      "record": 19,
+      "payload_offset": 132257,
+      "payload_bytes": 5001,
+      "payload_sha256": "4e712cf21db0c102e3afca0f8c248d6e459d556f51ad72c19fc6936378146508",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "maop.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 14007,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 5175,
+        "sha256": "0271095b20490d3db7fcca68dfaaf4a091e10aca3f86b7eb7d4d80bf4b66b3b3",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.20",
+      "archive": "ZELRES1.SAR",
+      "record": 20,
+      "payload_offset": 137262,
+      "payload_bytes": 3324,
+      "payload_sha256": "30788bed4cf4eae89698101b0213749d829b53c3044bc97ca98ad3e35252b79a",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ne80.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288517,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 3447,
+        "sha256": "07ab998175ed8424ebc88051a25b83c3feea0bf89df3f9e4f0696bd8dafe14da",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.21",
+      "archive": "ZELRES1.SAR",
+      "record": 21,
+      "payload_offset": 140590,
+      "payload_bytes": 2494,
+      "payload_sha256": "09269225ee9e8d15b53a6150e60686a3dd38104c823cf43efc5bdb00b1850800",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ne81.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288528,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 0,
+        "bytes": 2492,
+        "sha256": "09e98d3f0f1465119318defab8a4fb0d5a41d2637e0914ef6eee52bb0d9a3c3a",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.22",
+      "archive": "ZELRES1.SAR",
+      "record": 22,
+      "payload_offset": 143088,
+      "payload_bytes": 5216,
+      "payload_sha256": "dacc60e47b6f2412d67b7f3d59e571b2ecae7f5b17c7812318f0fbb0a1b1f0ea",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "nec.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13793,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 5786,
+        "sha256": "017794f1ea0a9e5039a1dce23d88649f7cde6a58d2a539b180e2f338d57634f8",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.23",
+      "archive": "ZELRES1.SAR",
+      "record": 23,
+      "payload_offset": 148308,
+      "payload_bytes": 7936,
+      "payload_sha256": "1ad587bd1170fe87a6ed734d57b59654774a53c7bef1c3a1f82987c91acda883",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "new1.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288495,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 8226,
+        "sha256": "9a8e4fc37160e9c5024e38133204f805841a99e9762c3c09db1bd1fed92c1242",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.24",
+      "archive": "ZELRES1.SAR",
+      "record": 24,
+      "payload_offset": 156248,
+      "payload_bytes": 4317,
+      "payload_sha256": "2078475d3c2dbebbdd2262f561f44d31a9eb112a110b898985edbb2a27a8d5de",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "new2.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288506,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 4318,
+        "sha256": "8eda590fc51644fd8ff7756bb9effccb238acfa56f4da0b173658e5e1fb02cd9",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.25",
+      "archive": "ZELRES1.SAR",
+      "record": 25,
+      "payload_offset": 160569,
+      "payload_bytes": 9180,
+      "payload_sha256": "2f83a5af313fd8d2cf53786fff3623d8617160a5492736d51e03fd877dae2027",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "oui.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13922,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 9367,
+        "sha256": "132bcf4b3a12bbca2e8fd75b29a8d80c099695018447ca7fa7ad3bff530fd1ae",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.26",
+      "archive": "ZELRES1.SAR",
+      "record": 26,
+      "payload_offset": 169753,
+      "payload_bytes": 8244,
+      "payload_sha256": "e4a0f672016359cc27d809ab55b834ea9f70bbafb13ba69e03abfef414e13020",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "oup.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13997,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8343,
+        "sha256": "21a145208accbd2cc44fcac33c26e0a226a0acb0e35526c033c3a1b3f32e69ed",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.27",
+      "archive": "ZELRES1.SAR",
+      "record": 27,
+      "payload_offset": 178001,
+      "payload_bytes": 2933,
+      "payload_sha256": "3a3a6f04b2341b223f889893a86270738f5ac099d47764eba634f4e612d732be",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "sei.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13932,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        },
+        {
+          "name": "sei.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288452,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 2970,
+        "sha256": "051c3b86428b9df98018ba64768ae6837a230056f65283d79f1a5214da7a4a03",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.28",
+      "archive": "ZELRES1.SAR",
+      "record": 28,
+      "payload_offset": 180938,
+      "payload_bytes": 4746,
+      "payload_sha256": "530f960f0ce80c7c136869b2163abbc69522e23e0842b30b02f766bfea9b3ad0",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "seip.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288473,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 4766,
+        "sha256": "76d547853117e897a6cebc2b768b4cb0ba88c6de770e45cc5f0ed186d95a00a0",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.29",
+      "archive": "ZELRES1.SAR",
+      "record": 29,
+      "payload_offset": 185688,
+      "payload_bytes": 5697,
+      "payload_sha256": "cec7b1ecac0cf8b19aa7c793021ac53ba2a2eace28cf31363ca65396205acc4e",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ttl1.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13836,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 0,
+        "bytes": 5695,
+        "sha256": "425f5c7292c78cc3f0a685aeca13da115067efb881f553e09e0b3e1d11c1a2a0",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.30",
+      "archive": "ZELRES1.SAR",
+      "record": 30,
+      "payload_offset": 191389,
+      "payload_bytes": 2831,
+      "payload_sha256": "dbf80a927909ae797339d6934c90a54cba543e7590f747daf952f4161df30da6",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ttl2.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13847,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 0,
+        "bytes": 2829,
+        "sha256": "ed87b1de7554e221628c4d3b25d8929123413b4271452fadb6194c43ef59afc8",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.31",
+      "archive": "ZELRES1.SAR",
+      "record": 31,
+      "payload_offset": 194224,
+      "payload_bytes": 7799,
+      "payload_sha256": "7423d8806450800bb834732e168a639e981d41ac5ac4064d681a8f9e297f7ea4",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ttl3.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13858,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 0,
+        "bytes": 7797,
+        "sha256": "1bb5fb3983fab884d334d28cf4c30552d49112db8813a0eb3ca90d78ad4dde83",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.32",
+      "archive": "ZELRES1.SAR",
+      "record": 32,
+      "payload_offset": 202027,
+      "payload_bytes": 6899,
+      "payload_sha256": "df1b31438ec56568789be3a7f3a9b50d8612d8fce7ecc07fd3f996cb470d8469",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "waku.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13880,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        },
+        {
+          "name": "waku.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288441,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8812,
+        "sha256": "c168c663d56afc9ad3251c090fb5546fc426db3932fee6a731b3b2d3dd502fe5",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.33",
+      "archive": "ZELRES1.SAR",
+      "record": 33,
+      "payload_offset": 208930,
+      "payload_bytes": 8419,
+      "payload_sha256": "dd2576e1ab188586f9490c1272dd0395f58e798c92777a79ec21b54d3793888e",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "yuu1.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13942,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8524,
+        "sha256": "437d762d8f0ded9979e3197f26ed538de8b0abf5d06c397f324d6023c4f6857f",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.34",
+      "archive": "ZELRES1.SAR",
+      "record": 34,
+      "payload_offset": 217353,
+      "payload_bytes": 4994,
+      "payload_sha256": "6b47811e5550a83183753ad2e4ab380f9016f2960611ad4389e4556a5b05508f",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "yuu2.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13953,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 5214,
+        "sha256": "d597a720e61a243eb039969d02b8814fd701803c48f575bd1903e1528126021a",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.35",
+      "archive": "ZELRES1.SAR",
+      "record": 35,
+      "payload_offset": 222351,
+      "payload_bytes": 9349,
+      "payload_sha256": "1a9ed3c80446cbbdbd484909a63b4cfc96dd1eefb11447b7d56cf4f42e908a4b",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "yuu3.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13964,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 5,
+        "bytes": 9419,
+        "sha256": "9e72e51d9633789de9b98edb24d5934a1d99ba430599a5e8dadc71d90dd30935",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.36",
+      "archive": "ZELRES1.SAR",
+      "record": 36,
+      "payload_offset": 231704,
+      "payload_bytes": 2523,
+      "payload_sha256": "3943f623f1693b0b79b9d0ab7ce29f385bbc002c52a56019df0ee369ae799bc9",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "yuu4.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13975,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 2800,
+        "sha256": "2df7c4d3cb33ec552206a97273d44f2275696f7bd270d3fcef416136a7234fc0",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.37",
+      "archive": "ZELRES1.SAR",
+      "record": 37,
+      "payload_offset": 234231,
+      "payload_bytes": 9395,
+      "payload_sha256": "2603ace8bb9fa435a4f1d44d17b7d8da84b5940772e1cdfcb588c962188ad474",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "yuup.grp",
+          "source": "ZELRES1.SAR",
+          "offset": 13986,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        },
+        {
+          "name": "yuup.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288462,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 9551,
+        "sha256": "bf363014a8e1c13cbb6e51554bd0bf876c1b2ad83b5d32460606418b0c3b1a9a",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres1.record.38",
+      "archive": "ZELRES1.SAR",
+      "record": 38,
+      "payload_offset": 243630,
+      "payload_bytes": 7670,
+      "payload_sha256": "e71f1d8eac74f8ad679da154f309e2733a1e4ce857b1734f5f9c98253137f039",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "zend.msd",
+          "source": "ZELRES1.SAR",
+          "offset": 13869,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        },
+        {
+          "name": "zend.msd",
+          "source": "ZELRES2.SAR",
+          "offset": 288604,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres1.record.39",
+      "archive": "ZELRES1.SAR",
+      "record": 39,
+      "payload_offset": 251304,
+      "payload_bytes": 5648,
+      "payload_sha256": "3668397aaafebe806024c69841d4a9fda6185f16c2a085bfafe256f5fce51b9b",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "zopn.msd",
+          "source": "ZELRES1.SAR",
+          "offset": 13825,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.00",
+      "archive": "ZELRES2.SAR",
+      "record": 0,
+      "payload_offset": 236,
+      "payload_bytes": 16174,
+      "payload_sha256": "3cf878cc29ae7baa61821943352067ef6f19531ac1884ca83ac23750ba8cabec",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.01",
+      "archive": "ZELRES2.SAR",
+      "record": 1,
+      "payload_offset": 16414,
+      "payload_bytes": 3613,
+      "payload_sha256": "79cfe276ed2a5ab5b0aac505327c3730b72eee29876fcc88a4df2a511a287933",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.02",
+      "archive": "ZELRES2.SAR",
+      "record": 2,
+      "payload_offset": 20031,
+      "payload_bytes": 8599,
+      "payload_sha256": "34436293aff9cf0e8b88f835f0a507cc4abed2c55171ae749e93ae1245272e36",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.03",
+      "archive": "ZELRES2.SAR",
+      "record": 3,
+      "payload_offset": 28634,
+      "payload_bytes": 9023,
+      "payload_sha256": "9c066975642c07f1d91abe2c4e5c17c45f9401653034b3c0b80c8a44f93fe037",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.04",
+      "archive": "ZELRES2.SAR",
+      "record": 4,
+      "payload_offset": 37661,
+      "payload_bytes": 8886,
+      "payload_sha256": "c9c2f2cf16a94ae32b294d9a3f39c4a24a0eaf8a9394200f9257c9d39754a0f0",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.05",
+      "archive": "ZELRES2.SAR",
+      "record": 5,
+      "payload_offset": 46551,
+      "payload_bytes": 9890,
+      "payload_sha256": "3595b0ea2e65f466d1baa6732d363ef0707ac8c5c4f41c00a405ec63f4ec11b1",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.06",
+      "archive": "ZELRES2.SAR",
+      "record": 6,
+      "payload_offset": 56445,
+      "payload_bytes": 9053,
+      "payload_sha256": "348fdcf8ec7eb5fbc1736eb8ea6a628b4041fbb619ee184165b2c91d99399975",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.07",
+      "archive": "ZELRES2.SAR",
+      "record": 7,
+      "payload_offset": 65502,
+      "payload_bytes": 10534,
+      "payload_sha256": "8eb1049de8b1b2b750a1403b71b6c34c5a440d8c690fd5c7c97dd88010013fd2",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.08",
+      "archive": "ZELRES2.SAR",
+      "record": 8,
+      "payload_offset": 76040,
+      "payload_bytes": 9573,
+      "payload_sha256": "0fdcef0b7fa1fb6a9d2b11a1ecf45e590007ac768b2d789604b3b2ea8b801f98",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "YMPD.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 55688,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.09",
+      "archive": "ZELRES2.SAR",
+      "record": 9,
+      "payload_offset": 85617,
+      "payload_bytes": 8101,
+      "payload_sha256": "cc3a5c06af2d37a4d5dd9fcd1dd8e933fde0111959b2ea4c3a4907456050db9a",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "CKPD.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 55699,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.10",
+      "archive": "ZELRES2.SAR",
+      "record": 10,
+      "payload_offset": 93722,
+      "payload_bytes": 1954,
+      "payload_sha256": "b4242e989d584274bef37c29e4f6367d36300bd5bd7638f2181fd51f1ed859d8",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "KINGPRO.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 56764,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.11",
+      "archive": "ZELRES2.SAR",
+      "record": 11,
+      "payload_offset": 95680,
+      "payload_bytes": 595,
+      "payload_sha256": "738f6ff33e36685ae0908605d4db50e4f5df7486e098401b0bc5e033972aee37",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "OMOYPRO.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 56778,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.12",
+      "archive": "ZELRES2.SAR",
+      "record": 12,
+      "payload_offset": 96279,
+      "payload_bytes": 7239,
+      "payload_sha256": "f10d874783703f8385f36cc579b956b36e9d326af0c8c2150ee886647fe53961",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "ARMRPRO.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 56806,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.13",
+      "archive": "ZELRES2.SAR",
+      "record": 13,
+      "payload_offset": 103522,
+      "payload_bytes": 3384,
+      "payload_sha256": "64e1a820922301147c81ebd2cf09510410b9c52bba6139608379bd996bbe1bf2",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "BANKPRO.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 56848,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.14",
+      "archive": "ZELRES2.SAR",
+      "record": 14,
+      "payload_offset": 106910,
+      "payload_bytes": 998,
+      "payload_sha256": "22f4162323a99bb1f0802b2a440b9159a1090d18972fc656ce1a2d2deed1a451",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "CHURPRO.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 56834,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.15",
+      "archive": "ZELRES2.SAR",
+      "record": 15,
+      "payload_offset": 107912,
+      "payload_bytes": 4646,
+      "payload_sha256": "9458dc890242b299c495074b6fce43542b5bba73609a151b05a91e28fe6c4e98",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "DRUGPRO.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 56820,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.16",
+      "archive": "ZELRES2.SAR",
+      "record": 16,
+      "payload_offset": 112562,
+      "payload_bytes": 1296,
+      "payload_sha256": "7b3dedeb10111d671b0d9245ea457d6235cb620d629ef9f49616348cf8073da5",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "INNAPRO.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 56862,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.17",
+      "archive": "ZELRES2.SAR",
+      "record": 17,
+      "payload_offset": 113862,
+      "payload_bytes": 6973,
+      "payload_sha256": "ab2a46c7b6918b360a3db214935e73477b6ec7e9b04ae84f4790685cc7e86e9f",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "KENJPRO.BIN",
+          "source": "ZELRES1.SAR",
+          "offset": 56792,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.18",
+      "archive": "ZELRES2.SAR",
+      "record": 18,
+      "payload_offset": 120839,
+      "payload_bytes": 7547,
+      "payload_sha256": "db70ad3706bd71804abdfdefc84618aeda5b0a1db111f35ea5c4574c9b55152d",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "KING.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 94761,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8784,
+        "sha256": "fdbd255cc24b45dcdd1033d7c2051811a133cbd8ce2fa9251694837b53825a14",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.19",
+      "archive": "ZELRES2.SAR",
+      "record": 19,
+      "payload_offset": 128390,
+      "payload_bytes": 4350,
+      "payload_sha256": "cbe8816b564e0f29e08aebd80b67f3e8b0afc2fe452f4cb7a2aa6cdd7af43fcc",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "OMOYA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 96249,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 6480,
+        "sha256": "ec6b6a1c4511d3ac627e6f13dfc6e8bc3476fa72051ee9794aec63653eb7fe25",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.20",
+      "archive": "ZELRES2.SAR",
+      "record": 20,
+      "payload_offset": 132744,
+      "payload_bytes": 10567,
+      "payload_sha256": "986579635df3017f5f84924591c3b271ddfcb8bb135fab0aaa530e04f90cf876",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ARMOR.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 99513,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 12288,
+        "sha256": "3dcb0eb6230c4399e8a95b013c8d0c3d525329d4cb0e8664c0f91c760f7549c3",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.21",
+      "archive": "ZELRES2.SAR",
+      "record": 21,
+      "payload_offset": 143315,
+      "payload_bytes": 7289,
+      "payload_sha256": "a23b3729ab98e0b68ef5cd824515ddf21b35a6c14b416bf68c3602d5400204d4",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "BANK.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 105797,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7872,
+        "sha256": "1b544e117259c11cfec24b5c9e22ec6bbc6d0717fe36ff4f30419801675be1a6",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.22",
+      "archive": "ZELRES2.SAR",
+      "record": 22,
+      "payload_offset": 150608,
+      "payload_bytes": 4972,
+      "payload_sha256": "f65ce095017c0e18e9c104922b30e959491f0f54e781b6b465c7b95c5785e87d",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "CHURCH.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 107575,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 6000,
+        "sha256": "88195edede25c98ed7a5f72edda61d3b2b6eaad66d4c988b2dc644bc974a620a",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.23",
+      "archive": "ZELRES2.SAR",
+      "record": 23,
+      "payload_offset": 155584,
+      "payload_bytes": 8869,
+      "payload_sha256": "d416afb2564fe4878bd50e17a94550967e509e46c0e7b4046d238ab835dba88a",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "DRUG.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 109977,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 10176,
+        "sha256": "3e348287c496decfe25c6fb105b8a738c292d4a90850d3c7b4b08d81e919dede",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.24",
+      "archive": "ZELRES2.SAR",
+      "record": 24,
+      "payload_offset": 164457,
+      "payload_bytes": 4799,
+      "payload_sha256": "59db8fc6d9a13852bade0a157a18167f8c9bd4c2cc0b970abbe82f16fe872000",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "INN.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 113299,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 5376,
+        "sha256": "f01edaecf5f67a7ff9c8dea2209a3d73a66d5b97b738c40af31541e3e36cc8b8",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.25",
+      "archive": "ZELRES2.SAR",
+      "record": 25,
+      "payload_offset": 169260,
+      "payload_bytes": 6865,
+      "payload_sha256": "437e242e15fa6f3e6f55445d95d24f0cc84d74c40b2a7b14db76764a19236f5b",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "KENJYA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 117110,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7968,
+        "sha256": "f9693d20d2eb14542dc68a21336e260f585cc4c97054bb1b385e07c20cfc996d",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.26",
+      "archive": "ZELRES2.SAR",
+      "record": 26,
+      "payload_offset": 176129,
+      "payload_bytes": 4328,
+      "payload_sha256": "aab1ecf71c259c5c01f02fa7ee2f03cbb6dab6f00e08621b7b22311f1a641881",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 6702,
+        "sha256": "91f6f7a09dcd8e331fe8dbfd63c0b44c7cc0008cd16140b3002ab015669e81f9",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.27",
+      "archive": "ZELRES2.SAR",
+      "record": 27,
+      "payload_offset": 180461,
+      "payload_bytes": 5026,
+      "payload_sha256": "41328efc8af0876d41beaae6837c48c04fdb2ac1a0d3f5bf478bc8d45f097dfc",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7586,
+        "sha256": "7be5e51234094fb51a1bd1b279e9b657f1e2a15dec0f7f9c7c2ad44b36571c39",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.28",
+      "archive": "ZELRES2.SAR",
+      "record": 28,
+      "payload_offset": 185491,
+      "payload_bytes": 3314,
+      "payload_sha256": "7cc992ab06ce04ff7af13704b04bd783731ad504f5fb27e8fda877a74163a123",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 5388,
+        "sha256": "8cfce44ceee5708ac867dfb115432f10e4461ae5b499586ce12956ae74705362",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.29",
+      "archive": "ZELRES2.SAR",
+      "record": 29,
+      "payload_offset": 188809,
+      "payload_bytes": 7373,
+      "payload_sha256": "e41e4ab79a8575091ae74f29553bbbb5307eca8494c540f7b0a3108031a1378e",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MMAN.GRP",
+          "source": "ZELRES1.SAR",
+          "offset": 56381,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        },
+        {
+          "name": "MMAN.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15641,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7675,
+        "sha256": "d49858e92a381c402b2598b5b2ec1178c68d996bf580a773e2562217bd6c2ae5",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.30",
+      "archive": "ZELRES2.SAR",
+      "record": 30,
+      "payload_offset": 196186,
+      "payload_bytes": 8035,
+      "payload_sha256": "ce525d84a42aa65660812bdac58516fa71e5a6d8c11e3df4e025af8c6791f75a",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "CMAN.GRP",
+          "source": "ZELRES1.SAR",
+          "offset": 56392,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        },
+        {
+          "name": "CMAN.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15652,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8187,
+        "sha256": "e51662b336b514dd6b6a23c2dd1c59d471ac363d9d9fcf6d045759691e9a2826",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.31",
+      "archive": "ZELRES2.SAR",
+      "record": 31,
+      "payload_offset": 204225,
+      "payload_bytes": 2210,
+      "payload_sha256": "bd3a225e8b133e92e419659a32ecb3767c060f17d5da6e2fe0cc00e4a4616e69",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "TMAN.GRP",
+          "source": "ZELRES1.SAR",
+          "offset": 56531,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 0,
+        "bytes": 2208,
+        "sha256": "5f7d3cf19ec2a42271e234e4d2b0b10006d07d88b9706abcf00c6dc904ff9e3f",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.32",
+      "archive": "ZELRES2.SAR",
+      "record": 32,
+      "payload_offset": 206439,
+      "payload_bytes": 1359,
+      "payload_sha256": "17def546be214e3f86c814b2caf83791d466beeb7495935a4a132fccbe805d72",
+      "classification": "unknown",
+      "names": [],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1728,
+        "sha256": "f29233b672d3d54bdb0b302960edb07d0459750280485e4e15c1fe37ce0c3722",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.33",
+      "archive": "ZELRES2.SAR",
+      "record": 33,
+      "payload_offset": 207802,
+      "payload_bytes": 6096,
+      "payload_sha256": "e2d1bbcc94df2b3c28816ada35185c1953ed2e58cc1e6f6243bd63f86f61ed63",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "CPAT.GRP",
+          "source": "ZELRES1.SAR",
+          "offset": 56451,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7792,
+        "sha256": "831bf7b9a3cb0d31870d57d23f06e69a56d420fe17f8c27dc0c2323ddbce1339",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.34",
+      "archive": "ZELRES2.SAR",
+      "record": 34,
+      "payload_offset": 213902,
+      "payload_bytes": 9895,
+      "payload_sha256": "e6eadae349bc7cf6bb7099dc316c9e1d3ac43b7e2875e625648d25fdbf183cef",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPAT.GRP",
+          "source": "ZELRES1.SAR",
+          "offset": 56462,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 11872,
+        "sha256": "fe07de9d5da5406f029bdfd20ba2b3a0c4e30841909c961d0628fd731901f864",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.35",
+      "archive": "ZELRES2.SAR",
+      "record": 35,
+      "payload_offset": 223801,
+      "payload_bytes": 8157,
+      "payload_sha256": "acae9cb244d7dbb02dc3439dbbb141061cdbe5bb8b1234a176193c2db4a97bd2",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "DPAT.GRP",
+          "source": "ZELRES1.SAR",
+          "offset": 56473,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 9424,
+        "sha256": "d7acd76dd5e37d3ea31d7b7a7367187b9e04e9a9ec14480b487462aba79ae6a1",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.36",
+      "archive": "ZELRES2.SAR",
+      "record": 36,
+      "payload_offset": 231962,
+      "payload_bytes": 2238,
+      "payload_sha256": "6bc3a65376015f81d64450ff79211b838b895c117eb713e9ba7190f5f130650c",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "CMAP.MDT",
+          "source": "resident",
+          "offset": 4296,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.37",
+      "archive": "ZELRES2.SAR",
+      "record": 37,
+      "payload_offset": 234204,
+      "payload_bytes": 3833,
+      "payload_sha256": "a6adbdfe43edeeebd538bc5e0afad3354b893aa5de77a9e6f9359cd115bc056a",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MRMP.MDT",
+          "source": "resident",
+          "offset": 4307,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.38",
+      "archive": "ZELRES2.SAR",
+      "record": 38,
+      "payload_offset": 238041,
+      "payload_bytes": 3244,
+      "payload_sha256": "cbe53346bd3efc6dc9e4f66d5f9a7356c105f05f1741070a2ee9486c08df3dec",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "STMP.MDT",
+          "source": "resident",
+          "offset": 4318,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.39",
+      "archive": "ZELRES2.SAR",
+      "record": 39,
+      "payload_offset": 241289,
+      "payload_bytes": 3414,
+      "payload_sha256": "d1eb7225faaf6d1c45ddd4b51d86f1295d506691eb7556ab380c6070d8dbfa3b",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "BSMP.MDT",
+          "source": "resident",
+          "offset": 4329,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.40",
+      "archive": "ZELRES2.SAR",
+      "record": 40,
+      "payload_offset": 244707,
+      "payload_bytes": 3584,
+      "payload_sha256": "2ac058148b36a684e78d11d33c5368c9a435d2028231bbda2b3b67fd27048745",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "HLMP.MDT",
+          "source": "resident",
+          "offset": 4340,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.41",
+      "archive": "ZELRES2.SAR",
+      "record": 41,
+      "payload_offset": 248295,
+      "payload_bytes": 4078,
+      "payload_sha256": "604b533cc06305ddb986884eb35008a2b58c94f8f829f5aa4dd127c59bbf2d25",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "TMMP.MDT",
+          "source": "resident",
+          "offset": 4351,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.42",
+      "archive": "ZELRES2.SAR",
+      "record": 42,
+      "payload_offset": 252377,
+      "payload_bytes": 3638,
+      "payload_sha256": "467fc5dceb0de3e49ac72a9f23ab3d25649e4dd01fa6d58b36dbf4083c5f5145",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "DRMP.MDT",
+          "source": "resident",
+          "offset": 4362,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.43",
+      "archive": "ZELRES2.SAR",
+      "record": 43,
+      "payload_offset": 256019,
+      "payload_bytes": 4373,
+      "payload_sha256": "76a5e32be9fe26f94e0b3f59ea77689e22e362664747de380852773f2fcdae7c",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "LLMP.MDT",
+          "source": "resident",
+          "offset": 4373,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.44",
+      "archive": "ZELRES2.SAR",
+      "record": 44,
+      "payload_offset": 260396,
+      "payload_bytes": 4283,
+      "payload_sha256": "b297a531771c004ffc357be43265fe253150b38c6e786f93bd78e231b690a56f",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "PRMP.MDT",
+          "source": "resident",
+          "offset": 4384,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.45",
+      "archive": "ZELRES2.SAR",
+      "record": 45,
+      "payload_offset": 264683,
+      "payload_bytes": 2562,
+      "payload_sha256": "2f66c3addedbb490b17bfae7b7127d8a30fa36f9d1712de90a63d4278f6038a1",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "ESMP.MDT",
+          "source": "resident",
+          "offset": 4395,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.46",
+      "archive": "ZELRES2.SAR",
+      "record": 46,
+      "payload_offset": 267249,
+      "payload_bytes": 3561,
+      "payload_sha256": "5f2b9fbb30750d3d6f0f71f445693e8401ca909f5929ff72224be55aabec6879",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MGT1.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16191,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.47",
+      "archive": "ZELRES2.SAR",
+      "record": 47,
+      "payload_offset": 270814,
+      "payload_bytes": 3288,
+      "payload_sha256": "38849422d9bcfb11d5158f1e72ddc549051731af4ad3506c5aadd82c2f031247",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MGT2.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16213,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.48",
+      "archive": "ZELRES2.SAR",
+      "record": 48,
+      "payload_offset": 274106,
+      "payload_bytes": 4038,
+      "payload_sha256": "98d274c241100d33809bfbe2bb92820ef5887c707e7587e54c81755b647428b9",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "UGM1.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16202,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.49",
+      "archive": "ZELRES2.SAR",
+      "record": 49,
+      "payload_offset": 278148,
+      "payload_bytes": 1780,
+      "payload_sha256": "11273a21bce484a5d2387f5eea3261a1d907bd846f5ff152974addbe6921c0a9",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "UGM2.MSD",
+          "source": "ZELRES1.SAR",
+          "offset": 56994,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        },
+        {
+          "name": "UGM2.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16224,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.50",
+      "archive": "ZELRES2.SAR",
+      "record": 50,
+      "payload_offset": 279932,
+      "payload_bytes": 8683,
+      "payload_sha256": "f9dbb1b008849d667ded3f7aaf05030b567bd9c039f9b80d34fd5232afd09b17",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "enddemo.bin",
+          "source": "ZELRES2.SAR",
+          "offset": 95853,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres2.record.51",
+      "archive": "ZELRES2.SAR",
+      "record": 51,
+      "payload_offset": 288619,
+      "payload_bytes": 4900,
+      "payload_sha256": "39e5ad8790e0a0eeb74a8ffb4f3291c2c56d1ac1fe4cf371356ec46fc5cdedf2",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "en72.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288583,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 10720,
+        "sha256": "1a49fa587c4640fbf4071c33b97e25ae048f8c385239f45e95c45b4f1689ac7b",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.52",
+      "archive": "ZELRES2.SAR",
+      "record": 52,
+      "payload_offset": 293523,
+      "payload_bytes": 10514,
+      "payload_sha256": "abd60a19f36a79e18e86c7c2541fb321b29b7e55cd87814150ff39f2bac3226f",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "end4.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288550,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 0,
+        "bytes": 10512,
+        "sha256": "8412a73834acb2a3053155be890226e5bfc758f06aaa4b1a2f435b1faa167c1f",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.53",
+      "archive": "ZELRES2.SAR",
+      "record": 53,
+      "payload_offset": 304041,
+      "payload_bytes": 11484,
+      "payload_sha256": "7e16c219a5895f30cfb78e465eeb22313d940b9d66e54abb86702250344d926f",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "end5.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288539,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 13177,
+        "sha256": "e62ea38ab51dc9253640bf782feca4331dc1661aeb2e4a2817dc92c2f61c7790",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.54",
+      "archive": "ZELRES2.SAR",
+      "record": 54,
+      "payload_offset": 315529,
+      "payload_bytes": 11155,
+      "payload_sha256": "0e769d225e9ca54a20e939d4d055de1b8b58aff982a49bcf194522cd0e770c2c",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "end6.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288561,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 0,
+        "bytes": 11153,
+        "sha256": "d179725014f7f53b392d59ad23cb1fb66fa0a939163046931127c4cffca3ba45",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.55",
+      "archive": "ZELRES2.SAR",
+      "record": 55,
+      "payload_offset": 326688,
+      "payload_bytes": 11529,
+      "payload_sha256": "d1e6609bcf9090401eab1bc4ead732a880677ec79c4bfab93648fb75fe548d55",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "end7.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288572,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 5,
+        "bytes": 11542,
+        "sha256": "4b566edb9596f56a6c2127aedcd5c29ab1894a8838528fb0e93c0ba7a1ceb1d8",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.56",
+      "archive": "ZELRES2.SAR",
+      "record": 56,
+      "payload_offset": 338221,
+      "payload_bytes": 2181,
+      "payload_sha256": "f07a8c3312d63524ed1b56222dc579454ab74d34f9eaa505c542200e5479c85a",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "fin.grp",
+          "source": "ZELRES2.SAR",
+          "offset": 288594,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 2194,
+        "sha256": "22012a0dd9e25b6b8b66794029e277afeff4738dcabbcd75a106553c89d4fe2e",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres2.record.57",
+      "archive": "ZELRES2.SAR",
+      "record": 57,
+      "payload_offset": 340406,
+      "payload_bytes": 4812,
+      "payload_sha256": "968d7ea08e93ff181547ae74d62b942431a9e1d87fdc4aadf9c8da44c2c242b3",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ROKA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15604,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 5952,
+        "sha256": "1b1d800f69575e5025ae1d68f3b54175d127ddeeb34fdaba246061a55b246081",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.00",
+      "archive": "ZELRES3.SAR",
+      "record": 0,
+      "payload_offset": 388,
+      "payload_bytes": 1448,
+      "payload_sha256": "5ee01bd482aa2c77afe9da52152a9637163745fffdf0cd3ebf17778855f526a9",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "ROKADEMO.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15626,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.01",
+      "archive": "ZELRES3.SAR",
+      "record": 1,
+      "payload_offset": 1840,
+      "payload_bytes": 1847,
+      "payload_sha256": "68f1adb689c1a30da0d0e7cccd5631e82b424176aa8d83562db22a39e2ea7d15",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "EAI1.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15784,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.02",
+      "archive": "ZELRES3.SAR",
+      "record": 2,
+      "payload_offset": 3691,
+      "payload_bytes": 2720,
+      "payload_sha256": "57534320057c44e9293a8ada5b65b28cac329b9b4c560aed0fa585556c2d7fd9",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "EAI2.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15806,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.03",
+      "archive": "ZELRES3.SAR",
+      "record": 3,
+      "payload_offset": 6415,
+      "payload_bytes": 1847,
+      "payload_sha256": "62b1c263e3a3a17059dc03e9a251771080c801f33947d867b62364b46477c3a6",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "EAI3.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15828,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.04",
+      "archive": "ZELRES3.SAR",
+      "record": 4,
+      "payload_offset": 8266,
+      "payload_bytes": 2118,
+      "payload_sha256": "f078ef568f3f8650aaf22a8172fee37a4b1f417dbb00d7748c26e6d620b70de9",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "EAI4.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15850,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.05",
+      "archive": "ZELRES3.SAR",
+      "record": 5,
+      "payload_offset": 10388,
+      "payload_bytes": 2551,
+      "payload_sha256": "3a6dfd2911c683e66ac1164c2420f5e50a1afcad7b2507e11f401d4b9f0e94ff",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "EAI5.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15872,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.06",
+      "archive": "ZELRES3.SAR",
+      "record": 6,
+      "payload_offset": 12943,
+      "payload_bytes": 2514,
+      "payload_sha256": "8fac5feab510bbb29589640d612aae312c4dbfc876fa9b3bd838aad1f4866938",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "EAI6.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15894,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.07",
+      "archive": "ZELRES3.SAR",
+      "record": 7,
+      "payload_offset": 15461,
+      "payload_bytes": 2255,
+      "payload_sha256": "0c1e590ed361d732d8d84eba85b505e60f2d96b38d0fb2df1e210bd4adc6e958",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "EAI7.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15916,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.08",
+      "archive": "ZELRES3.SAR",
+      "record": 8,
+      "payload_offset": 17720,
+      "payload_bytes": 1939,
+      "payload_sha256": "38d887024b5fa07b7b5b8332a7eeada1f69154435d0a577e1c6816dc5c26c254",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "EAI8.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15938,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.09",
+      "archive": "ZELRES3.SAR",
+      "record": 9,
+      "payload_offset": 19663,
+      "payload_bytes": 2030,
+      "payload_sha256": "3fdf3eaac3d62072b27171f0e0a082a929cc74096aaaabfa49bc91c7a5a4aaf0",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "CRAB.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15795,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.10",
+      "archive": "ZELRES3.SAR",
+      "record": 10,
+      "payload_offset": 21697,
+      "payload_bytes": 2722,
+      "payload_sha256": "80754ad697aa6cd15308702f27bf450592a35f733feab893e7b01a3538a90be9",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "TAKO.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15817,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.11",
+      "archive": "ZELRES3.SAR",
+      "record": 11,
+      "payload_offset": 24423,
+      "payload_bytes": 2020,
+      "payload_sha256": "3846b892f7705fbbcfd6c207df2098d4583fd20f6c1d7010e9033838883bea75",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "TORI.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15839,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.12",
+      "archive": "ZELRES3.SAR",
+      "record": 12,
+      "payload_offset": 26447,
+      "payload_bytes": 1576,
+      "payload_sha256": "9a2de5546d0f651e02b096ea66d07d3a41812792dd8f74ace04efa6612242037",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "ZELA.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15861,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.13",
+      "archive": "ZELRES3.SAR",
+      "record": 13,
+      "payload_offset": 28027,
+      "payload_bytes": 2184,
+      "payload_sha256": "e57fc85f87a53d2c2770236f23ada98ffaeafa6dc80e45828b97cd82477d37fb",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "MEDA.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15883,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.14",
+      "archive": "ZELRES3.SAR",
+      "record": 14,
+      "payload_offset": 30215,
+      "payload_bytes": 2073,
+      "payload_sha256": "bbd1c3337aab94000767eaab8229b868ef97b41c3f829a8295aab704006a7448",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "LEGA.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15905,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.15",
+      "archive": "ZELRES3.SAR",
+      "record": 15,
+      "payload_offset": 32292,
+      "payload_bytes": 1563,
+      "payload_sha256": "d6f2befe05976fe5221c03f47cc039efecf910832ef26d5dcff09890c1001de0",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "ZEL2.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15982,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.16",
+      "archive": "ZELRES3.SAR",
+      "record": 16,
+      "payload_offset": 33859,
+      "payload_bytes": 2985,
+      "payload_sha256": "0eb425a0da31e6ecf8f3e59192e335eca19333db7859f8612ca7bf3b7374ef6e",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "DRGN.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15927,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.17",
+      "archive": "ZELRES3.SAR",
+      "record": 17,
+      "payload_offset": 36848,
+      "payload_bytes": 2810,
+      "payload_sha256": "898166abced4a9730075fc5eda6933e05aa4d8137c4765586e47b017ec996a44",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "AKMA.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15949,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.18",
+      "archive": "ZELRES3.SAR",
+      "record": 18,
+      "payload_offset": 39662,
+      "payload_bytes": 1437,
+      "payload_sha256": "3c65ccb278e995ccff33017fedf23ee4ed9420514b49ff2df884b2adcf3e9cdf",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "MAO1.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15960,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.19",
+      "archive": "ZELRES3.SAR",
+      "record": 19,
+      "payload_offset": 41103,
+      "payload_bytes": 3183,
+      "payload_sha256": "82ba9dedd755ea33e5515f555d4152f0608d1b8c44d95bbf26047281a3ef93ff",
+      "classification": "program_candidate",
+      "names": [
+        {
+          "name": "MAO2.BIN",
+          "source": "ZELRES2.SAR",
+          "offset": 15971,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.20",
+      "archive": "ZELRES3.SAR",
+      "record": 20,
+      "payload_offset": 44290,
+      "payload_bytes": 6544,
+      "payload_sha256": "87a883b0fa5cd75adcbc9a8e7b183309913feee956b86c50eef31bd98da008e7",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP10.MDT",
+          "source": "resident",
+          "offset": 3944,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.21",
+      "archive": "ZELRES3.SAR",
+      "record": 21,
+      "payload_offset": 50838,
+      "payload_bytes": 568,
+      "payload_sha256": "3664abb5564d7fd80094492e646cbe33762a800fb242aee5b8e9f6c6d785bdb5",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP1D.MDT",
+          "source": "resident",
+          "offset": 3955,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.22",
+      "archive": "ZELRES3.SAR",
+      "record": 22,
+      "payload_offset": 51410,
+      "payload_bytes": 7094,
+      "payload_sha256": "b65552fe789798e026e05093fe58928c2286eb8bff5befb97254f02d78454310",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP20.MDT",
+          "source": "resident",
+          "offset": 3966,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.23",
+      "archive": "ZELRES3.SAR",
+      "record": 23,
+      "payload_offset": 58508,
+      "payload_bytes": 3028,
+      "payload_sha256": "be26011f5742a97bc96a2a59860fa6857b1b14a3d2ab0ace4220af729b7966d2",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP21.MDT",
+          "source": "resident",
+          "offset": 3977,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.24",
+      "archive": "ZELRES3.SAR",
+      "record": 24,
+      "payload_offset": 61540,
+      "payload_bytes": 858,
+      "payload_sha256": "268dc8613354e01677216ab287f69f01d9ac17ce5d3a5cd0f2acaaafe5537426",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP2D.MDT",
+          "source": "resident",
+          "offset": 3988,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.25",
+      "archive": "ZELRES3.SAR",
+      "record": 25,
+      "payload_offset": 62402,
+      "payload_bytes": 3889,
+      "payload_sha256": "9bed1ce22efe70e0a1e57ce2030e023e27c1acd4a721dd82dd91734ad91417ec",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP30.MDT",
+          "source": "resident",
+          "offset": 3999,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.26",
+      "archive": "ZELRES3.SAR",
+      "record": 26,
+      "payload_offset": 66295,
+      "payload_bytes": 4522,
+      "payload_sha256": "a035b3e879d3478804ca69550887fbe131dfd27c3a7a2309d5d37b216d8a4e66",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP31.MDT",
+          "source": "resident",
+          "offset": 4010,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.27",
+      "archive": "ZELRES3.SAR",
+      "record": 27,
+      "payload_offset": 70821,
+      "payload_bytes": 486,
+      "payload_sha256": "48145ce509668751c73d18ff38cb9db0a776cbd81898007f0ef379ed90b08e17",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP3D.MDT",
+          "source": "resident",
+          "offset": 4021,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.28",
+      "archive": "ZELRES3.SAR",
+      "record": 28,
+      "payload_offset": 71311,
+      "payload_bytes": 7540,
+      "payload_sha256": "322922f80899ed1ac3c5085a645787e26b0941b1faeb392210dde7d79e4e4c6b",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP40.MDT",
+          "source": "resident",
+          "offset": 4032,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.29",
+      "archive": "ZELRES3.SAR",
+      "record": 29,
+      "payload_offset": 78855,
+      "payload_bytes": 5118,
+      "payload_sha256": "5e6eb8f1cea01c5edad37214a8f3022b08d5b0b6635470e265e43c34fe686d63",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP41.MDT",
+          "source": "resident",
+          "offset": 4043,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.30",
+      "archive": "ZELRES3.SAR",
+      "record": 30,
+      "payload_offset": 83977,
+      "payload_bytes": 589,
+      "payload_sha256": "c2711a493567ff51b630ad99f0167ccfad64aedb6851b095a041e2962536c497",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP4D.MDT",
+          "source": "resident",
+          "offset": 4054,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.31",
+      "archive": "ZELRES3.SAR",
+      "record": 31,
+      "payload_offset": 84570,
+      "payload_bytes": 7572,
+      "payload_sha256": "2eb945d668fbde773f67942c490b4284cf1d58e401158cdb8c254d40982e9936",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP50.MDT",
+          "source": "resident",
+          "offset": 4065,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.32",
+      "archive": "ZELRES3.SAR",
+      "record": 32,
+      "payload_offset": 92146,
+      "payload_bytes": 8049,
+      "payload_sha256": "22885a6b55eebbbc1e60fdc2e91bb438dd43dc2ad8b71dca193be87711e611fb",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP51.MDT",
+          "source": "resident",
+          "offset": 4076,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.33",
+      "archive": "ZELRES3.SAR",
+      "record": 33,
+      "payload_offset": 100199,
+      "payload_bytes": 619,
+      "payload_sha256": "60bf7f3f466d96e3ca8b5d8de11045a8dcb17b080239ab3d88eb1cfc1368a189",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP5D.MDT",
+          "source": "resident",
+          "offset": 4087,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.34",
+      "archive": "ZELRES3.SAR",
+      "record": 34,
+      "payload_offset": 100822,
+      "payload_bytes": 7425,
+      "payload_sha256": "808b88cda611f600e800ec2425c5f8314e9b56158a6cb9abbea1152ace92fbe6",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP60.MDT",
+          "source": "resident",
+          "offset": 4098,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.35",
+      "archive": "ZELRES3.SAR",
+      "record": 35,
+      "payload_offset": 108251,
+      "payload_bytes": 6380,
+      "payload_sha256": "61d8886fca35f0fd0a629b7ffc234e446c00a65080b7215d581cbb7f9138e68e",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP61.MDT",
+          "source": "resident",
+          "offset": 4109,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.36",
+      "archive": "ZELRES3.SAR",
+      "record": 36,
+      "payload_offset": 114635,
+      "payload_bytes": 1750,
+      "payload_sha256": "82846e24fea38f922d5113f3dc1e438bc1bce894e9b35d35022eee0f974a224d",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP62.MDT",
+          "source": "resident",
+          "offset": 4120,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.37",
+      "archive": "ZELRES3.SAR",
+      "record": 37,
+      "payload_offset": 116389,
+      "payload_bytes": 766,
+      "payload_sha256": "030619c109f6ed6038bcbb4a8197e81ac20d0e106e241f118177f7c71ba4c66b",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP6D.MDT",
+          "source": "resident",
+          "offset": 4131,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.38",
+      "archive": "ZELRES3.SAR",
+      "record": 38,
+      "payload_offset": 117159,
+      "payload_bytes": 7994,
+      "payload_sha256": "c57ce6ab2898d61ad7ec64fe03e1b3a865031a7f0908c4b3888e91651055127c",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP70.MDT",
+          "source": "resident",
+          "offset": 4142,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.39",
+      "archive": "ZELRES3.SAR",
+      "record": 39,
+      "payload_offset": 125157,
+      "payload_bytes": 6655,
+      "payload_sha256": "163b8a78659960052411b61c1c68693e149eef93f0b564be6228eac41028d5c7",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP71.MDT",
+          "source": "resident",
+          "offset": 4153,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.40",
+      "archive": "ZELRES3.SAR",
+      "record": 40,
+      "payload_offset": 131816,
+      "payload_bytes": 4780,
+      "payload_sha256": "9de798b9ddddaa9cf9b22cc37c05a11b17819228958bf3c7ee3a4332f70a92cb",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP72.MDT",
+          "source": "resident",
+          "offset": 4164,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.41",
+      "archive": "ZELRES3.SAR",
+      "record": 41,
+      "payload_offset": 136600,
+      "payload_bytes": 427,
+      "payload_sha256": "f9fae016a5b261c3a12805085bbd5db69d443c49f87a87e5193cf1da25affdf4",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP73.MDT",
+          "source": "resident",
+          "offset": 4175,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.42",
+      "archive": "ZELRES3.SAR",
+      "record": 42,
+      "payload_offset": 137031,
+      "payload_bytes": 720,
+      "payload_sha256": "0850c2c61ee6fa87aed2b8b8b932348f8bfc2b4ba8f13b698ed5b09dac1d3afe",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP7D.MDT",
+          "source": "resident",
+          "offset": 4186,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.43",
+      "archive": "ZELRES3.SAR",
+      "record": 43,
+      "payload_offset": 137755,
+      "payload_bytes": 7294,
+      "payload_sha256": "1f85d0e4df6167492260a694aa5a8aad6f218b55ff73e07ab615705809fea2bd",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP80.MDT",
+          "source": "resident",
+          "offset": 4197,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.44",
+      "archive": "ZELRES3.SAR",
+      "record": 44,
+      "payload_offset": 145053,
+      "payload_bytes": 7455,
+      "payload_sha256": "8b340f89e7445a2ffdee7779fcdbc80475e7088f10bb2fd365c53d5a76bb613c",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP81.MDT",
+          "source": "resident",
+          "offset": 4208,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.45",
+      "archive": "ZELRES3.SAR",
+      "record": 45,
+      "payload_offset": 152512,
+      "payload_bytes": 5573,
+      "payload_sha256": "71f658f7d3a79f106317b5d3fc1b90a87ffbfb44dafcfc1520c4577491f22b5c",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP82.MDT",
+          "source": "resident",
+          "offset": 4219,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.46",
+      "archive": "ZELRES3.SAR",
+      "record": 46,
+      "payload_offset": 158089,
+      "payload_bytes": 3247,
+      "payload_sha256": "ef84fef1e29369d75b0a614d05979d464be526ffcfeb5422b30a3de3d8f538ba",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP83.MDT",
+          "source": "resident",
+          "offset": 4230,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.47",
+      "archive": "ZELRES3.SAR",
+      "record": 47,
+      "payload_offset": 161340,
+      "payload_bytes": 1428,
+      "payload_sha256": "a02700db97f2b359ce96d55bdcdd911d6a49885d4138e664bed4f10b1dc43af5",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP84.MDT",
+          "source": "resident",
+          "offset": 4241,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.48",
+      "archive": "ZELRES3.SAR",
+      "record": 48,
+      "payload_offset": 162772,
+      "payload_bytes": 657,
+      "payload_sha256": "eca2ff5dc83decc87af84f18546cddfa8e1ca218fca7f8ab0489d75a91bd6622",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP8D.MDT",
+          "source": "resident",
+          "offset": 4252,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.49",
+      "archive": "ZELRES3.SAR",
+      "record": 49,
+      "payload_offset": 163433,
+      "payload_bytes": 476,
+      "payload_sha256": "4c4b6f556c25baa66af5544b9e30eb7c4163ba84a9b5dadaa5f131818e102a28",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MP90.MDT",
+          "source": "resident",
+          "offset": 4263,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.50",
+      "archive": "ZELRES3.SAR",
+      "record": 50,
+      "payload_offset": 163913,
+      "payload_bytes": 1011,
+      "payload_sha256": "39f4eaf1c1728feea2242766d01c12a60e8646557881c8aa64ad735c1f1041f1",
+      "classification": "map_candidate",
+      "names": [
+        {
+          "name": "MPA0.MDT",
+          "source": "resident",
+          "offset": 4274,
+          "address_space": "固定快照dosgolem01B1段內偏移，亦為IDA base0",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.51",
+      "archive": "ZELRES3.SAR",
+      "record": 51,
+      "payload_offset": 164928,
+      "payload_bytes": 5459,
+      "payload_sha256": "5e5d3ea354c65f18146941a07c36495e32f9fc40deaf82bee59330c03fcfb633",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "FMAN.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15570,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8176,
+        "sha256": "c9540546e74f2749924decd0fa1d68f06e1d98bc0a8b4bc353ea4ae28dfb8da1",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.52",
+      "archive": "ZELRES3.SAR",
+      "record": 52,
+      "payload_offset": 170391,
+      "payload_bytes": 4812,
+      "payload_sha256": "968d7ea08e93ff181547ae74d62b942431a9e1d87fdc4aadf9c8da44c2c242b3",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ROKA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15593,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 5952,
+        "sha256": "1b1d800f69575e5025ae1d68f3b54175d127ddeeb34fdaba246061a55b246081",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.53",
+      "archive": "ZELRES3.SAR",
+      "record": 53,
+      "payload_offset": 175207,
+      "payload_bytes": 1359,
+      "payload_sha256": "17def546be214e3f86c814b2caf83791d466beeb7495935a4a132fccbe805d72",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "DMAN.GRP",
+          "source": "ZELRES3.SAR",
+          "offset": 1811,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1728,
+        "sha256": "f29233b672d3d54bdb0b302960edb07d0459750280485e4e15c1fe37ce0c3722",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.54",
+      "archive": "ZELRES3.SAR",
+      "record": 54,
+      "payload_offset": 176570,
+      "payload_bytes": 1665,
+      "payload_sha256": "8d91727542f16b8fc7e22fdcbb7c408e080b5f15d6b4c036f17f5873d75dfb8a",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "DCHR.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15615,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1872,
+        "sha256": "ac077b64a652afebeb88b907dd61c2411ce2fbac138aec4663c09fb48c0af998",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.55",
+      "archive": "ZELRES3.SAR",
+      "record": 55,
+      "payload_offset": 178239,
+      "payload_bytes": 893,
+      "payload_sha256": "ae69dfafafaec2c5b97069caebc71674f9918ee1201f2dd2c73dac6225fc5dce",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENCNT.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15581,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 1,
+        "bytes": 1040,
+        "sha256": "ae149804be381314ca337739d6ab36a3ea9d398fdbcbbbfb257739caa12866d0",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.56",
+      "archive": "ZELRES3.SAR",
+      "record": 56,
+      "payload_offset": 179136,
+      "payload_bytes": 6258,
+      "payload_sha256": "8030fddd8cb29114778f24ab8f0dede602986358b08ab554cfdd09b2330d6209",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENP1.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15993,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8128,
+        "sha256": "e4cb686b730f390741aa512d9015610051f099142c72d0873857b61c5c21804c",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.57",
+      "archive": "ZELRES3.SAR",
+      "record": 57,
+      "payload_offset": 185398,
+      "payload_bytes": 6816,
+      "payload_sha256": "37afad66b9170f819fab44b363a0fcc1f2ee5a3e49a8708688bb259f729ca91a",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENP2.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16015,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8160,
+        "sha256": "70d51e2134319dd3e9aa46557a2d062b54376fb3be5813370a568114f2a8b651",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.58",
+      "archive": "ZELRES3.SAR",
+      "record": 58,
+      "payload_offset": 192218,
+      "payload_bytes": 6097,
+      "payload_sha256": "3275b2800ff793bd5d9a4d79264464cb37c85df2da04740fd70d57610daa6c83",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENP3.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16037,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7936,
+        "sha256": "71ade2c69111147c0b0cd245aa816b61f146ba3011a6375674784225efea0617",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.59",
+      "archive": "ZELRES3.SAR",
+      "record": 59,
+      "payload_offset": 198319,
+      "payload_bytes": 5701,
+      "payload_sha256": "55073f6556d32f5dc94b7359f05c63c209922468b348cdc6e6b6931b55df2008",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENP4.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16059,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7264,
+        "sha256": "56965e0cb17889fd64d682bea27d7d358f9b1bef35549c25848de0bfb75efcbe",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.60",
+      "archive": "ZELRES3.SAR",
+      "record": 60,
+      "payload_offset": 204024,
+      "payload_bytes": 6702,
+      "payload_sha256": "55cad7dcf7fa0819d21e3cdba363ef8639b5a3f10e3f1c66205e50f4a1829665",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENP5.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16081,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8160,
+        "sha256": "92b3a43da0dd7a0744be383ffe24e8f586259505ac1eeb22a6d5bc19dc1c126e",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.61",
+      "archive": "ZELRES3.SAR",
+      "record": 61,
+      "payload_offset": 210730,
+      "payload_bytes": 6478,
+      "payload_sha256": "4db33871447f9f510d8e30689aaa192fbbbb06442041ba481b05248515c72e14",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENP6.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16103,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8160,
+        "sha256": "28c4355613151abb1efb649ece5d0167f770a52b3c32a94e3a9abfd26c3084d7",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.62",
+      "archive": "ZELRES3.SAR",
+      "record": 62,
+      "payload_offset": 217212,
+      "payload_bytes": 6893,
+      "payload_sha256": "e2a45d7bdff5f29473e1831f4da1626ebb09681ce756e6545bba10e713f76545",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENP7.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16125,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8128,
+        "sha256": "ae8257f89a1aa591f98c4bb71992c9ef0eb4d7dd2def8a4a54cdc633a237d572",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.63",
+      "archive": "ZELRES3.SAR",
+      "record": 63,
+      "payload_offset": 224109,
+      "payload_bytes": 6669,
+      "payload_sha256": "3bf6c1e69a2b6be688d1db2cd2d3f08eef61cc8ff0d488aaf76b444a401d41fb",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ENP8.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16147,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8176,
+        "sha256": "7b2cf79971747cacd022afc3d966e97d3acc414dd542b907d57a1da8608b042c",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.64",
+      "archive": "ZELRES3.SAR",
+      "record": 64,
+      "payload_offset": 230782,
+      "payload_bytes": 5320,
+      "payload_sha256": "f2e44ec860cc4714f42ae533618846756bb6ca15c1aa855a5e8be63e9493483c",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "CRAB.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16004,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7296,
+        "sha256": "91d9f5d077c74577322a00e78162b2cc8025d9dfeb19bb0df468ac1bae86dbdf",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.65",
+      "archive": "ZELRES3.SAR",
+      "record": 65,
+      "payload_offset": 236106,
+      "payload_bytes": 5611,
+      "payload_sha256": "7aa5ebfb97926e844382e6f0aa2c6475b9e17a287a93b3d55065c654930f2954",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "TAKO.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16026,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7296,
+        "sha256": "dd4e40866f0c67b3c8684708d55d2322094f2a58690270a425c333aac8d91fdf",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.66",
+      "archive": "ZELRES3.SAR",
+      "record": 66,
+      "payload_offset": 241721,
+      "payload_bytes": 4293,
+      "payload_sha256": "580137c1fdec485efaea43530ab2cf333349b314f2d12d6e161fd17919b5cd78",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "TORI.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16048,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 6016,
+        "sha256": "5514a74f68fdd4a3b3c9dc60a358dd72f03676a66348f29b5158badfe019bc66",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.67",
+      "archive": "ZELRES3.SAR",
+      "record": 67,
+      "payload_offset": 246018,
+      "payload_bytes": 5104,
+      "payload_sha256": "8a333302af42a482bb952c2f8c3ad524dc08f0a83393ef5e1720bf2b825c93d9",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "ZELA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16070,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 6880,
+        "sha256": "85b0a412dba3863857449607dddaf78c52f5f30db0ba6c4afd27e9c888413de6",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.68",
+      "archive": "ZELRES3.SAR",
+      "record": 68,
+      "payload_offset": 251126,
+      "payload_bytes": 6657,
+      "payload_sha256": "ae5e02fa8e5f8dcd9fd6bfc6c76458d242ab149ab76e214ecd86a74c34d3392e",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MEDA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16092,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 7136,
+        "sha256": "d4b53d8cffa936732dc8b3aa11160834c8ba1da24d185f88a8c1f4b4d0a94806",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.69",
+      "archive": "ZELRES3.SAR",
+      "record": 69,
+      "payload_offset": 257787,
+      "payload_bytes": 5455,
+      "payload_sha256": "57dde3a7d12fedfec217db67bcb6dfc284b005233d668f663c84b9fe27eae484",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "LEGA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16114,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 6752,
+        "sha256": "d6e4184bee4b612f5b3071ba38145648f6ef43481ca5302cc1f4c2cce7c3c612",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.70",
+      "archive": "ZELRES3.SAR",
+      "record": 70,
+      "payload_offset": 263246,
+      "payload_bytes": 6521,
+      "payload_sha256": "ad0dd684cb5b4e84bc5df57291bda1301e1ffc58ad3e21782fee3ff51fb23fc4",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "DRGN.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16136,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8192,
+        "sha256": "894caecc0fae6f9cf87d6065f68bf333cbf3c5e38761dbc92aba7a5bbc258d37",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.71",
+      "archive": "ZELRES3.SAR",
+      "record": 71,
+      "payload_offset": 269771,
+      "payload_bytes": 6715,
+      "payload_sha256": "c7553596e2c23f3227a5a7fe505a59e53a6b9835e3c4c9b1bea65224ab0afd56",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "AKMA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16158,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8192,
+        "sha256": "2c35071df690d286242e1d48ef9e50bdaa5e25cc60d45c855beac1fc965ade69",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.72",
+      "archive": "ZELRES3.SAR",
+      "record": 72,
+      "payload_offset": 276490,
+      "payload_bytes": 5373,
+      "payload_sha256": "60805594343f4a01ff548e1adfd34c112eeae5045fa0f215c0e13970be09c7e3",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MAO1.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16169,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 6752,
+        "sha256": "54a967971c63d8679a731ccb4984bfeec9e3273eed81981cff8b16ca82e4785d",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.73",
+      "archive": "ZELRES3.SAR",
+      "record": 73,
+      "payload_offset": 281867,
+      "payload_bytes": 6724,
+      "payload_sha256": "54b294c3959231af70f7681dc9b2461f6ae733b5b3f5a065da11c3f430596b11",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MAO2.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 16180,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 8160,
+        "sha256": "7511301c08da28667b65b1539f4f90b8ff796c86d76ed7374dbfa89e461bddd7",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.74",
+      "archive": "ZELRES3.SAR",
+      "record": 74,
+      "payload_offset": 288595,
+      "payload_bytes": 1167,
+      "payload_sha256": "95c9e29b5411a18c2254cbe0ca80dfa9557ab1968e69d0dc3a288fef9220e15e",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP1.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15663,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1248,
+        "sha256": "0b991410e2069c785b2db5781f2f662862d2985a7c536438cbe892b4ebdce32c",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.75",
+      "archive": "ZELRES3.SAR",
+      "record": 75,
+      "payload_offset": 289766,
+      "payload_bytes": 1593,
+      "payload_sha256": "f619e0d1799c4bdecf5d0cd0414675af334d3e15caff22c9565f00b05a250680",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP2.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15674,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1680,
+        "sha256": "66d849269082061d658ab07dab2f33a44fe5e231ebce64599bb8e48d54ba34e6",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.76",
+      "archive": "ZELRES3.SAR",
+      "record": 76,
+      "payload_offset": 291363,
+      "payload_bytes": 1751,
+      "payload_sha256": "6dc7a149f1378b164d4f46db2029691efb27d78a7e4101b7fee97ffabf00c230",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP3.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15685,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 2112,
+        "sha256": "66e9e07a7fc7677853baafb82c15a653338979fe73ce57f291f939719ba54b91",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.77",
+      "archive": "ZELRES3.SAR",
+      "record": 77,
+      "payload_offset": 293118,
+      "payload_bytes": 1001,
+      "payload_sha256": "293e815a7b604b53d4e676199f2733c76f6891692a66497bdb550affd10bfb78",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP4.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15696,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1056,
+        "sha256": "41edc9380a37931fec4c0ee81ec79aff61c64e71b7c8e78101a3a88c44036995",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.78",
+      "archive": "ZELRES3.SAR",
+      "record": 78,
+      "payload_offset": 294123,
+      "payload_bytes": 2454,
+      "payload_sha256": "24ac87d23dc9d476e880764823474f0a394eaac7fb5e6ac8eea14763fc8ab63a",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP5.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15707,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 2544,
+        "sha256": "964ab425d1f2d215fd4286ef53c0780090fa2663c8fc3b221f95b45f68005588",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.79",
+      "archive": "ZELRES3.SAR",
+      "record": 79,
+      "payload_offset": 296581,
+      "payload_bytes": 1620,
+      "payload_sha256": "d91b7fcb04574bf2d2f02dccb1b664d580f540f5fa42f671f8b2935b7769bbb0",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP6.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15718,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1776,
+        "sha256": "44dc5d86e69709bbe571b1cf86008a745a91e80d897437b68aeecc4cbe8b4325",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.80",
+      "archive": "ZELRES3.SAR",
+      "record": 80,
+      "payload_offset": 298205,
+      "payload_bytes": 2382,
+      "payload_sha256": "bae90b459671bcffb505408b765d1e4ff3a94abbdb788c529bb62d6442fb40a5",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP7.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15729,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 6,
+        "bytes": 2976,
+        "sha256": "89bf9b7d268985362e099b6b0db29c04ca4b48444857f70a7e0bacf82df26b14",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.81",
+      "archive": "ZELRES3.SAR",
+      "record": 81,
+      "payload_offset": 300591,
+      "payload_bytes": 1872,
+      "payload_sha256": "d9b4219d2d35b010b456053ac68dd20ff13671f469c22889519fb596b407cf90",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP8.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15740,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 2112,
+        "sha256": "47ddb3770034d6dfa890e41daaa8c1337f1838c9b752371fc6e8da103a367966",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.82",
+      "archive": "ZELRES3.SAR",
+      "record": 82,
+      "payload_offset": 302467,
+      "payload_bytes": 1545,
+      "payload_sha256": "a59899caac3f926a99b543645dc20d0dae83bdab1d7e593657eea76336724fc3",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPP9.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15751,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1872,
+        "sha256": "b60665deae37a452a76bd79ff1f9bc1695b2ddc33752058fdc8122a3e9ee253e",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.83",
+      "archive": "ZELRES3.SAR",
+      "record": 83,
+      "payload_offset": 304016,
+      "payload_bytes": 821,
+      "payload_sha256": "6aec455a135d106feae1d1d020b43339863a471a27e47a89f5cc41a69fda002b",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPPA.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15762,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 7,
+        "bytes": 1008,
+        "sha256": "6610bddf655550d5157ae228172851b92b5204b30a7ae2b6e5d1a30122995521",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.84",
+      "archive": "ZELRES3.SAR",
+      "record": 84,
+      "payload_offset": 304841,
+      "payload_bytes": 195,
+      "payload_sha256": "e1698dd8e99fde1752690d141888c1dac1f70d8b932e948ffd7ce54e46330a85",
+      "classification": "graphics_candidate",
+      "names": [
+        {
+          "name": "MPPB.GRP",
+          "source": "ZELRES2.SAR",
+          "offset": 15773,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed",
+      "decoder": {
+        "kind": 1,
+        "bytes": 288,
+        "sha256": "cd053fb5fc7025b95207cb0d238c5bf17bf4b08611c2e44112cdd099b72684a6",
+        "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      }
+    },
+    {
+      "key": "zelres3.record.85",
+      "archive": "ZELRES3.SAR",
+      "record": 85,
+      "payload_offset": 305040,
+      "payload_bytes": 3619,
+      "payload_sha256": "1612c4a9701fe704827fe5ab9d706df3403cfa15f513844bf97f2a776257c01c",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MUS1.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16235,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.86",
+      "archive": "ZELRES3.SAR",
+      "record": 86,
+      "payload_offset": 308663,
+      "payload_bytes": 4043,
+      "payload_sha256": "5fe785af8e0d37c082a66d0b0163c7f4361291fb529b9ff26a92392593f9d365",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MUS2.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16246,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.87",
+      "archive": "ZELRES3.SAR",
+      "record": 87,
+      "payload_offset": 312710,
+      "payload_bytes": 3388,
+      "payload_sha256": "db669e01e4c748d5d84a9330acc73a2be4d01c16edee6ddec5de6d49f4d14f8b",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MUS3.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16257,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.88",
+      "archive": "ZELRES3.SAR",
+      "record": 88,
+      "payload_offset": 316102,
+      "payload_bytes": 4041,
+      "payload_sha256": "d10a0c56858601937e011da9a3094a4b2bd494b8c848f25d8e031df987f748c2",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MUS4.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16268,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.89",
+      "archive": "ZELRES3.SAR",
+      "record": 89,
+      "payload_offset": 320147,
+      "payload_bytes": 2335,
+      "payload_sha256": "36b9054b7f58df708778c84882deb478052b6af7ae6e32ffdd1008ba623a73bc",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MUS5.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16279,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.90",
+      "archive": "ZELRES3.SAR",
+      "record": 90,
+      "payload_offset": 322486,
+      "payload_bytes": 5557,
+      "payload_sha256": "8b603f9566530b78a023f7e0e6a682e87d5f4f3883e1d0f5f37ce33b6e5376db",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MUS6.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16290,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.91",
+      "archive": "ZELRES3.SAR",
+      "record": 91,
+      "payload_offset": 328047,
+      "payload_bytes": 4197,
+      "payload_sha256": "b03e3a5b5b3695fcd5878d272e92fa254809e17020f637cd7876962b89a8bfae",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MUS7.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16301,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.92",
+      "archive": "ZELRES3.SAR",
+      "record": 92,
+      "payload_offset": 332248,
+      "payload_bytes": 3638,
+      "payload_sha256": "398a2ddedff561f4b1e438727b274a9b293209c9d146828fd0626babde4a50d6",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MUS8.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16312,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.93",
+      "archive": "ZELRES3.SAR",
+      "record": 93,
+      "payload_offset": 335890,
+      "payload_bytes": 2496,
+      "payload_sha256": "90b0af31ff009c6ae2a078c1c875f8b1efb3fc0023b8c54f5cc553d9d20d9bc2",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MBOS.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16323,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.94",
+      "archive": "ZELRES3.SAR",
+      "record": 94,
+      "payload_offset": 338390,
+      "payload_bytes": 527,
+      "payload_sha256": "1856c7884335763ed3b3d9c35a8d91f083d209d84288390025a61c5500570417",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MFAN.MSD",
+          "source": "ZELRES3.SAR",
+          "offset": 1800,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    },
+    {
+      "key": "zelres3.record.95",
+      "archive": "ZELRES3.SAR",
+      "record": 95,
+      "payload_offset": 338921,
+      "payload_bytes": 3513,
+      "payload_sha256": "dc193e24bc8389b3de02931d211821032858a16e485c367a47d6d80a6aea0181",
+      "classification": "audio_candidate",
+      "names": [
+        {
+          "name": "MMAO.MSD",
+          "source": "ZELRES2.SAR",
+          "offset": 16334,
+          "address_space": "SAR檔案從0起算偏移",
+          "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
+        }
+      ],
+      "hd_coverage": "not_assessed",
+      "normal_path": "not_assessed"
+    }
+  ]
+}
