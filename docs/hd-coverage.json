@@ -45,11 +45,12 @@
     },
     {
       "key": "cave.terrain.ice",
-      "status": "generated_candidate_not_connected",
+      "status": "connected_structural_verified_normal_path_pending",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "source_record": "zelres3.record.77",
-      "evidence": "workplace/full-hd-v1/cave-ice-registration-v3/manifest.json",
-      "limits": "第三版前14格註冊、連續材質與三份離線地圖；15..19圖形文字及20..21仍有缺口，未接正式前端；前兩版僅作畫風參考"
+      "evidence": "workplace/full-hd-v1/cave-ice-final-audit-v1.json",
+      "registered_tiles": 21,
+      "limits": "21格完整手繪圖集接入可選前端，三份合成結構快照與光球取樣通過；正常冰窟進出、捲動及20／21事件用途未驗；MPP1回歸不當冰窟驗收"
     },
     {
       "key": "cave.source.catalog",
@@ -57,7 +58,7 @@
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "maps": 31,
       "terrain_profiles": 11,
-      "evidence": "workplace/full-hd-v1/cave-catalog-final-audit-v1.json",
+      "evidence": "workplace/full-hd-v1/cave-ice-final-audit-v1.json",
       "limits": "來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"
     }
   ],
@@ -91,8 +92,8 @@
       "sha256": "fa907ee8b30601f7868d6a714e8ae42dec6fa94b6efee1d5708cba541cb6420d"
     },
     {
-      "path": "workplace/full-hd-v1/cave-catalog-final-audit-v1.json",
-      "sha256": "466d5633a0548235d347e1f56115b0d2be40e66052adb2faf647a51ebce65673"
+      "path": "workplace/full-hd-v1/cave-ice-final-audit-v1.json",
+      "sha256": "ea712b08b4cfd6bcfae386534c08ef234bf1e0c592f1ee04329180f0195500d2"
     }
   ],
   "archives": [

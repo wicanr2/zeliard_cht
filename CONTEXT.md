@@ -6,13 +6,15 @@
 
 全量台帳為 [hd-coverage.json](docs/hd-coverage.json)：174筆名稱候選、84筆解壓結果與原版常式逐byte一致；分類候選含80圖像、41地圖、17音樂、36程式及20未知，不把它們當成美術分母。三平面變換已對80筆補零研究buffer通過原常式核對，四資源MMAN／TMAN／CPAT／MPAT共597個圖格、28656像素bytes及2256有效遮罩bytes與正常原版RAM一致。證據在 `workplace/full-hd-v1/planar-oracle-v2/receipt.json` 及 `grp-sources-v3/receipt.json`。CMAN／DPAT仍只有結構候選，其他GRP形狀未解，不重開已驗RLE或前版音樂。
 
-後續洞窟入口為 [規格037](docs/spec/037-all-cave-terrain-hd.md)，來源辨識增量已READY並接入，美術呈現仍DRAFT。11組MPP地形共378格已解出原圖，MPP1全部25格與正常RAM相同；31份洞窟地圖共306048格與原版6CED..6D6D常式逐byte相同，圖集選擇端7E9B／7ECD及11項descriptor已核。正常6CEC完成來源的36×64環形地圖2304格相同，包內四份USR的正常冷讀調查皆仍為MPP1；其餘家族可達性未驗，不能計HD完成。
+後續洞窟入口為 [規格037](docs/spec/037-all-cave-terrain-hd.md)，來源辨識及冰窟圖集接入契約已READY並實作，正常冰窟驗收與其他家族仍未完成。11組MPP地形共378格已解出原圖，MPP1全部25格與正常RAM相同；31份洞窟地圖共306048格與原版6CED..6D6D常式逐byte相同，圖集選擇端7E9B／7ECD及11項descriptor已核。正常6CEC完成來源的36×64環形地圖2304格相同，包內四份USR的正常冷讀調查皆仍為MPP1；其餘家族可達性未驗，不能計HD完成。
 
 洞窟來源研究仍沿 `workplace/full-hd-v1/cave-source-stage-audit-v1.json`，原圖、完整地圖、隔離原版常式、正常來源與IDA9.4證據分別在同根`cave-terrain-sources-v1/`、`cave-map-sources-v1/`、`cave-map-oracle-v1/`、`cave-save-survey-v1/`／`cave-save-survey-v2/`及`cave-map-ida-v2/`。此為前輪來源身份，不改稱新程式的驗收。
 
-目前程式為 `workplace/full-hd-v1/cave-catalog-runtime-v1/zeliard-preview`，SHA-256 `bc925caafdfb44d5dfd70bf221ddaf3b9dd2bf5bd4eceb7861335b534311ad46`。31地圖／11圖集來源表、整組資源守衛與跨地圖撤除已接入；完整32256原生像素與時間守衛仍在。收尾入口 `cave-catalog-final-audit-v1.json` 由 [稽核工具](tools/hd_cave_catalog_audit.py)重生至新檔。正常首戰25點及回城10點、既有38完成來源／四份獨立HD像素及拒絕回歸通過。實際視窗`cave-catalog-gui-v3/`正常入洞、步行、兩組切回1152000遊戲區像素相同、回城及DOS退出0通過；來源鍵MP10／MPP1。其他家族只驗真實結構資料，未當正常可達或HD完成；現行封包未更新。
+目前程式為 `workplace/full-hd-v1/cave-ice-runtime-v1/zeliard-preview`，SHA-256 `4948bc709f551827d74b451925e41dc4d9b3e2e898d564a78e8e5f1efd23f98e`。31地圖／11圖集來源、整組守衛及跨地圖撤除沿前輪，新接入可選冰窟21格圖集。完整32256原生像素與時間守衛保留。收尾入口`cave-ice-final-audit-v1.json`由[稽核工具](tools/hd_ice_audit.py)重生至新檔；三圖合成結構快照870912像素、光球及來源／載入拒絕通過。這些快照不執行VM，不當正常冰窟證據。
 
-冰窟前兩版圖集把部分圖形文字當成冰壁，現只作畫風參考。第三版在`cave-ice-art-v3/`，不透明材質在`cave-ice-material-v1/`，各有完整內建imagegen提示詞及輸入／輸出SHA。原圖13／14是16×8三角形的兩半，初次誤讀14全黑的說明已附勘誤。`cave-ice-registration-v3/manifest.json`有14格24×24註冊與MP40／MP41／MP4D離線預覽；15..19圖形文字仍原貌、20..21待接，冰窟尚未進正式前端。
+新程式載入冰窟圖集後，正常MPP1首戰25點及回城10點完整原版狀態與存檔相同，八項具名測試無skip／fail、vet及建置通過。實際視窗`cave-ice-gui-v1/`正常入洞、步行、兩組切回1152000遊戲區像素相同、回城及DOS退出0，根端已目視。來源仍為MP10／MPP1，音訊關閉；其他洞窟的正常進出、捲動、事件及HD仍待驗。前輪bc925caa、來源辨識收據及視窗保持原身份，不換名為新程式。現行封包未更新。
+
+冰窟圖面現為`cave-ice-complete-v1/manifest.json`的21格，原圖13／14三角形兩半沿第三版、15..19完整HELADA字帶及20／21藍白光球具備。新圖與完整內建imagegen提示詞在`cave-ice-details-v1/generation.json`，原始冰壁及材質沿`cave-ice-art-v3/`、`cave-ice-material-v1/`。三份真實靜態地圖預覽無原貌替代格；不等於正常冰窟驗收。以`-cave-ice-art`選該目錄，須同時指定既有`-cave-art-dir`。圖面以SHA／尺寸整組核對，缺圖保留原貌；前兩版誤畫文字及第三版14格研究保持歷史身份。
 
 居民HD已接入候選版，限定驗收見 [規格035](docs/spec/035-town-residents-hd.md) 與 `workplace/full-hd-v1/town-npc-final-audit-v1.json`。五類40姿態／34種RGBA、五張手繪圖、下層還原及居民先於主角的共同合成具備。六點正常原版狀態配對、實際視窗兩頁中文及四組原貌切回通過，每組576000遊戲區像素相同。程式SHA為 `3bdc2098989064bf4d315fbc7e5042764004324877859a0086d2e9cc915407c6`，入口在 `town-npc-runtime-v1/`，尚未更新v.0.2.0封包。交談時背景仍退回原貌，其他城鎮與全部姿態正常可達性未驗，不稱全城鎮完成。
 
@@ -68,7 +70,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-目前先依037完成冰窟圖形文字15..19、光球20..21及正式高清呈現契約，利用已接入的來源辨識擴充其他家族美術與代表性正常入口。前14格的註冊與三地圖離線預覽已具備，不重畫錯誤的前兩版圖集。其餘圖像與20筆未知仍續盤點。現有`v.0.2.0-20261020`封包保持既有身份，完成後另版重建，不覆寫。下列保留各輪原始證據身份，不把舊完成項重新開啟。
+下一步尋找代表性正常冰窟入口，驗證新圖集的進出、捲動及原貌切回；20／21的事件來源與正常用途仍未知。其餘洞窟家族及全遊戲美術依034／037續補，圖形介面、其他城鎮、敵人與首領仍有缺口。其餘圖像與20筆未知續盤點，不重畫已完成的21格或重開RLE來源。現有`v.0.2.0-20261020`封包保持既有身份，完成後另版重建，不覆寫。下列保留各輪原始證據身份，不把舊完成項重新開啟。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 

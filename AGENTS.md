@@ -328,7 +328,10 @@
 
 - [洞窟來源表編譯](tools/hd_compile_cave_catalog.py)將31份地圖及11組圖集身份寫入[固定資料表](internal/prototype/hd/cave_catalog_data.go)，只含名稱、數量及SHA；[來源辨識](internal/prototype/hd/cave_catalog.go)與[測試](internal/prototype/hd/cave_catalog_test.go)依037來源READY契約處理，結構fixture不當正常路徑。
 - [冰窟註冊研究](tools/hd_register_ice.py)將角色無關的MPP4原圖、手繪圖面與不透明材質合成三份地圖離線預覽；不改原始AI圖、不接正式前端，圖形文字與光球缺口另列。
-- [洞窟來源視窗回歸](tools/hd_cave_catalog_smoke.py)以新版候選正常冷讀、入洞、HD切回及回城，保存來源鍵、實際命令與圖片；不外推未到達家族。
+- [冰窟完整圖集](tools/hd_complete_ice.py)補齊HELADA五格標示及兩格藍白光球，保存21格高清圖集、材質、來源與三份離線預覽；正常事件用途及冰窟玩家路徑仍須另驗。
+- [冰窟圖面載入](internal/prototype/hd/cave_ice.go)依037固定SHA與尺寸原子載入，地形依完整來源身份選擇；[冰窟圖面測試](internal/prototype/hd/cave_ice_test.go)區分離線像素、合成結構來源與正常MPP1回歸，不把合成快照當正常冰窟。
+- [冰窟圖集收尾稽核](tools/hd_ice_audit.py)核21格資產、三份結構快照像素、MPP1正常35點及實際視窗身份；冰窟正常玩家路徑維持待驗，不升全家族HD完成。
+- [洞窟來源視窗回歸](tools/hd_cave_catalog_smoke.py)以新版候選正常冷讀、入洞、HD切回及回城，保存來源鍵、實際命令與圖片。可由ZELIARD_GUI_BINARY及ZELIARD_CAVE_ICE_ART選候選與冰窟圖集；不外推未到達家族。
 - [洞窟辨識收尾稽核](tools/hd_cave_catalog_audit.py)核目前程式、來源測試、正常35點、實際視窗還原與冰窟離線候選的各別身份；不將美術候選或結構fixture計為全家族正常HD完成。
 - [全洞窟地形來源](tools/hd_cave_sources.py) 擷取SAR3的MPP1..MPPB原生圖格與分組總覽；[規格037](docs/spec/037-all-cave-terrain-hd.md)分開正常RAM已核與結構候選。輸出留`workplace/full-hd-v1/cave-terrain-sources-v1/`，不把解圖當HD完成。
 - [洞窟存檔來源探針](tools/hd_cave_save_probe.go) 在兩個獨立dosgolem冷讀包內四份USR，只用原版按鍵擷取場景與圖像來源；存檔前史未知，不當新局全流程或HD驗收。

@@ -1014,3 +1014,11 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 新參考first-14-reference.png SHA-256 617f2a250c21a387fd06cc14c8904153d03bff6a1d296bc199646c597e9dd6ec。內建imagegen第三版1254×1254 SHA-256 9a09979a2c70a893c73a1dc876fe248862202573f4ce0b0c898a596bbd71b118，實際輸出保留13／14的連續三角形；原prompt錯稱14空格保留在generation.json並附原生勘誤，不能反過來以prompt當原版證據。圖形文字與20..21未放入本次14格註冊。
 - 不透明材質同為1254×1254，SHA-256 a8fef8473861ffe9a41d7f7cfe44dd6fda8ec94db154023034714c8fd88d4bc2。候選直接取432×768並鏡射成864×1536週期；3..12按連續欄首末可見像素形成美術包絡，其他非零形狀按原生邊界合成。13／14共用生成圖裁切(0,940)-(625,1254)取48×24後分半。這是手繪呈現研究，不是原版透明、碰撞或正式runtime資料格式。
 - 註冊與MP40／MP41／MP4D預覽為cave-ice-registration-v3，原始AI圖面未改寫；完整提示詞及每張輸入SHA分別保存在cave-ice-art-v3、cave-ice-material-v1的generation.json。仍未有冰窟正常GUI，保留DRAFT。完整身份與分層限制見cave-catalog-final-audit-v1.json及037。
+
+### MPP4圖形文字、光球與21格圖集
+
+- 已證實的靜態來源仍為SAR3記錄77，解壓SHA-256 41edc9380a37931fec4c0ee81ec79aff61c64e71b7c8e78101a3a88c44036995。原始15..19五格相鄰組成HELADA六字母，不能按單格猜字母。三份已核原始地圖MP40／MP41／MP4D均未使用20或21，故不能把這兩格命名為已知敵人、道具或動畫階段。
+- 內建imagegen以15..21原圖與既有手繪冰窟風格為參考，產生1691×930透明圖，SHA-256 ac8fab5311db8071ddf4a90013cfe078e15aa8966b48b365721f70bbee21986c。完整提示詞、兩份輸入SHA與原圖保存在workplace/full-hd-v1/cave-ice-details-v1/generation.json；原始輸出未改寫。兩個光球保留白色左上高光及藍紫陰影，玩法用途仍未知。
+- 註冊後字帶120×24再分五格，清除舊字形黑底；光球24×24按原生非零外形限制。與第三版1..14合成504×24圖集，SHA-256 4305348c37fa0ff0c5bf0f9e15546f7e5b4bcffdb3416ec16f4beea75d816fee。432×768直接HD材質SHA-256 9f2dc6eed83d9582edeef8ac4f64124c382c93550b5f6fe295fbdec064d9e5ac，資料與裁切在cave-ice-complete-v1/manifest.json。
+- 原版身份的地址空間仍為01B1主段、11B1資源段，MPP4為11B1:8000的48-byte header及8030起21乘48bytes。Go1.24.13的結構測試從已驗MPP1取得程式與角色，組合真實MPP4資源、地圖鍵與靜態格，不執行VM；三份離線HD預覽共870912像素與正式呈現一致，畫布區外及來源記憶體不變。此結果不當正常冰窟原版對拍或可達證據。
+- 新候選SHA-256 4948bc709f551827d74b451925e41dc4d9b3e2e898d564a78e8e5f1efd23f98e，增加可選冰窟圖集。正常首戰25點與回城10點原版狀態、存檔及mtime相同；三項新冰窟測試、舊地形獨立像素、來源／轉場／未知分支與原子退回均通過，無skip／fail。正式冰窟進出、捲動與事件仍待正常玩家路徑驗證。

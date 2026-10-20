@@ -991,6 +991,7 @@ func main() {
 	castleMemory := flag.String("castle-memory", "", "可選：城堡正常冷新局固定1MiB參考，搭配castle-art-dir與完整遠山")
 	castleArt := flag.String("castle-art-dir", "", "可選：城堡3倍世界圖與四姿態旗幟PNG目錄，搭配castle-memory")
 	caveArt := flag.String("cave-art-dir", "", "可選：Malicia手繪地形圖目錄，角色與物件保留原貌")
+	caveIceArt := flag.String("cave-ice-art", "", "可選：MPP4冰窟21格手繪圖集，需同時指定cave-art-dir")
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
 	caveObjectArt := flag.String("cave-object-art-dir", "", "可選：洞窟動態物件手繪圖集目錄，搭配洞窟地形HD")
@@ -1131,6 +1132,11 @@ func main() {
 			log.Printf("洞窟地形HD未載入，保留原貌：%v", err)
 		} else {
 			g.caveFrames = hd.NewCaveFrames(g.o)
+			if *caveIceArt != "" {
+				if e := g.caveTerrainHD.LoadIce(*caveIceArt); e != nil {
+					log.Printf("冰窟地形HD未載入，保留冰窟原貌：%v", e)
+				}
+			}
 			if *caveObjectArt != "" {
 				objects, e := hd.NewCaveObjects(*caveObjectArt)
 				if e != nil {

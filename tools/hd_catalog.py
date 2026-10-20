@@ -48,11 +48,22 @@ def main():
     assert planar_report["status"] == "PASS_EXTRACTED_ORIGINAL_PLANAR" and len(planar_report["records"]) == 80
     assert all(x["matched"] and x["exit_code"] == 0 for x in planar_report["records"])
     assert grp_report["status"] == "PASS_FOUR_NORMAL_RESOURCE_BINDINGS"
+    runtime_catalog = p/"workplace/full-hd-v1/cave-ice-final-audit-v1.json"
+    runtime_catalog_report = json.loads(runtime_catalog.read_text())
+    assert runtime_catalog_report["status"] == "PASS_ICE_RUNTIME_STRUCTURAL_AND_MPP1_REGRESSION"
+    for source in runtime_catalog_report["source_files"]+runtime_catalog_report["proofs"]:
+        assert sha((p/source["path"]).read_bytes()) == source["sha256"]
+    current_sources = {r["path"]:r["sha256"] for r in runtime_catalog_report["source_files"]}
     castle = p/"workplace/full-hd-v1/castle-final-audit-v2.json"
     castle_report = json.loads(castle.read_text())
     assert castle_report["status"] == "PASS_CASTLE_HD_SCOPED"
     for source in castle_report["source_files"]:
-        assert sha((p/source["path"]).read_bytes()) == source["sha256"]
+        actual = sha((p/source["path"]).read_bytes())
+        if source["path"] == "cmd/zeliard-preview/main.go":
+            # 入口另增冰窟旗標，身份沿本輪稽核；城堡完整視窗仍保留6670698f原身份。
+            assert actual == current_sources[source["path"]]
+        else:
+            assert actual == source["sha256"]
     cave = p/"workplace/full-hd-v1/cave-source-stage-audit-v1.json"
     cave_report = json.loads(cave.read_text())
     assert cave_report["status"] == "PASS_CAVE_SOURCE_STAGE"
@@ -62,11 +73,6 @@ def main():
     terrain_sources = {x["record"]: x for x in json.loads(terrain_path.read_text())["profiles"]}
     cave_maps_path = p/"workplace/full-hd-v1/cave-map-sources-v1/receipt.json"
     cave_maps = {x["record"]: x for x in json.loads(cave_maps_path.read_text())["records"]}
-    runtime_catalog = p/"workplace/full-hd-v1/cave-catalog-final-audit-v1.json"
-    runtime_catalog_report = json.loads(runtime_catalog.read_text())
-    assert runtime_catalog_report["status"] == "PASS_CAVE_CATALOG_SCOPED"
-    for source in runtime_catalog_report["source_files"]+runtime_catalog_report["proofs"]:
-        assert sha((p/source["path"]).read_bytes()) == source["sha256"]
     grp_sources = {("ZELRES2.SAR", x["record"]): x for x in grp_report["records"]}
     catalog = []
     for archive, data in originals.items():
@@ -128,10 +134,10 @@ def main():
                                       "spec": "docs/spec/036-castle-hd.md", "source_record": "zelres2.record.33",
                                       "evidence": str(castle.relative_to(p)),
                                       "limits": "只驗城堡前景、四旗幟與Muralla往返；phase4、交談背景及其他場景仍有缺口，未更新封包"},
-                                     {"key": "cave.terrain.ice", "status": "generated_candidate_not_connected",
+                                     {"key": "cave.terrain.ice", "status": "connected_structural_verified_normal_path_pending",
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "source_record": "zelres3.record.77",
-                                      "evidence": "workplace/full-hd-v1/cave-ice-registration-v3/manifest.json",
-                                      "limits": "第三版前14格註冊、連續材質與三份離線地圖；15..19圖形文字及20..21仍有缺口，未接正式前端；前兩版僅作畫風參考"},
+                                      "evidence": str(runtime_catalog.relative_to(p)), "registered_tiles":21,
+                                      "limits": "21格完整手繪圖集接入可選前端，三份合成結構快照與光球取樣通過；正常冰窟進出、捲動及20／21事件用途未驗；MPP1回歸不當冰窟驗收"},
                                      {"key": "cave.source.catalog", "status": "implemented_scoped_sampling",
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "maps":31,"terrain_profiles":11,
                                       "evidence":str(runtime_catalog.relative_to(p)),

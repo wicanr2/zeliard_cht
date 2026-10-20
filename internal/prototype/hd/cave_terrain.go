@@ -11,8 +11,9 @@ import (
 )
 
 type CaveTerrain struct {
-	tiles       [15][]color.NRGBA
+	tiles       [22][]color.NRGBA
 	material    []color.NRGBA
+	ice         *caveIceArt
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -170,9 +171,18 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	if !caveFrameSource(caveFrameInput{mode: 0x13, memory: f.BodyMemory, palette: f.Palette}) {
 		return false
 	}
-	r := f.Memory[0x11b10:0x21b10]
-	if townBackgroundHash(r[0x8030:0x8030+14*48]) != "69f3a97cfe0356b544b67e462c5c59835a72c66099086e68f2f81b47f6cfa74b" {
+	if caveCatalogMapsDiffer(f.Memory, f.BodyMemory) {
 		return false
+	}
+	r := f.Memory[0x11b10:0x21b10]
+	tiles, material, limit, rockLast, letters := s.tiles, s.material, 15, 8, false
+	if townBackgroundHash(r[0x8030:0x8030+14*48]) != "69f3a97cfe0356b544b67e462c5c59835a72c66099086e68f2f81b47f6cfa74b" {
+		entry, terrain := caveTerrainIdentity(f.Memory)
+		bodyEntry, _ := caveTerrainIdentity(f.BodyMemory)
+		if s.ice == nil || entry == nil || bodyEntry == nil || entry.record != bodyEntry.record || terrain.key != "MPP4" {
+			return false
+		}
+		tiles, material, limit, rockLast, letters = s.ice.tiles, s.ice.material, 22, 12, true
 	}
 	if !cavePaintTimeline(f.Paints, f.BodySteps, f.BodyCycles, f.Steps, f.Cycles) {
 		return false
@@ -191,9 +201,12 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		}
 	}
 	var grid [18][28]byte
-	var decoded [15][]byte
-	for id := 1; id < 15; id++ {
-		if len(s.tiles[id]) != 576 {
+	var decoded [22][]byte
+	if len(material) != 432*768 {
+		return false
+	}
+	for id := 1; id < limit; id++ {
+		if len(tiles[id]) != 576 {
 			return false
 		}
 		decoded[id], e = caveStatic(r, byte(id))
@@ -202,17 +215,20 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		}
 	}
 	for _, c := range d.Cells {
+		if letters && int(c.ID) >= limit {
+			return false
+		}
 		grid[(c.Y-14)/8][(c.X-48)/8] = c.ID
 	}
 	rock := make([]bool, 224*144)
 	for column := 0; column < 28; column++ {
 		for row := 0; row < 18; {
-			if grid[row][column] < 3 || grid[row][column] > 8 {
+			if grid[row][column] < 3 || int(grid[row][column]) > rockLast {
 				row++
 				continue
 			}
 			first := row
-			for row < 18 && grid[row][column] >= 3 && grid[row][column] <= 8 {
+			for row < 18 && grid[row][column] >= 3 && int(grid[row][column]) <= rockLast {
 				row++
 			}
 			last := row
@@ -264,29 +280,33 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	}
 	for _, cell := range d.Cells {
 		id := int(cell.ID)
-		if id == 0 || id >= 15 {
+		if id == 0 || id >= limit {
 			continue
 		}
 		gx, gy := cell.X-48, cell.Y-14
 		for y := 0; y < 24; y++ {
 			for x := 0; x < 24; x++ {
-				if id >= 3 && id <= 8 {
+				if id >= 3 && id <= rockLast {
 					if !rock[(gy+y/3)*224+gx+x/3] {
 						continue
 					}
-				} else if decoded[id][(y/3)*8+x/3] == 0 {
+				} else if !(letters && id >= 15 && id <= 19) && decoded[id][(y/3)*8+x/3] == 0 {
 					continue
 				}
-				c := s.tiles[id][y*24+x]
-				if id >= 3 && id <= 8 {
+				c := tiles[id][y*24+x]
+				if id >= 3 && id <= rockLast {
 					ring := cell.Address - 0xe000
 					tx, ty := ring%36*24+x, ring/36*24+y
 					tx = min(tx, 863-tx)
 					ty = min(ty, 1535-ty)
-					c = s.material[ty*432+tx]
+					c = material[ty*432+tx]
 				}
 				px, py := cell.X*3+x+origin.X, cell.Y*3+y+origin.Y
 				old := dst.RGBAAt(px, py)
+				if letters {
+					// MPP4圖面取代原生地形色；動態、主角與武器稍後依原順序回畫。
+					old = color.RGBA{A: 255}
+				}
 				a, inv := uint32(c.A), uint32(255-c.A)
 				dst.SetRGBA(px, py, color.RGBA{uint8((uint32(c.R)*a + uint32(old.R)*inv + 127) / 255), uint8((uint32(c.G)*a + uint32(old.G)*inv + 127) / 255), uint8((uint32(c.B)*a + uint32(old.B)*inv + 127) / 255), 255})
 			}

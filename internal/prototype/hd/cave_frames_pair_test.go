@@ -113,6 +113,11 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
+	if dir := os.Getenv("ZELIARD_CAVE_ICE_ART"); dir != "" {
+		if e = art.LoadIce(dir); e != nil {
+			t.Fatal(e)
+		}
+	}
 	var player *CavePlayer
 	if playerDir := os.Getenv("ZELIARD_CAVE_PLAYER_ART"); playerDir != "" {
 		player, e = NewCavePlayer(playerDir)
@@ -322,6 +327,14 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 	if dir := os.Getenv("ZELIARD_CAVE_ART"); dir != "" {
 		art, e = NewCaveTerrain(dir)
 		if e != nil {
+			t.Fatal(e)
+		}
+	}
+	if dir := os.Getenv("ZELIARD_CAVE_ICE_ART"); dir != "" {
+		if art == nil {
+			t.Fatal("冰窟HD須搭配洞窟呈現器")
+		}
+		if e = art.LoadIce(dir); e != nil {
 			t.Fatal(e)
 		}
 	}
