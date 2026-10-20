@@ -46,6 +46,8 @@ def start():
                     command.extend(["-cave-"+family.lower()+"-art", directory])
             if common_art := os.environ.get("ZELIARD_CAVE_COMMON_ART", ""):
                 command.extend(["-cave-common-art", common_art])
+            if magia_art := os.environ.get("ZELIARD_CAVE_MAGIA_ART", ""):
+                command.extend(["-cave-magia-art", magia_art])
         return original_popen(command, *args, **kwargs)
     subprocess.Popen = launch
     try:

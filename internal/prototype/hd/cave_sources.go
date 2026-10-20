@@ -68,6 +68,8 @@ type caveObject struct {
 type caveDecoded struct {
 	Background             []byte
 	Actor, Weapon, Dynamic []cavePixel
+	Magia                  []cavePixel
+	MagiaRecords           []caveMagiaRecord
 	ActorRaster            [576]byte
 	ActorX, ActorY         int
 	WeaponRaster           [1024]byte
@@ -490,6 +492,14 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 			}
 			expected[v.Y*320+v.X] = v.Color
 		}
+	}
+	var magiaErr error
+	out.MagiaRecords, out.Magia, magiaErr = decodeCaveMagia(memory, bodyMemory, expected, original)
+	if magiaErr != nil {
+		return nil, magiaErr
+	}
+	for _, v := range out.Magia {
+		expected[v.Y*320+v.X] = v.Color
 	}
 	for y := 14; y < 158; y++ {
 		for x := 48; x < 272; x++ {

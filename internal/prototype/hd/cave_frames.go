@@ -318,6 +318,7 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 	f.state["source_indexed_sha256"] = townBackgroundHash(last.SourceIndexed)
 	f.state["presented_indexed_sha256"] = townBackgroundHash(raw)
 	f.state["objects"] = len(last.Decoded.Objects)
+	f.state["magia_records"] = append([]caveMagiaRecord{}, last.Decoded.MagiaRecords...)
 	f.state["native_paints"] = append([]CavePaint(nil), last.Paints...)
 	p := last.Memory[0x1b10:0x11b10]
 	bp := last.BodyMemory[0x1b10:0x11b10]
@@ -335,6 +336,8 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 	d.Dynamic = append([]cavePixel(nil), d.Dynamic...)
 	d.Actor = append([]cavePixel(nil), d.Actor...)
 	d.Weapon = append([]cavePixel(nil), d.Weapon...)
+	d.Magia = append([]cavePixel(nil), d.Magia...)
+	d.MagiaRecords = append([]caveMagiaRecord{}, d.MagiaRecords...)
 	d.Cells = append([]caveCell(nil), d.Cells...)
 	d.Objects = append([]caveObject(nil), d.Objects...)
 	return &CavePresentation{Indexed: raw, RGB: rgb, Palette: cloneTownBytes(last.Palette), SourceIndexed: cloneTownBytes(last.SourceIndexed), Memory: cloneTownBytes(last.Memory), BodyMemory: cloneTownBytes(last.BodyMemory), Steps: last.Steps, Cycles: last.Cycles, BodySteps: last.BodySteps, BodyCycles: last.BodyCycles, Decoded: &d, Paints: append([]CavePaint(nil), last.Paints...)}

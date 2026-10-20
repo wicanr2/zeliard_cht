@@ -1,8 +1,8 @@
 # 魔法石路徑的洞窟呈現
 
-狀態：READY，限下述來源辨識、可見／已清除兩類及固定102圖面接入契約；尚未實作或驗收。原版法術規則、碰撞、位置、時間與存檔不改。
+狀態：CONFORMED，限下述可見／已清除／重疊來源、固定102圖面及正常使用與平台代表路徑；其他站位、耗盡、部分遮擋與邊緣仍待補。原版法術規則、碰撞、位置、時間與存檔不改。
 
-已知缺口沿[043](043-cave-common-scenery.md)：`cave-platform-source-pair-v1/`三個目標點未選出完成來源，第一點完整遊戲區有138個色號不符。根因未知，不能刪除差分檢查或把原圖整張退回當HD完成。
+原始缺口沿[043](043-cave-common-scenery.md)：`cave-platform-source-pair-v1/`三個目標點未選出完成來源，第一點完整遊戲區有138個色號不符。下列來源研究及正式圖層已解這三點；原收據保留，不刪除差分檢查或把原圖整張退回當HD完成。
 
 [正常拒絕來源探針](../../tools/hd_cave_rejected_probe.go)由固定SAVEM1冷F7及[魔法石鍵序](../../tools/cave-platform-magia.commands)重播，匯出真正完成／主體來源；兩個獨立原版執行器核完整狀態與存檔不變。[差分研究](../../internal/prototype/hd/cave_rejected_study_test.go)只作診斷，不代表原版配對或HD驗收通過。輸出集中於 `workplace/full-hd-v1/cave-magia-*`，原始資料不入Git。
 
@@ -36,4 +36,16 @@ IDA9.4 base0輸入 `cave-common-ida-v1/primary.segment`，SHA-256 `5e7f76080cc54
 6. 高清圖面直接載入24×24，不縮回8×8。內建imagegen原圖與完整提示詞／引用在 `cave-magia-art-v1/generation.json`，[註冊](../../tools/hd_cave_magia_art.py)產物為 `cave-magia-complete-v1/magia-shard-24x24.png`，SHA-256 `5fc434eca775c2078edf4d38aa07a92728c8d4755f7e06f10c2cccb70eb59a5e`。414有效像素全不透明，外部像素全零，缺圖或損壞原子退回。
 7. 正式驗收須涵蓋27張已存來源、可見與清除、重疊槽及來源失配拒絕，再以正常鍵序做三平台點完整原版狀態配對、HD獨立像素、實際視窗、原貌切回與正常退出。還須抽測普通平台及既有洞窟路徑，不能以研究測試pass取代。
 
-來源／圖面的READY稽核為 `cave-magia-stage-audit-v1.json`，由[研究階段稽核](../../tools/hd_cave_magia_audit.py)重生至新檔。尚未處理的部分遮擋、生命耗盡、畫面邊緣、其他物品效果及全遊戲素材繼續列入完整目標，未更新候選程式、封包或影片。
+來源／圖面的READY稽核為 `cave-magia-stage-audit-v1.json`，由[研究階段稽核](../../tools/hd_cave_magia_audit.py)重生至新檔；保留當時身份。正式接入另見下節，不把研究收據改稱新程式。
+
+## 正式接入與限定驗收
+
+[來源及高清圖層](../../internal/prototype/hd/cave_magia.go)依READY契約實作，解碼不改ActorRaster或武器鍵，呈現器深複製typed記錄。只讀原版，不執行相位／碰撞／消耗規則。`-cave-magia-art`為可選固定素材入口；缺圖或來源失配在寫畫布前原子退回。
+
+[正式測試](../../internal/prototype/hd/cave_magia_test.go)覆蓋27張來源、31878獨立高清像素、四個已清除槽與27個重疊槽觀察，另以結構清除對照核原102包絡外不寫入。11種來源失配及缺圖／壞圖原子載入通過。31項圖面與既有洞窟回歸、當前原子測試、三項正常／來源測試、vet及build通過。
+
+`cave-magia-hd-pair-v1/`兩條正常按鍵路徑共13點完整原版狀態與USR bytes／mtime相同。魔法石原三目標點現在皆有來源與HD；該路徑474完成來源、92次拒絕，普通平台211／42，不宣稱所有來源皆接受。新素材與十一組地形共存，中文不寫遊戲區。
+
+實際視窗 `cave-magia-gui-v2/`正常冷F7、開物品頁使用魔法石、跳上平台、升降再升與離開，四組原貌切回2304000遊戲區像素相同、4554個結晶高清像素獨立相同，DOS退出0、USR bytes／mtime不變，根端已目視。v1在物品使用後站位有可見效果來源，地形HD未匹配而等候逾時，保留原圖與日誌；原因仍待核。v2的離開截圖有地形及魔法石HD，不把日誌稍後的瞬時觀察當該截圖失敗。
+
+收尾為 `workplace/full-hd-v1/cave-magia-final-audit-v2.json`，由[正式稽核](../../tools/hd_cave_magia_runtime_audit.py)重生至新檔。v1的限制敘述誤把離開也列成未匹配，v2依實際截圖狀態更正，舊檔保留。部分遮擋、生命耗盡、邊緣、其他魔法與未匹配站位、主角／武器缺圖仍待補；全遊戲HD不標完成，封包與影片未更新。

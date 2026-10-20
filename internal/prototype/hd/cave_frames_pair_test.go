@@ -592,7 +592,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 			}
 		case "shot":
 			equal(f[1])
-			if strings.HasPrefix(f[1], "platform-") && selected == nil {
+			if (strings.HasPrefix(f[1], "platform-") || os.Getenv("ZELIARD_CAVE_REQUIRE_PRESENTATION") == "1") && selected == nil {
 				t.Fatal("平台正常點缺少可呈現的完成來源", f[1], frames.State())
 			}
 			before := b.Bytes(oracle.Far(0, 0), 1<<20)
@@ -654,6 +654,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 					point["Chinese_overwrites_game_pixels"] = 0
 					point["portal_hd"] = art.PortalState()
 					point["common_hd"] = art.CommonState()
+					point["magia_hd"] = art.MagiaState()
 				} else {
 					canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
 					old := cloneTownBytes(canvas.Pix)

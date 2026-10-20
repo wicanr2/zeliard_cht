@@ -1,5 +1,9 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+魔法石正式來源與高清圖層：[cave_magia.go](internal/prototype/hd/cave_magia.go)，依[044](docs/spec/044-cave-magia-presentation.md)的完整來源及可見／清除契約接入。
+魔法石正式測試：[cave_magia_test.go](internal/prototype/hd/cave_magia_test.go)，核27正常來源、獨立高清像素、清除／重疊、來源及圖面原子拒絕。
+魔法石正式稽核：[hd_cave_magia_runtime_audit.py](tools/hd_cave_magia_runtime_audit.py)，核原版狀態、GUI獨立像素及原貌切回；未匹配地形站位仍列出。
+
 魔法石呈現研究：[規格044](docs/spec/044-cave-magia-presentation.md)、[正常拒絕來源探針](tools/hd_cave_rejected_probe.go)與[差分研究](internal/prototype/hd/cave_rejected_study_test.go)。研究輸出不作HD完成證據。
 魔法石原始定位：[分級索引](docs/cave-magia-source-index.json)與[IDA9.4窄範圍匯出](tools/ida_cave_magia.py)，沿用既有一次性資料庫，不改原始函式與位址。
 魔法石高清圖面註冊：[hd_cave_magia_art.py](tools/hd_cave_magia_art.py)，依102原生非零輪廓直接取樣24×24，素材與提示詞留本機研究目錄。

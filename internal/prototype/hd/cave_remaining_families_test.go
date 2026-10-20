@@ -41,6 +41,11 @@ func remainingCaveArt(t *testing.T) *CaveTerrain {
 // 正常MPP1回歸可同時載四個新家族，未指定環境時沿既有測試範圍。
 func loadRemainingNormalTestArt(t *testing.T, art *CaveTerrain) {
 	t.Helper()
+	if dir := os.Getenv("ZELIARD_CAVE_MAGIA_ART"); dir != "" {
+		if err := art.LoadMagia(dir); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if dir := os.Getenv("ZELIARD_CAVE_COMMON_ART"); dir != "" {
 		if err := art.LoadCommon(dir); err != nil {
 			t.Fatal(err)

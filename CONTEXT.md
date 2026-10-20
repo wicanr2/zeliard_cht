@@ -6,27 +6,33 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，魔法石102來源、可見／清除分類及HD候選達READY；正式程式仍為已驗平台版本，完整目標仍進行中 |
-| 目前候選 | `workplace/full-hd-v1/cave-platform-runtime-v1/zeliard-preview`，SHA-256 `2734aeabeaae1a7c7429479ce90a3b33439a453f90378e137d67cf158629859b` |
+| 更新 | 2026-10-21，魔法石102已接正式圖層並通過原版配對及GUI；完整目標仍進行中 |
+| 目前候選 | `workplace/full-hd-v1/cave-magia-runtime-v1/zeliard-preview`，SHA-256 `9b0e3ef010145ec232246d6f9011ff15c619fa4e6f2060efbf8374f75be8d3bb` |
 | 來源與圖面 | DCHR39格1872bytes、31圖72項三byte平台表與IDA9.4七窄範圍／三表已核；72×24平台圖的1287有效像素全不透明；[規格043](docs/spec/043-cave-common-scenery.md)限MP10平台CONFORMED |
-| 最近測試 | 28項圖面回歸、一項左右裁切守衛與三項正常／來源測試無skip／fail；6435獨立高清像素、十點完整原版狀態、vet及build通過 |
-| 實際視窗 | 冷F7正常跳上、升降、再升及離開平台；四組原貌切回2304000像素相同，5148高清像素獨立相同，DOS退出0，存檔bytes／mtime不變，根端已目視 |
-| 收尾證據 | `workplace/full-hd-v1/cave-platform-final-audit-v1.json`，由[平台稽核工具](tools/hd_cave_platform_audit.py)重生至新檔 |
-| 本輪研究 | [044](docs/spec/044-cave-magia-presentation.md) READY；27張來源完整重建870912原生像素，11種已見相位；102的24×24手繪圖含414不透明有效像素，尚未接正式路徑 |
-| 待補 | 魔法石正式圖層、來源守衛、正常HD配對與GUI仍待做；原程式三個平台點拒絕尚未修正。18個未匹配主角畫格與十個可見武器來源鍵、其他共用圖格及城鎮／後段仍待補 |
+| 最近測試 | 31項圖面／來源回歸、當前原子載入及三項正常／來源測試無skip／fail；27來源31878獨立HD像素、普通／魔法石13點完整原版狀態、vet及build通過 |
+| 實際視窗 | 冷F7正常使用魔法石、跳上／升降／再升及離開平台；四組原貌切回2304000像素相同，4554結晶HD像素獨立相同，DOS退出0、USR bytes／mtime不變，根端已目視 |
+| 收尾證據 | `workplace/full-hd-v1/cave-magia-final-audit-v2.json`，由[魔法石正式稽核](tools/hd_cave_magia_runtime_audit.py)重生至新檔 |
+| 本輪接入 | [044](docs/spec/044-cave-magia-presentation.md)限定CONFORMED；可見／清除／重疊分層，完整來源守衛及原始主角／武器鍵保留；原三平台拒絕點現皆有HD |
+| 待補 | GUI v1物品使用後站位原版效果可解、地形HD未匹配，原因待核；耗盡／部分遮擋／邊緣、主角／武器缺圖、其他共用圖格與後段仍待補 |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
 
-最新研究入口為 `workplace/full-hd-v1/cave-magia-stage-audit-v1.json`，由[研究稽核](tools/hd_cave_magia_audit.py)重生至新檔。正常拒絕來源、候選分類、IDA9.4分級證據分別為 `cave-magia-source-v3/`、`cave-magia-diff-v5/`、`cave-magia-ida-v9/`。27來源包含24個回呼抽樣及三個命令觀察點，只有後三點在該觀察邊界做雙原版完整狀態配對，不冒稱27點機器配對。初次只照保存位置重畫有三張各多46像素；分類可見／已清除後全部零差。
+最新正式入口為 `workplace/full-hd-v1/cave-magia-final-audit-v2.json`。使用 `-cave-magia-art workplace/full-hd-v1/cave-magia-complete-v1`，搭配既有洞窟、MPP1及共用平台參數；完整GUI命令在 `cave-magia-gui-v2/receipt.json`。27份已存來源、清除／重疊、來源與素材原子拒絕及獨立HD像素均已核，不再重做這批素材。正常配對為 `cave-magia-hd-pair-v1/`：魔法石三點474完成來源／92拒絕、普通平台十點211／42，兩路存檔bytes與mtime不變，13個具名點皆有來源與HD。
 
-內建imagegen的原圖、完整提示詞與兩份引用SHA為 `cave-magia-art-v1/generation.json`，註冊候選為 `cave-magia-complete-v1/magia-shard-24x24.png`，SHA-256 `5fc434eca775c2078edf4d38aa07a92728c8d4755f7e06f10c2cccb70eb59a5e`。已目視且414有效像素全不透明，框外全零；原cache與v1至v4的差分研究保留。下一步依044實作typed護身圖層與完整來源守衛，載入固定圖面，再以27份來源、原三平台點及實際視窗驗證。部分遮擋、生命耗盡與邊緣仍待補，不以圖面備妥當正式HD完成。
+GUI v1的物品使用後站位有完成來源及102圖樣，整幅地形HD仍拒絕；當時腳本在此等候而逾時，原圖、狀態與 `boot1/inputs.jsonl` 保留。v2先沿正常鍵盤走到既有跳躍／平台觀察點，四組切回與離開截圖均有地形及魔法石HD，正常DOS退出0。稽核v1曾把離開也列成未匹配，v2依實際截圖狀態更正，舊檔保留。下一步先用v1保存的RunCycles日誌與原資料重生該站位來源，查完整地形拒絕，不猜是入口裁切或改旗標放行。
 
-目前收尾入口為 `workplace/full-hd-v1/cave-platform-final-audit-v1.json`，覆蓋JSON已銜接現行來源，歷史城鎮階段稽核v1至v4保留身份。共用洞窟來源仍在 `cave-common-sources-v2/`；不透明材質原圖、完整提示詞與引用SHA在 `cave-common-art-v2/generation-v2.json`，註冊在 `cave-common-registration-v2/manifest.json`。原51透明像素候選保留，現行包絡內為零。以 `-cave-common-art workplace/full-hd-v1/cave-common-registration-v2`選載，需既有 `-cave-art-dir`；圖集共存另沿[正常配對命令](tools/verify_cave_platform.sh)。GUI完整命令在 `cave-platform-gui-v3/receipt.json`。本輪音訊關閉，未重建封包或影片。
+新魔法石路徑記錄100個未匹配主角畫格、九個來源鍵及五個武器來源鍵；普通路徑18畫格、六鍵及十個武器鍵。這些有重複，不相加當素材總數；快照與來源SHA由各收據索引。舊平台程式、READY研究與來源保持原身份；本輪音訊關閉，未重建封包或影片。
 
-正常配對為 `cave-platform-hd-pair-v1/cave-platform/receipt.json`，211次完成來源、42次繪製中來源拒絕、954次呈現，十個具名點皆有來源與HD。未匹配的主角、武器來源及其SHA已由該收據索引，不重新蒐集相同姿態。魔法石版本鍵序另存 [cave-platform-magia.commands](tools/cave-platform-magia.commands)，來源配對為 `cave-platform-source-pair-v1/`，三個平台點沒有完成來源；不以普通平台通過代替此缺口。下一步補這些來源與其餘共用圖格，續走Satono、後段城鎮與洞窟正常路徑。
+前輪READY研究入口為 `workplace/full-hd-v1/cave-magia-stage-audit-v1.json`，由[研究稽核](tools/hd_cave_magia_audit.py)重生至新檔。正常拒絕來源、候選分類、IDA9.4分級證據分別為 `cave-magia-source-v3/`、`cave-magia-diff-v5/`、`cave-magia-ida-v9/`。27來源包含24個回呼抽樣及三個命令觀察點，只有後三點在該觀察邊界做雙原版完整狀態配對，不冒稱27點機器配對。初次只照保存位置重畫有三張各多46像素；分類可見／已清除後全部零差。
+
+內建imagegen的原圖、完整提示詞與兩份引用SHA為 `cave-magia-art-v1/generation.json`，註冊候選為 `cave-magia-complete-v1/magia-shard-24x24.png`，SHA-256 `5fc434eca775c2078edf4d38aa07a92728c8d4755f7e06f10c2cccb70eb59a5e`。已目視且414有效像素全不透明，框外全零；原cache與v1至v4的差分研究保留。該輪只完成來源與圖面；本輪正式接入與驗證以上表及新稽核為準。部分遮擋、生命耗盡與邊緣仍待補。
+
+前輪平台收尾入口為 `workplace/full-hd-v1/cave-platform-final-audit-v1.json`，覆蓋JSON已銜接現行來源，歷史城鎮階段稽核v1至v4保留身份。共用洞窟來源仍在 `cave-common-sources-v2/`；不透明材質原圖、完整提示詞與引用SHA在 `cave-common-art-v2/generation-v2.json`，註冊在 `cave-common-registration-v2/manifest.json`。原51透明像素候選保留，現行包絡內為零。以 `-cave-common-art workplace/full-hd-v1/cave-common-registration-v2`選載，需既有 `-cave-art-dir`；圖集共存另沿[正常配對命令](tools/verify_cave_platform.sh)。GUI完整命令在 `cave-platform-gui-v3/receipt.json`。本輪音訊關閉，未重建封包或影片。
+
+前輪普通平台配對為 `cave-platform-hd-pair-v1/cave-platform/receipt.json`，211次完成來源、42次繪製中來源拒絕、954次呈現，十個具名點皆有來源與HD。未匹配的主角、武器來源及其SHA已由該收據索引，不重新蒐集相同姿態。魔法石版本鍵序另存 [cave-platform-magia.commands](tools/cave-platform-magia.commands)，來源配對為 `cave-platform-source-pair-v1/`，三個平台點沒有完成來源；不以普通平台通過代替此缺口。這些舊來源仍保留；本輪已接魔法石，其他共用圖格及Satono／後段路徑仍待推進。
 
 正常探針新增固定雜湊USR選項及完成來源擷取；`town-path-savem1-v1/`至v4均已結束。SAVEM1由原版F7讀回，生命200、有Wise Man's劍／盾與魔法石，沒有鞋子。平台須站到中央；v3已正常升起、離開至右側通道，v4以相同鍵序重播的首點RAM／暫存器／畫面／色盤／steps／cycles相同，再正常降下及升起，平台列17→24→17，兩張升起原圖相同。這不是HD配對或GUI，沒有到達Satono，也未取得新鑰匙，不重跑已保存的錯誤站位。早期完成點的held_keys混用觀察時刻，v4起改存完成時刻，另列observed_held_keys；舊收據保留身份。
 
-前輪十地圖17784格、八份前景候選與IDA選擇端仍沿 `town-resources-source-v1/`、`town-resources-ida-v2/`及 `town-world-art-v1/generation-v1.json`。Esco修正圖為 `town-world-art-v1/ESMP-generated-v2.png`，武器店裁切招牌與教堂單排四長窗已對原圖修正，完整請求及SHA在 `ESMP-correction-v2.receipt.json`。接縫、門洞及正常前端仍待驗。Pureza第316欄ID191保持未知；042不升READY。現行可玩候選、封包、影片及README縮圖維持原身份。
+前輪十地圖17784格、八份前景候選與IDA選擇端仍沿 `town-resources-source-v1/`、`town-resources-ida-v2/`及 `town-world-art-v1/generation-v1.json`。Esco修正圖為 `town-world-art-v1/ESMP-generated-v2.png`，武器店裁切招牌與教堂單排四長窗已對原圖修正，完整請求及SHA在 `ESMP-correction-v2.receipt.json`。接縫、門洞及正常前端仍待驗。Pureza第316欄ID191保持未知；042不升READY。城鎮候選尚未接入，封包、影片及README縮圖維持原身份。
 
 武器店圖組以 `-merchant-frames-art-dir workplace/full-hd-v1/merchant-frames-complete-v2`選載，完整啟動命令見同根 `merchant-frames-gui-v4/receipt.json`。八次內建imagegen請求及參考／輸出SHA在 `merchant-frames-art-v1/generation-v2.json`，原版來源與IDA9.4證據為 `merchant-frames-layout-v1/`、`merchant-frames-normal-v1/`至v3及 `merchant-frames-ida-v2/`。正常v5／v6定位Muralla遮罩尾端單一D794變動；041沿022已核240格邊界排除128bytes未用尾端，沒有改原版資料。GUI早期抓圖順序錯誤與回城來源拒絕保留失敗，v4乾淨通過。其他城鎮、交談背景、敵人／首領、片頭與介面仍待補，不重做已驗姿態或把圖集備妥當全遊戲完成。
 

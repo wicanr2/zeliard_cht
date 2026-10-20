@@ -26,6 +26,8 @@ type CaveTerrain struct {
 	mppb        *caveTerrainArt
 	common      *caveCommonArt
 	commonState map[string]any
+	magia       []color.NRGBA
+	magiaState  map[string]any
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -167,6 +169,10 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		s.objectState = nil
 		s.portalState = nil
 		s.commonState = nil
+		s.magiaState = nil
+		if len(s.magia) != 0 {
+			s.magiaState = map[string]any{"loaded": true, "matched": false}
+		}
 		if s.common != nil {
 			s.commonState = map[string]any{"loaded": true, "matched": false}
 		}
@@ -245,6 +251,9 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	}
 	d, e := decodeCaveFrameWithPaints(f.Memory, f.BodyMemory, f.SourceIndexed, f.Paints)
 	if e != nil {
+		return false
+	}
+	if len(d.Magia) > 0 && len(s.magia) != 576 {
 		return false
 	}
 	for y := 14; y < 158; y++ {
@@ -460,6 +469,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	} else {
 		paintNative(d.Actor)
 	}
+	s.drawMagia(dst, d, origin)
 	if weaponPose != nil {
 		weaponPose.draw(dst, d, origin)
 	} else {

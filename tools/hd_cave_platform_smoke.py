@@ -14,6 +14,7 @@ names.update({0x50:'Down', 0x49:'KP_Prior'})
 save = R/'workplace/orig/SAVEM1.USR'
 assert h(save) == '03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c'
 actions = []
+magia_enabled = os.environ.get('ZELIARD_GUI_MAGIA') == '1'
 
 def xvalue(s):
     return s['native_primary_0080']+s['native_primary_0083']
@@ -38,6 +39,18 @@ def platform(s):
 def platform_row(s):
     point = s['cave_common_hd']['placements'][0]
     return (s['native_primary_0082']+(point['Y']-14)//8) & 63
+
+def magia_ready(s):
+    value = s.get('cave_magia_hd') or {}
+    return value.get('matched') and value.get('visible_positions',0)>0
+
+original_compare = compare
+def compare(name):
+    if magia_enabled:
+        wait('平台與魔法石HD來源',lambda s:platform(s) and magia_ready(s),30)
+    original_compare(name)
+    if magia_enabled:
+        assert magia_ready(shots[-2]['state']), '暫停來源沒有可見魔法石'
 
 try:
     xvfb = subprocess.Popen(['Xvfb', ':96', '-screen', '0', '1280x800x24', '-nolisten', 'tcp'], env=env,
@@ -81,6 +94,23 @@ try:
     for _ in range(5):
         key(0x39,100000)
         advance(400000)
+    if magia_enabled:
+        # 原SAVEM1的正常物品頁鍵序，沿已保存來源；不賜予道具或寫RAM。
+        key(0x1c,250000)
+        advance(500000)
+        key(0x4d,100000)
+        advance(300000)
+        key(0x4d,100000)
+        advance(300000)
+        key(0x4b,100000)
+        advance(100000)
+        key(0x39,200000)
+        advance(400000)
+        key(0x1c,250000)
+        advance(500000)
+        # 先確認原版效果來源。物品頁後目前站位可能尚未符合地形HD，
+        # 走到原定跳躍／平台觀察點後才驗整幅HD，不宣稱沿途全覆蓋。
+        wait('原版正常使用魔法石後回洞窟',lambda s:any(r.get('Visibility')=='visible' for r in (s.get('cave_frame_presentation')or{}).get('magia_records',[])),30)
     if xvalue(state())<40:
         move(0x4d,lambda s:xvalue(s)>=40,'靠近平台')
     elif xvalue(state())>41:
@@ -109,11 +139,11 @@ try:
     assert process.returncode==0
     assert h(user/'SAVETEST.usr')==h(save)
     assert (user/'SAVETEST.usr').stat().st_mtime_ns==save.stat().st_mtime_ns
-    report={'status':'PASS_CAVE_PLATFORM_GUI_SCOPED','binary_sha256':h(candidate),
+    report={'status':'PASS_CAVE_MAGIA_GUI_SCOPED' if magia_enabled else 'PASS_CAVE_PLATFORM_GUI_SCOPED','binary_sha256':h(candidate),
             'script_sha256':h(Path(__file__)),'catalog_helper_sha256':h(catalog),'helper_sha256':h(helper),
             'source_save_sha256':h(save),'boots':boots,'shots':shots,'pairs':pairs,'actions':actions,
-            'normal_DOS_exit':0,'save_unchanged':True,
-            'limits':'僅綠色平台正常冷F7、跳上、升降、離開與HD切回；未驗魔法石、其他共用圖格或全遊戲'}
+            'normal_DOS_exit':0,'save_unchanged':True,'magia_enabled':magia_enabled,
+            'limits':'僅此正常冷F7、物品使用、平台升降與HD切回；其他共用圖格、魔法與全遊戲仍待完成'}
     (O/'receipt.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(report['status'],flush=True)
 except Exception:

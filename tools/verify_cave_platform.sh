@@ -24,9 +24,9 @@ export ZELIARD_CAVE_MPPA_ART="$base/cave-mppa-complete-v1"
 export ZELIARD_CAVE_MPPB_ART="$base/cave-mppb-complete-v1"
 export ZELIARD_CAVE_MPP1_ART="$base/cave-mpp1-complete-v2"
 export ZELIARD_CAVE_COMMON_ART="$base/cave-common-registration-v2"
-export ZELIARD_CAVE_SAVE=/project/workplace/orig/SAVEM1.USR
-export ZELIARD_CAVE_COMMANDS=/project/tools/cave-platform.commands
-export ZELIARD_CAVE_OUTPUT=/output/cave-platform-hd-pair-v1
+export ZELIARD_CAVE_SAVE="${ZELIARD_CAVE_SAVE:-/project/workplace/orig/SAVEM1.USR}"
+export ZELIARD_CAVE_COMMANDS="${ZELIARD_CAVE_COMMANDS:-/project/tools/cave-platform.commands}"
+export ZELIARD_CAVE_OUTPUT="${ZELIARD_CAVE_OUTPUT:-/output/cave-platform-hd-pair-v1}"
 mkdir "$ZELIARD_CAVE_OUTPUT"
 cd /project
 go test -count=1 -json ./internal/prototype/hd -run '^TestCave(FramesNormalPathsReadOnly|FramesRejectSourceAndTransitions|SourcesRejectUnknownOrCorrupt)$' > "$ZELIARD_CAVE_OUTPUT/tests.jsonl"
