@@ -566,6 +566,13 @@ func (g *game) caveMagiaState() map[string]any {
 	return g.caveTerrainHD.MagiaState()
 }
 
+func (g *game) caveDoorState() map[string]any {
+	if g.caveTerrainHD == nil {
+		return nil
+	}
+	return g.caveTerrainHD.DoorState()
+}
+
 func (g *game) Draw(screen *ebiten.Image) {
 	w, h, rawRGB := g.o.ScreenRGB()
 	raw := g.o.Indexed()
@@ -847,6 +854,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"cave_portal_hd":             g.cavePortalState(),
 			"cave_common_hd":             g.caveCommonState(),
 			"cave_magia_hd":              g.caveMagiaState(),
+			"cave_door_hd":               g.caveDoorState(),
 			"dialogue":                   g.dialogue.State(),
 			"oracle_memory_sha256":       fmt.Sprintf("%x", sha256.Sum256(g.o.Bytes(oracle.Far(0, 0), 1<<20))),
 			"oracle_indexed_sha256":      fmt.Sprintf("%x", sha256.Sum256(raw)),
@@ -976,6 +984,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"cave_portal_hd":            g.cavePortalState(),
 				"cave_common_hd":            g.caveCommonState(),
 				"cave_magia_hd":             g.caveMagiaState(),
+				"cave_door_hd":              g.caveDoorState(),
 				"dialogue":                  g.dialogue.State(),
 				"input_trace_error":         g.inputTraceError,
 				"audio_output":              g.output.state(),
@@ -1066,6 +1075,7 @@ func main() {
 	caveMPP1Art := flag.String("cave-mpp1-art", "", "可選：MPP1的15至25格補充圖集，保留原有14格，需同時指定cave-art-dir")
 	caveCommonArt := flag.String("cave-common-art", "", "可選：共用綠色平台64至66，需同時指定cave-art-dir")
 	caveMagiaArt := flag.String("cave-magia-art", "", "可選：魔法石102手繪圖樣，需同時指定cave-art-dir")
+	caveDoorArt := flag.String("cave-door-art", "", "可選：無招牌共用門框十種圖面，需同時指定cave-art-dir")
 	caveMPP8Art := flag.String("cave-mpp8-art", "", "可選：MPP8的43槽雙字帶手繪圖集，需同時指定cave-art-dir")
 	caveMPP9Art := flag.String("cave-mpp9-art", "", "可選：MPP9的38格手繪圖集，需同時指定cave-art-dir")
 	caveMPPAArt := flag.String("cave-mppa-art", "", "可選：MPPA的20槽雙材質手繪圖集，需同時指定cave-art-dir")
@@ -1249,6 +1259,7 @@ func main() {
 				{"MPP1", *caveMPP1Art, g.caveTerrainHD.LoadMPP1},
 				{"共用平台", *caveCommonArt, g.caveTerrainHD.LoadCommon},
 				{"魔法石", *caveMagiaArt, g.caveTerrainHD.LoadMagia},
+				{"共用門框", *caveDoorArt, g.caveTerrainHD.LoadDoors},
 				{"MPP8", *caveMPP8Art, g.caveTerrainHD.LoadMPP8},
 				{"MPP9", *caveMPP9Art, g.caveTerrainHD.LoadMPP9},
 				{"MPPA", *caveMPPAArt, g.caveTerrainHD.LoadMPPA},

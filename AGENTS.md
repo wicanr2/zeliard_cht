@@ -2,6 +2,10 @@
 
 GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保存日誌的每筆暫存器／步數與目標RAM及完成來源雜湊，不以來源重播代替GUI驗收。
 無招牌共用門框：[規格045](docs/spec/045-cave-untitled-doors.md)及[來源盤點](tools/hd_cave_door_sources.py)，不把新變體套成Muralla入口。
+門框圖面註冊：[十變體註冊工具](tools/hd_cave_doors_art.py)，內建生成基底及標記直接取樣120×96，保留原始輪廓。
+門框呈現：[來源守衛與十圖載入](internal/prototype/hd/cave_doors.go)，依045的原始記錄與完整矩陣唯讀覆繪。
+門框驗證：[正常來源及十變體測試](internal/prototype/hd/cave_doors_test.go)，分列正常站位、結構圖面與原子退回證據。
+門框稽核：[正式收尾工具](tools/hd_cave_door_runtime_audit.py)，核來源／十圖／正常配對及實際視窗，再銜接覆蓋清單。
 門框原始載入端：[IDA9.4窄範圍匯出](tools/ida_cave_door.py)，保留原始函式、位址與運算元，未分級項標為未知。
 
 魔法石正式來源與高清圖層：[cave_magia.go](internal/prototype/hd/cave_magia.go)，依[044](docs/spec/044-cave-magia-presentation.md)的完整來源及可見／清除契約接入。

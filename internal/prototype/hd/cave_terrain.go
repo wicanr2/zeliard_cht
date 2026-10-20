@@ -28,6 +28,8 @@ type CaveTerrain struct {
 	commonState map[string]any
 	magia       []color.NRGBA
 	magiaState  map[string]any
+	doors       *caveDoorArt
+	doorState   map[string]any
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -170,6 +172,10 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		s.portalState = nil
 		s.commonState = nil
 		s.magiaState = nil
+		s.doorState = nil
+		if s.doors != nil {
+			s.doorState = map[string]any{"loaded": true, "matched": false}
+		}
 		if len(s.magia) != 0 {
 			s.magiaState = map[string]any{"loaded": true, "matched": false}
 		}
@@ -284,6 +290,28 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	}
 	var nativePortals []image.Point
 	portalChecked := false
+	var doors []caveDoorPlacement
+	if s.doors != nil {
+		for _, pixels := range s.doors.pixels {
+			if len(pixels) != 120*96 {
+				return false
+			}
+		}
+		if legacyThrough == 15 {
+			var sourceOK bool
+			nativePortals, sourceOK = cavePortalLocations(f.Memory, d.Cells)
+			_, bodyOK := cavePortalLocations(f.BodyMemory, nil)
+			if !sourceOK || !bodyOK {
+				return false
+			}
+			portalChecked = true
+		}
+		var sourceOK bool
+		doors, sourceOK = caveDoorPlacements(f.Memory, f.BodyMemory, nativePortals)
+		if !sourceOK {
+			return false
+		}
+	}
 	commonPresent := false
 	for _, c := range d.Cells {
 		if c.ID >= 64 && c.ID <= 66 {
@@ -317,11 +345,8 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			continue
 		}
 		if extraArt && int(c.ID) >= limit {
-			// MPP1仍含規格020已驗的共用入口格，僅保留完整矩陣內的原版下層。
-			if legacyThrough != 15 {
-				return false
-			}
-			if !portalChecked {
+			// 共用入口須完整矩陣及來源守衛；不依單一柱格放行。
+			if legacyThrough == 15 && !portalChecked {
 				var sourceOK bool
 				nativePortals, sourceOK = cavePortalLocations(f.Memory, d.Cells)
 				_, bodyOK := cavePortalLocations(f.BodyMemory, nil)
@@ -334,6 +359,13 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			for _, anchor := range nativePortals {
 				x, y := (c.X-anchor.X)/8, (c.Y-anchor.Y)/8
 				if c.X >= anchor.X && c.Y >= anchor.Y && x < 5 && y < 5 && cavePortalMatrix[y][x] == c.ID {
+					allowed = true
+					break
+				}
+			}
+			for _, place := range doors {
+				x, y := (c.X-place.Position.X)/8, (c.Y-place.Position.Y)/8
+				if c.X >= place.Position.X && c.Y >= place.Position.Y && x < 5 && y < 4 && place.tile(x, y) == c.ID {
 					allowed = true
 					break
 				}
@@ -453,6 +485,10 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 				}
 			}
 		}
+	}
+	if s.doors != nil {
+		s.doors.draw(dst, doors, origin)
+		s.doorState = map[string]any{"loaded": true, "matched": len(doors) > 0, "empty": len(doors) == 0, "source_valid": true, "placements": doors, "source_steps": f.Steps, "body_steps": f.BodySteps}
 	}
 	if s.portal != nil {
 		s.portalState = s.portal.draw(dst, f, d, origin)

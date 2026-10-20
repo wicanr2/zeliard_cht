@@ -15,6 +15,7 @@ save = R/'workplace/orig/SAVEM1.USR'
 assert h(save) == '03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c'
 actions = []
 magia_enabled = os.environ.get('ZELIARD_GUI_MAGIA') == '1'
+doors_enabled = os.environ.get('ZELIARD_GUI_DOORS') == '1'
 
 def xvalue(s):
     return s['native_primary_0080']+s['native_primary_0083']
@@ -108,9 +109,12 @@ try:
         advance(400000)
         key(0x1c,250000)
         advance(500000)
-        # 先確認原版效果來源。物品頁後目前站位可能尚未符合地形HD，
-        # 走到原定跳躍／平台觀察點後才驗整幅HD，不宣稱沿途全覆蓋。
+        # 先確認原版效果來源，再依本次選載範圍驗門框站位。
         wait('原版正常使用魔法石後回洞窟',lambda s:any(r.get('Visibility')=='visible' for r in (s.get('cave_frame_presentation')or{}).get('magia_records',[])),30)
+        if doors_enabled:
+            wait('物品後共用門框與地形HD',lambda s:ready(s) and magia_ready(s) and (s.get('cave_door_hd')or{}).get('matched'),30)
+            compare('door-after-item')
+            assert (shots[-2]['state'].get('cave_door_hd')or{}).get('matched')
     if xvalue(state())<40:
         move(0x4d,lambda s:xvalue(s)>=40,'靠近平台')
     elif xvalue(state())>41:
@@ -139,10 +143,10 @@ try:
     assert process.returncode==0
     assert h(user/'SAVETEST.usr')==h(save)
     assert (user/'SAVETEST.usr').stat().st_mtime_ns==save.stat().st_mtime_ns
-    report={'status':'PASS_CAVE_MAGIA_GUI_SCOPED' if magia_enabled else 'PASS_CAVE_PLATFORM_GUI_SCOPED','binary_sha256':h(candidate),
+    report={'status':'PASS_CAVE_DOOR_GUI_SCOPED' if doors_enabled else 'PASS_CAVE_MAGIA_GUI_SCOPED' if magia_enabled else 'PASS_CAVE_PLATFORM_GUI_SCOPED','binary_sha256':h(candidate),
             'script_sha256':h(Path(__file__)),'catalog_helper_sha256':h(catalog),'helper_sha256':h(helper),
             'source_save_sha256':h(save),'boots':boots,'shots':shots,'pairs':pairs,'actions':actions,
-            'normal_DOS_exit':0,'save_unchanged':True,'magia_enabled':magia_enabled,
+            'normal_DOS_exit':0,'save_unchanged':True,'magia_enabled':magia_enabled,'doors_enabled':doors_enabled,
             'limits':'僅此正常冷F7、物品使用、平台升降與HD切回；其他共用圖格、魔法與全遊戲仍待完成'}
     (O/'receipt.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(report['status'],flush=True)

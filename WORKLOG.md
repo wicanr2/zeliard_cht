@@ -1397,3 +1397,13 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - 有界GUI日誌探針重播4614筆原輸入，完整核每筆steps／cycles／暫存器及目標RAM、完成／主體來源SHA，原始USR bytes／mtime不變。實際失敗原因為無招牌98/open四列門框，原地形守衛只接受Muralla五列矩陣。來源位於 `cave-station-source-v1/`，沒有改原版或正式呈現器。
 - 門框原始載入端沿IDA9.4既有py312-v1 image、UID1000及唯讀原始DB，僅副本可寫。31圖163筆12byte記錄與五標記、兩矩陣已綁定原始bytes；十張原圖已目視。v1誤把門框視為RLE底圖，v2修正為C00A表項，成功收據為 `cave-door-source-v2/receipt.json`。v2首次容器命令錯用不存在的python，改為同image的python3後乾淨重跑，不當產品缺陷。
 - Go重播沿dosgolem-go-ebiten:1.24-r1，來源解碼沿eob-audio-capture:20261009-r3；均有逾時、資源上限、UID1000、網路關閉、唯讀專案及明確輸出。045保持DRAFT，只有來源研究，下一步補十圖美術及READY契約後正式接入。既有候選9b0e3ef0與044驗收保持原身份。
+
+## 2026-10-21 共用門框十圖及正式呈現
+
+- 上一輪來源重播及門框記錄定位屬實際進展。本輪核乾淨HEAD b6267f0、目前狀態及工作清單，命中規格閘門、圖像生成與文件職責入口；沒有開代理、變更畫風、規則或公開方式。
+- 三次內建imagegen，以已目視原圖及既有筆觸為引用，生成兩門框基底及四色標記。完整提示詞、五引用SHA、三產物SHA與原cache路徑在 `cave-door-art-v1/generation.json`。十張120×96直接註冊與完整輪廓／透明邊界已驗及目視，圖面僅留本機，不進Git。045完成READY契約後才接正式程式。
+- 新增typed門框位置、記錄／構造端／可變模板／完整DCHR守衛與十圖原子載入，工具參數為 `-cave-door-art`。Muralla五列入口優先，新門框按原版位置直接高清合成，動態、主角、魔法石及武器沿既有順序。來源、CPU、亂數與存檔格式不改。
+- Go檢查沿dosgolem-go-ebiten:1.24-r1，2GiB／2CPU／128程序／外層180秒，UID1000、網路關閉。專案唯讀，格式化僅窄掛hd／cmd子目錄，full-hd-v1與gocache可寫、gomodcache唯讀。34項圖面／來源回歸無skip／fail，vet及build通過。正常回歸另沿 `verify_cave_platform.sh`，加DOOR、MAGIA及REQUIRE_PRESENTATION=1，同時用普通／魔法石兩檔鍵序；13點完整狀態及USR bytes／mtime相同。
+- GUI沿fd2-promo:20261017-r1，2GiB／2CPU／192程序／外層480秒與內層450秒、UID1000、網路關閉，專案及AppDir唯讀、指定GUI輸出可寫。使用 `ZELIARD_GUI_MAGIA=1`、`ZELIARD_GUI_DOORS=1`與十一圖集、平台、魔法石、新門框參數。冷F7正常使用物品、門框、平台升降再升及離開，五組原貌切回2880000像素相同、6912門框高清像素獨立相同，正常DOS退出0、存檔不變、根端已目視。Xvfb與遊戲由finally收回。
+- 收尾入口 `cave-door-final-audit-v1.json`，候選SHA-256 009a15d92a2fd9e6376cf2b8954e71139578481efc2a78dd6db4ed8e9dc54bb2。045僅98/open限定CONFORMED，其他九種只有結構驗證。覆蓋清單銜接現行來源，舊GUI、失敗與封包保持身份。下一步直接沿已存主角／武器來源鍵補圖，後段、城鎮及其他美術仍在完整目標範圍。
+- 收尾核所有當前來源與證據雜湊、Python語法、新檔索引及相對連結；root-owned檔案與md目錄皆零，無本專案容器殘留，遠端仍PRIVATE。提交／推送及遠端回讀結果另存 `cave-door-runtime-v1/repository-sync.json`。

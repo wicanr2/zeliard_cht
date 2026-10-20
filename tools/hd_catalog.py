@@ -71,12 +71,15 @@ def main():
     magia_runtime = p/"workplace/full-hd-v1/cave-magia-final-audit-v2.json"
     magia_runtime_report = json.loads(magia_runtime.read_text())
     assert magia_runtime_report["status"] == "PASS_MAGIA_SOURCE_ART_NORMAL_GUI_SCOPED"
+    doors = p/"workplace/full-hd-v1/cave-door-final-audit-v1.json"
+    doors_report = json.loads(doors.read_text())
+    assert doors_report["status"] == "PASS_CAVE_DOOR_SOURCE_ART_NORMAL_GUI_SCOPED"
     assert sage_report["status"] == "PASS_SAGE_SOURCE_ART_NORMAL_GUI"
     assert back_report["status"] == "SOURCE_ART_NORMAL_PASSED_GUI_PENDING"
     assert interior_report["status"] == "PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI"
     # 舊收據保留原程式身份。來源後續有修訂時，必須由具名新稽核銜接，不能把舊GUI換稱新程式。
     latest_sources, replacement_evidence, source_revisions = {}, {}, []
-    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report), (merchant, merchant_report), (towns, towns_report), (platform, platform_report), (magia, magia_report), (magia_runtime, magia_runtime_report)):
+    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report), (merchant, merchant_report), (towns, towns_report), (platform, platform_report), (magia, magia_report), (magia_runtime, magia_runtime_report), (doors, doors_report)):
         for row in audit["source_files"]:
             latest_sources[row["path"]] = row["sha256"]
             replacement_evidence[row["path"]] = str(audit_path.relative_to(p))
@@ -99,6 +102,7 @@ def main():
     validate_audit(platform, platform_report)
     validate_audit(magia, magia_report)
     validate_audit(magia_runtime, magia_runtime_report)
+    validate_audit(doors, doors_report)
     town_sources_path = p/"workplace/full-hd-v1/town-resources-source-v1/receipt.json"
     town_sources = {row["record"]:row for row in json.loads(town_sources_path.read_text())["maps"]}
     interior_path = p/"workplace/full-hd-v1/interior-layout-v2/receipt.json"
@@ -170,7 +174,7 @@ def main():
                     "source_sha256":common_report["source_sha256"], "packed_sha256":common_report["packed_sha256"],
                     "normal_points":10, "normal_platform_pixels":192, "evidence":str(common_path.relative_to(p))}
                 item["hd_coverage"] = "partial_scoped_normal_path_and_gui_verified"
-                item["normal_path"] = "綠色平台64～66及魔法石102已接入，普通／魔法石平台13點完整原版配對與代表GUI通過；其他站位、部分遮擋及其餘共用圖格待補。既有Muralla入口沿020，不當39格皆完成HD"
+                item["normal_path"] = "綠色平台64～66、魔法石102及無招牌98/open門框已接入，普通／魔法石平台13點完整原版配對與代表GUI通過；其他門框變體、部分遮擋及其餘共用圖格待補。既有Muralla入口沿020，不當39格皆完成HD"
                 item["green_platform"] = {"ids":[64,65,66],"normal_points":10,"platform_points":5,
                                           "opaque_hd_pixels":1287,"evidence":str(platform.relative_to(p))}
                 item["magia_shard"] = {"id":102,"source_points":27,"opaque_hd_pixels":414,
@@ -268,7 +272,7 @@ def main():
                                   "status":"not_connected_normal_path_and_calibration_pending","spec":"docs/spec/042-all-town-resources.md",
                                   "evidence":str(towns.relative_to(p)),"unresolved_tile_ids":row["unresolved_tile_ids"]}
                                  for record,row in town_sources.items() if record>=38],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage, merchant, towns, town_sources_path, platform, magia, magia_runtime)],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage, merchant, towns, town_sources_path, platform, magia, magia_runtime, doors)],
               "source_revisions":source_revisions,
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     for family,count,visible,record in (("MPP8",43,40,81),("MPP9",38,38,82),("MPPA",20,19,83),("MPPB",5,5,84)):
@@ -281,12 +285,17 @@ def main():
         "key":"cave.common.green_platform", "source_record":"zelres3.record.54",
         "status":"scoped_normal_path_and_gui_verified", "spec":"docs/spec/043-cave-common-scenery.md",
         "evidence":str(platform.relative_to(p)), "registered_tiles":[64,65,66],
-        "transparent_inside_mask":0, "limits":"僅MP10正常平台與原貌切回；魔法石來源缺口、其他共用圖格及後段正常路徑待補。"})
+        "transparent_inside_mask":0, "limits":"僅MP10正常平台與原貌切回；其他共用圖格及後段正常路徑待補。"})
     report["runtime_components"].insert(-1, {
         "key":"cave.common.magia_shard","source_record":"zelres3.record.54",
         "status":"scoped_normal_path_and_gui_verified","spec":"docs/spec/044-cave-magia-presentation.md",
         "evidence":str(magia_runtime.relative_to(p)),"registered_tiles":[102],"opaque_hd_pixels":414,
-        "limits":"27張來源、13個普通／魔法石平台點及代表GUI已驗。另有物品後未匹配地形站位、耗盡／部分遮擋／邊緣待補，不當全部魔法或全遊戲完成。"})
+        "limits":"27張來源、13個普通／魔法石平台點及代表GUI已驗。物品後門框站位另由045補齊；耗盡／部分遮擋／邊緣待補，不當全部魔法或全遊戲完成。"})
+    report["runtime_components"].insert(-1, {
+        "key":"cave.common.untitled_doors", "source_record":"zelres3.record.54",
+        "status":"scoped_normal_path_and_gui_verified", "spec":"docs/spec/045-cave-untitled-doors.md",
+        "evidence":str(doors.relative_to(p)), "registered_variants":10, "normal_variant":"98/open",
+        "limits":"十圖結構與裁切已核，正常物品後門框及平台GUI已驗；其餘九變體未當正常到達，不當全遊戲完成。"})
     next(row for row in report["art_candidates"] if row["key"]=="ESMP")["correction"] = towns_report["art_corrections"][0]
     report["runtime_components"].insert(-1, {
         "key":"cave.terrain.MPP1","status":"connected_structural_verified_normal_path_scoped",
