@@ -19,6 +19,9 @@
     "merchant_known_consumer_tiles": 254,
     "merchant_unreferenced_tiles": 2,
     "merchant_registered_images": 10,
+    "town_maps_structurally_checked": 10,
+    "town_map_cells": 17784,
+    "additional_town_art_candidates": 8,
     "classification_candidates": {
       "unknown": 20,
       "program_candidate": 36,
@@ -217,6 +220,74 @@
       "limits": "來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"
     }
   ],
+  "art_candidates": [
+    {
+      "key": "STMP",
+      "source_record": "zelres2.record.38",
+      "status": "not_connected_normal_path_and_calibration_pending",
+      "spec": "docs/spec/042-all-town-resources.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "unresolved_tile_ids": {}
+    },
+    {
+      "key": "BSMP",
+      "source_record": "zelres2.record.39",
+      "status": "not_connected_normal_path_and_calibration_pending",
+      "spec": "docs/spec/042-all-town-resources.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "unresolved_tile_ids": {}
+    },
+    {
+      "key": "HLMP",
+      "source_record": "zelres2.record.40",
+      "status": "not_connected_normal_path_and_calibration_pending",
+      "spec": "docs/spec/042-all-town-resources.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "unresolved_tile_ids": {}
+    },
+    {
+      "key": "TMMP",
+      "source_record": "zelres2.record.41",
+      "status": "not_connected_normal_path_and_calibration_pending",
+      "spec": "docs/spec/042-all-town-resources.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "unresolved_tile_ids": {}
+    },
+    {
+      "key": "DRMP",
+      "source_record": "zelres2.record.42",
+      "status": "not_connected_normal_path_and_calibration_pending",
+      "spec": "docs/spec/042-all-town-resources.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "unresolved_tile_ids": {}
+    },
+    {
+      "key": "LLMP",
+      "source_record": "zelres2.record.43",
+      "status": "not_connected_normal_path_and_calibration_pending",
+      "spec": "docs/spec/042-all-town-resources.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "unresolved_tile_ids": {}
+    },
+    {
+      "key": "PRMP",
+      "source_record": "zelres2.record.44",
+      "status": "not_connected_normal_path_and_calibration_pending",
+      "spec": "docs/spec/042-all-town-resources.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "unresolved_tile_ids": {
+        "191": 8
+      }
+    },
+    {
+      "key": "ESMP",
+      "source_record": "zelres2.record.45",
+      "status": "not_connected_normal_path_and_calibration_pending",
+      "spec": "docs/spec/042-all-town-resources.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "unresolved_tile_ids": {}
+    }
+  ],
   "proofs": [
     {
       "path": "workplace/probe-intro-memory/memory-01B1_0000.bin",
@@ -269,6 +340,14 @@
     {
       "path": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
       "sha256": "49909bbb825b69a39ab3b1061b55519d5bdaf5a885863fe91f8c54bbf7614634"
+    },
+    {
+      "path": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "sha256": "ac62c62d16c6708362a3d6322bb944a2308c2e5a318abd9da556b4442f46b219"
+    },
+    {
+      "path": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+      "sha256": "9640e6c79cad7c6dfa0760b835bab7e3777b6d9e824d7987f94ff2811f6ff1ed"
     }
   ],
   "source_revisions": [
@@ -300,8 +379,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/interior-final-audit-v2.json",
       "historical_sha256": "7aa6fe044bcca04e00935b32a2a5a8b90dd86454a03c1473002bd8d584ac252e",
-      "current_sha256": "d6b9c8ee99331606a8a6643c54cac6db665ec16c00d15a75383391107bc893e4",
-      "replacement_evidence": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "current_sha256": "ce5ac548b847d6f9d398611ce5a3fdb67a1ce0625eac282ae74c8df69b044b22",
+      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -316,8 +395,16 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/sage-frames-final-audit-v1.json",
       "historical_sha256": "44e76dee7ff991f28b7bccc7c9f9165b2019dfb78855c5f37edcc56f5a3adbb9",
-      "current_sha256": "d6b9c8ee99331606a8a6643c54cac6db665ec16c00d15a75383391107bc893e4",
-      "replacement_evidence": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "current_sha256": "ce5ac548b847d6f9d398611ce5a3fdb67a1ce0625eac282ae74c8df69b044b22",
+      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_catalog.py",
+      "historical_audit": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
+      "historical_sha256": "d6b9c8ee99331606a8a6643c54cac6db665ec16c00d15a75383391107bc893e4",
+      "current_sha256": "ce5ac548b847d6f9d398611ce5a3fdb67a1ce0625eac282ae74c8df69b044b22",
+      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -2686,7 +2773,19 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "town_source": {
+        "key": "CMAP",
+        "width": 114,
+        "height": 8,
+        "terrain_key": "CPAT",
+        "terrain_selector": 0,
+        "background_program": "YMPD.BIN",
+        "background_selector": 0,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.37",
@@ -2706,7 +2805,19 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "town_source": {
+        "key": "MRMP",
+        "width": 215,
+        "height": 8,
+        "terrain_key": "MPAT",
+        "terrain_selector": 1,
+        "background_program": "YMPD.BIN",
+        "background_selector": 0,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.38",
@@ -2725,8 +2836,20 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "hd_coverage": "art_candidate_not_connected_normal_path_pending",
+      "normal_path": "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成",
+      "town_source": {
+        "key": "STMP",
+        "width": 215,
+        "height": 8,
+        "terrain_key": "DPAT",
+        "terrain_selector": 2,
+        "background_program": "CKPD.BIN",
+        "background_selector": 1,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.39",
@@ -2745,8 +2868,20 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "hd_coverage": "art_candidate_not_connected_normal_path_pending",
+      "normal_path": "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成",
+      "town_source": {
+        "key": "BSMP",
+        "width": 152,
+        "height": 8,
+        "terrain_key": "MPAT",
+        "terrain_selector": 1,
+        "background_program": "YMPD.BIN",
+        "background_selector": 0,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.40",
@@ -2765,8 +2900,20 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "hd_coverage": "art_candidate_not_connected_normal_path_pending",
+      "normal_path": "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成",
+      "town_source": {
+        "key": "HLMP",
+        "width": 227,
+        "height": 8,
+        "terrain_key": "DPAT",
+        "terrain_selector": 2,
+        "background_program": "CKPD.BIN",
+        "background_selector": 1,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.41",
@@ -2785,8 +2932,20 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "hd_coverage": "art_candidate_not_connected_normal_path_pending",
+      "normal_path": "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成",
+      "town_source": {
+        "key": "TMMP",
+        "width": 270,
+        "height": 8,
+        "terrain_key": "DPAT",
+        "terrain_selector": 2,
+        "background_program": "CKPD.BIN",
+        "background_selector": 1,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.42",
@@ -2805,8 +2964,20 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "hd_coverage": "art_candidate_not_connected_normal_path_pending",
+      "normal_path": "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成",
+      "town_source": {
+        "key": "DRMP",
+        "width": 215,
+        "height": 8,
+        "terrain_key": "DPAT",
+        "terrain_selector": 2,
+        "background_program": "CKPD.BIN",
+        "background_selector": 1,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.43",
@@ -2825,8 +2996,20 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "hd_coverage": "art_candidate_not_connected_normal_path_pending",
+      "normal_path": "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成",
+      "town_source": {
+        "key": "LLMP",
+        "width": 280,
+        "height": 8,
+        "terrain_key": "MPAT",
+        "terrain_selector": 1,
+        "background_program": "YMPD.BIN",
+        "background_selector": 0,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.44",
@@ -2845,8 +3028,22 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "hd_coverage": "art_candidate_not_connected_normal_path_pending",
+      "normal_path": "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成",
+      "town_source": {
+        "key": "PRMP",
+        "width": 320,
+        "height": 8,
+        "terrain_key": "DPAT",
+        "terrain_selector": 2,
+        "background_program": "CKPD.BIN",
+        "background_selector": 1,
+        "unresolved_tile_ids": {
+          "191": 8
+        },
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.45",
@@ -2865,8 +3062,20 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "hd_coverage": "art_candidate_not_connected_normal_path_pending",
+      "normal_path": "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成",
+      "town_source": {
+        "key": "ESMP",
+        "width": 215,
+        "height": 8,
+        "terrain_key": "MPAT",
+        "terrain_selector": 1,
+        "background_program": "YMPD.BIN",
+        "background_selector": 0,
+        "unresolved_tile_ids": {},
+        "evidence": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
+        "level": "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+      }
     },
     {
       "key": "zelres2.record.46",

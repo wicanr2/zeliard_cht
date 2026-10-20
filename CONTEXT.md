@@ -6,13 +6,16 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，武器店已知八姿態HD與離店回城修復；完整目標仍進行中 |
+| 更新 | 2026-10-21，十地圖來源及八份後續城鎮美術候選；完整目標仍進行中 |
 | 目前候選 | `workplace/full-hd-v1/merchant-frames-runtime-v3/zeliard-preview`，SHA-256 `5cec8f8fef9ce64799b6bafcf2e868e74c03bc2b4be1ab11a62767b590e67123` |
 | 來源與圖面 | ARMOR256圖格中254格引用，八姿態與兩局部動畫共十張282×186圖；139、140非空但用途未知；[規格041](docs/spec/041-merchant-frames-hd.md)限定CONFORMED |
 | 最近測試 | 十項具名與四項舊室內／商人／長老回歸無skip／fail；524520獨立高清像素、49點正常完整原版狀態、有效遮罩邊界、vet及build通過 |
 | 實際視窗 | 冷F7進武器店、三組原貌切回1728000像素相同；七個來源鍵可見，正常離店四層城鎮HD恢復、DOS退出0，存檔不變，根端已目視 |
 | 收尾證據 | `workplace/full-hd-v1/merchant-frames-final-audit-v1.json`，由[武器店稽核工具](tools/hd_merchant_audit.py)重生至新檔 |
+| 本輪研究 | [規格042](docs/spec/042-all-town-resources.md)保持DRAFT；十地圖17784格與八份前景生成候選已核來源，正常新城鎮未到達、校準及前端接入待驗 |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
+
+本輪來源與候選入口為 `workplace/full-hd-v1/town-resources-stage-audit-v2.json`，由[城鎮階段稽核](tools/hd_town_stage_audit.py)重生。原始前景、完整地圖欄與來源在 `town-resources-source-v1/`，IDA9.4九函式／五表在 `town-resources-ida-v2/`，八次內建imagegen及16份引用／輸出SHA在 `town-world-art-v1/generation-v1.json`。Pureza第316欄八列ID191超出已解DPAT，保持未知；候選圖的未知標記不算已完成。四份正常探針 `town-path-normal-v1/`至v4均已結束，沒有到達新城鎮，不重演已失敗的長時間持鍵。下一步先核Satono正常入口及實際DPAT／背景／居民來源，並校準候選接縫、門洞與招牌；DRAFT不接正式前端。現行可玩候選仍是上一輪武器店版本。
 
 武器店圖組以 `-merchant-frames-art-dir workplace/full-hd-v1/merchant-frames-complete-v2`選載，完整啟動命令見同根 `merchant-frames-gui-v4/receipt.json`。八次內建imagegen請求及參考／輸出SHA在 `merchant-frames-art-v1/generation-v2.json`，原版來源與IDA9.4證據為 `merchant-frames-layout-v1/`、`merchant-frames-normal-v1/`至v3及 `merchant-frames-ida-v2/`。正常v5／v6定位Muralla遮罩尾端單一D794變動；041沿022已核240格邊界排除128bytes未用尾端，沒有改原版資料。GUI早期抓圖順序錯誤與回城來源拒絕保留失敗，v4乾淨通過。其他城鎮、交談背景、敵人／首領、片頭與介面仍待補，不重做已驗姿態或把圖集備妥當全遊戲完成。
 

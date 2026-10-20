@@ -56,12 +56,15 @@ def main():
     merchant = p/"workplace/full-hd-v1/merchant-frames-final-audit-v1.json"
     merchant_report = json.loads(merchant.read_text())
     assert merchant_report["status"] == "PASS_MERCHANT_KNOWN_FRAMES_SOURCE_ART_NORMAL_GUI"
+    towns = p/"workplace/full-hd-v1/town-resources-stage-audit-v2.json"
+    towns_report = json.loads(towns.read_text())
+    assert towns_report["status"] == "SOURCE_AND_EIGHT_ART_CANDIDATES_NORMAL_PATH_PENDING"
     assert sage_report["status"] == "PASS_SAGE_SOURCE_ART_NORMAL_GUI"
     assert back_report["status"] == "SOURCE_ART_NORMAL_PASSED_GUI_PENDING"
     assert interior_report["status"] == "PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI"
     # 舊收據保留原程式身份。來源後續有修訂時，必須由具名新稽核銜接，不能把舊GUI換稱新程式。
     latest_sources, replacement_evidence, source_revisions = {}, {}, []
-    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report), (merchant, merchant_report)):
+    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report), (merchant, merchant_report), (towns, towns_report)):
         for row in audit["source_files"]:
             latest_sources[row["path"]] = row["sha256"]
             replacement_evidence[row["path"]] = str(audit_path.relative_to(p))
@@ -80,6 +83,9 @@ def main():
     validate_audit(interior, interior_report)
     validate_audit(sage, sage_report)
     validate_audit(merchant, merchant_report)
+    validate_audit(towns, towns_report)
+    town_sources_path = p/"workplace/full-hd-v1/town-resources-source-v1/receipt.json"
+    town_sources = {row["record"]:row for row in json.loads(town_sources_path.read_text())["maps"]}
     interior_path = p/"workplace/full-hd-v1/interior-layout-v2/receipt.json"
     interior_sources = {row["graphics_record"]:row for row in json.loads(interior_path.read_text())["records"]}
     runtime_catalog = p/"workplace/full-hd-v1/cave-mpp1-final-audit-v1.json"
@@ -165,6 +171,14 @@ def main():
                 item["merchant_frames"] = {"tiles":256,"referenced_tiles":254,"unreferenced_tiles":[139,140],
                                            "poses":8,"registered_images":10,"normal_points":49,
                                            "evidence":str(merchant.relative_to(p))}
+            if archive == "ZELRES2.SAR" and entry["index"] in town_sources:
+                source = town_sources[entry["index"]]
+                item["town_source"] = {k:source[k] for k in ("key","width","height","terrain_key","terrain_selector","background_program","background_selector","unresolved_tile_ids")}
+                item["town_source"]["evidence"] = str(town_sources_path.relative_to(p))
+                item["town_source"]["level"] = "已核靜態地圖與原版選擇端；新增城鎮正常到達另驗"
+                if entry["index"] >= 38:
+                    item["hd_coverage"] = "art_candidate_not_connected_normal_path_pending"
+                    item["normal_path"] = "原始前景及八份生成候選已保存；正常新城鎮未到達，接縫／門洞／招牌與前端接入待驗，不當HD完成"
             if archive == "ZELRES3.SAR" and entry["index"] in cave_maps:
                 source = cave_maps[entry["index"]]
                 item["map_source"] = {k: source[k] for k in ("width", "height", "columns_sha256", "family_candidate", "selector_offset", "selector_raw")}
@@ -180,6 +194,7 @@ def main():
                          "new_hut_inn_source_tiles":247,"normal_bound_interior_resources":2,
                          "sage_hand_poses":8,"sage_registered_images":16,"sage_structural_variants":38,
                          "merchant_known_consumer_tiles":254,"merchant_unreferenced_tiles":2,"merchant_registered_images":10,
+                         "town_maps_structurally_checked":10,"town_map_cells":17784,"additional_town_art_candidates":8,
                          "classification_candidates": dict(Counter(x["classification"] for x in catalog))},
               "limits": ["194是SAR容器記錄數，尚不是美術素材分母；不換算HD完成百分比",
                          "not_assessed表示尚未將既有局部HD與此全量記錄逐項對應，不否定前版已驗成果",
@@ -222,7 +237,11 @@ def main():
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "maps":31,"terrain_profiles":11,
                                       "evidence":str(runtime_catalog.relative_to(p)),
                                       "limits":"來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"}],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage, merchant)],
+              "art_candidates": [{"key":row["key"],"source_record":f"zelres2.record.{row['record']}",
+                                  "status":"not_connected_normal_path_and_calibration_pending","spec":"docs/spec/042-all-town-resources.md",
+                                  "evidence":str(towns.relative_to(p)),"unresolved_tile_ids":row["unresolved_tile_ids"]}
+                                 for record,row in town_sources.items() if record>=38],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage, merchant, towns, town_sources_path)],
               "source_revisions":source_revisions,
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     for family,count,visible,record in (("MPP8",43,40,81),("MPP9",38,38,82),("MPPA",20,19,83),("MPPB",5,5,84)):

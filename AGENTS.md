@@ -122,6 +122,11 @@
 - [武器店購買鍵序](tools/merchant-hd-purchase.commands)、[未購物離店鍵序](tools/merchant-hd-departure.commands)：正常冷F7自建存檔，不注入機器狀態。
 - [武器店實際視窗抽測](tools/hd_merchant_smoke.py)：正常局部動畫、未購物離店姿態、原貌切回與正常退出。
 - [武器店收尾稽核](tools/hd_merchant_audit.py)：核已知254個引用圖格、十張圖、正常交易／告別及實際視窗；未引用兩格不計完成。
+- [後續城鎮規格042](docs/spec/042-all-town-resources.md)、[分級來源索引](docs/town-resources-source-index.json)及[IDA選擇端匯出](tools/ida_town_resources.py)：核八份後續城鎮的地圖、圖像與入口，不把靜態地圖當正常到達。
+- [後續城鎮正常路徑探針](tools/hd_town_path_probe.go)：只送正常按鍵，保存完整原版快照及新城鎮完成點，不寫入位置、道具或存檔狀態。
+- [十份城鎮來源重建](tools/hd_town_sources.py)：按原版descriptor選CPAT／MPAT／DPAT及背景程式，輸出原始前景與明列未核圖格；靜態圖不代替正常畫面。
+- [後續城鎮美術準備](tools/hd_town_art.py)：按八份原圖準備固定分格、參考雜湊與內建生成提示詞；未核Pureza圖格與正常接入另列，不直接進正式前端。
+- [後續城鎮階段稽核](tools/hd_town_stage_audit.py)：核十地圖17784格、八份生成候選、提示詞與原版路徑收據；新城鎮未到達時保持待驗，不升HD完成。
 
 - [長老手勢規格040](docs/spec/040-sage-frames-hd.md)：長老室內未覆蓋圖塊、手勢及正常路徑的增量契約。
 - [長老動畫IDA匯出](tools/ida_sage_frames.py)：固定KENJPRO模組的原始函式、bytes及分級語意匯出。

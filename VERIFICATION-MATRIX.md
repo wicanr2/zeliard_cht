@@ -6,6 +6,7 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 後續八城鎮來源及美術候選 | 042 DRAFT，未接正式前端 | 十地圖17784格、原版descriptor與地形／背景選擇、IDA9.4九函式／五表已核，CPAT／MPAT的7536／11616bytes與既有正常來源相同。八次內建生成、16份參考與輸出SHA完整保存；八張完整候選已目視，review-v1明列Esco錯誤招牌、Pureza未知標記及Dorado柱材質，接縫／門洞／透明邊緣待校準。Pureza第316欄八個ID191用途未知。四份正常按鍵探針USR bytes／mtime不變，但未到達新城鎮，不算正常HD驗收。入口`workplace/full-hd-v1/town-resources-stage-audit-v2.json`；正式程式、封包與影片未更新 |
 | 武器店已知八姿態與離店回城 | 041限定CONFORMED | 候選5cec8f8f，254引用圖格、十張圖524520獨立高清像素，購買／告別49點完整原版狀態、USR bytes／mtime相同。十項具名及四項舊室內／商人／長老回歸、vet／build通過。GUI v4三組原貌切回1728000遊戲區像素相同，原圖165888與高清157356像素獨立相同；正常回城遠山／前景／地面／主角HD及DOS退出0，根端已目視。Muralla有效遮罩只核240格，128bytes尾端不影響圖面，有效最後位元組仍拒絕；非空未引用139、140用途未知。入口`workplace/full-hd-v1/merchant-frames-final-audit-v1.json`；其他城鎮、特殊事件、敵人及首領未完成，未更新封包 |
 | 原版配樂／三平台封包／影片 | 本輪限定完成，v.0.2.0-20261020 | 原版MSCADLIB＋Nuked-OPL3，100ms實際時間模式，136份固定來源、九張正常視窗、Linux AppImage／Windows Wine啟動及macOS通用架構、60秒影片技術與目視通過；見dist-all同版smoke與promo。Windows／macOS真機、實體手把及喇叭未驗；非全遊戲中文／HD或零丟樣聲明 |
 | 第一洞窟中文HD與工具列整合 | 按使用者限定範圍完成 | v.0.1.0-20261020／122來源。九張實際GUI：鍵盤重綁／解除／還原、重開保存、輸入隔離、教堂中文及HD、城鎮HD、第一洞窟移動／攻擊／跳躍與裝備中文，DOS退出0。封包入口另啟動退出0；111檔manifest、版本、Linux amd64及來源核對通過。入口`dist-all/v.0.1.0-20261020/smoke/audit.json`。手把軟體具備，實體未接入；不宣稱通關或後段內容完成 |

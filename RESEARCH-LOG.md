@@ -1148,3 +1148,17 @@ sub_A9CF依AA10八個6byte描述繪12欄、合計8列的96×64圖。AAD0在128,7
 已證實：進店前與離店後十組Muralla守衛僅遮罩11B1:D000..D800不同，單一D794由0變41。沿022已驗地形ID0至239與D000＋ID×8＋列的讀取公式，D794屬第242格列4；240格有效遮罩D000..D780兩份SHA均為`433de06e8f07c80b1caeea08f55059acda00c6126971bff1745e03801bd872fa`。寫入用途未知。041補READY邊界後，Muralla只核有效遮罩；其他256格profile保留完整範圍，未知ID仍拒絕。沒有清零原版資料或為41增加白名單。
 
 十張HD圖在 `workplace/full-hd-v1/merchant-frames-complete-v2/`，完整八次內建imagegen請求及輸入／輸出SHA在 `merchant-frames-art-v1/generation-v2.json`。新姿態用完整畫面避免舊手掌殘留，兩個舊基底保持floor取樣，局部變體限定原動畫區。圖面與原始資料只留本機，正常配對、視窗與完成狀態另由041及當前CONTEXT記錄。
+
+## 2026-10-21 後續城鎮地圖、圖像選擇與候選美術
+
+固定SAR2 SHA-256 `bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1`，record36至45各自payload定位及雜湊在 `workplace/full-hd-v1/town-resources-source-v1/receipt.json`。十份地圖寬114至320欄、各八列，共17784格。原始地圖從C017開始，C011所指位置與地形結束相同；人物C00F表按八bytes取至FFFF。前景重建不含原版上方背景、下層地面、人物或主角，不稱完整原版畫面。
+
+IDA9.4以固定城堡段 `castle-edge-ida-v1/primary.segment`為來源，SHA-256 `aed45060ee02eafa07b41891d326ac0217a8afdd2957d79b401369a8bb2fc11d`，base0對應該dosgolem01B1段內偏移。原始函式、bytes、資料表與分級索引另存 `town-resources-ida-v2/`，九函式、五表，不覆寫舊資料庫。
+
+已證實：sub_AD6以AH最高位選城鎮descriptor區，低七位加32後乘11，從F68索引並載至C000。10C8起十筆依序CMAP、MRMP、STMP、BSMP、HLMP、TMMP、DRMP、LLMP、PRMP、ESMP；名稱為SAR2原始descriptor，不自行猜譯名。6066..6075從C000指標找第一個FF，後兩byte至7C45／7C46。sub_6AAF依前者低位選YMPD／CKPD，sub_6D9E依後者選CPAT／MPAT／DPAT。這些只證靜態選擇，沒有把八個新增城鎮當正常到達。
+
+CPAT157格及MPAT242格轉換的7536／11616bytes與前輪正常圖格來源SHA相同。DPAT191格仍為靜態來源。STMP、HLMP、TMMP、DRMP、PRMP選DPAT；BSMP、LLMP、ESMP選MPAT。Pureza第316欄八列均是191，超出DPAT已解的0至190，原圖用洋紅標記並保持未知；原版轉換端硬編250格不能證明缺少的191就是空白或有效圖片，不猜補尾端。
+
+四份正常鍵盤研究沿Go1.24.13、固定dosgolem快照、cycles3000及同一SAVETEST來源雜湊 `78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb`。保存完整RAM、色號、色盤、按鍵、時間與檔案紀錄，USR bytes及mtime不變，沒有注入或還原快照。初次從生命條視覺推測低生命不成立；001已記錄滿生命80，第一瓶購買／使用前後90h仍80，只消耗A6h的一份物品。正常買武器後金幣800，分次攻擊可前進至Satono標示附近；後段生命歸0／倒地，沒有取得新城鎮完成點，不把無位移當執行器故障。各輪原始收據在 `town-path-normal-v1/`至v4。
+
+八份前景生成候選沿既有手繪奇幻，用內建imagegen及Muralla既有圖面作畫風參考。每份來源按240×64的重疊片段排列，16原生像素重疊，直接3倍準備參考。實際輸出四張1536×1024、四張1254×1254，均保留RGBA原圖；完整八次提示詞、16引用與產物SHA在 `town-world-art-v1/generation-v1.json`。聯絡表及八張完整候選已目視，`review-v1.json`明列Esco首片局部武器店被誤寫INN、Pureza未知標記仍保留及Dorado柱材質待核。接縫、門洞、招牌及透明邊緣尚待校準，沒有註冊或接入前端。[規格042](docs/spec/042-all-town-resources.md)保持DRAFT，階段收尾為 `town-resources-stage-audit-v2.json`，不當全城鎮HD完成。

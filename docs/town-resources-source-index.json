@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "input_name": "workplace/full-hd-v1/castle-edge-ida-v1/primary.segment",
+  "input_sha256": "aed45060ee02eafa07b41891d326ac0217a8afdd2957d79b401369a8bb2fc11d",
+  "address_space": "IDA base0＝固定dosgolem01B1段內偏移；1MiB檔案定位另加1B10，SAR偏移另列",
+  "entries": [
+    {"address":"0xad6","level":"已證實","semantic":"地圖載入目標C000；AH最高位為1時，以低七位加32，乘11後選F68起descriptor。","evidence":["IDA9.4 sub_AD6 原始AD6..AFC及10C8起十筆descriptor；只證靜態分派"]},
+    {"address":"0x6066","level":"已證實","semantic":"從C000指標前進至首個FF，再讀兩byte至7C45、7C46；前者選背景程式，後者選地形資源。","evidence":["IDA9.4 6066..6075、sub_6AAF、sub_6D9E；正常新增家族另驗"]},
+    {"address":"0x6aaf","level":"已證實","semantic":"7C45低位乘11選6AD3表：YMPD.BIN或CKPD.BIN，載至額外段3300。","evidence":["IDA9.4 sub_6AAF、6AD3的22bytes；背景畫面正常來源另驗"]},
+    {"address":"0x6d9e","level":"已證實","semantic":"7C46乘11選6DCE表的CPAT／MPAT／DPAT，載至11B1:8000，調整三指標後呼叫原版圖塊轉換。","evidence":["IDA9.4 sub_6D9E、6DCE的33bytes及3AF9原始指令"]},
+    {"address":"0x6e29","level":"已證實","semantic":"正常Up入口以camera＋角色欄＋4查C009記錄，相鄰一欄亦可觸發；原版自行轉場。","evidence":["workplace/town-hd-v1/foreground-v1/ida-foreground-evidence-v3.json","docs/spec/039-interior-resources.md"]},
+    {"address":"0x6ff8","level":"已證實","semantic":"Up分支把入口種類減8後乘5，以C00B為基底讀記錄，原版自行寫後續地圖與位置狀態；不由前端修改。","evidence":["IDA9.4 6E77..6E7B、6FF8..703D；靜態記錄不推定所有出口均可達"]}
+  ]
+}
