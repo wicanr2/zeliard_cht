@@ -151,12 +151,14 @@
     },
     {
       "address": "0x2C2A",
-      "level": "強推論",
-      "semantic": "MCGA圖像前處理候選：複製CX乘48bytes後逐48bytes轉換；國王模組A021呼叫2044指向此處。GRP實際形狀及完整圖像解碼仍待核，不與RLE解壓等同",
+      "level": "已證實",
+      "semantic": "三平面前處理：複製CX乘48bytes至CS+3000段，再將每列三個big-endian 16bit平面交織成MCGA封裝。隔離原常式與80筆補零研究buffer逐byte相同；不代表80個GRP完整圖像格式或正常遊戲路徑已驗",
       "evidence": [
         "docs/spec/034-full-game-hd.md",
         "workplace/full-hd-v1/ida-resident-v2/resident.json",
-        "workplace/full-hd-v1/decoder-oracle-v4/receipt.json"
+        "workplace/full-hd-v1/decoder-oracle-v4/receipt.json",
+        "workplace/full-hd-v1/planar-oracle-v2/receipt.json",
+        "workplace/full-hd-v1/grp-sources-v3/receipt.json"
       ]
     }
   ]

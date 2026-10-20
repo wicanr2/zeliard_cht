@@ -91,6 +91,8 @@ type game struct {
 	townGroundMatch      bool
 	townPlayerHD         *hd.TownPlayer
 	townPlayerMatch      bool
+	townActorsHD         *hd.TownActors
+	townActorsMatch      bool
 	kingHD               *hd.King
 	kingHDMatched        bool
 	kingHDPose           int
@@ -615,6 +617,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"audio_output":               g.output.state(),
 			"town_ground_hd_matched":     g.townGroundMatch,
 			"town_player_hd_matched":     g.townPlayerMatch,
+			"town_residents_hd_matched":  g.townActorsMatch,
+			"town_residents_hd":          g.townActorsHD.State(),
 			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
 			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
 			"native_primary_0083":        g.o.Byte(oracle.Far(0x1b1, 0x0083)),
@@ -680,8 +684,13 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.townGroundMatch = g.townGroundHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, townPalette, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.townGroundMatch
 	}
-	g.townPlayerMatch = false
-	if g.hdEnabled && g.townPlayerHD != nil && g.townSceneryMatch && w == 320 && h == 200 {
+	g.townActorsMatch = false
+	g.townActorsHD.Clear()
+	if g.hdEnabled && g.townActorsHD != nil && g.townSceneryMatch && w == 320 && h == 200 {
+		g.townActorsMatch = g.townActorsHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, townPalette, image.Pt(0, barHeight))
+	}
+	g.townPlayerMatch = g.townActorsMatch
+	if g.hdEnabled && !g.townActorsMatch && g.townPlayerHD != nil && g.townSceneryMatch && w == 320 && h == 200 {
 		g.townPlayerMatch = g.townPlayerHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, townPalette, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.townPlayerMatch
 	}
@@ -895,20 +904,22 @@ func (g *game) Draw(screen *ebiten.Image) {
 				"item_shop_hd_matched": g.itemShopHDMatched, "item_shop_hd_pose": g.itemShopHDPose,
 				"church_hd_matched": g.churchHDMatched, "church_hd_frame": g.churchHDFrame,
 				"town_sky_hd_matched": g.townSkyHDMatched, "town_background_hd_matched": g.townBackgroundMatch,
-				"town_scenery_hd_matched": g.townSceneryMatch,
-				"town_frame_presentation": g.townFrames.State(),
-				"cave_frame_presentation": g.caveFrames.State(),
-				"cave_terrain_hd_matched": g.caveTerrainMatch,
-				"cave_player_hd":          g.cavePlayerState(),
-				"cave_weapon_hd":          g.caveWeaponState(),
-				"cave_objects_hd":         g.caveObjectState(),
-				"cave_portal_hd":          g.cavePortalState(),
-				"dialogue":                g.dialogue.State(),
-				"input_trace_error":       g.inputTraceError,
-				"audio_output":            g.output.state(),
-				"town_ground_hd_matched":  g.townGroundMatch,
-				"town_player_hd_matched":  g.townPlayerMatch,
-				"town_background_cache":   g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224), "town_background_module": g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64)})
+				"town_scenery_hd_matched":   g.townSceneryMatch,
+				"town_frame_presentation":   g.townFrames.State(),
+				"cave_frame_presentation":   g.caveFrames.State(),
+				"cave_terrain_hd_matched":   g.caveTerrainMatch,
+				"cave_player_hd":            g.cavePlayerState(),
+				"cave_weapon_hd":            g.caveWeaponState(),
+				"cave_objects_hd":           g.caveObjectState(),
+				"cave_portal_hd":            g.cavePortalState(),
+				"dialogue":                  g.dialogue.State(),
+				"input_trace_error":         g.inputTraceError,
+				"audio_output":              g.output.state(),
+				"town_ground_hd_matched":    g.townGroundMatch,
+				"town_player_hd_matched":    g.townPlayerMatch,
+				"town_residents_hd_matched": g.townActorsMatch,
+				"town_residents_hd":         g.townActorsHD.State(),
+				"town_background_cache":     g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224), "town_background_module": g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64)})
 			if err := os.WriteFile(g.capturePath+".json", append(meta, '\n'), 0644); err != nil {
 				log.Printf("擷取 metadata 失敗：%v", err)
 			}
@@ -976,6 +987,7 @@ func main() {
 	townSceneryArt := flag.String("town-scenery-art-dir", "", "可選：Muralla三段手繪前景圖目錄，搭配town-background-memory")
 	townGroundArt := flag.String("town-ground-art", "", "可選：Muralla雙層手繪地面PNG，搭配已驗前景與town-sky-reference")
 	townPlayerArt := flag.String("town-player-art-dir", "", "可選：Muralla主角八姿態手繪圖目錄，搭配已驗前景HD")
+	townResidentsArt := flag.String("town-residents-art-dir", "", "可選：Muralla五類居民40姿態手繪圖集，搭配城鎮主角與前景HD")
 	caveArt := flag.String("cave-art-dir", "", "可選：Malicia手繪地形圖目錄，角色與物件保留原貌")
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
@@ -1177,6 +1189,12 @@ func main() {
 		g.townPlayerHD, err = hd.NewTownPlayer(g.townSceneryHD, *townPlayerArt)
 		if err != nil {
 			log.Printf("城鎮主角HD未載入，保留原貌：%v", err)
+		}
+	}
+	if *townResidentsArt != "" {
+		g.townActorsHD, err = hd.NewTownActors(g.townPlayerHD, *townResidentsArt)
+		if err != nil {
+			log.Printf("城鎮居民HD未載入，保留既有圖面：%v", err)
 		}
 	}
 	if *kingRefA != "" || *kingRefB != "" || *kingArt != "" || *kingSpeakingArt != "" {

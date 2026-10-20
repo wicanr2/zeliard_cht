@@ -968,3 +968,20 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - `tools/hd_town_npc_sources.py` 重生 `town-npc-source-v2/`，40張RGBA均與初次擷取相同。五張原版4×2圖集供內建imagegen沿已確認B手繪奇幻風格重畫，原圖、全部提示詞及來源在 `town-npc-art/g0..g4-generation-v1.json`，產物1448×1086、真實alpha。只留本地，不加入Git或既有封包。
 - `town-npc-registration-v1/manifest.json`記每姿態裁切與原版alpha邊界，產生40張48×72註冊預覽。原RGBA相同的姿態共用相同候選，避免生成差異增加原版沒有的動畫。五組圖與註冊接觸表已目視；目前未驗正式合成、連續動畫、遮擋或實際視窗，不計HD接入完成。
 - 此階段收據為 `workplace/full-hd-v1/stage-audit.json`，入口是 [規格034](docs/spec/034-full-game-hd.md)。後續先接居民圖面及核GRP內部格式，不重開已驗的RLE常式或前版音樂。
+
+### Muralla居民的共同合成驗收
+
+- 已證實：035沿007／010已驗原版繪製順序、模板及遮罩。固定參考1MiB SHA仍為9dd3657107f25c097debf5f6be68137d055d98bda2e22a59f6b854d88be5fdd9，五張圖與40裁切的註冊SHA為4633a11f282060e43c5a6111875d4c913faa79624772e67637c178c8b5cef6f0。原生16×24、HD48×72；面積取樣直接使用1448×1086原圖，不拿LANCZOS預覽作原版證據。
+- Go1.24.13候選SHA-256為3bdc2098989064bf4d315fbc7e5042764004324877859a0086d2e9cc915407c6。town-npc-pair-v2六點正常冷F7／居民交談／步行的完整RAM、VGA、色盤、暫存器、IP、steps、cycles、檔案及鍵盤狀態相同。town-npc-gui-v1四組原貌切回每組576000像素相同，正常DOS退出0，固定自建USR未改。
+- 視窗抽樣居民鍵為g1-p4與g0-p1；原版配對另見g1-p5。40項資產身份檢查不代表40種姿態都已正常遇到。合成色塊遮擋測試只證明內部圖層順序，原版行為依既有007／010。
+- 已知覆蓋缺口：交談期間既有完整畫格守衛撤除HD，顯示原貌背景。其他城鎮與主角相位不外推；這些仍阻擋全遊戲HD。稽核與逐檔程式身份見workplace/full-hd-v1/town-npc-final-audit-v1.json。
+
+### 三平面前處理與城堡來源
+
+- 已證實：IDA9.4既有resident-v3的01B1:2C2A..2CBC原始指令先複製CX×48，再逐6bytes讀三個big-endian word，依C／B／A最高位順序交織。每24bits輸出前16bits little-endian與後8bits，重複兩次形成6bytes。隔離MZ連同可寫scratch保留2C2A..2CC8，其SHA-256為eab920e45d2253c63f119d20c3e2823a6b1fb5d45f2a2b6ebe7acd4559afb7ab。Go1.24.13／既有dosgolem執行80筆補零研究buffer，與Python逐byte相同、退出0；收據為planar-oracle-v2。這不認定header與可見形狀。
+- 已證實：MMAN／TMAN三平面色7清為0，色0的兩個子像素均透明時設定native遮罩位元。MMAN原256bytes header與正常11B1:4000相同，152圖格7296bytes與11B1:4100相同，1216遮罩bytes與21B1:7000相同。TMAN46圖格2208bytes與11B1:6000相同，368遮罩bytes與21B1:8000相同。原始SAR2解壓檔SHA及輸出SHA逐項列grp-sources-v3。
+- 已證實：CPAT157及MPAT242圖格的header三個指標加8000後與11B1:8000相同。flag0保留色、flag1..3清色4／2／1，兩個子像素同為該色時設定遮罩；flag4在兩個正常profile的遮罩均為八個FF。兩組19152圖像bytes及672個非零flag遮罩bytes與11B1:8100／D000相同。無效或未採用的flag0遮罩不稱已驗。
+- 勘誤：冷城堡1MiB SHA為5c5b610c97bd2cd5266ae25b3da3764d0b46f02b30e8392a3b09c286a0db45a2，載入的居民模板仍為MMAN；CMAN檔名不能證明此入口使用它。CMAN164與DPAT191圖格只列結構候選。MMAN尾123bytes、CMAN尾59bytes用途未知，未據此開無關RE。
+- 城堡全景來源沿007的C017地圖與C00F底圖契約，114欄×8格，912×64。第一次靜態比對(5,0)揭露flag4背景遮罩；第二次(106,0)揭露地圖ID4、已畫快取ID3差異。按E000實際圖格、A000背景、原版居民與主角重建後，完整14336畫帶像素與正常原版相同，見castle-source-v3。沒有跳過失配點，來源守衛未放寬。
+- 已證實的快取差異為世界欄37／43的第1列、欄47／53／59的第0列。兩圖格是不同旗幟，動畫原因為強推論；計時與更新端仍未知。生成圖候選不能凍結這些差異。
+- 四段城堡候選使用內建imagegen、兩張參考及完整提示詞，生成來源與SHA在castle-art-v1/generation.json。候選PNG SHA為cd6af931976ab0d55b5ea9ab8e4fca76ed70d7ebf8575664907b6006f01a29a0，1214×1295、真實alpha。根端目視四段、主門及亭台，裁切高度與對齊仍待036審查，不稱正式HD。

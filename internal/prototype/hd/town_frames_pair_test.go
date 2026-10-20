@@ -29,6 +29,10 @@ func TestTownFramesNormalPathsReadOnly(t *testing.T) {
 	}
 }
 func runTownFramesPair(t *testing.T, path, out string) {
+	runTownFramesPairWithActors(t, path, out, false)
+}
+
+func runTownFramesPairWithActors(t *testing.T, path, out string, residents bool) {
 	scene, _ := sceneryTestInputs(t)
 	root, project := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_PROJECT")
 	savePath := os.Getenv("ZELIARD_SKY_SAVE")
@@ -80,6 +84,14 @@ func runTownFramesPair(t *testing.T, path, out string) {
 		}
 	}
 	playerDraws, playerCaveRefusals := 0, 0
+	var actors *TownActors
+	actorDraws := 0
+	if residents {
+		actors, err = NewTownActors(player, os.Getenv("ZELIARD_TOWN_NPC_ART"))
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 	var ground *TownGround
 	if artwork := os.Getenv("ZELIARD_GROUND_ART"); artwork != "" {
 		ground, err = NewTownGround(scene, filepath.Join(project, "workplace/town-hd-v1/foreground-v1/normal-v1/restored.indexed"), artwork)
@@ -194,6 +206,17 @@ func runTownFramesPair(t *testing.T, path, out string) {
 				t.Fatal("城鎮快照蓋住F7選單", f[1])
 			}
 			before := b.Bytes(oracle.Far(0, 0), 1<<20)
+			if residents {
+				raw := b.Indexed()
+				if selected != nil {
+					raw = selected.Indexed
+				}
+				var pal []byte
+				for _, c := range b.Palette() {
+					pal = append(pal, c[:]...)
+				}
+				_, canvas = skyOriginal(raw, pal)
+			}
 			if selected != nil && !scene.Draw(canvas, b.VideoMode(), selected.Primary, selected.Resources, selected.Extra, selected.Indexed, selected.RGB, image.Point{}, true) {
 				t.Fatal("正常完成來源HD失配", f[1])
 			}
@@ -211,10 +234,32 @@ func runTownFramesPair(t *testing.T, path, out string) {
 					}
 				}
 			}
-			playerMatched := false
+			actorsMatched := false
+			if actors != nil {
+				actors.Clear()
+				if selected != nil {
+					actorsMatched = actors.Draw(canvas, b.VideoMode(), selected.Primary, selected.Resources, selected.Extra, selected.Indexed, selected.RGB, selected.Palette, image.Point{})
+					if selected.Primary[0xe7] < 4 && !actorsMatched {
+						t.Fatal("正常居民共同HD失配", f[1])
+					}
+					if actorsMatched {
+						actorDraws++
+					}
+				} else {
+					in := frames.read(b.Indexed(), nil)
+					_, _, rgb := b.ScreenRGB()
+					pixels := cloneTownBytes(canvas.Pix)
+					if actors.Draw(canvas, in.mode, in.primary, in.resources, in.extra, in.indexed, rgb, in.palette, image.Point{}) || !bytes.Equal(pixels, canvas.Pix) {
+						t.Fatal("居民HD蓋住模態或不同場景", f[1])
+					}
+				}
+			}
+			playerMatched := actorsMatched
 			if player != nil {
 				if selected != nil {
-					playerMatched = player.Draw(canvas, b.VideoMode(), selected.Primary, selected.Resources, selected.Extra, selected.Indexed, selected.RGB, selected.Palette, image.Point{})
+					if !actorsMatched {
+						playerMatched = player.Draw(canvas, b.VideoMode(), selected.Primary, selected.Resources, selected.Extra, selected.Indexed, selected.RGB, selected.Palette, image.Point{})
+					}
 					if int(selected.Primary[0x83])*8 < 224 && selected.Primary[0xe7] < 4 && !playerMatched {
 						t.Fatal("正常可見主角HD失配", f[1])
 					}
@@ -243,6 +288,10 @@ func runTownFramesPair(t *testing.T, path, out string) {
 				t.Fatal("城鎮快照蓋住洞窟")
 			}
 			points = append(points, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "registers": b.Regs(), "state_equal": true, "memory_sha256": townBackgroundHash(before), "presentation": frames.State(), "town": dialogue.State(), "player_hd_matched": playerMatched})
+			if actors != nil {
+				points[len(points)-1]["residents_hd_matched"] = actorsMatched
+				points[len(points)-1]["residents"] = actors.State()
+			}
 		default:
 			t.Fatal("未知正常命令", line)
 		}
@@ -250,6 +299,9 @@ func runTownFramesPair(t *testing.T, path, out string) {
 	equal("final")
 	if held == 0 || uncovered != 0 || len(b.HeldKeys()) != 0 {
 		t.Fatal("正常呈現驗收不足", held, uncovered)
+	}
+	if actors != nil && actorDraws < 2 {
+		t.Fatal("居民正常HD抽樣不足", actorDraws)
 	}
 	data, e := json.MarshalIndent(map[string]any{"commands_sha256": townBackgroundHash(commands), "draws": draws, "held_complete": held, "uncovered": uncovered, "modal_frames": modal, "checkpoints": points, "captured": frames.captured, "refused": frames.refused, "held_keys": b.HeldKeys(), "player_draws": playerDraws, "player_cave_refusals": playerCaveRefusals, "scope": "兩個獨立dosgolem正常鍵序；各檢查點完整原版狀態與每50k完整呈現；F7選單用當次原版，恢復必須新完成來源；非GUI或其他城鎮驗收"}, "", "  ")
 	if e != nil {

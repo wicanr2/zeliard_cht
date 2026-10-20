@@ -42,6 +42,13 @@ def main():
     verified = {(x["archive"], x["index"]): x for x in oracle_report["records"]}
     compressed = {(x["archive"], x["index"]): x for x in raw_report["records"]}
     assert len(verified) == len(compressed) == 84
+    planar = p/"workplace/full-hd-v1/planar-oracle-v2/receipt.json"
+    grp = p/"workplace/full-hd-v1/grp-sources-v3/receipt.json"
+    planar_report, grp_report = json.loads(planar.read_text()), json.loads(grp.read_text())
+    assert planar_report["status"] == "PASS_EXTRACTED_ORIGINAL_PLANAR" and len(planar_report["records"]) == 80
+    assert all(x["matched"] and x["exit_code"] == 0 for x in planar_report["records"])
+    assert grp_report["status"] == "PASS_FOUR_NORMAL_RESOURCE_BINDINGS"
+    grp_sources = {("ZELRES2.SAR", x["record"]): x for x in grp_report["records"]}
     catalog = []
     for archive, data in originals.items():
         for entry in records(data):
@@ -63,6 +70,13 @@ def main():
                 assert raw == actual and sha(raw) == v["original_sha256"] == v["offline_sha256"]
                 item["decoder"] = {"kind": d["rle_kind"], "bytes": len(raw), "sha256": sha(raw),
                                    "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"}
+            if key in grp_sources:
+                source = grp_sources[key]
+                item["graphics_source"] = {k: source[k] for k in ("tiles", "tile_offset", "pixels_sha256", "masks_sha256", "status", "normal_memory_sha256", "runtime_bytes_verified", "runtime_mask_bytes_verified", "uninterpreted_tail_bytes")}
+                item["graphics_source"]["evidence"] = str(grp.relative_to(p))
+                if key == ("ZELRES2.SAR", 29):
+                    item["hd_coverage"] = "partial_scoped_candidate_verified"
+                    item["normal_path"] = "Muralla居民；規格035，交談背景仍退回原貌"
             catalog.append(item)
     report = {"schema": 1, "objective": "完成全遊戲HD", "status": "in_progress",
               "scope_spec": "docs/spec/034-full-game-hd.md",
@@ -72,7 +86,16 @@ def main():
                          "not_assessed表示尚未將既有局部HD與此全量記錄逐項對應，不否定前版已驗成果",
                          "檔名／副檔名只作分類候選，不能單憑GRP或MDT宣稱已解圖、全部可達或已HD"],
               "prior_hd_evidence": "VERIFICATION-MATRIX.md",
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle)],
+              "runtime_components": [{"key": "muralla.residents", "status": "scoped_candidate_verified",
+                                      "spec": "docs/spec/035-town-residents-hd.md", "groups": 5, "phases": 40,
+                                      "evidence": "workplace/full-hd-v1/town-npc-final-audit-v1.json",
+                                      "source_record": "zelres2.record.29",
+                                      "limits": "只驗Muralla固定來源；其他城鎮及交談背景仍有缺口"},
+                                     {"key": "castle.foreground", "status": "generated_candidate_not_connected",
+                                      "spec": "docs/spec/036-castle-hd.md", "source_record": "zelres2.record.33",
+                                      "evidence": "workplace/full-hd-v1/castle-source-v3/receipt.json",
+                                      "limits": "912×64原生全景、14336正常畫帶像素與四段手繪候選；尚未校準／接入"}],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp)],
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(report["counts"], ensure_ascii=False))

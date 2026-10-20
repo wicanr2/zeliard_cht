@@ -4,7 +4,13 @@
 
 目前目標已由使用者擴大為「完成全遊戲HD」，狀態為進行中。沿既有手繪奇幻與dosgolem覆繪架構，原貌／規則／存檔不改。第一洞窟完成仍是上一版交付範圍，不能作為這次目標的完成依據。完整覆蓋入口為 [規格034](docs/spec/034-full-game-hd.md)，原版三個SAR的194筆記錄已完成邊界與雜湊盤點，圖像分類及覆蓋分母尚在建立。
 
-全量台帳為 [hd-coverage.json](docs/hd-coverage.json)：174筆名稱候選、84筆解壓結果與原版常式逐byte一致；分類候選含80圖像、41地圖、17音樂、36程式及20未知，不把它們當成美術分母。原版對照在 `workplace/full-hd-v1/decoder-oracle-v4/receipt.json`，五類居民40姿態來源在 `town-npc-source-v2/`，五張八姿態手繪候選與完整內建imagegen提示詞在 `town-npc-art/`，尚未接入。下一步核GRP內部圖形前處理，並接居民HD的下層還原／遮擋；不繼續深挖已驗RLE或重新驗前版音樂。
+全量台帳為 [hd-coverage.json](docs/hd-coverage.json)：174筆名稱候選、84筆解壓結果與原版常式逐byte一致；分類候選含80圖像、41地圖、17音樂、36程式及20未知，不把它們當成美術分母。三平面變換已對80筆補零研究buffer通過原常式核對，四資源MMAN／TMAN／CPAT／MPAT共597個圖格、28656像素bytes及2256有效遮罩bytes與正常原版RAM一致。證據在 `workplace/full-hd-v1/planar-oracle-v2/receipt.json` 及 `grp-sources-v3/receipt.json`。CMAN／DPAT仍只有結構候選，其他GRP形狀未解，不重開已驗RLE或前版音樂。
+
+居民HD已接入候選版，限定驗收見 [規格035](docs/spec/035-town-residents-hd.md) 與 `workplace/full-hd-v1/town-npc-final-audit-v1.json`。五類40姿態／34種RGBA、五張手繪圖、下層還原及居民先於主角的共同合成具備。六點正常原版狀態配對、實際視窗兩頁中文及四組原貌切回通過，每組576000遊戲區像素相同。程式SHA為 `3bdc2098989064bf4d315fbc7e5042764004324877859a0086d2e9cc915407c6`，入口在 `town-npc-runtime-v1/`，尚未更新v.0.2.0封包。交談時背景仍退回原貌，其他城鎮與全部姿態正常可達性未驗，不稱全城鎮完成。
+
+城堡增量入口為 [規格036](docs/spec/036-castle-hd.md)，目前DRAFT。`castle-source-v3/receipt.json`保存912×64原生前景、四段製圖參考及正常城堡畫帶14336像素重建。地圖ID4／已畫快取ID3五處旗幟差異須保留，原因仍為強推論。`castle-art-v1/generation.json`保存內建imagegen完整提示詞、來源與1214×1295四段手繪候選，SHA為cd6af931。下一步核旗幟變體、量裁切及入口映射，再依036推進READY與正式接入；不把候選圖計為HD覆蓋完成。
+
+本輪收尾入口為 `workplace/full-hd-v1/runtime-stage-audit-v1.json`，可由同目錄 `runtime-stage-audit-v1.py` 在既有Pillow容器重生到新的收據檔。居民四項單元測試無skip／fail，SAR解碼的40個居民RGBA與既有來源逐項相同，15個新／關聯檔的索引、Python語法、文件連結及已驗程式SHA均通過。既有封包身份不變；全遊戲目標維持進行中。
 
 README 已加入手冊故事背景、原貌／HD 成對截圖、目前封包城鎮及第一洞窟畫面，以及各含16類的原版／HD素材總覽。這是使用者指定的文件縮圖例外；完整解析度素材及封包仍留本機。圖片來源與輸出雜湊見 [圖片來源清單](docs/images/provenance.json)，重建入口為 [製圖工具](tools/readme_images.py)，不擴張原有玩法驗收範圍。
 

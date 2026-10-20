@@ -27,12 +27,16 @@
 - [IDA來源匯出](../../tools/ida_hd_resources.py) 對既有固定常駐程式的唯讀段傾印新建一次性資料庫，保留原始位址、bytes、函式名與未知等級。只用來定位圖像解碼及來源，未證實指令不當作實作規則。
 - [全量覆蓋清單](../hd-coverage.json) 是目前唯一的資源記錄台帳，列194筆原始定位與雜湊、174筆名稱候選、84筆已核解壓結果。記錄數不能當作HD完成百分比。
 - [離線解壓工具](../../tools/hd_decode.py) 與 [原版常式對照](../../tools/hd_decoder_oracle.go) 已對固定84筆零前綴候選逐byte比對，正式證據為 `decoded-v2/` 及 `decoder-oracle-v4/receipt.json`。涉及類型0、1、5、6、7；其餘分派只作指令定位，沒有本輪真實資料驗收。
-- [居民來源工具](../../tools/hd_town_npc_sources.py) 沿既有007規格的來源／遮罩擷取五類、40姿態，其中34種RGBA圖面。來源在 `town-npc-source-v2/`，五張八姿態手繪候選及完整內建imagegen提示詞在 `town-npc-art/`。尚未進正式繪製，不計HD完成。
-- [居民註冊工具](../../tools/hd_register_npcs.py) 產生 `town-npc-registration-v1/manifest.json` 與40張48×72候選預覽。依原版alpha外框校準落腳點；來源相同時共用候選。未接正式合成與視窗驗收。
+- [居民來源工具](../../tools/hd_town_npc_sources.py) 沿既有007規格的來源／遮罩擷取五類、40姿態，其中34種RGBA圖面。來源在 `town-npc-source-v2/`，五張八姿態手繪圖及完整內建imagegen提示詞在 `town-npc-art/`。Muralla候選版共同合成已沿 [規格035](035-town-residents-hd.md) 限定驗收，不外推全城鎮。
+- [居民註冊工具](../../tools/hd_register_npcs.py) 產生 `town-npc-registration-v1/manifest.json` 與40張48×72候選預覽。依原版alpha外框校準落腳點；來源相同時共用候選。正式合成用原圖面積取樣，預覽不當像素對照。
 - 目前已接入範圍與舊收據仍以 [驗證矩陣](../../VERIFICATION-MATRIX.md) 為準。首次新增的完整覆蓋清單以本規格為入口，不能以README16類抽樣當成全量清單。
 
 ## 下一閘門
 
 先證實圖像記錄解碼與實際載入位置，再建立資源鍵及場景對應。每個家族依原版證據、READY增量、實作與正常路徑抽樣依序推進，不移除既有守衛來假造全覆蓋。
 
-RLE解壓已完成限定逐byte驗證。GRP仍含圖格、色盤、遮罩或其他內部編碼，直接把解壓結果當六位元圖格的試圖不成立，保留在本地 `sixbit-candidates.jpg` 作為未成立的研究候選，不作素材來源。接下來核對圖形驅動的前處理與GRP內部形狀，同時完成五類居民的註冊、遮擋與正常路徑接入。不得因84筆解壓一致就跳過圖像及正式繪製驗證。
+RLE解壓已完成限定逐byte驗證。前輪直接把解壓結果當六位元圖格的 `sixbit-candidates.jpg` 未成立，保留原身份；本輪證實三平面變換之前仍需依資源類型處理色與遮罩，不能省略。
+
+[三平面研究工具](../../tools/hd_planar.py) 與 [原版常式對照](../../tools/hd_planar_oracle.go) 對80筆補零研究buffer通過逐byte核對，收據為 `planar-oracle-v2/receipt.json`。這只證明變換，不代表80筆完整GRP形狀已解。[GRP來源工具](../../tools/hd_grp_sources.py) 的 `grp-sources-v3/receipt.json` 另證實MMAN152、TMAN46、CPAT157及MPAT242圖格，共597個／28656bytes，以及2256個有效遮罩bytes與正常原版RAM相同。CMAN164與DPAT191仍為結構候選，不升正常來源等級；NPC尾端資料用途仍未知。
+
+城堡的原版全景、快取差異及四段手繪候選見 [036](036-castle-hd.md)。居民限定增量見035；對話背景、其他城鎮、洞窟與全量人物仍有缺口。不得因解壓或圖格來源一致就跳過正式HD繪製與正常路徑驗證。

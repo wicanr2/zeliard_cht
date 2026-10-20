@@ -21,6 +21,26 @@
     "檔名／副檔名只作分類候選，不能單憑GRP或MDT宣稱已解圖、全部可達或已HD"
   ],
   "prior_hd_evidence": "VERIFICATION-MATRIX.md",
+  "runtime_components": [
+    {
+      "key": "muralla.residents",
+      "status": "scoped_candidate_verified",
+      "spec": "docs/spec/035-town-residents-hd.md",
+      "groups": 5,
+      "phases": 40,
+      "evidence": "workplace/full-hd-v1/town-npc-final-audit-v1.json",
+      "source_record": "zelres2.record.29",
+      "limits": "只驗Muralla固定來源；其他城鎮及交談背景仍有缺口"
+    },
+    {
+      "key": "castle.foreground",
+      "status": "generated_candidate_not_connected",
+      "spec": "docs/spec/036-castle-hd.md",
+      "source_record": "zelres2.record.33",
+      "evidence": "workplace/full-hd-v1/castle-source-v3/receipt.json",
+      "limits": "912×64原生全景、14336正常畫帶像素與四段手繪候選；尚未校準／接入"
+    }
+  ],
   "proofs": [
     {
       "path": "workplace/probe-intro-memory/memory-01B1_0000.bin",
@@ -33,6 +53,14 @@
     {
       "path": "workplace/full-hd-v1/decoder-oracle-v4/receipt.json",
       "sha256": "7d181b44d33d437e3ecbd1d45aeac80bc6a157a4cb02eba3aacca573aad5f3da"
+    },
+    {
+      "path": "workplace/full-hd-v1/planar-oracle-v2/receipt.json",
+      "sha256": "9187d1585c6a4a442683737e35677c6734e2dac8b651b021dbe16a6262dbbecc"
+    },
+    {
+      "path": "workplace/full-hd-v1/grp-sources-v3/receipt.json",
+      "sha256": "5cff20fbebfb2b3222be9d6590188d5ce86db327ac3c1b66ec671542b0131f2a"
     }
   ],
   "archives": [
@@ -1546,13 +1574,25 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed",
+      "hd_coverage": "partial_scoped_candidate_verified",
+      "normal_path": "Muralla居民；規格035，交談背景仍退回原貌",
       "decoder": {
         "kind": 6,
         "bytes": 7675,
         "sha256": "d49858e92a381c402b2598b5b2ec1178c68d996bf580a773e2562217bd6c2ae5",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "graphics_source": {
+        "tiles": 152,
+        "tile_offset": 256,
+        "pixels_sha256": "bf02874473cd78747555a13ddde820092c8a8c3cc2ac14731c78b2e9c1462b16",
+        "masks_sha256": "90de4921fb15fa26b9214b33e5c89daaa65106984db0f7417b3bd09f384392ce",
+        "status": "PASS_NORMAL_RUNTIME_SOURCES",
+        "normal_memory_sha256": "9dd3657107f25c097debf5f6be68137d055d98bda2e22a59f6b854d88be5fdd9",
+        "runtime_bytes_verified": 7296,
+        "runtime_mask_bytes_verified": 1216,
+        "uninterpreted_tail_bytes": 123,
+        "evidence": "workplace/full-hd-v1/grp-sources-v3/receipt.json"
       }
     },
     {
@@ -1586,6 +1626,18 @@
         "bytes": 8187,
         "sha256": "e51662b336b514dd6b6a23c2dd1c59d471ac363d9d9fcf6d045759691e9a2826",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "graphics_source": {
+        "tiles": 164,
+        "tile_offset": 256,
+        "pixels_sha256": "16808c422d36fbf9b17dc5190e39a908f569dbc5faf8b7b50cd06bfb6e5e0939",
+        "masks_sha256": "49ecc1fc5e367cf1c8b41e18f73ac4c2f7c781cddc1bda178ce952d4549c4c48",
+        "status": "STRUCTURAL_CANDIDATE_ONLY",
+        "normal_memory_sha256": null,
+        "runtime_bytes_verified": 0,
+        "runtime_mask_bytes_verified": 0,
+        "uninterpreted_tail_bytes": 59,
+        "evidence": "workplace/full-hd-v1/grp-sources-v3/receipt.json"
       }
     },
     {
@@ -1612,6 +1664,18 @@
         "bytes": 2208,
         "sha256": "5f7d3cf19ec2a42271e234e4d2b0b10006d07d88b9706abcf00c6dc904ff9e3f",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "graphics_source": {
+        "tiles": 46,
+        "tile_offset": 0,
+        "pixels_sha256": "045d4246ae0be72df3ac0201bc9ac8e5e1b50829783d6c79727fce7af0ef66c7",
+        "masks_sha256": "15f70e4b15a5887babfdf1c9154d788e6a37cd2e6a196e24cece90b1d6ac98d0",
+        "status": "PASS_NORMAL_RUNTIME_SOURCES",
+        "normal_memory_sha256": "9dd3657107f25c097debf5f6be68137d055d98bda2e22a59f6b854d88be5fdd9",
+        "runtime_bytes_verified": 2208,
+        "runtime_mask_bytes_verified": 368,
+        "uninterpreted_tail_bytes": 0,
+        "evidence": "workplace/full-hd-v1/grp-sources-v3/receipt.json"
       }
     },
     {
@@ -1656,6 +1720,18 @@
         "bytes": 7792,
         "sha256": "831bf7b9a3cb0d31870d57d23f06e69a56d420fe17f8c27dc0c2323ddbce1339",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "graphics_source": {
+        "tiles": 157,
+        "tile_offset": 256,
+        "pixels_sha256": "1decae0802e6c839ad05f0522a18612d800fc5a2d8df5972064332af198c19e8",
+        "masks_sha256": "299d0b91d40115787c1810345fe9227ab98d4d57363ad3767b8373591bb2b801",
+        "status": "PASS_NORMAL_RUNTIME_SOURCES",
+        "normal_memory_sha256": "5c5b610c97bd2cd5266ae25b3da3764d0b46f02b30e8392a3b09c286a0db45a2",
+        "runtime_bytes_verified": 7536,
+        "runtime_mask_bytes_verified": 232,
+        "uninterpreted_tail_bytes": 0,
+        "evidence": "workplace/full-hd-v1/grp-sources-v3/receipt.json"
       }
     },
     {
@@ -1682,6 +1758,18 @@
         "bytes": 11872,
         "sha256": "fe07de9d5da5406f029bdfd20ba2b3a0c4e30841909c961d0628fd731901f864",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "graphics_source": {
+        "tiles": 242,
+        "tile_offset": 256,
+        "pixels_sha256": "3f2f82da08ed22cabbd8bb46a5e81356a3d8fac634ebf48e9aa71427bb92d794",
+        "masks_sha256": "0eee43c9d69dd9510fbb6bec63af3d8b4ab34009bca2c8d37ae1b5a0dbef3207",
+        "status": "PASS_NORMAL_RUNTIME_SOURCES",
+        "normal_memory_sha256": "9dd3657107f25c097debf5f6be68137d055d98bda2e22a59f6b854d88be5fdd9",
+        "runtime_bytes_verified": 11616,
+        "runtime_mask_bytes_verified": 440,
+        "uninterpreted_tail_bytes": 0,
+        "evidence": "workplace/full-hd-v1/grp-sources-v3/receipt.json"
       }
     },
     {
@@ -1708,6 +1796,18 @@
         "bytes": 9424,
         "sha256": "d7acd76dd5e37d3ea31d7b7a7367187b9e04e9a9ec14480b487462aba79ae6a1",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "graphics_source": {
+        "tiles": 191,
+        "tile_offset": 256,
+        "pixels_sha256": "2a7dc8c3bc89b22858bf5a2a8d7442553e574561e2c34e7a5069c0e059f4017b",
+        "masks_sha256": "a9694d040cdd1644f13b802e9e39de8bff3a58b12c162f8cdd1dab24563614ba",
+        "status": "STRUCTURAL_CANDIDATE_ONLY",
+        "normal_memory_sha256": null,
+        "runtime_bytes_verified": 0,
+        "runtime_mask_bytes_verified": 0,
+        "uninterpreted_tail_bytes": 0,
+        "evidence": "workplace/full-hd-v1/grp-sources-v3/receipt.json"
       }
     },
     {

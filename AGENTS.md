@@ -317,6 +317,19 @@
 | [internal/prototype/hd/sage.go](internal/prototype/hd/sage.go) | 長老兩個已觀察畫格的手繪覆繪試作；保留原版外框及四個動畫像素 |
 | [internal/prototype/hd/sage_test.go](internal/prototype/hd/sage_test.go) | 實際長老兩畫格、動畫像素保留、區域邊界與未知素材退回驗證 |
 
+居民增量入口：
+
+- [規格035](docs/spec/035-town-residents-hd.md) 定義Muralla居民與主角共同合成及限定驗收。
+- [town_actors.go](internal/prototype/hd/town_actors.go) 與 [固定資產表](internal/prototype/hd/town_npc_assets.go) 處理五類40姿態；[資產編譯工具](tools/hd_compile_npcs.py) 由本地已審查註冊重生資產表。
+- [合成測試](internal/prototype/hd/town_actors_test.go)、[正常原版配對](internal/prototype/hd/town_actors_pair_test.go) 與 [正常鍵序](tools/town-residents-hd.commands) 保存40來源、圖層、退回及正常玩家路徑檢查。
+- [實際視窗抽測](tools/hd_npc_smoke.py) 與 [收據稽核](tools/hd_npc_audit.py) 保存原貌切回、中文交談及程式身份；完整輸出留 `workplace/full-hd-v1/`，不外推其他城鎮。
+
+全遊戲後續來源入口：
+
+- [三平面研究工具](tools/hd_planar.py) 與 [原版常式對照](tools/hd_planar_oracle.go) 在Docker內對80筆補零研究buffer核對轉換，不等同80筆圖像格式或HD完成。
+- [GRP來源擷取](tools/hd_grp_sources.py) 保存四個正常資源共597圖格及有效遮罩的原版RAM對照；CMAN／DPAT仍為結構候選。
+- [城堡來源擷取](tools/hd_castle_sources.py) 與 [規格036](docs/spec/036-castle-hd.md) 保存912×64前景、原版快取變體及手繪候選的下一閘門。圖面與完整提示詞在 `workplace/full-hd-v1/castle-art-v1/`，尚未正式接入。
+
 新增研究文件須同輪掛進本索引或 CONTEXT 的證據入口。不得將暫存、舊待辦或綠色單元測試當作原版一致證據。
 
 ## GitHub、授權與交付
