@@ -6,13 +6,15 @@
 
 全量台帳為 [hd-coverage.json](docs/hd-coverage.json)：174筆名稱候選、84筆解壓結果與原版常式逐byte一致；分類候選含80圖像、41地圖、17音樂、36程式及20未知，不把它們當成美術分母。三平面變換已對80筆補零研究buffer通過原常式核對，四資源MMAN／TMAN／CPAT／MPAT共597個圖格、28656像素bytes及2256有效遮罩bytes與正常原版RAM一致。證據在 `workplace/full-hd-v1/planar-oracle-v2/receipt.json` 及 `grp-sources-v3/receipt.json`。CMAN／DPAT仍只有結構候選，其他GRP形狀未解，不重開已驗RLE或前版音樂。
 
-後續洞窟入口為 [規格037](docs/spec/037-all-cave-terrain-hd.md)，來源辨識、冰窟、MPP2及MPP3圖集接入契約已READY並實作，三個新增家族的正常玩家路徑與其餘家族仍未完成。11組MPP地形共378格已解出原圖，MPP1全部25格與正常RAM相同；31份洞窟地圖共306048格與原版6CED..6D6D常式逐byte相同，圖集選擇端7E9B／7ECD及11項descriptor已核。正常6CEC完成來源的36×64環形地圖2304格相同，包內四份USR的正常冷讀調查皆仍為MPP1；其餘家族可達性未驗，不能計HD完成。
+後續洞窟入口為 [規格037](docs/spec/037-all-cave-terrain-hd.md)，來源辨識、冰窟、MPP2、MPP3及MPP5圖集接入契約已READY並實作，四個新增家族的正常玩家路徑與其餘家族仍未完成。11組MPP地形共378格已解出原圖，MPP1全部25格與正常RAM相同；31份洞窟地圖共306048格與原版6CED..6D6D常式逐byte相同，圖集選擇端7E9B／7ECD及11項descriptor已核。正常6CEC完成來源的36×64環形地圖2304格相同，包內四份USR的正常冷讀調查皆仍為MPP1；其餘家族可達性未驗，不能計HD完成。
 
 洞窟來源研究仍沿 `workplace/full-hd-v1/cave-source-stage-audit-v1.json`，原圖、完整地圖、隔離原版常式、正常來源與IDA9.4證據分別在同根`cave-terrain-sources-v1/`、`cave-map-sources-v1/`、`cave-map-oracle-v1/`、`cave-save-survey-v1/`／`cave-save-survey-v2/`及`cave-map-ida-v2/`。此為前輪來源身份，不改稱新程式的驗收。
 
-目前程式為 `workplace/full-hd-v1/cave-mpp3-runtime-v1/zeliard-preview`，SHA-256 `148bdd99e3a5b6a308cb3cb3247c39c305cd313c96fc741e4fa040cd4ad9c1eb`。31地圖／11圖集來源與完整32256原生像素、時間及跨地圖守衛保留；新接入MPP3的43格，共用圖面改以固定數量、材質集合及字帶區間呈現。收尾入口`cave-mpp3-final-audit-v1.json`由[家族稽核](tools/hd_cave_family_audit.py)以`--family MPP3`重生至新檔。MPP3三圖結構像素870912、全43格與原子拒絕通過；相同呈現器的MPP2、冰窟各三圖870912像素及Malicia舊圖通過。結構快照不執行VM，不當新增家族正常可達證據。
+目前程式為 `workplace/full-hd-v1/cave-mpp5-runtime-v1/zeliard-preview`，SHA-256 `7d623290989ca2790a50ac893248a97e8a1a62d677850fce517c8179af420cad`。31地圖／11圖集來源與完整32256原生像素、時間及跨地圖守衛保留；新增MPP5的52格，以固定數量、材質集合及原生輪廓呈現。收尾入口`cave-mpp5-final-audit-v1.json`由[家族稽核](tools/hd_cave_family_audit.py)以`--family MPP5`重生至新檔。MPP5三圖結構像素870912、全52格與原子拒絕通過；相同呈現器的MPP2、MPP3、冰窟各三圖870912像素及Malicia舊圖通過。結構快照不執行VM，不當新增家族正常可達證據。
 
-新程式同時載入三個新增家族後，正常MPP1首戰25點及回城10點完整原版狀態、USR與mtime相同；11項圖面及三項正常／來源測試無skip／fail，vet及建置通過。實際視窗`cave-mpp3-gui-v1/`正常冷F7、入洞、步行、兩組切回1152000遊戲區像素相同、回城及DOS退出0，根端已目視。來源仍為MP10／MPP1，音訊關閉。前輪bc925caa、4948bc70及e9f89d52等收據保持原身份，不換名為新程式；現行封包未更新。
+新程式同時載入四個新增家族後，正常MPP1首戰25點及回城10點完整原版狀態、USR與mtime相同；14項圖面及三項正常／來源測試無skip／fail，vet及建置通過。實際視窗`cave-mpp5-gui-v2/`正常冷F7、入洞、步行、兩組切回1152000遊戲區像素相同、回城及DOS退出0，根端已目視。來源仍為MP10／MPP1，音訊關閉。GUI v1的對齊逾時與首輪測試座標錯誤保留原身份，修正驗證控制器後乾淨重跑；產品繪製程式未因兩次失敗而改動。前輪148bdd99、bc925caa、4948bc70及e9f89d52等收據不換名為新程式；現行封包未更新。
+
+MPP5來源為SAR3記錄78，圖面在`cave-mpp5-complete-v1/manifest.json`：1248×24的52格圖帶、432×768紅紫岩面，20個連續材質ID及32個晶柱、水面、彩色結構與尾端圖樣。四張內建imagegen原圖及完整提示詞／輸入SHA在`cave-mpp5-art-v1/generation.json`。以`-cave-mpp5-art`選該目錄，搭配`-cave-art-dir`。來源52格及鄰接樣本在`cave-mpp5-source-v1/`，四份參考重生在`cave-mpp5-reference-replay-v1/check.json`。Go測試／建置命令與結果在`cave-mpp5-runtime-v1/run.sh`及同目錄日誌。48..52未出現在三份靜態地圖，事件用途未知；正常MPP5進出、捲動及事件仍未驗，不升CONFORMED。
 
 MPP3來源為SAR3記錄76，圖面在`cave-mpp3-complete-v2/manifest.json`：1032×24的43格圖帶、432×768綠色岩面，九個連續材質ID、29個獨立圖樣及五格BOSQUE字帶。五張內建imagegen原圖及完整提示詞／輸入SHA在`cave-mpp3-art-v1/generation-v2.json`。以`-cave-mpp3-art`選該目錄，搭配`-cave-art-dir`。MP30／MP31實際34..38五格拼合後才確認BOSQUE，四格片段及初版逐格標示保留原身份；五份生成參考圖由工具重生後SHA相同，證據在`cave-mpp3-reference-replay-v1/check.json`。正常MPP3進出、捲動與事件仍未驗，不升CONFORMED。
 
@@ -74,7 +76,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步續補MPP5等尚未接入家族的美術，並尋找正常MPP2／MPP3／冰窟入口驗證進出、捲動與原貌切回。尾端圖樣的事件來源仍待核，不重掃已查過且皆為MPP1的四份原包USR。圖形介面、其他城鎮、敵人／首領及20筆未知依034續補，不重畫已完成的三組圖集或重開RLE。現有`v.0.2.0-20261020`封包保持既有身份，完成後另版重建，不覆寫。下列保留各輪原始證據身份，不把舊完成項重新開啟。
+下一步續補MPP6等尚未接入家族的美術，並尋找正常MPP2／MPP3／MPP5／冰窟入口驗證進出、捲動與原貌切回。尾端圖樣的事件來源仍待核，不重掃已查過且皆為MPP1的四份原包USR。圖形介面、其他城鎮、敵人／首領及20筆未知依034續補，不重畫已完成的四組圖集或重開RLE。現有`v.0.2.0-20261020`封包保持既有身份，完成後另版重建，不覆寫。下列保留各輪原始證據身份，不把舊完成項重新開啟。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 

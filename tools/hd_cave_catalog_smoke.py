@@ -14,6 +14,7 @@ candidate = Path(os.environ.get("ZELIARD_GUI_BINARY", str(R/"workplace/full-hd-v
 ice_art = os.environ.get("ZELIARD_CAVE_ICE_ART", "")
 peligro_art = os.environ.get("ZELIARD_CAVE_PELIGRO_ART", "")
 mpp3_art = os.environ.get("ZELIARD_CAVE_MPP3_ART", "")
+mpp5_art = os.environ.get("ZELIARD_CAVE_MPP5_ART", "")
 assert candidate.is_file()
 original_start = start
 
@@ -31,6 +32,8 @@ def start():
                 command.extend(["-cave-peligro-art", peligro_art])
             if mpp3_art:
                 command.extend(["-cave-mpp3-art", mpp3_art])
+            if mpp5_art:
+                command.extend(["-cave-mpp5-art", mpp5_art])
         return original_popen(command, *args, **kwargs)
     subprocess.Popen = launch
     try:
@@ -73,7 +76,8 @@ def align_cave_exit():
         return source["source_actor_x"]-portals[0]["X"]-8
     for _ in range(24):
         value = delta(wait("可見原版入口", lambda s: delta(s) is not None, 15))
-        if value == 0:
+        # 已進門框附近時先由正常Up嘗試；成功仍須後續原版回城判定。
+        if abs(value) <= 16:
             return
         scan = 0x4b if value > 0 else 0x4d
         edge(scan,True)
@@ -177,6 +181,7 @@ try:
               "ice_art_directory": ice_art,
               "peligro_art_directory": peligro_art,
               "mpp3_art_directory": mpp3_art,
+              "mpp5_art_directory": mpp5_art,
               "script_sha256": h(Path(__file__)), "helper_sha256": h(helper),
               "boots": boots, "shots": shots, "pairs": pairs, "normal_DOS_exit": 0,
               "limits": "只驗MPP1正常冷讀、入洞、步行、HD切回及回城；未驗其他洞窟或新冰窟美術"}

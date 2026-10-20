@@ -16,6 +16,7 @@ type CaveTerrain struct {
 	ice         *caveTerrainArt
 	peligro     *caveTerrainArt
 	mpp3        *caveTerrainArt
+	mpp5        *caveTerrainArt
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -197,6 +198,8 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			art = s.peligro
 		case "MPP3":
 			art = s.mpp3
+		case "MPP5":
+			art = s.mpp5
 		default:
 			return false
 		}

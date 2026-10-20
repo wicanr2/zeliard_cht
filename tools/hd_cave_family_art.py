@@ -15,6 +15,11 @@ PROFILES = {
                        "b":list(range(20,32)),"c":list(range(34,44))},
              "maps":["MP30","MP31","MP3D"],"text_ids":list(range(34,39)),
              "text":"BOSQUE","generation":"generation-v2.json"},
+    "MPP5": {"count":52,"material_ids":[*range(3,13),24,25,*range(35,39),*range(41,45)],
+             "sheets":{"a":[1,2,*range(13,23)],
+                       "b":[23,*range(26,35),39,40],"c":list(range(45,53))},
+             "maps":["MP50","MP51","MP5D"],"text_ids":[],
+             "text":"","generation":"generation.json"},
 }
 
 
@@ -48,20 +53,22 @@ def prepare(project,key,out):
             d.text((x+8,y+6),f"Original {key} ID {i}",fill="white")
             im.paste(natives[i].resize((192,192),Image.Resampling.NEAREST),(x+32,y+40))
         im.save(out/f"details-{group}-original.png")
-    im = Image.new("RGB",(768,768))
+    columns = 3 if key == "MPP3" else 5
+    im = Image.new("RGB",(columns*256,((len(cfg["material_ids"])+columns-1)//columns)*256))
     d = ImageDraw.Draw(im)
     for n,i in enumerate(cfg["material_ids"]):
-        x,y = n%3*256,n//3*256
+        x,y = n%columns*256,n//columns*256
         d.text((x+8,y+6),str(i),fill="white")
         im.paste(natives[i].resize((192,192),Image.Resampling.NEAREST),(x+32,y+40))
     im.save(out/"green-material-reference.png")
-    strip = Image.new("RGBA",(len(cfg["text_ids"])*8,8))
-    for n,i in enumerate(cfg["text_ids"]):
-        strip.paste(natives[i],(n*8,0))
-    strip.resize((1000,200),Image.Resampling.NEAREST).save(out/"label-34-38-original.png")
+    if cfg["text_ids"]:
+        strip = Image.new("RGBA",(len(cfg["text_ids"])*8,8))
+        for n,i in enumerate(cfg["text_ids"]):
+            strip.paste(natives[i],(n*8,0))
+        strip.resize((1000,200),Image.Resampling.NEAREST).save(out/"label-34-38-original.png")
     meta = {"schema":1,"profile":key,"source_sha256":profile["source_sha256"],**cfg,
             "references":[{"file":f.name,"sha256":sha(f)} for f in out.glob("*.png")],
-            "limits":["原圖等比例展示供imagegen參考，不計HD產物。","BOSQUE須以MP30／MP31實際五格相鄰順序核對，不由四格片段猜寫。"]}
+            "limits":["原圖等比例展示供imagegen參考，不計HD產物。","視覺分類不推定圖格用途、碰撞或事件；字帶另依實際相鄰順序核對。"]}
     (out/"manifest.json").write_text(json.dumps(meta,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(key,"SOURCE_REFERENCES",len(natives))
 
@@ -112,7 +119,7 @@ def register(project,key,out):
         path = art_dir/row["file"]
         assert sha(path) == row["sha256"]
         images[row["key"]] = Image.open(path).convert("RGBA")
-    assert set(images) == {"material","label",*("details_"+k for k in cfg["sheets"])}
+    assert set(images) == {"material",*("details_"+k for k in cfg["sheets"]),*(["label"] if cfg["text_ids"] else [])}
     assert images["material"].getchannel("A").getextrema() == (255,255)
     texture = images["material"].convert("RGB").resize((432,768),Image.Resampling.LANCZOS)
     texture.save(out/(key.lower()+"-material-v1.png"))
@@ -136,11 +143,12 @@ def register(project,key,out):
             sprite.putalpha(Image.fromarray(np.minimum(np.asarray(sprite.getchannel("A")),mask).astype("uint8")))
             tiles[i] = sprite
             rows[i] = {"id":i,"kind":"detail","sheet":group,"slot":n,"art_crop":crop,"native_bounds":native_bounds}
-    label = images["label"]
-    assert label.getchannel("A").getextrema() == (0,255)
-    crop = label.getchannel("A").point(lambda v:255 if v>=128 else 0).getbbox()
-    assert crop is not None
-    strip = label.crop(crop).convert("RGBa").resize((len(cfg["text_ids"])*24,24),Image.Resampling.LANCZOS).convert("RGBA")
+    if cfg["text_ids"]:
+        label = images["label"]
+        assert label.getchannel("A").getextrema() == (0,255)
+        crop = label.getchannel("A").point(lambda v:255 if v>=128 else 0).getbbox()
+        assert crop is not None
+        strip = label.crop(crop).convert("RGBa").resize((len(cfg["text_ids"])*24,24),Image.Resampling.LANCZOS).convert("RGBA")
     for n,i in enumerate(cfg["text_ids"]):
         sprite = Image.new("RGBA",(24,24),(0,0,0,255))
         sprite.alpha_composite(strip.crop((n*24,0,(n+1)*24,24)))
@@ -197,7 +205,7 @@ def register(project,key,out):
               "material_ids":cfg["material_ids"],"text_ids":cfg["text_ids"],"text":cfg["text"],"tiles":[rows[i] for i in sorted(rows)],"previews":previews,
               "atlas_sha256":sha(atlas_path),"material_sha256":sha(out/(key.lower()+"-material-v1.png")),
               "generation_sha256":sha(generation_path),"script_sha256":sha(Path(__file__)),
-              "limits":["原圖格／構圖只作結構資料，正常玩家可達性及事件未驗。","綠色材質僅限明列ID，不以大範圍覆蓋其他圖樣。","BOSQUE原始五格順序已核；不推定事件或官方中文譯名。"]}
+              "limits":["原圖格／構圖只作結構資料，正常玩家可達性及事件未驗。","連續材質僅限明列ID，不以大範圍覆蓋其他圖樣。","無字帶的家族不新增字樣；不推定事件或官方中文譯名。"]}
     (out/"manifest.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(report["status"],key,report["atlas_sha256"],report["material_sha256"])
 

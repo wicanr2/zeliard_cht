@@ -1041,3 +1041,13 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - 正式候選註冊為43個24×24圖格：九個連續材質、29個逐格圖樣及五格完整字帶。1032×24圖帶SHA-256 40f9be56644f647d6f5b7247aa3339de6e890f8a5a8d5875fd490cfc319aa678，432×768材質4ceb8428d6d7231e764bdcccea20520d09bf079424fd645fa58ffc612cc555a6；裁切、三份真實靜態網格與預覽在cave-mpp3-complete-v2/manifest.json。
 - Go1.24.13候選148bdd99e3a5b6a308cb3cb3247c39c305cd313c96fc741e4fa040cd4ad9c1eb，三份MPP3結構快照870912像素、全43格、字帶與原子拒絕通過。相同呈現器的MPP2及冰窟各三份870912像素、Malicia四份獨立像素通過。結構快照只組合來源資料，不執行VM，不當正常MPP3到達或原版規則對拍。
 - 正常MPP1首戰25點及回城10點完整原版狀態、USR與mtime相同；11項圖面及三項正常／來源測試無skip／fail，vet及建置通過。其他家族正常路徑仍待驗，不由來源表或相同seed數字推定玩法一致。
+
+## 2026-10-20 MPP5來源與HD圖集
+
+來源為SAR3記錄78，解壓SHA-256 `964ab425d1f2d215fd4286ef53c0780090fa2663c8fc3b221f95b45f68005588`，dosgolem實模式11B1:8000的48-byte header為`bb1d943bb0659bfabff564b21cec7256b4d56ed9d03c78ba4b3dcbdf2252a903`，8030起52×48bytes三平面像素為`51ae7fec2bd8b14f5affe35a0337eaa0ea632efa5ee15554d29279e27a68faf0`。來源身份沿037既有原版解壓及01B1:7E9B／7ECD選擇證據，不新增位址語意或覆蓋原始名稱。正常MPP5載入仍未知。
+
+- 工具：素材流程`tools/hd_cave_family_art.py`，固定容器eob-audio-capture:20261009-r3，Python 3.11.2、NumPy 1.24.2、Pillow 9.4.0；Go1.24.13。腳本、輸入及產物SHA在`cave-mpp5-complete-v1/manifest.json`、`cave-mpp5-art-v1/generation.json`及`cave-mpp5-final-audit-v1.json`。
+- 已證實的靜態資料：MP50／MP51／MP5D已解網格使用同一MPP5家族；48..52未出現於三份網格。完整52格原圖及鄰接樣本見`cave-mpp5-source-v1/`。外觀分組只供美術，20個連續岩面ID不作原版碰撞或用途證據；尾端圖樣事件未知。
+- 原圖不覆寫。四張內建imagegen原圖直接註冊為52個24×24圖格、1248×24圖帶與432×768材質；圖帶SHA為`58e76f6b1ef046960a2fabcf4f3268bb1df514d23d9e500ae6a80e2a49b7e02b`，材質為`d640e43e0b4dec2aa3235a2b038a64cbb7b18cac9fe139c09ed19b1229633c8b`。三圖及額外水面預覽已目視，沒有將原圖像素放大當新手繪。
+- MPP5三圖870912像素、全52格及原子拒絕通過，同時載入MPP2／MPP3／冰窟後各三圖870912像素與Malicia舊圖通過。結構快照只組合資料，不執行VM，不當正常原版MPP5可達證據。
+- 候選`7d623290989ca2790a50ac893248a97e8a1a62d677850fce517c8179af420cad`的正常MPP1首戰／回城35點完整原版狀態、USR與mtime相同，實際視窗v2兩組切回1152000遊戲區像素相同並正常回城、退出0。正常MPP5進出、捲動、事件及全遊戲HD仍待完成。
