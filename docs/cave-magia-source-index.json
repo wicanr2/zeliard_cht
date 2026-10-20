@@ -1,0 +1,245 @@
+{
+  "schema": 1,
+  "input_name": "primary.segment",
+  "input_sha256": "5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b",
+  "address_space": "IDA base0，對應dosgolem 01B1段內偏移；不是EXE檔案偏移",
+  "windows": [
+    [
+      28423,
+      29059
+    ],
+    [
+      14777,
+      16687
+    ],
+    [
+      16687,
+      16786
+    ],
+    [
+      33638,
+      33744
+    ],
+    [
+      34403,
+      34704
+    ],
+    [
+      35182,
+      35355
+    ]
+  ],
+  "tables": [
+    [
+      12296,
+      4
+    ],
+    [
+      34704,
+      32
+    ]
+  ],
+  "entries": [
+    {
+      "address": "0x412f",
+      "bytes": "1e",
+      "original_function": "sub_412F",
+      "original_operand": "push    ds",
+      "level": "已證實",
+      "semantic": "非零六位元圖格繪製入口；零色號略過，來源依AL及資源段計算。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x415b",
+      "bytes": "0af6",
+      "original_function": "sub_412F",
+      "original_operand": "or      dh, dh",
+      "level": "已證實",
+      "semantic": "第一個六位元色號為零時跳過該像素；後續三個色號分別同樣判零。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x8679",
+      "bytes": "be60eb",
+      "original_function": "sub_8679",
+      "original_operand": "mov     si, 0EB60h",
+      "level": "已證實",
+      "semantic": "四筆護身記錄起點01B1:EB60；每筆七byte。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x867c",
+      "bytes": "b90400",
+      "original_function": "sub_8679",
+      "original_operand": "mov     cx, 4",
+      "level": "已證實",
+      "semantic": "本次消費四個記錄槽，不當四個皆可見或四個唯一位置。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x868e",
+      "bytes": "c604ff",
+      "original_function": "sub_8679",
+      "original_operand": "mov     byte ptr [si], 0FFh",
+      "level": "已證實",
+      "semantic": "生命欄為零時把槽首byte設FF，之後不繪製。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x86b1",
+      "bytes": "884406",
+      "original_function": "sub_8679",
+      "original_operand": "mov     [si+6], al",
+      "level": "已證實",
+      "semantic": "保存本次相對畫面列值；與cached像素位置另行核對。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x86c8",
+      "bytes": "81cf0080",
+      "original_function": "sub_8679",
+      "original_operand": "or      di, 8000h",
+      "level": "已證實",
+      "semantic": "在保存的半字像素位置加8000旗標，不單憑此旗標宣稱最後畫面仍有圖樣。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x86cc",
+      "bytes": "897c03",
+      "original_function": "sub_8679",
+      "original_operand": "mov     [si+3], di",
+      "level": "已證實",
+      "semantic": "將加旗標的位置保存到原始[si+3]。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x86cf",
+      "bytes": "b066",
+      "original_function": "sub_8679",
+      "original_operand": "mov     al, 66h ; 'f'",
+      "level": "已證實",
+      "semantic": "本路徑固定AL=66h，即共用圖格102。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x86d6",
+      "bytes": "2eff160830",
+      "original_function": "sub_8679",
+      "original_operand": "call    word ptr cs:byte_2CC3+345h",
+      "level": "已證實",
+      "semantic": "經原始cs:3008間接呼叫412F，返回位置86DB已由正常OnCall收據確認。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x86dc",
+      "bytes": "83c607",
+      "original_function": "sub_8679",
+      "original_operand": "add     si, 7",
+      "level": "已證實",
+      "semantic": "原始add si,7定位下一筆，不改原始運算元或函式名。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x86fc",
+      "bytes": "be60eb",
+      "original_function": "sub_86FC",
+      "original_operand": "mov     si, 0EB60h",
+      "level": "已證實",
+      "semantic": "相位更新遍歷相同EB60四槽；不在覆繪器重實作此控制。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x870d",
+      "bytes": "80e30f",
+      "original_function": "sub_86FC",
+      "original_operand": "and     bl, 0Fh",
+      "level": "已證實",
+      "semantic": "相位更新後AND0F，顯示端只接受0至15或FF空槽。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x8716",
+      "bytes": "81c39087",
+      "original_function": "sub_86FC",
+      "original_operand": "add     bx, 8790h",
+      "level": "已證實",
+      "semantic": "8790為相位索引的16組相對位置表；正常來源另核11種已見相位。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x713e",
+      "bytes": "e83815",
+      "original_function": "sub_708F",
+      "original_operand": "call    sub_8679",
+      "level": "已證實",
+      "semantic": "原版正常繪製支線呼叫sub_8679。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x7147",
+      "bytes": "2eff160630",
+      "original_function": "sub_708F",
+      "original_operand": "call    word ptr cs:byte_2CC3+343h",
+      "level": "已證實",
+      "semantic": "護身圖樣及其他動態繪製之後，沿原始間接呼叫繪製武器。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json",
+        "workplace/full-hd-v1/cave-magia-source-v3/receipt.json"
+      ]
+    },
+    {
+      "address": "0x8790",
+      "bytes": "0201020003ff04fe05fe06fe07ff080008010802070306040504040403030202",
+      "level": "已證實",
+      "semantic": "16組有號相對欄／列；表存在及消費端已核，正常僅抽到11種相位。",
+      "evidence": [
+        "workplace/full-hd-v1/cave-magia-ida-v8/evidence.json"
+      ]
+    }
+  ]
+}

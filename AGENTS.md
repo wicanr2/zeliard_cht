@@ -1,5 +1,10 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+魔法石呈現研究：[規格044](docs/spec/044-cave-magia-presentation.md)、[正常拒絕來源探針](tools/hd_cave_rejected_probe.go)與[差分研究](internal/prototype/hd/cave_rejected_study_test.go)。研究輸出不作HD完成證據。
+魔法石原始定位：[分級索引](docs/cave-magia-source-index.json)與[IDA9.4窄範圍匯出](tools/ida_cave_magia.py)，沿用既有一次性資料庫，不改原始函式與位址。
+魔法石高清圖面註冊：[hd_cave_magia_art.py](tools/hd_cave_magia_art.py)，依102原生非零輪廓直接取樣24×24，素材與提示詞留本機研究目錄。
+魔法石研究階段稽核：[hd_cave_magia_audit.py](tools/hd_cave_magia_audit.py)，核27來源重建、原始定位與圖面註冊；只證READY，不當正式HD完成。
+
 平台來源、圖面及拒絕回歸測試：[cave_common_test.go](internal/prototype/hd/cave_common_test.go)，契約見[規格043](docs/spec/043-cave-common-scenery.md)。
 正常平台HD配對命令：[verify_cave_platform.sh](tools/verify_cave_platform.sh)，在既有Go工具容器內執行，所需掛載與輸出見WORKLOG。
 平台實際視窗：[hd_cave_platform_smoke.py](tools/hd_cave_platform_smoke.py)，沿既有Xvfb入口，只送正常鍵盤與工具列操作。

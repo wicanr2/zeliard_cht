@@ -6,14 +6,19 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，綠色平台64～66接入、正常升降與視窗通過；完整目標仍進行中 |
+| 更新 | 2026-10-21，魔法石102來源、可見／清除分類及HD候選達READY；正式程式仍為已驗平台版本，完整目標仍進行中 |
 | 目前候選 | `workplace/full-hd-v1/cave-platform-runtime-v1/zeliard-preview`，SHA-256 `2734aeabeaae1a7c7429479ce90a3b33439a453f90378e137d67cf158629859b` |
 | 來源與圖面 | DCHR39格1872bytes、31圖72項三byte平台表與IDA9.4七窄範圍／三表已核；72×24平台圖的1287有效像素全不透明；[規格043](docs/spec/043-cave-common-scenery.md)限MP10平台CONFORMED |
 | 最近測試 | 28項圖面回歸、一項左右裁切守衛與三項正常／來源測試無skip／fail；6435獨立高清像素、十點完整原版狀態、vet及build通過 |
 | 實際視窗 | 冷F7正常跳上、升降、再升及離開平台；四組原貌切回2304000像素相同，5148高清像素獨立相同，DOS退出0，存檔bytes／mtime不變，根端已目視 |
 | 收尾證據 | `workplace/full-hd-v1/cave-platform-final-audit-v1.json`，由[平台稽核工具](tools/hd_cave_platform_audit.py)重生至新檔 |
-| 待補 | 魔法石路徑三個平台點無可呈現來源；正常SAVEM1路徑另記18個未匹配主角畫格與十個可見武器來源鍵。其他共用圖格、城鎮與後段仍待補；042仍DRAFT |
+| 本輪研究 | [044](docs/spec/044-cave-magia-presentation.md) READY；27張來源完整重建870912原生像素，11種已見相位；102的24×24手繪圖含414不透明有效像素，尚未接正式路徑 |
+| 待補 | 魔法石正式圖層、來源守衛、正常HD配對與GUI仍待做；原程式三個平台點拒絕尚未修正。18個未匹配主角畫格與十個可見武器來源鍵、其他共用圖格及城鎮／後段仍待補 |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
+
+最新研究入口為 `workplace/full-hd-v1/cave-magia-stage-audit-v1.json`，由[研究稽核](tools/hd_cave_magia_audit.py)重生至新檔。正常拒絕來源、候選分類、IDA9.4分級證據分別為 `cave-magia-source-v3/`、`cave-magia-diff-v5/`、`cave-magia-ida-v9/`。27來源包含24個回呼抽樣及三個命令觀察點，只有後三點在該觀察邊界做雙原版完整狀態配對，不冒稱27點機器配對。初次只照保存位置重畫有三張各多46像素；分類可見／已清除後全部零差。
+
+內建imagegen的原圖、完整提示詞與兩份引用SHA為 `cave-magia-art-v1/generation.json`，註冊候選為 `cave-magia-complete-v1/magia-shard-24x24.png`，SHA-256 `5fc434eca775c2078edf4d38aa07a92728c8d4755f7e06f10c2cccb70eb59a5e`。已目視且414有效像素全不透明，框外全零；原cache與v1至v4的差分研究保留。下一步依044實作typed護身圖層與完整來源守衛，載入固定圖面，再以27份來源、原三平台點及實際視窗驗證。部分遮擋、生命耗盡與邊緣仍待補，不以圖面備妥當正式HD完成。
 
 目前收尾入口為 `workplace/full-hd-v1/cave-platform-final-audit-v1.json`，覆蓋JSON已銜接現行來源，歷史城鎮階段稽核v1至v4保留身份。共用洞窟來源仍在 `cave-common-sources-v2/`；不透明材質原圖、完整提示詞與引用SHA在 `cave-common-art-v2/generation-v2.json`，註冊在 `cave-common-registration-v2/manifest.json`。原51透明像素候選保留，現行包絡內為零。以 `-cave-common-art workplace/full-hd-v1/cave-common-registration-v2`選載，需既有 `-cave-art-dir`；圖集共存另沿[正常配對命令](tools/verify_cave_platform.sh)。GUI完整命令在 `cave-platform-gui-v3/receipt.json`。本輪音訊關閉，未重建封包或影片。
 
