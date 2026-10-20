@@ -1345,3 +1345,14 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - 內建imagegen八個獨立請求，從八份原始前景及既有Muralla手繪圖生成，完整提示詞、16參考記錄及八份產物SHA在 `town-world-art-v1/generation-v1.json`。原始cache檔保留，產物已複製本專案；四張1536×1024、四張1254×1254，均RGBA。八張完整候選已目視，`review-v1.json`明列Esco錯誤招牌、Pureza未知標記及Dorado柱材質。門洞／接縫／透明邊緣仍需校準，只作候選，不進正式路徑。
 - `town-resources-stage-audit-v1.json`核來源與候選，v2另把現行catalog來源納入修訂鏈，舊收據保留身份。覆蓋JSON新增十地圖來源與八個明示未接入候選，194筆記錄及全遊戲in_progress狀態保持。正式可玩程式仍5cec8f8f，未重建封包、影片或README縮圖。
 - 收尾核AST、AGENTS新檔入口、文件連結、來源／提示詞／產物SHA及現行二進位身份，均通過。全工作根root-owned或`.md`目錄零筆；所有專案有界容器已結束並刪除，遠端回讀PRIVATE。提交／推送結果保存 `town-path-runtime-v1/repository-sync.json`，研究輸入、原圖、生成圖與正常快照均不入Git。完整目標保持active，042不升READY。
+
+## 2026-10-21 共用洞窟平台來源與Esco修正
+
+- 前一輪只回覆覆蓋狀態，分類為無進展；本輪核現況後繼續完整目標。命中復古遊戲驗收、正常試玩與README現況路由，載入對應入口、文件職責及規格閘門。所有工作負載沿既有Docker、UID1000與有界資源，沒有使用主機runtime或另開代理。
+- 比較包內四份正常USR來源，SAVEM1讀回生命200，原版裝備頁確認Wise Man's劍／盾、無鞋及持有魔法石。探針新增固定雜湊USR選擇，只改副本檔名並保留bytes與mtime。攻略提供鞋子捷徑的路徑線索，不當原版行為證據。正常v1保留平台站位失敗，沒有歸咎執行器。
+- 新增cave命令取得已核7114完成來源，與可能繪製中的shot分列。發現原版共用ID64～66不是MPP圖集，定位DCHR39格1872bytes與十個正常完成來源相同，三平台圖格192原生RGB像素相同。新增043 DRAFT與來源工具，掛進AGENTS、034及現況索引。
+- v3正常平台升起、離開至右側通道；v4重播首點RAM／暫存器／影像／色盤／steps／cycles相同，再降下與升起，原版平台列17→24→17，升起原圖相同。v4另修正早期完成來源混用觀察時刻held_keys的metadata，舊收據保留。沒有到達Satono或新地形家族，不當HD配對或GUI。
+- 內建imagegen生成綠色平台候選，完整請求與輸入／輸出SHA保存，原cache保留。註冊工具直接取樣至72×24及三個24×24圖格，重接與框外零寫入通過；原版包絡內仍有51透明像素，保持待補，不接正式路徑。Esco第二版修正局部WEAPON招牌與教堂四長窗，已目視，仍須接縫／門洞校準。
+- `town-resources-stage-audit-v4.json`核八份歷史／現行正常探針、兩次內建生成與既有八候選、39格來源及平台註冊；舊來源用當次保存的probe-source.go及固定雜湊，不換成新來源身份。覆蓋JSON仍in_progress，正式可玩程式仍5cec8f8f，沒有更新封包、影片或README縮圖。
+- 收尾驗證、擁有權、容器及Git同步結果保存 `town-path-runtime-v4/repository-sync.json`。完整目標保持active；下一步先補平台51透明像素、核共用消費端並推043 READY，再接正常HD配對與GUI，續取Satono及後段來源。
+- 收尾來源46檔及註冊5檔逐byte重生相同，階段稽核及覆蓋JSON重生相同；四個Python AST、文件連結、新檔AGENTS入口、Go探針build／vet及正式二進位身份通過。`verification.json`的手填檔案數44更正於`verification-v2.json`為實際列舉46，原檔保留。全工作根root-owned與`.md`目錄零筆，本專案容器已回收，遠端回讀PRIVATE。只提交自有程式、文件與去原始內容的覆蓋台帳。

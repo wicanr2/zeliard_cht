@@ -6,16 +6,20 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，十地圖來源及八份後續城鎮美術候選；完整目標仍進行中 |
+| 更新 | 2026-10-21，共用洞窟39格來源、平台註冊候選及Esco修正；完整目標仍進行中 |
 | 目前候選 | `workplace/full-hd-v1/merchant-frames-runtime-v3/zeliard-preview`，SHA-256 `5cec8f8fef9ce64799b6bafcf2e868e74c03bc2b4be1ab11a62767b590e67123` |
 | 來源與圖面 | ARMOR256圖格中254格引用，八姿態與兩局部動畫共十張282×186圖；139、140非空但用途未知；[規格041](docs/spec/041-merchant-frames-hd.md)限定CONFORMED |
 | 最近測試 | 十項具名與四項舊室內／商人／長老回歸無skip／fail；524520獨立高清像素、49點正常完整原版狀態、有效遮罩邊界、vet及build通過 |
 | 實際視窗 | 冷F7進武器店、三組原貌切回1728000像素相同；七個來源鍵可見，正常離店四層城鎮HD恢復、DOS退出0，存檔不變，根端已目視 |
 | 收尾證據 | `workplace/full-hd-v1/merchant-frames-final-audit-v1.json`，由[武器店稽核工具](tools/hd_merchant_audit.py)重生至新檔 |
-| 本輪研究 | [規格042](docs/spec/042-all-town-resources.md)保持DRAFT；十地圖17784格與八份前景生成候選已核來源，正常新城鎮未到達、校準及前端接入待驗 |
+| 本輪研究 | [規格043](docs/spec/043-cave-common-scenery.md)保持DRAFT；DCHR39格1872bytes與十個正常來源相同，平台192原生像素相同。平台三格候選及Esco修正已保存，正常HD接入待驗；042仍DRAFT |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
 
-本輪來源與候選入口為 `workplace/full-hd-v1/town-resources-stage-audit-v2.json`，由[城鎮階段稽核](tools/hd_town_stage_audit.py)重生。原始前景、完整地圖欄與來源在 `town-resources-source-v1/`，IDA9.4九函式／五表在 `town-resources-ida-v2/`，八次內建imagegen及16份引用／輸出SHA在 `town-world-art-v1/generation-v1.json`。Pureza第316欄八列ID191超出已解DPAT，保持未知；候選圖的未知標記不算已完成。四份正常探針 `town-path-normal-v1/`至v4均已結束，沒有到達新城鎮，不重演已失敗的長時間持鍵。下一步先核Satono正常入口及實際DPAT／背景／居民來源，並校準候選接縫、門洞與招牌；DRAFT不接正式前端。現行可玩候選仍是上一輪武器店版本。
+目前收尾入口為 `workplace/full-hd-v1/town-resources-stage-audit-v4.json`，由[階段稽核](tools/hd_town_stage_audit.py)重生，v1至v3保留身份。共用洞窟來源在 `cave-common-sources-v2/`；DCHR解壓buffer與正常11B1:8C00..934F相同。平台64～66另核192原生RGB像素。內建生成的完整提示詞、引用及輸出SHA在 `cave-common-art-v1/generation-v1.json`，72×24及三格24×24註冊候選在 `cave-common-registration-v1/manifest.json`，包絡內仍有51個透明像素，正式HD守衛、完整原版配對及GUI未做。下一步先補平台圖面透明缺口，核共用圖格消費端，再依043準備READY接入；不將平台畫面整張退回原貌當作已完成HD。
+
+正常探針新增固定雜湊USR選項及完成來源擷取；`town-path-savem1-v1/`至v4均已結束。SAVEM1由原版F7讀回，生命200、有Wise Man's劍／盾與魔法石，沒有鞋子。平台須站到中央；v3已正常升起、離開至右側通道，v4以相同鍵序重播的首點RAM／暫存器／畫面／色盤／steps／cycles相同，再正常降下及升起，平台列17→24→17，兩張升起原圖相同。這不是HD配對或GUI，沒有到達Satono，也未取得新鑰匙，不重跑已保存的錯誤站位。早期完成點的held_keys混用觀察時刻，v4起改存完成時刻，另列observed_held_keys；舊收據保留身份。
+
+前輪十地圖17784格、八份前景候選與IDA選擇端仍沿 `town-resources-source-v1/`、`town-resources-ida-v2/`及 `town-world-art-v1/generation-v1.json`。Esco修正圖為 `town-world-art-v1/ESMP-generated-v2.png`，武器店裁切招牌與教堂單排四長窗已對原圖修正，完整請求及SHA在 `ESMP-correction-v2.receipt.json`。接縫、門洞及正常前端仍待驗。Pureza第316欄ID191保持未知；042不升READY。現行可玩候選、封包、影片及README縮圖維持原身份。
 
 武器店圖組以 `-merchant-frames-art-dir workplace/full-hd-v1/merchant-frames-complete-v2`選載，完整啟動命令見同根 `merchant-frames-gui-v4/receipt.json`。八次內建imagegen請求及參考／輸出SHA在 `merchant-frames-art-v1/generation-v2.json`，原版來源與IDA9.4證據為 `merchant-frames-layout-v1/`、`merchant-frames-normal-v1/`至v3及 `merchant-frames-ida-v2/`。正常v5／v6定位Muralla遮罩尾端單一D794變動；041沿022已核240格邊界排除128bytes未用尾端，沒有改原版資料。GUI早期抓圖順序錯誤與回城來源拒絕保留失敗，v4乾淨通過。其他城鎮、交談背景、敵人／首領、片頭與介面仍待補，不重做已驗姿態或把圖集備妥當全遊戲完成。
 

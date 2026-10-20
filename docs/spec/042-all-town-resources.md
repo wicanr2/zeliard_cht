@@ -39,4 +39,8 @@
 
 [正常路徑探針](../../tools/hd_town_path_probe.go)只送鍵盤，四份冷開機收據保存原版檔案／USR不變、完整快照及按鍵序列。正常購買武器、第一洞窟移動與攀爬已到Satono出口附近，但沒有取得新城鎮完成點。生命0的後段快照不作可玩或到達證據，不把按鍵無移動當執行器故障。
 
-[階段稽核](../../tools/hd_town_stage_audit.py)的收尾為 `town-resources-stage-audit-v2.json`，狀態 `SOURCE_AND_EIGHT_ART_CANDIDATES_NORMAL_PATH_PENDING`。目前不達READY，先取得正常新城鎮的圖像、背景與人物來源，再核完整畫面、動畫及美術校準。前輪武器店正式候選與舊封包維持原身份。
+[階段稽核](../../tools/hd_town_stage_audit.py)目前收尾為 `town-resources-stage-audit-v4.json`，舊收據保留身份，狀態仍為 `SOURCE_AND_EIGHT_ART_CANDIDATES_NORMAL_PATH_PENDING`。Esco的第二版已修局部武器店招牌及原版單排四長窗，請求與SHA在 `town-world-art-v1/ESMP-correction-v2.receipt.json`，未完成接縫／門洞校準或前端接入。
+
+正常探針另支援固定雜湊包內USR，SAVEM1正常讀回生命200及魔法石。`town-path-savem1-v3/`已正常升起第一綠色平台並離開到右側通道；v4獨立重播首點RAM／暫存器／畫面／色盤／指令及週期相同，再正常降下及升起。平台來源另由[043](043-cave-common-scenery.md)追蹤。沒有取得Satono或其他新城鎮完成點；原版USR前史未知，不當新局全流程或HD驗收。
+
+目前不達READY，先取得正常新城鎮的圖像、背景與人物來源，再核完整畫面、動畫及美術校準。前輪武器店正式候選與舊封包維持原身份。

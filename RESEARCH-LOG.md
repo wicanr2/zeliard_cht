@@ -1162,3 +1162,19 @@ CPAT157格及MPAT242格轉換的7536／11616bytes與前輪正常圖格來源SHA�
 四份正常鍵盤研究沿Go1.24.13、固定dosgolem快照、cycles3000及同一SAVETEST來源雜湊 `78359e3684cf8ebc4cb52762bc7afc0b551567cd01726b8014dfb043109042bb`。保存完整RAM、色號、色盤、按鍵、時間與檔案紀錄，USR bytes及mtime不變，沒有注入或還原快照。初次從生命條視覺推測低生命不成立；001已記錄滿生命80，第一瓶購買／使用前後90h仍80，只消耗A6h的一份物品。正常買武器後金幣800，分次攻擊可前進至Satono標示附近；後段生命歸0／倒地，沒有取得新城鎮完成點，不把無位移當執行器故障。各輪原始收據在 `town-path-normal-v1/`至v4。
 
 八份前景生成候選沿既有手繪奇幻，用內建imagegen及Muralla既有圖面作畫風參考。每份來源按240×64的重疊片段排列，16原生像素重疊，直接3倍準備參考。實際輸出四張1536×1024、四張1254×1254，均保留RGBA原圖；完整八次提示詞、16引用與產物SHA在 `town-world-art-v1/generation-v1.json`。聯絡表及八張完整候選已目視，`review-v1.json`明列Esco首片局部武器店被誤寫INN、Pureza未知標記仍保留及Dorado柱材質待核。接縫、門洞、招牌及透明邊緣尚待校準，沒有註冊或接入前端。[規格042](docs/spec/042-all-town-resources.md)保持DRAFT，階段收尾為 `town-resources-stage-audit-v2.json`，不當全城鎮HD完成。
+
+## 2026-10-21 共用洞窟DCHR、平台正常來源與Esco修正
+
+固定EXE身份沿011，dosgolem沿本機發行快照，Go1.24.13、cycles3000。原始包內SAVEM1.USR SHA-256 `03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c`，以相同bytes及mtime複製成scratch/SAVETEST.usr，由原版F7讀入。正常頁面已確認生命200、Wise Man's劍／盾、沒有鞋子及持有魔法石；不能由較強裝備推定存檔取得歷史。來源及副本bytes／mtime不變，沒有注入、快照還原或賜予道具。
+
+攻略只用於選擇路徑：[AFranciskovic第8.6.1節](https://gamefaqs.gamespot.com/pc/575849-zeliard/faqs/13336)指出Muralla右側斜坡捷徑依賴鞋子；[NeoZenogias第一章](https://gamefaqs.gamespot.com/pc/575849-zeliard/faqs/9990)描述平台、繩索、鑰匙及首領路線。它們不當固定版本的原版規則證據。正常v1的錯誤平台站位保留，不改原版輸入時序以強行通過。
+
+已證實：`town-path-savem1-v2/`的十個01B1:7114完成來源均含相同DCHR1872bytes。SAR3 record54解壓buffer SHA-256 `ac077b64a652afebeb88b907dd61c2411ce2fbac138aec4663c09fb48c0af998`；沿已核三平面變換後SHA-256 `7b4628728e0b6ce81a25b7bc0bbb3b4eedd640b0da102924b4384da0d38f690b`，與資源段11B1:8C00..934F逐byte相同。位址規則沿011的8030+(id−1)×48，對應ID64～102共39格。這是來源綁定，不是所有consumer已核或全39格皆正常出現。
+
+平台64、65、66位於同一列，三格完整192原生RGB像素與正常upper-landing畫面相同。共用平台不在MPP1的1～25範圍，也不符合既有Muralla入口矩陣；現有正式地形守衛會拒絕此圖格組，不能把地形圖集備妥當完整場景HD。來源擷取與原圖入口為 `cave-common-sources-v2/receipt.json`，工具為Python3.11.2、Pillow9.4.0。原版載入控制流及新用途仍未由新IDA切片分級，不採用先前搜尋線索的推測語意。
+
+正常v3站至平台中央後成功Up升起、走上右側通道並探索後續繩索，生命仍157，沒有到達Satono或取得新鑰匙。v4由冷F7重播同一鍵序，首個升起點RAM／暫存器／色號／色盤／steps／cycles與v3相同；再正常Down、Up，C004所指表第一項列值17→24→17，兩張升起原圖相同。手動shot仍可能在繪製中，cave命令才取7114來源。早期新探針的held_keys混用當前觀察時刻，v4已分開完成與觀察持鍵，舊收據不覆寫。這不宣稱完整機器狀態配對、HD配對或GUI通過。
+
+內建imagegen生成平台原圖1254×1254及完整提示詞，保存於 `cave-common-art-v1/generation-v1.json`。註冊候選直接從主體框(128,514)-(1130,752)取樣至72×24，再套本平台原生非零包絡及分三格；未經24×8縮圖。1287個包絡像素中51個仍透明，列為圖面／註冊缺口。完整SHA與三格接縫重接驗證在 `cave-common-registration-v1/manifest.json`，原圖及原始cache均保留，043仍DRAFT。
+
+Esco另用內建imagegen修正首片局部WEAPON招牌及原版單排四長窗。第二版RGBA1536×1024，SHA-256 `fa572b4f0ad9af5296366dcb79c24784361ea7b36296fe7ea55f19babfe674dd`，已目視；完整提示詞及兩引用SHA在 `town-world-art-v1/ESMP-correction-v2.request.json`，產物收據同根。接縫、門洞及正常遊戲接入尚未完成。最新階段稽核v4保留全部舊來源身份，正式可玩程式與舊封包不變。

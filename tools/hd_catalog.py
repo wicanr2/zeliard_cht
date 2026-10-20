@@ -56,9 +56,12 @@ def main():
     merchant = p/"workplace/full-hd-v1/merchant-frames-final-audit-v1.json"
     merchant_report = json.loads(merchant.read_text())
     assert merchant_report["status"] == "PASS_MERCHANT_KNOWN_FRAMES_SOURCE_ART_NORMAL_GUI"
-    towns = p/"workplace/full-hd-v1/town-resources-stage-audit-v2.json"
+    towns = p/"workplace/full-hd-v1/town-resources-stage-audit-v4.json"
     towns_report = json.loads(towns.read_text())
     assert towns_report["status"] == "SOURCE_AND_EIGHT_ART_CANDIDATES_NORMAL_PATH_PENDING"
+    common_path = p/"workplace/full-hd-v1/cave-common-sources-v2/receipt.json"
+    common_report = json.loads(common_path.read_text())
+    assert common_report["status"] == "PASS_DCHR_NORMAL_RAM_BINDING_SOURCE_ONLY"
     assert sage_report["status"] == "PASS_SAGE_SOURCE_ART_NORMAL_GUI"
     assert back_report["status"] == "SOURCE_ART_NORMAL_PASSED_GUI_PENDING"
     assert interior_report["status"] == "PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI"
@@ -149,6 +152,13 @@ def main():
                 if entry["index"] in (81,82,83,84):
                     item["hd_coverage"] = "connected_structural_verified_normal_path_pending"
                     item["normal_path"] = "MPP8／MPP9／MPPA／MPPB圖面與九份結構地圖已驗；正常到達、進出、捲動及事件待驗，不當全洞窟完成"
+            if key == ("ZELRES3.SAR", 54):
+                item["common_graphics_source"] = {
+                    "tiles":39, "first_id":64, "last_id":102, "runtime_bytes_verified":1872,
+                    "source_sha256":common_report["source_sha256"], "packed_sha256":common_report["packed_sha256"],
+                    "normal_points":10, "normal_platform_pixels":192, "evidence":str(common_path.relative_to(p))}
+                item["hd_coverage"] = "source_bound_platform_candidate_other_consumers_pending"
+                item["normal_path"] = "正常平台來源已核，原版平台升起及離開通道可重播；平台三格已註冊候選，51個包絡內透明像素及正式接入／GUI待驗。既有Muralla入口沿020，不當39格皆完成HD"
             if archive == "ZELRES2.SAR" and entry["index"] in interior_sources:
                 source = interior_sources[entry["index"]]
                 item["interior_source"] = {k:source[k] for k in ("name","program_record","program_sha256","graphics_sha256","packed_sha256","tile_count","covered_tile_ids","unreferenced_tile_ids","normal_binding","frames","source_level")}
@@ -195,6 +205,7 @@ def main():
                          "sage_hand_poses":8,"sage_registered_images":16,"sage_structural_variants":38,
                          "merchant_known_consumer_tiles":254,"merchant_unreferenced_tiles":2,"merchant_registered_images":10,
                          "town_maps_structurally_checked":10,"town_map_cells":17784,"additional_town_art_candidates":8,
+                         "common_cave_source_tiles":39,"common_platform_registered_tiles":3,"common_platform_native_pixels":192,
                          "classification_candidates": dict(Counter(x["classification"] for x in catalog))},
               "limits": ["194是SAR容器記錄數，尚不是美術素材分母；不換算HD完成百分比",
                          "not_assessed表示尚未將既有局部HD與此全量記錄逐項對應，不否定前版已驗成果",
@@ -250,6 +261,12 @@ def main():
             "spec":"docs/spec/037-all-cave-terrain-hd.md","source_record":f"zelres3.record.{record}",
             "evidence":str(runtime_catalog.relative_to(p)),"registered_tiles":count,"visible_tiles":visible,
             "limits":"固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"})
+    report["art_candidates"].append({
+        "key":"cave.common.green_platform", "source_record":"zelres3.record.54",
+        "status":"registered_candidate_not_connected", "spec":"docs/spec/043-cave-common-scenery.md",
+        "evidence":str(towns.relative_to(p)), "registered_tiles":[64,65,66],
+        "transparent_inside_mask":51, "limits":"正常來源及192原生像素已核；HD完整原版配對與GUI待驗。"})
+    next(row for row in report["art_candidates"] if row["key"]=="ESMP")["correction"] = towns_report["art_corrections"][0]
     report["runtime_components"].insert(-1, {
         "key":"cave.terrain.MPP1","status":"connected_structural_verified_normal_path_scoped",
         "spec":"docs/spec/037-all-cave-terrain-hd.md","source_record":"zelres3.record.74",

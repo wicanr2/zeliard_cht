@@ -22,6 +22,9 @@
     "town_maps_structurally_checked": 10,
     "town_map_cells": 17784,
     "additional_town_art_candidates": 8,
+    "common_cave_source_tiles": 39,
+    "common_platform_registered_tiles": 3,
+    "common_platform_native_pixels": 192,
     "classification_candidates": {
       "unknown": 20,
       "program_candidate": 36,
@@ -226,7 +229,7 @@
       "source_record": "zelres2.record.38",
       "status": "not_connected_normal_path_and_calibration_pending",
       "spec": "docs/spec/042-all-town-resources.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "unresolved_tile_ids": {}
     },
     {
@@ -234,7 +237,7 @@
       "source_record": "zelres2.record.39",
       "status": "not_connected_normal_path_and_calibration_pending",
       "spec": "docs/spec/042-all-town-resources.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "unresolved_tile_ids": {}
     },
     {
@@ -242,7 +245,7 @@
       "source_record": "zelres2.record.40",
       "status": "not_connected_normal_path_and_calibration_pending",
       "spec": "docs/spec/042-all-town-resources.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "unresolved_tile_ids": {}
     },
     {
@@ -250,7 +253,7 @@
       "source_record": "zelres2.record.41",
       "status": "not_connected_normal_path_and_calibration_pending",
       "spec": "docs/spec/042-all-town-resources.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "unresolved_tile_ids": {}
     },
     {
@@ -258,7 +261,7 @@
       "source_record": "zelres2.record.42",
       "status": "not_connected_normal_path_and_calibration_pending",
       "spec": "docs/spec/042-all-town-resources.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "unresolved_tile_ids": {}
     },
     {
@@ -266,7 +269,7 @@
       "source_record": "zelres2.record.43",
       "status": "not_connected_normal_path_and_calibration_pending",
       "spec": "docs/spec/042-all-town-resources.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "unresolved_tile_ids": {}
     },
     {
@@ -274,7 +277,7 @@
       "source_record": "zelres2.record.44",
       "status": "not_connected_normal_path_and_calibration_pending",
       "spec": "docs/spec/042-all-town-resources.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "unresolved_tile_ids": {
         "191": 8
       }
@@ -284,8 +287,28 @@
       "source_record": "zelres2.record.45",
       "status": "not_connected_normal_path_and_calibration_pending",
       "spec": "docs/spec/042-all-town-resources.md",
-      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
-      "unresolved_tile_ids": {}
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "unresolved_tile_ids": {},
+      "correction": {
+        "key": "ESMP",
+        "image": "workplace/full-hd-v1/town-world-art-v1/ESMP-generated-v2.png",
+        "sha256": "fa572b4f0ad9af5296366dcb79c24784361ea7b36296fe7ea55f19babfe674dd",
+        "status": "sign_and_four_windows_corrected_not_connected"
+      }
+    },
+    {
+      "key": "cave.common.green_platform",
+      "source_record": "zelres3.record.54",
+      "status": "registered_candidate_not_connected",
+      "spec": "docs/spec/043-cave-common-scenery.md",
+      "evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "registered_tiles": [
+        64,
+        65,
+        66
+      ],
+      "transparent_inside_mask": 51,
+      "limits": "正常來源及192原生像素已核；HD完整原版配對與GUI待驗。"
     }
   ],
   "proofs": [
@@ -342,8 +365,8 @@
       "sha256": "49909bbb825b69a39ab3b1061b55519d5bdaf5a885863fe91f8c54bbf7614634"
     },
     {
-      "path": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
-      "sha256": "ac62c62d16c6708362a3d6322bb944a2308c2e5a318abd9da556b4442f46b219"
+      "path": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
+      "sha256": "b5cb505f178d04d003bd81ee3d976cb59832d18e5d3455103b7943a359dbf620"
     },
     {
       "path": "workplace/full-hd-v1/town-resources-source-v1/receipt.json",
@@ -379,8 +402,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/interior-final-audit-v2.json",
       "historical_sha256": "7aa6fe044bcca04e00935b32a2a5a8b90dd86454a03c1473002bd8d584ac252e",
-      "current_sha256": "ce5ac548b847d6f9d398611ce5a3fdb67a1ce0625eac282ae74c8df69b044b22",
-      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "current_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
+      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -395,16 +418,16 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/sage-frames-final-audit-v1.json",
       "historical_sha256": "44e76dee7ff991f28b7bccc7c9f9165b2019dfb78855c5f37edcc56f5a3adbb9",
-      "current_sha256": "ce5ac548b847d6f9d398611ce5a3fdb67a1ce0625eac282ae74c8df69b044b22",
-      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "current_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
+      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
       "historical_sha256": "d6b9c8ee99331606a8a6643c54cac6db665ec16c00d15a75383391107bc893e4",
-      "current_sha256": "ce5ac548b847d6f9d398611ce5a3fdb67a1ce0625eac282ae74c8df69b044b22",
-      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v2.json",
+      "current_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
+      "replacement_evidence": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -4791,13 +4814,24 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed",
+      "hd_coverage": "source_bound_platform_candidate_other_consumers_pending",
+      "normal_path": "正常平台來源已核，原版平台升起及離開通道可重播；平台三格已註冊候選，51個包絡內透明像素及正式接入／GUI待驗。既有Muralla入口沿020，不當39格皆完成HD",
       "decoder": {
         "kind": 7,
         "bytes": 1872,
         "sha256": "ac077b64a652afebeb88b907dd61c2411ce2fbac138aec4663c09fb48c0af998",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "common_graphics_source": {
+        "tiles": 39,
+        "first_id": 64,
+        "last_id": 102,
+        "runtime_bytes_verified": 1872,
+        "source_sha256": "ac077b64a652afebeb88b907dd61c2411ce2fbac138aec4663c09fb48c0af998",
+        "packed_sha256": "7b4628728e0b6ce81a25b7bc0bbb3b4eedd640b0da102924b4384da0d38f690b",
+        "normal_points": 10,
+        "normal_platform_pixels": 192,
+        "evidence": "workplace/full-hd-v1/cave-common-sources-v2/receipt.json"
       }
     },
     {
