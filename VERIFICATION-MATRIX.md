@@ -463,3 +463,20 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 建置與靜態檢查 | 通過 | Go1.24.13，vet與build完成；三平台封包未更新 |
 
 程式為workplace/full-hd-v1/cave-final-families-runtime-v1/zeliard-preview，SHA-256 `55bfa76b14d0a7db309d96ba1a008d0bfda4f995c176f1d242958b4e8cef1d4d`。收尾入口為cave-final-families-audit-v1.json，由[四家族稽核](tools/hd_cave_remaining_audit.py)重生至新檔。舊收據不換成此身份。正常新增家族、MPP1未全量對應圖格、其他城鎮、敵人／首領及其餘美術仍未完成，全遊戲HD維持進行中。
+
+## 2026-10-20 MPP1補充圖面與十一家族
+
+| 驗證 | 結果 | 範圍與限制 |
+|---|---|---|
+| MPP1圖面 | 25格具備 | 保留既有14格與岩面，補第15格及SATONO／MURALLA各五格；正常Satono到達未驗 |
+| 三份獨立構圖 | 870912像素相同 | 兩份MP10與MP1D原始網格；Go與獨立Python比對，不執行VM |
+| 既有14格與材質 | 通過 | 圖面與混色結果相同；不以全黑底替換舊圖層 |
+| 全25格與拒絕 | 通過 | 細部／圖牌取樣、未知26、孤立73、來源／主體／跨地圖／原生畫面／缺格／數量失配／損圖原子拒絕 |
+| 共用入口 | 通過 | 僅允許020已核完整矩陣的ID與位置；兩側資源bytes皆核對；下層原貌保留及既有中文入口HD沿用 |
+| 初次正常配對 | 發現並修正契約缺口 | runtime-v1對25格上限過度嚴格，拒絕正常共用入口；保留失敗來源，不當環境問題 |
+| 十一家族共存 | 通過 | 26項圖面測試及32份構圖回歸；地形378槽含原版空白，不代表人物／敵人／首領完成 |
+| 正常MPP1回歸 | 35點通過 | 首戰25點與回城10點完整原版狀態、USR及mtime相同；三項正常／來源測試無skip／fail |
+| 實際視窗 | 通過 | 十一組參數、正常冷F7／入洞／步行、兩組切回1152000像素相同、回城及DOS退出0；根端目視，音訊關閉 |
+| 建置與離線重生 | 通過 | Go1.24.13、vet與build；補充圖面23檔及兩參考重生相同；三平台封包未更新 |
+
+候選為workplace/full-hd-v1/cave-mpp1-runtime-v2/zeliard-preview，SHA-256 `54d3741fb4ab9c6ff05d0b8db601b4da4a03dfc5f0eb2e46d8ec0a515d4234eb`。收尾入口cave-mpp1-final-audit-v1.json由[MPP1稽核](tools/hd_mpp1_audit.py)重生至新檔。舊收據保留原身份，後段正常路徑與其餘美術仍未完成。

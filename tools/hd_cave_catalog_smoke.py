@@ -17,7 +17,7 @@ mpp3_art = os.environ.get("ZELIARD_CAVE_MPP3_ART", "")
 mpp5_art = os.environ.get("ZELIARD_CAVE_MPP5_ART", "")
 mpp6_art = os.environ.get("ZELIARD_CAVE_MPP6_ART", "")
 mpp7_art = os.environ.get("ZELIARD_CAVE_MPP7_ART", "")
-remaining_art = {f: os.environ.get("ZELIARD_CAVE_"+f+"_ART", "") for f in ("MPP8", "MPP9", "MPPA", "MPPB")}
+remaining_art = {f: os.environ.get("ZELIARD_CAVE_"+f+"_ART", "") for f in ("MPP1", "MPP8", "MPP9", "MPPA", "MPPB")}
 assert candidate.is_file()
 original_start = start
 

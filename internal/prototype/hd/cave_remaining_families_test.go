@@ -41,6 +41,11 @@ func remainingCaveArt(t *testing.T) *CaveTerrain {
 // 正常MPP1回歸可同時載四個新家族，未指定環境時沿既有測試範圍。
 func loadRemainingNormalTestArt(t *testing.T, art *CaveTerrain) {
 	t.Helper()
+	if dir := os.Getenv("ZELIARD_CAVE_MPP1_ART"); dir != "" {
+		if err := art.LoadMPP1(dir); err != nil {
+			t.Fatal(err)
+		}
+	}
 	for _, c := range remainingCaveCases {
 		if dir := os.Getenv("ZELIARD_CAVE_" + c.family + "_ART"); dir != "" {
 			if err := c.load(art, dir); err != nil {

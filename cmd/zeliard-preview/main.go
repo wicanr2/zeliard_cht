@@ -997,6 +997,7 @@ func main() {
 	caveMPP5Art := flag.String("cave-mpp5-art", "", "可選：MPP5的52格手繪圖集，需同時指定cave-art-dir")
 	caveMPP6Art := flag.String("cave-mpp6-art", "", "可選：MPP6的36格雙材質手繪圖集，需同時指定cave-art-dir")
 	caveMPP7Art := flag.String("cave-mpp7-art", "", "可選：MPP7的61槽雙材質手繪圖集，需同時指定cave-art-dir")
+	caveMPP1Art := flag.String("cave-mpp1-art", "", "可選：MPP1的15至25格補充圖集，保留原有14格，需同時指定cave-art-dir")
 	caveMPP8Art := flag.String("cave-mpp8-art", "", "可選：MPP8的43槽雙字帶手繪圖集，需同時指定cave-art-dir")
 	caveMPP9Art := flag.String("cave-mpp9-art", "", "可選：MPP9的38格手繪圖集，需同時指定cave-art-dir")
 	caveMPPAArt := flag.String("cave-mppa-art", "", "可選：MPPA的20槽雙材質手繪圖集，需同時指定cave-art-dir")
@@ -1175,6 +1176,7 @@ func main() {
 				name, dir string
 				load      func(string) error
 			}{
+				{"MPP1", *caveMPP1Art, g.caveTerrainHD.LoadMPP1},
 				{"MPP8", *caveMPP8Art, g.caveTerrainHD.LoadMPP8},
 				{"MPP9", *caveMPP9Art, g.caveTerrainHD.LoadMPP9},
 				{"MPPA", *caveMPPAArt, g.caveTerrainHD.LoadMPPA},

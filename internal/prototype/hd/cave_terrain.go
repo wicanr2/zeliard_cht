@@ -13,6 +13,7 @@ import (
 type CaveTerrain struct {
 	tiles       [128][]color.NRGBA
 	material    []color.NRGBA
+	mpp1        *caveTerrainArt
 	ice         *caveTerrainArt
 	peligro     *caveTerrainArt
 	mpp3        *caveTerrainArt
@@ -191,8 +192,8 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	for id := 3; id <= 8; id++ {
 		materialIDs[id] = true
 	}
-	textFirst, textLast := 0, 0
-	if townBackgroundHash(r[0x8030:0x8030+14*48]) != "69f3a97cfe0356b544b67e462c5c59835a72c66099086e68f2f81b47f6cfa74b" {
+	textFirst, textLast, legacyThrough := 0, 0, 0
+	if s.mpp1 != nil || townBackgroundHash(r[0x8030:0x8030+14*48]) != "69f3a97cfe0356b544b67e462c5c59835a72c66099086e68f2f81b47f6cfa74b" {
 		entry, terrain := caveTerrainIdentity(f.Memory)
 		bodyEntry, _ := caveTerrainIdentity(f.BodyMemory)
 		if entry == nil || bodyEntry == nil || entry.record != bodyEntry.record {
@@ -200,6 +201,9 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		}
 		var art *caveTerrainArt
 		switch terrain.key {
+		case "MPP1":
+			art = s.mpp1
+			legacyThrough = 15
 		case "MPP4":
 			art = s.ice
 		case "MPP2":
@@ -263,9 +267,34 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			return false
 		}
 	}
+	var nativePortals []image.Point
+	portalChecked := false
 	for _, c := range d.Cells {
 		if extraArt && int(c.ID) >= limit {
-			return false
+			// MPP1仍含規格020已驗的共用入口格，僅保留完整矩陣內的原版下層。
+			if legacyThrough != 15 {
+				return false
+			}
+			if !portalChecked {
+				var sourceOK bool
+				nativePortals, sourceOK = cavePortalLocations(f.Memory, d.Cells)
+				_, bodyOK := cavePortalLocations(f.BodyMemory, nil)
+				if !sourceOK || !bodyOK {
+					return false
+				}
+				portalChecked = true
+			}
+			allowed := false
+			for _, anchor := range nativePortals {
+				x, y := (c.X-anchor.X)/8, (c.Y-anchor.Y)/8
+				if c.X >= anchor.X && c.Y >= anchor.Y && x < 5 && y < 5 && cavePortalMatrix[y][x] == c.ID {
+					allowed = true
+					break
+				}
+			}
+			if !allowed {
+				return false
+			}
 		}
 		grid[(c.Y-14)/8][(c.X-48)/8] = c.ID
 	}
@@ -355,7 +384,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 				}
 				px, py := cell.X*3+x+origin.X, cell.Y*3+y+origin.Y
 				old := dst.RGBAAt(px, py)
-				if extraArt {
+				if extraArt && id > legacyThrough {
 					// 新圖面取代原生地形色；動態、主角與武器稍後依原順序回畫。
 					old = color.RGBA{A: 255}
 				}

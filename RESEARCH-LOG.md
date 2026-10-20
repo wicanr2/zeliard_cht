@@ -1090,3 +1090,13 @@ SAR3記錄80的解壓SHA-256 `89bf9b7d268985362e099b6b0db29c04ca4b48444857f70a7e
 已證實的空白來源為MPP8的17／18／19與MPPA的20，RGB及每槽48個轉換bytes全零。四份reference-check.json保留檢查；正式Go解碼另以64個全零色號核對。其餘102個可見圖格皆有生成及註冊圖面。連續材質、灰綠／深藍分組與字帶覆繪是明示外觀處理，不推定碰撞、事件或動畫語意。
 
 素材工具使用Docker內Python3.11.2、Pillow9.4.0、NumPy1.24.2，Go1.24.13只接入呈現層；共用dosgolem來源未改。九圖2612736像素比對的是正式Draw與獨立離線預覽，結構快照不執行VM。正常MPP1的35點與GUI v2另作回歸；四個新家族正常到達、捲動及事件仍為未知。證據入口為[規格037](docs/spec/037-all-cave-terrain-hd.md)及workplace/full-hd-v1/cave-final-families-audit-v1.json。
+
+## 2026-10-20 MPP1補充圖格與原版共用入口
+
+已證實的SAR3記錄74解壓SHA-256為`0b991410e2069c785b2db5781f2f662862d2985a7c536438cbe892b4ebdce32c`；48-byte header SHA為`2e4ad5efcf25dfafa873c222d950ad8d524048329b1b6c452dba159a2eee953a`，25乘48bytes轉換圖格為`bb873820c81d32ff533a5fb1e74ec0f0fca64f917d89d6f7dc57796dfe516de7`。來源位址為既有正常11B1:8000及8030契約，fixture從檔案偏移0／48保存；兩種位址基準分開。原版MP10靜態x127／y31有16..20，x60／y5有21..25，完整拼合目視為SATONO及MURALLA；第15格出現32次。MP1D沒有15..25，不因該圖未用就刪除美術。
+
+勘誤：舊terrain-handpaint-v2.png第15格為透明，最初憑整張圖誤認右側片段已畫好，已由complete-v1接觸表及空alpha推翻。complete-v2改用新生成第15格，舊14格及材質不改。原始細部alpha最大254是有效透明圖，不歸零或改成255；註冊按原生非零邊界裁切。初版灰色字面診斷用128錯誤，實際色盤為125；後續暗色字形與完整圖牌、SAR2原文拼字共同核讀，失敗診斷不當空白證據。
+
+正常首訪兩條鍵序在cave-mpp1-pair-v1/的cave-entered.presented.memory與body.memory顯示共用入口ID73、74、75、76、77、78、88..97。已證實的完整5×5矩陣及21個去重ID的資源包SHA仍為020的`3fd046b8c1281a013bfe1c8dfa627a663fec2eac5cebe7e3df025a63c1db6633`。來源、檔案SHA、原始矩陣、環形圖格位置及共用ID在cave-mpp1-source-v1/normal-common-evidence.json。這只回查既有Muralla入口，不由名稱猜一般MPAT索引或用途。完整矩陣與兩側資源守衛通過才能保留原版共用下層；孤立73、任意26及來源變動仍拒絕。
+
+新圖由內建imagegen製作，generation-v2.json保留三次完整請求與輸入／產物SHA；註冊圖帶SHA為`eeb7ce0286a08aafdca396379109a37dd6e03e163680fd58b2714ddfedcbe7cd`。Docker內Python3.11.2、Pillow9.4.0、NumPy1.24.2以分軸整數權重重建舊14格／材質，Go1.24.13以既有caveArea呈現，三份構圖870912像素相同。結構測試不執行VM；正常MPP1的35點及GUI另驗。Satono正常到達及後段家族仍未知。入口見[規格037](docs/spec/037-all-cave-terrain-hd.md)與workplace/full-hd-v1/cave-mpp1-final-audit-v1.json。

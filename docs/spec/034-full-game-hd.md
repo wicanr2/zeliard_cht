@@ -31,7 +31,9 @@
 - [居民註冊工具](../../tools/hd_register_npcs.py) 產生 `town-npc-registration-v1/manifest.json` 與40張48×72候選預覽。依原版alpha外框校準落腳點；來源相同時共用候選。正式合成用原圖面積取樣，預覽不當像素對照。
 - 目前已接入範圍與舊收據仍以 [驗證矩陣](../../VERIFICATION-MATRIX.md) 為準。首次新增的完整覆蓋清單以本規格為入口，不能以README16類抽樣當成全量清單。
 
-最新四家族增量見037的MPP8／MPP9／MPPA／MPPB接入契約與`workplace/full-hd-v1/cave-final-families-audit-v1.json`。新增106槽、102可見圖格、四個原版空白槽與九份結構地圖已驗；十家族共存及正常MPP1首戰／回城回歸通過。正常新增家族到達、捲動與事件仍未知，MPP1尚未全量對應的圖格及其他玩家可見美術仍有缺口，不稱全洞窟完成。
+四家族增量見037的MPP8／MPP9／MPPA／MPPB接入契約與`workplace/full-hd-v1/cave-final-families-audit-v1.json`。新增106槽、102可見圖格、四個原版空白槽與九份結構地圖已驗；十家族共存及正常MPP1首戰／回城回歸通過。正常新增家族到達、捲動與事件仍未知，其他玩家可見美術仍有缺口，不稱全洞窟完成。
+
+MPP1補充圖面已接入，最新收尾為`workplace/full-hd-v1/cave-mpp1-final-audit-v1.json`。既有14格及岩面保持相同，補第15格與SATONO／MURALLA兩圖牌，三份構圖870912獨立像素及正常第一洞窟回歸通過。十一組地形378槽已具備對應圖面或原版空白；這不涵蓋共用場景圖格、人物、敵人、首領或後段正常可達，完整目標仍進行中。
 
 ## 下一閘門
 

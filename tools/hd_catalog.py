@@ -48,9 +48,9 @@ def main():
     assert planar_report["status"] == "PASS_EXTRACTED_ORIGINAL_PLANAR" and len(planar_report["records"]) == 80
     assert all(x["matched"] and x["exit_code"] == 0 for x in planar_report["records"])
     assert grp_report["status"] == "PASS_FOUR_NORMAL_RESOURCE_BINDINGS"
-    runtime_catalog = p/"workplace/full-hd-v1/cave-final-families-audit-v1.json"
+    runtime_catalog = p/"workplace/full-hd-v1/cave-mpp1-final-audit-v1.json"
     runtime_catalog_report = json.loads(runtime_catalog.read_text())
-    assert runtime_catalog_report["status"] == "PASS_REMAINING_CAVE_FAMILIES_STRUCTURAL_AND_MPP1_REGRESSION"
+    assert runtime_catalog_report["status"] == "PASS_MPP1_EXTRAS_AND_ELEVEN_TERRAIN_FAMILIES"
     for source in runtime_catalog_report["source_files"]+runtime_catalog_report["proofs"]:
         assert sha((p/source["path"]).read_bytes()) == source["sha256"]
     current_sources = {r["path"]:r["sha256"] for r in runtime_catalog_report["source_files"]}
@@ -109,6 +109,9 @@ def main():
                 source = terrain_sources[entry["index"]]
                 item["cave_terrain_source"] = {k: source[k] for k in ("key", "tiles", "source_sha256", "packed_sha256", "status", "runtime_bytes_verified")}
                 item["cave_terrain_source"]["evidence"] = str(terrain_path.relative_to(p))
+                if entry["index"] == 74:
+                    item["hd_coverage"] = "connected_structural_verified_normal_path_scoped"
+                    item["normal_path"] = "25格圖面具備；SATONO／MURALLA靜態構圖、首戰及回城回歸已驗。正常Satono到達與其餘分支未驗，不當全洞窟完成"
                 if entry["index"] in (75,76,77,78,79,80):
                     item["hd_coverage"] = "connected_structural_verified_normal_path_pending"
                     item["normal_path"] = "MPP2／MPP3／MPP5／MPP6／MPP7／冰窟正常進出、捲動與事件待驗；結構像素見037，MPP1回歸另列"
@@ -176,6 +179,11 @@ def main():
             "spec":"docs/spec/037-all-cave-terrain-hd.md","source_record":f"zelres3.record.{record}",
             "evidence":str(runtime_catalog.relative_to(p)),"registered_tiles":count,"visible_tiles":visible,
             "limits":"固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"})
+    report["runtime_components"].insert(-1, {
+        "key":"cave.terrain.MPP1","status":"connected_structural_verified_normal_path_scoped",
+        "spec":"docs/spec/037-all-cave-terrain-hd.md","source_record":"zelres3.record.74",
+        "evidence":str(runtime_catalog.relative_to(p)),"registered_tiles":25,
+        "limits":"原有14格與材質保持相同，另補15及兩組圖牌。三構圖與十一家族共存、正常MPP1首戰／回城回歸通過；正常Satono到達與後段事件仍未驗。"})
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(report["counts"], ensure_ascii=False))
 

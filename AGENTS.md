@@ -336,6 +336,9 @@
 - [MPP7圖面載入](internal/prototype/hd/cave_mpp7.go)按037固定61槽、赤紅／白熱雙材質與LLAMA字帶，保留三個原版空白槽；[MPP7測試](internal/prototype/hd/cave_mpp7_test.go)核四圖、58個可見圖格、空白資源、原子拒絕與六家族共存，正常到達另驗。
 - [MPP8／MPP9／MPPA／MPPB圖面載入](internal/prototype/hd/cave_remaining_families.go)按037固定四組圖帶、材質與MPP8雙字帶；[四家族測試](internal/prototype/hd/cave_remaining_families_test.go)核九份結構地圖、106槽、四個原版空白槽及原子拒絕，正常到達另驗。
 - [四家族稽核](tools/hd_cave_remaining_audit.py)從原始來源、註冊、生成提示詞、測試與實際視窗重生收尾收據；舊MPP7收據保留原身份，正常新家族可達性另驗。
+- [MPP1補充圖面](tools/hd_mpp1_art.py)註冊第15格及SATONO／MURALLA兩圖牌；1..14與岩面不重畫，來源與接入契約見037。舊圖集第15格實際透明，不能當可用美術。
+- [MPP1載入器](internal/prototype/hd/cave_mpp1.go)原子補齊15..25並沿既有14格及材質；[MPP1測試](internal/prototype/hd/cave_mpp1_test.go)核三份獨立構圖、25格、相容與拒絕，不把Satono靜態圖牌當正常到達。
+- [MPP1稽核](tools/hd_mpp1_audit.py)核補充圖面、十一家族共存與正常第一洞窟回歸；三份靜態構圖與正常路徑分列，收據入口在CONTEXT。
 - [MPP3圖面載入](internal/prototype/hd/cave_mpp3.go)按037固定43格、九個材質ID與完整BOSQUE字帶；[MPP3測試](internal/prototype/hd/cave_mpp3_test.go)核結構像素、全43格、界限及三家族共存，正常到達另驗。
 - [MPP2圖面載入](internal/prototype/hd/cave_peligro.go)按037固定34格圖面與材質，與冰窟共用整組載入；[MPP2測試](internal/prototype/hd/cave_peligro_test.go)核三份結構快照、尾端九格及來源／載入拒絕，不能當正常到達證據。
 - [洞窟家族稽核](tools/hd_cave_family_audit.py)接受MPP2／MPP3／MPP5／MPP6／MPP7，核原始靜態地圖格、完整註冊、合成像素、MPP1正常回歸及實際視窗；MPP7另核全零資源與十一尾端圖樣的RGBA差異。舊收據重生須用當輪來源工作樹與相符driver。新增家族先補037來源及接入契約，不以任意參數跳過守衛。
