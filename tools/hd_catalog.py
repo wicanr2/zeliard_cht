@@ -62,6 +62,11 @@ def main():
     terrain_sources = {x["record"]: x for x in json.loads(terrain_path.read_text())["profiles"]}
     cave_maps_path = p/"workplace/full-hd-v1/cave-map-sources-v1/receipt.json"
     cave_maps = {x["record"]: x for x in json.loads(cave_maps_path.read_text())["records"]}
+    runtime_catalog = p/"workplace/full-hd-v1/cave-catalog-final-audit-v1.json"
+    runtime_catalog_report = json.loads(runtime_catalog.read_text())
+    assert runtime_catalog_report["status"] == "PASS_CAVE_CATALOG_SCOPED"
+    for source in runtime_catalog_report["source_files"]+runtime_catalog_report["proofs"]:
+        assert sha((p/source["path"]).read_bytes()) == source["sha256"]
     grp_sources = {("ZELRES2.SAR", x["record"]): x for x in grp_report["records"]}
     catalog = []
     for archive, data in originals.items():
@@ -125,9 +130,13 @@ def main():
                                       "limits": "只驗城堡前景、四旗幟與Muralla往返；phase4、交談背景及其他場景仍有缺口，未更新封包"},
                                      {"key": "cave.terrain.ice", "status": "generated_candidate_not_connected",
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "source_record": "zelres3.record.77",
-                                      "evidence": "workplace/full-hd-v1/cave-ice-art-v2/generation.json",
-                                      "limits": "21格原圖與兩版手繪候選；空白格alpha及裁切未驗，未接入正式前端"}],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave)],
+                                      "evidence": "workplace/full-hd-v1/cave-ice-registration-v3/manifest.json",
+                                      "limits": "第三版前14格註冊、連續材質與三份離線地圖；15..19圖形文字及20..21仍有缺口，未接正式前端；前兩版僅作畫風參考"},
+                                     {"key": "cave.source.catalog", "status": "implemented_scoped_sampling",
+                                      "spec": "docs/spec/037-all-cave-terrain-hd.md", "maps":31,"terrain_profiles":11,
+                                      "evidence":str(runtime_catalog.relative_to(p)),
+                                      "limits":"來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"}],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog)],
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(report["counts"], ensure_ascii=False))

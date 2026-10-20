@@ -48,8 +48,17 @@
       "status": "generated_candidate_not_connected",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "source_record": "zelres3.record.77",
-      "evidence": "workplace/full-hd-v1/cave-ice-art-v2/generation.json",
-      "limits": "21格原圖與兩版手繪候選；空白格alpha及裁切未驗，未接入正式前端"
+      "evidence": "workplace/full-hd-v1/cave-ice-registration-v3/manifest.json",
+      "limits": "第三版前14格註冊、連續材質與三份離線地圖；15..19圖形文字及20..21仍有缺口，未接正式前端；前兩版僅作畫風參考"
+    },
+    {
+      "key": "cave.source.catalog",
+      "status": "implemented_scoped_sampling",
+      "spec": "docs/spec/037-all-cave-terrain-hd.md",
+      "maps": 31,
+      "terrain_profiles": 11,
+      "evidence": "workplace/full-hd-v1/cave-catalog-final-audit-v1.json",
+      "limits": "來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"
     }
   ],
   "proofs": [
@@ -80,6 +89,10 @@
     {
       "path": "workplace/full-hd-v1/cave-source-stage-audit-v1.json",
       "sha256": "fa907ee8b30601f7868d6a714e8ae42dec6fa94b6efee1d5708cba541cb6420d"
+    },
+    {
+      "path": "workplace/full-hd-v1/cave-catalog-final-audit-v1.json",
+      "sha256": "466d5633a0548235d347e1f56115b0d2be40e66052adb2faf647a51ebce65673"
     }
   ],
   "archives": [

@@ -326,6 +326,10 @@
 
 全遊戲後續來源入口：
 
+- [洞窟來源表編譯](tools/hd_compile_cave_catalog.py)將31份地圖及11組圖集身份寫入[固定資料表](internal/prototype/hd/cave_catalog_data.go)，只含名稱、數量及SHA；[來源辨識](internal/prototype/hd/cave_catalog.go)與[測試](internal/prototype/hd/cave_catalog_test.go)依037來源READY契約處理，結構fixture不當正常路徑。
+- [冰窟註冊研究](tools/hd_register_ice.py)將角色無關的MPP4原圖、手繪圖面與不透明材質合成三份地圖離線預覽；不改原始AI圖、不接正式前端，圖形文字與光球缺口另列。
+- [洞窟來源視窗回歸](tools/hd_cave_catalog_smoke.py)以新版候選正常冷讀、入洞、HD切回及回城，保存來源鍵、實際命令與圖片；不外推未到達家族。
+- [洞窟辨識收尾稽核](tools/hd_cave_catalog_audit.py)核目前程式、來源測試、正常35點、實際視窗還原與冰窟離線候選的各別身份；不將美術候選或結構fixture計為全家族正常HD完成。
 - [全洞窟地形來源](tools/hd_cave_sources.py) 擷取SAR3的MPP1..MPPB原生圖格與分組總覽；[規格037](docs/spec/037-all-cave-terrain-hd.md)分開正常RAM已核與結構候選。輸出留`workplace/full-hd-v1/cave-terrain-sources-v1/`，不把解圖當HD完成。
 - [洞窟存檔來源探針](tools/hd_cave_save_probe.go) 在兩個獨立dosgolem冷讀包內四份USR，只用原版按鍵擷取場景與圖像來源；存檔前史未知，不當新局全流程或HD驗收。
 - [洞窟地圖解碼](tools/hd_cave_maps.py) 保存31份地圖原始柱狀資料與靜態研究圖；[原版地圖常式對照](tools/hd_cave_map_oracle.go)執行原始6CED..6D6D逐欄核對，與正常可達性分列。

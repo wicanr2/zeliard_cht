@@ -108,10 +108,13 @@ func caveFrameSource(in caveFrameInput) bool {
 	if caveWord(p, 0xff2c) != 0x11b1 {
 		return false
 	}
-	// 規格027：只接完整核對過的兩個64byte前綴，未知值仍拒絕。
+	// 規格027的兩個64byte前綴保持原契約；037另驗地圖及完整MPP身份。
 	prefix := townBackgroundHash(p[0xc000:0xc040])
 	if prefix != "3f5edbc8b51aa017211fb0ca808f807a1ade51d95e14b49dadf593e90ada24eb" && prefix != "6c853b5dab1da5682a959dd804b0f23e5acdc3aa67099596335e1293694f03b2" {
-		return false
+		// 037：新增地圖須同時匹配完整MPP資源；舊兩個來源沿原契約。
+		if entry, _ := caveTerrainIdentity(in.memory); entry == nil {
+			return false
+		}
 	}
 	for _, guard := range []struct {
 		source []byte
@@ -219,6 +222,10 @@ func (f *CaveFrames) finish(in caveFrameInput) {
 		f.reject(in, "source or missing body")
 		return
 	}
+	if caveCatalogMapsDiffer(in.memory, f.body.memory) {
+		f.reject(in, "body and complete source belong to different maps")
+		return
+	}
 	if len(in.indexed) != 64000 || len(in.rgb) != 192000 {
 		f.reject(in, "frame size")
 		return
@@ -273,6 +280,10 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 	if last == nil {
 		return nil
 	}
+	if caveCatalogMapsDiffer(in.memory, last.Memory) {
+		f.clear()
+		return nil
+	}
 	if in.steps < last.Steps || in.cycles < last.Cycles {
 		f.clear()
 		return nil
@@ -314,6 +325,10 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 	f.state["source_actor_x"] = actorPosition % 320
 	f.state["source_actor_y"] = actorPosition / 320
 	f.state["source_map_origin"] = caveWord(p, 0xff31)
+	if entry, terrain := caveTerrainIdentity(last.Memory); entry != nil {
+		f.state["source_map_key"] = entry.name
+		f.state["source_terrain_key"] = terrain.key
+	}
 	// 深複製來源及圖層，觀測或繪圖端不能回寫保存的完成來源。
 	d := *last.Decoded
 	d.Background = cloneTownBytes(d.Background)
