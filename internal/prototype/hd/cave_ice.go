@@ -11,8 +11,11 @@ import (
 
 // caveTerrainArt只保存目標3倍圖面；原始資源身份由catalog另行核對。
 type caveTerrainArt struct {
-	tiles    [128][]color.NRGBA
-	material []color.NRGBA
+	tiles               [128][]color.NRGBA
+	material            []color.NRGBA
+	count               int
+	materialIDs         [128]bool
+	textFirst, textLast int
 }
 
 func checkedTerrainImage(path, sha string, width, height int) (image.Image, error) {
@@ -39,7 +42,7 @@ func loadCaveTerrainArt(dir, prefix, atlasSHA, materialSHA string, count int) (*
 	if err != nil {
 		return nil, err
 	}
-	art := &caveTerrainArt{}
+	art := &caveTerrainArt{count: count}
 	for id := 1; id <= count; id++ {
 		for y := 0; y < 24; y++ {
 			for x := 0; x < 24; x++ {
@@ -64,6 +67,10 @@ func (s *CaveTerrain) LoadIce(dir string) error {
 	if err != nil {
 		return err
 	}
+	for id := 3; id <= 12; id++ {
+		art.materialIDs[id] = true
+	}
+	art.textFirst, art.textLast = 15, 19
 	s.ice = art
 	return nil
 }

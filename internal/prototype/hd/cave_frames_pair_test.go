@@ -119,6 +119,11 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 		}
 	}
 	var player *CavePlayer
+	if dir := os.Getenv("ZELIARD_CAVE_MPP3_ART"); dir != "" {
+		if e = art.LoadMPP3(dir); e != nil {
+			t.Fatal(e)
+		}
+	}
 	if dir := os.Getenv("ZELIARD_CAVE_PELIGRO_ART"); dir != "" {
 		if e = art.LoadPeligro(dir); e != nil {
 			t.Fatal(e)
@@ -348,6 +353,14 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 			t.Fatal("MPP2須搭配洞窟呈現器")
 		}
 		if e = art.LoadPeligro(dir); e != nil {
+			t.Fatal(e)
+		}
+	}
+	if dir := os.Getenv("ZELIARD_CAVE_MPP3_ART"); dir != "" {
+		if art == nil {
+			t.Fatal("MPP3須搭配洞窟呈現器")
+		}
+		if e = art.LoadMPP3(dir); e != nil {
 			t.Fatal(e)
 		}
 	}

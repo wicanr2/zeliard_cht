@@ -13,6 +13,7 @@ names[0x39] = "space"
 candidate = Path(os.environ.get("ZELIARD_GUI_BINARY", str(R/"workplace/full-hd-v1/cave-catalog-runtime-v1/zeliard-preview")))
 ice_art = os.environ.get("ZELIARD_CAVE_ICE_ART", "")
 peligro_art = os.environ.get("ZELIARD_CAVE_PELIGRO_ART", "")
+mpp3_art = os.environ.get("ZELIARD_CAVE_MPP3_ART", "")
 assert candidate.is_file()
 original_start = start
 
@@ -28,6 +29,8 @@ def start():
                 command.extend(["-cave-ice-art", ice_art])
             if peligro_art:
                 command.extend(["-cave-peligro-art", peligro_art])
+            if mpp3_art:
+                command.extend(["-cave-mpp3-art", mpp3_art])
         return original_popen(command, *args, **kwargs)
     subprocess.Popen = launch
     try:
@@ -173,6 +176,7 @@ try:
     report = {"status": "PASS_CAVE_CATALOG_GUI_SCOPED", "binary_sha256": h(candidate),
               "ice_art_directory": ice_art,
               "peligro_art_directory": peligro_art,
+              "mpp3_art_directory": mpp3_art,
               "script_sha256": h(Path(__file__)), "helper_sha256": h(helper),
               "boots": boots, "shots": shots, "pairs": pairs, "normal_DOS_exit": 0,
               "limits": "只驗MPP1正常冷讀、入洞、步行、HD切回及回城；未驗其他洞窟或新冰窟美術"}

@@ -993,6 +993,7 @@ func main() {
 	caveArt := flag.String("cave-art-dir", "", "可選：Malicia手繪地形圖目錄，角色與物件保留原貌")
 	caveIceArt := flag.String("cave-ice-art", "", "可選：MPP4冰窟21格手繪圖集，需同時指定cave-art-dir")
 	cavePeligroArt := flag.String("cave-peligro-art", "", "可選：MPP2的34格手繪圖集，需同時指定cave-art-dir")
+	caveMPP3Art := flag.String("cave-mpp3-art", "", "可選：MPP3的43格手繪圖集，需同時指定cave-art-dir")
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
 	caveObjectArt := flag.String("cave-object-art-dir", "", "可選：洞窟動態物件手繪圖集目錄，搭配洞窟地形HD")
@@ -1141,6 +1142,11 @@ func main() {
 			if *cavePeligroArt != "" {
 				if e := g.caveTerrainHD.LoadPeligro(*cavePeligroArt); e != nil {
 					log.Printf("MPP2地形HD未載入，保留該家族原貌：%v", e)
+				}
+			}
+			if *caveMPP3Art != "" {
+				if e := g.caveTerrainHD.LoadMPP3(*caveMPP3Art); e != nil {
+					log.Printf("MPP3地形HD未載入，保留該家族原貌：%v", e)
 				}
 			}
 			if *caveObjectArt != "" {

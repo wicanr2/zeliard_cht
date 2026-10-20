@@ -385,3 +385,18 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 程式 | e9f89d52，八項圖面與三項正常／來源測試無skip／fail，vet及建置通過 | 037接入READY，正常MPP2進出／捲動／事件待驗，不升CONFORMED；封包及影片未更新 |
 
 權威入口為[037](docs/spec/037-all-cave-terrain-hd.md)、`workplace/full-hd-v1/cave-peligro-final-audit-v1.json`及目前CONTEXT。原版資料、完整圖面、結構fixture與視窗收據只留本機；全遊戲HD目標維持進行中。
+
+## MPP3的43格與BOSQUE字帶
+
+| 項目 | 結果 | 邊界 |
+|---|---|---|
+| 圖面 | 九個材質ID、29個圖樣及五格字帶，共43格；1032×24圖帶與432×768材質固定SHA | 五張內建imagegen原圖及完整提示詞只留本機，初版逐格標示不覆寫 |
+| 標示來源 | MP30／MP31相鄰34..38五格拼合後目視轉錄BOSQUE；整段120×24再分格 | 四格片段不足判讀，不推定官方中文譯名或正常可達性 |
+| 參考重生 | 五份生成輸入圖以prepare模式重生，逐檔SHA相同 | 只驗來源／構圖可重現，不把原圖展示放大計作HD |
+| 結構像素 | 三份MPP3快照870912像素與獨立Python預覽相同，全43格與拒絕測試通過 | 合成資料不執行VM，不當正常MPP3玩家路徑 |
+| 共存與舊圖 | 相同呈現器的MPP2及冰窟各三份870912像素、Malicia四份舊圖通過 | 不因圖格數相同而選錯圖集，不外推未註冊家族 |
+| 正常回歸 | 載三組新圖集後MPP1首戰25點及回城10點完整原版狀態、USR及mtime相同 | 新增家族的正常進出／捲動／事件仍待驗 |
+| 實際視窗 | 冷F7、入洞、步行、兩組原貌切回1152000遊戲區像素相同，回城及DOS退出0 | MP10／MPP1，暫停五項CPU／來源身份相同，根端目視，音訊關閉 |
+| 入口與檢查 | 148bdd99，11項圖面及三項正常／來源測試無skip／fail，vet／建置通過 | 037接入READY，正常MPP3未驗，不升CONFORMED；版本、封包與影片未更新 |
+
+權威入口為[037](docs/spec/037-all-cave-terrain-hd.md)、`workplace/full-hd-v1/cave-mpp3-final-audit-v1.json`及目前CONTEXT。其餘家族、角色、敵人／首領、介面與全遊戲HD保持未完成。

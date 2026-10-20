@@ -12,26 +12,34 @@ from PIL import Image, ImageChops
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--project",type=Path,required=True)
-    ap.add_argument("--family",choices=("MPP2",),required=True)
+    ap.add_argument("--family",choices=("MPP2","MPP3"),required=True)
     ap.add_argument("--output",type=Path,required=True)
     a = ap.parse_args()
     p,b = a.project,a.project/"workplace/full-hd-v1"
     sha = lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
     read = lambda path:json.loads((b/path).read_text())
     assert not a.output.exists(),"不覆寫既有收據"
-    prefix = "cave-peligro"
-    art = read(prefix+"-complete-v1/manifest.json")
-    assert art["status"] == "MPP2_ART_REGISTERED_OFFLINE_ONLY" and len(art["tiles"]) == 34
-    assert art["script_sha256"] == sha(p/"tools/hd_peligro_art.py")
+    cfg = {
+        "MPP2":{"prefix":"cave-peligro","art_key":"peligro","complete":"cave-peligro-complete-v1","count":34,"record":75,
+                "art_status":"MPP2_ART_REGISTERED_OFFLINE_ONLY","art_tool":"tools/hd_peligro_art.py","generation":"generation.json",
+                "maps":{"MP20","MP21","MP2D"},"prior":"cave-ice-final-audit-v1.json","prior_status":"PASS_ICE_RUNTIME_STRUCTURAL_AND_MPP1_REGRESSION"},
+        "MPP3":{"prefix":"cave-mpp3","art_key":"mpp3","complete":"cave-mpp3-complete-v2","count":43,"record":76,
+                "art_status":"REGISTERED_FAMILY_ART_OFFLINE_ONLY","art_tool":"tools/hd_cave_family_art.py","generation":"generation-v2.json",
+                "maps":{"MP30","MP31","MP3D"},"prior":"cave-peligro-final-audit-v1.json","prior_status":"PASS_MPP2_STRUCTURAL_AND_MPP1_REGRESSION"},
+    }[a.family]
+    prefix,complete = cfg["prefix"],cfg["complete"]
+    art = read(complete+"/manifest.json")
+    assert art["status"] == cfg["art_status"] and len(art["tiles"]) == cfg["count"]
+    assert art["script_sha256"] == sha(p/cfg["art_tool"])
     source = next(r for r in read("cave-terrain-sources-v1/receipt.json")["profiles"] if r["key"] == a.family)
-    assert source["record"] == 75 and source["source_sha256"] == art["source_sha256"] == sha(p/source["source"])
+    assert source["record"] == cfg["record"] and source["source_sha256"] == art["source_sha256"] == sha(p/source["source"])
     for i,row in enumerate(art["tiles"],1):
         assert row["id"] == i and row["native_rgba_sha256"] == source["tile_records"][i-1]["rgba_sha256"]
-        assert sha(b/(prefix+"-complete-v1")/row["registered"]) == row["sha256"]
-    for file,key in (("peligro-tiles-v1.png","atlas_sha256"),("peligro-material-v1.png","material_sha256")):
-        assert sha(b/(prefix+"-complete-v1")/file) == art[key]
+        assert sha(b/complete/row["registered"]) == row["sha256"]
+    for file,key in ((cfg["art_key"]+"-tiles-v1.png","atlas_sha256"),(cfg["art_key"]+"-material-v1.png","material_sha256")):
+        assert sha(b/complete/file) == art[key]
     maps = {r["name"].removesuffix(".MDT"):r for r in read("cave-map-sources-v1/receipt.json")["records"]}
-    assert {r["map"] for r in art["previews"]} == {"MP20","MP21","MP2D"}
+    assert {r["map"] for r in art["previews"]} == cfg["maps"]
     for row in art["previews"]:
         name = row["map"]
         original = maps[name]
@@ -41,14 +49,19 @@ def main():
         columns = np.frombuffer(raw.read_bytes(),dtype="uint8").reshape((original["width"],64))
         cx,cy = row["camera"]
         grid = bytes(int(columns[(cx+x)%original["width"],(cy+y)%64]) for y in range(18) for x in range(28))
-        grid_path = b/(prefix+"-complete-v1")/(name+"-grid.bin")
+        grid_path = b/complete/(name+"-grid.bin")
         assert grid_path.read_bytes() == grid and sha(grid_path) == row["grid_sha256"]
         assert row["native_fallback_cells"] == 0
-        assert sha(b/(prefix+"-complete-v1")/(name+"-offline-hd.png")) == row["hd_sha256"]
-    generation_path = b/(prefix+"-art-v1/generation.json")
+        assert sha(b/complete/(name+"-offline-hd.png")) == row["hd_sha256"]
+        if a.family == "MPP3" and name in ("MP30","MP31"):
+            assert any(grid[i:i+5] == bytes(range(34,39)) for i in range(len(grid)-4) if i%28 <= 23)
+    generation_path = b/(prefix+"-art-v1")/cfg["generation"]
     generation = json.loads(generation_path.read_text())
     assert generation["mode"] == "builtin-imagegen" and sha(generation_path) == art["generation_sha256"]
-    assert {r["key"] for r in generation["outputs"]} == {"material","details","text"}
+    expected = {"material","details","text"} if a.family == "MPP2" else {"material","details_a","details_b","details_c","label"}
+    assert {r["key"] for r in generation["outputs"]} == expected
+    if a.family == "MPP3":
+        assert art["material_ids"] == [3,4,6,7,8,9,10,32,33] and art["text_ids"] == list(range(34,39)) and art["text"] == "BOSQUE"
     for row in generation["outputs"]:
         assert sha(generation_path.parent/row["file"]) == row["sha256"]
         assert row["alpha_extrema"] == ([255,255] if row["key"] == "material" else [0,255])
@@ -63,6 +76,8 @@ def main():
                 "TestCaveIceIndependentStaticMaps","TestCaveIceStructuralOrbs","TestCaveIceAtomicLoadAndRefusal",
                 "TestCaveTerrainIndependentOfflinePixels","TestCaveTerrainAtomicFallback","TestCaveFramesNormalPathsReadOnly",
                 "TestCaveFramesRejectSourceAndTransitions","TestCaveSourcesRejectUnknownOrCorrupt"}
+    if a.family == "MPP3":
+        required |= {"TestCaveMPP3IndependentStaticMaps","TestCaveMPP3AllStructuralFrames","TestCaveMPP3AtomicLoadAndRefusal"}
     assert required <= passed
     for name,count in (("combat",25),("lifecycle-return-v1",10)):
         pair = read(prefix+f"-pair-v1/{name}/receipt.json")
@@ -75,10 +90,14 @@ def main():
     assert gui["helper_sha256"] == sha(p/"tools/integration_smoke.py")
     command = gui["boots"][0]["command"]
     assert command[0] == str(binary)
-    for key,field,folder in (("-cave-ice-art","ice_art_directory","cave-ice-complete-v1"),("-cave-peligro-art","peligro_art_directory",prefix+"-complete-v1")):
+    bindings = [("-cave-ice-art","ice_art_directory","cave-ice-complete-v1"),("-cave-peligro-art","peligro_art_directory","cave-peligro-complete-v1")]
+    if a.family == "MPP3":
+        bindings.append(("-cave-mpp3-art","mpp3_art_directory",complete))
+    for key,field,folder in bindings:
         assert gui[field] == command[command.index(key)+1] == str(b/folder)
     log = (b/(prefix+"-gui-v1/boot1/game.log")).read_text()
     assert "冰窟地形HD未載入" not in log and "MPP2地形HD未載入" not in log
+    assert "MPP3地形HD未載入" not in log
     shots = {r["name"]:r for r in gui["shots"]}
     restored = changed = 0
     for pair in gui["pairs"]:
@@ -99,24 +118,34 @@ def main():
         changed += sum(any(c) for c in ImageChops.difference(ims[0],ims[1]).getdata())
     assert len(gui["pairs"]) == 2 and changed > 1000
     assert shots["returned-town"]["state"]["town_scenery_hd_matched"]
-    prior = read("cave-ice-final-audit-v1.json")
-    assert prior["status"] == "PASS_ICE_RUNTIME_STRUCTURAL_AND_MPP1_REGRESSION"
+    prior = read(cfg["prior"])
+    assert prior["status"] == cfg["prior_status"]
     for row in prior["proofs"]:
         assert sha(p/row["path"]) == row["sha256"]
     files = sorted({r["path"] for r in prior["source_files"]} | {"tools/hd_peligro_art.py","tools/hd_cave_family_audit.py",
                    "internal/prototype/hd/cave_peligro.go","internal/prototype/hd/cave_peligro_test.go"})
-    proofs = ["cave-ice-final-audit-v1.json",prefix+"-complete-v1/manifest.json",prefix+"-art-v1/generation.json",
+    if a.family == "MPP3":
+        files = sorted(set(files)|{cfg["art_tool"],"internal/prototype/hd/cave_mpp3.go","internal/prototype/hd/cave_mpp3_test.go"})
+        replay = read("cave-mpp3-reference-replay-v1/check.json")
+        assert replay["status"] == "PASS_SOURCE_REFERENCE_REPLAY" and len(replay["references"]) == 5
+        assert replay["script_sha256"] == sha(p/cfg["art_tool"])
+        for row in replay["references"]:
+            assert sha(b/"cave-mpp3-source-v1"/row["file"]) == row["sha256"] == sha(b/"cave-mpp3-reference-replay-v1"/row["file"])
+    proofs = [cfg["prior"],complete+"/manifest.json",prefix+"-art-v1/"+cfg["generation"],
               prefix+"-runtime-v1/unit-tests.jsonl",prefix+"-runtime-v1/normal-tests.jsonl",prefix+"-runtime-v1/vet.log",
               prefix+"-runtime-v1/build.log",prefix+"-runtime-v1/build-info.txt",prefix+"-pair-v1/combat/receipt.json",
               prefix+"-pair-v1/lifecycle-return-v1/receipt.json",prefix+"-gui-v1/receipt.json"]
-    report = {"schema":1,"status":"PASS_MPP2_STRUCTURAL_AND_MPP1_REGRESSION","binary_sha256":sha(binary),
-              "source_maps":31,"source_terrain_profiles":11,"registered_family":a.family,"registered_tiles":34,
+    if a.family == "MPP3":
+        proofs.append("cave-mpp3-reference-replay-v1/check.json")
+    report = {"schema":1,"status":"PASS_"+a.family+"_STRUCTURAL_AND_MPP1_REGRESSION","binary_sha256":sha(binary),
+              "audit_tool_sha256":sha(Path(__file__)),
+              "source_maps":31,"source_terrain_profiles":11,"registered_family":a.family,"registered_tiles":cfg["count"],
               "new_structural_map_pixels":870912,"ice_structural_map_pixels":870912,"normal_points":35,
               "gui_pairs":2,"restored_game_pixels":restored,"changed_hd_pixels":changed,
               "source_files":[{"path":f,"sha256":sha(p/f)} for f in files],
               "proofs":[{"path":str((b/f).relative_to(p)),"sha256":sha(b/f)} for f in proofs],
-              "limits":["MPP2及冰窟像素為合成結構快照，未執行VM；不當正常玩家可達證據。",
-                        "正常35點及實際視窗均為MPP1回歸；MPP2／冰窟進出、捲動、事件與切回未驗。",
+              "limits":["新增家族及冰窟像素為合成結構快照，未執行VM；不當正常玩家可達證據。",
+                        "正常35點及實際視窗均為MPP1回歸；新增家族正常進出、捲動、事件與切回未驗。",
                         "其他家族與全遊戲HD未完成，未更新封包或影片。"]}
     a.output.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(report["status"],report["binary_sha256"])

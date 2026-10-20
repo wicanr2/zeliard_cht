@@ -15,6 +15,7 @@ type CaveTerrain struct {
 	material    []color.NRGBA
 	ice         *caveTerrainArt
 	peligro     *caveTerrainArt
+	mpp3        *caveTerrainArt
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -176,7 +177,11 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		return false
 	}
 	r := f.Memory[0x11b10:0x21b10]
-	tiles, material, limit, rockLast, extraArt := s.tiles, s.material, 15, 8, false
+	tiles, material, limit, extraArt := s.tiles, s.material, 15, false
+	var materialIDs [128]bool
+	for id := 3; id <= 8; id++ {
+		materialIDs[id] = true
+	}
 	textFirst, textLast := 0, 0
 	if townBackgroundHash(r[0x8030:0x8030+14*48]) != "69f3a97cfe0356b544b67e462c5c59835a72c66099086e68f2f81b47f6cfa74b" {
 		entry, terrain := caveTerrainIdentity(f.Memory)
@@ -187,16 +192,19 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		var art *caveTerrainArt
 		switch terrain.key {
 		case "MPP4":
-			art, limit, rockLast, textFirst, textLast = s.ice, 22, 12, 15, 19
+			art = s.ice
 		case "MPP2":
-			art, limit, rockLast, textFirst, textLast = s.peligro, 35, 20, 21, 25
+			art = s.peligro
+		case "MPP3":
+			art = s.mpp3
 		default:
 			return false
 		}
-		if art == nil {
+		if art == nil || art.count != terrain.tiles {
 			return false
 		}
 		tiles, material, extraArt = art.tiles, art.material, true
+		limit, materialIDs, textFirst, textLast = art.count+1, art.materialIDs, art.textFirst, art.textLast
 	}
 	if !cavePaintTimeline(f.Paints, f.BodySteps, f.BodyCycles, f.Steps, f.Cycles) {
 		return false
@@ -237,12 +245,12 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	rock := make([]bool, 224*144)
 	for column := 0; column < 28; column++ {
 		for row := 0; row < 18; {
-			if grid[row][column] < 3 || int(grid[row][column]) > rockLast {
+			if !materialIDs[grid[row][column]] {
 				row++
 				continue
 			}
 			first := row
-			for row < 18 && grid[row][column] >= 3 && int(grid[row][column]) <= rockLast {
+			for row < 18 && materialIDs[grid[row][column]] {
 				row++
 			}
 			last := row
@@ -300,7 +308,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		gx, gy := cell.X-48, cell.Y-14
 		for y := 0; y < 24; y++ {
 			for x := 0; x < 24; x++ {
-				if id >= 3 && id <= rockLast {
+				if materialIDs[id] {
 					if !rock[(gy+y/3)*224+gx+x/3] {
 						continue
 					}
@@ -308,7 +316,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 					continue
 				}
 				c := tiles[id][y*24+x]
-				if id >= 3 && id <= rockLast {
+				if materialIDs[id] {
 					ring := cell.Address - 0xe000
 					tx, ty := ring%36*24+x, ring/36*24+y
 					tx = min(tx, 863-tx)

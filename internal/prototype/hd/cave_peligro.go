@@ -11,6 +11,10 @@ func (s *CaveTerrain) LoadPeligro(dir string) error {
 	if err != nil {
 		return err
 	}
+	for id := 3; id <= 20; id++ {
+		art.materialIDs[id] = true
+	}
+	art.textFirst, art.textLast = 21, 25
 	s.peligro = art
 	return nil
 }
