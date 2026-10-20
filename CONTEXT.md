@@ -2,23 +2,26 @@
 
 更新日期：2026-10-20，Asia/Taipei。
 
-本次使用者限定的完成清單已完成，交付為Linux amd64本機第一洞窟試玩版`v.0.1.0-20261020`。不要求完整通關，也不以後段翻譯、美術或逐筆場景驗證延伸本次工作。
-
-主入口`workplace/bin/zeliard-preview`與本機包相同，SHA-256 `70e25fb1201d696a6d9cf527a7bde701da4d079fecfb2c5434ba80960696b0b8`。固定122份來源，音效沿030穩定來源；工作樹保留的031實驗未帶入。舊4996622f已備份至`workplace/input-integration-v1/prior-main-zeliard-preview`。沒有建立公開Release或Git tag。
+音色改善、三平台完整資料包與60秒推廣影片已完成，版本為 `v.0.2.0-20261020`。內容沿使用者指定的第一洞窟抽樣完成範圍，不把完整封包稱為全遊戲中文與美術完成。現行入口是 `bash tools/play.sh` 與同版AppImage；`workplace/bin/zeliard-preview`留作前版研究入口。
 
 ## 目前狀態表
 
 | 項目 | 現況 | 證據與限制 |
 |---|---|---|
-| 第一洞窟 | 正常冷F7、進入Malicia、移動、攻擊、跳躍及裝備開關通過 | 同一實際試玩包GUI v2正常DOS退出0；不要求完整通關 |
-| 中文 | 抽樣教堂對話、HUD、裝備選單與工具列中文正常 | 九張實際視窗抽測；其他未走過翻譯不外推已驗 |
-| HD | 城鎮、教堂及第一洞窟地形／主角等已整合，原貌切換正常 | GUI v2核相應呈現旗標並目視；入口專用圖補檔後沿既有020，不換名成v2新增驗收 |
-| 鍵盤 | 工具列重綁、解除、還原預設、保存重開與輸入隔離通過 | 實際將攻擊改為Z並操作原版，重開保留；F12或滑鼠開設定 |
-| 手把 | 工具列裝置選擇、按鈕／軸、死區、保存、斷線釋放及原版輸入串接具備 | controls測試與中文設定頁通過；沒有接入實體USB／藍牙，不宣稱已實機驗收 |
-| 啟動 | `bash tools/play.sh` | 本機包的start_game.py已在Docker／Xvfb啟動並退出0 |
-| 交付 | `dist-all/v.0.1.0-20261020/full-local/` | 111檔manifest、Linux amd64 ELF、版本及原版29檔已核；存檔／設定在userdata |
-| GitHub | 私人[wicanr2/zeliard_cht](https://github.com/wicanr2/zeliard_cht) | 自有程式與文件可推送；原版、字型、HD圖面與完整收據均不入Git |
-| 本次完成邊界 | 依2026-10-20使用者指定清單收尾 | 後段場景、完整翻譯／美術、音訊品質、其他平台及實體裝置保留限制，不另開完成閘門 |
+| 音色 | 原版MSCADLIB配樂＋Nuked-OPL3，44100Hz，原曲不重作 | 原版／新音源探針的畫面、色盤、步數、cycles及檔案操作相同；不是全遊戲逐波形對拍 |
+| 節奏 | 使用者已選定實際時間推進，最多追趕100ms，暫停、設定與失焦不追趕 | Clock測試及新版正常視窗通過；兩個4096音框片段在實際監聽中相符，0.5秒起點跨度比1.0；不宣稱全輸出零丟樣或硬即時 |
+| 原版與來源 | 原版29檔不變；固定136份程式／文字／音源來源 | 執行器隔離副本只增加通用FMSynth介面，其餘檔案與原始快照相同；共用dosgolem未改 |
+| 第一洞窟 | 中文、HD、移動、攻擊、跳躍、裝備與鍵盤重開恢復通過 | gui-v4九張實際視窗，正常DOS退出0；同一二進位SHA-256 `d86dd040ec0fc1a3622e832defa11d634c2af14a9a438a7b19a69de5e882f0d9` |
+| 手把 | 工具列選擇、按鈕／軸、保存及斷線釋放軟體串接沿已驗來源 | 實體USB／藍牙未接機測試 |
+| Linux | x86_64 AppImage完成，解出封包的AppRun已實際啟動 | 原生資料定位、所有指定資產及獨立使用者存檔通過 |
+| Windows | x86_64完整資料ZIP完成，Wine輔助啟動通過 | 未驗Windows真機與實體音訊裝置 |
+| macOS | Intel／Apple Silicon通用.app ZIP完成 | 雙架構、Info.plist、動態音源及執行權限已驗；arm64有程式簽章，未驗macOS真機 |
+| 推廣影片 | 60秒，1280×720，H.264＋雙聲道AAC | 真實遊戲錄影與原版開場配樂，平均-18.6dB、峰值-4.5dB；長靜音／黑幀無，凍結依分鏡區分刻意靜態卡，抽樣目視通過 |
+| 交付與權利 | `dist-all/v.0.2.0-20261020/full-local/`及`promo/` | 三包與影片SHA在同版manifest；含原版素材，只留本機，不入Git或Release |
+
+最新稽核為 `dist-all/v.0.2.0-20261020/smoke/release-audit.json`，正常玩家收據與圖片在 `smoke/first-cave/`，音訊在 `smoke/audio-quality.json`，影片品質與來源在 `promo/quality.json`、`promo/provenance.json`及`promo/music-provenance.json`。Git／PRIVATE／Docker收尾見 `smoke/repository-sync.json`。
+
+研究與可重現入口為 `workplace/music-release-v1/`：`release-build/identity.json`固定程式身份，`gui-v4/`及`recording-v4/`保存新版實際鍵序、視窗與監聽；`title-music/`及`capture-music-used.go`保存不中斷曲段及實際來源。`finalize_documents.py`依同一稽核回填文件。第一次固定更新候選在 `pre-clock-delivery/`及`release-build-fixed-clock/`；失敗錄影環境與首版影片保持原身份，不改稱成功。
 
 ## 原始輸入
 
@@ -35,12 +38,12 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 - 已確認：以dosgolem直接執行原版，參考psychic-war覆繪、softworld_san工具列，採B手繪奇幻與私人GitHub。
 - 最新完成標準：第一洞窟可玩，抽樣對話中文與HD正常，工具列有中文鍵盤／手把設定並接至原版輸入。以代表性抽測收尾，不要求通關、逐筆掃完文字或完成後段美術。
-- 既有字級、3倍畫布與catalog沿本次試玩介面。進一步正式設計、跨平台、音訊032、實體手把及後段內容都屬後續可選工作；本次不代為決定。
+- 既有字級、3倍畫布與catalog沿已驗介面。使用者本輪已確認音訊實際時間推進與100ms上限，並要求三平台封包及影片。實體裝置、其他場景與完整翻譯維持已列限制。
 - 原版規則、存檔及資料保持原貌。未抽驗範圍與實體裝置限制如實保存。
 
 ## 下一步
 
-本次限定交付已完成，使用`bash tools/play.sh`遊玩。除非使用者提出新需求，不繼續地下城通關、旅店入口、逐筆場景／文字或音訊實驗。下列既有片段與研究入口只保留追溯。
+本輪音色、三平台完整資料包與推廣影片已交付，使用`bash tools/play.sh`或同版原生封包。除非使用者另提需求，不延伸到通關、逐筆文字／場景或硬體時序。下列保留各輪原始證據身份，不作現行完成門檻。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 

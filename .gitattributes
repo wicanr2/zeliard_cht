@@ -1,2 +1,2 @@
-# 製作名單保留原版空白列；兩欄TSV的空欄以行末Tab結束。
-text/intro-credits-prototype.tsv whitespace=-blank-at-eol
+# 差異檔的context行必須保留前置空白與原始Tab。
+tools/dosgolem-fm.patch -whitespace

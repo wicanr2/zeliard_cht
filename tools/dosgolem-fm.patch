@@ -1,0 +1,23 @@
+--- a/oracle/live.go
++++ b/oracle/live.go
+@@ -117,7 +117,7 @@
+ 	o        *Oracle
+ 	rate     int
+ 	tone     *machine.ToneDecoder
+-	synth    *opl2.Synth
++	synth    FMSynth
+ 	phase    float64
+ 	lastCyc  uint64
+ 	lastStep uint64
+@@ -132,6 +132,11 @@
+ 	return &Audio{o: o, rate: rate, tone: machine.NewToneDecoder(), synth: opl2.New(rate),
+ 		lastCyc: o.m.CPU.Cycles, lastStep: o.m.Steps}
+ }
++
++// FMSynth 是作品中立的輸出音源，不持有或改寫機器。
++type FMSynth interface { Write(uint8, uint8); Sample() float64 }
++// SetFMSynth 只更換輸出合成器，須在首次 Render 前呼叫。
++func (a *Audio) SetFMSynth(s FMSynth) { a.synth = s }
+ 
+ // Rate 回取樣率。
+ func (a *Audio) Rate() int { return a.rate }

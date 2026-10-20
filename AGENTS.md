@@ -109,6 +109,30 @@
 
 ## 文件索引與權責
 
+本次音色與三平台交付研究入口為 `workplace/music-release-v1/`，見 CONTEXT。`internal/prototype/fm/` 載入作品中立的音源動態函式庫；`third_party/nuked-opl3/` 保存固定來源、LGPL 條款與重建所需橋接程式，不適用本專案的 RRSAL。
+
+`cmd/zeliard-preview/bundle.go` 負責原生封包的資料定位與獨立使用者存檔，未指定 `-orig` 才套用。封包提供原版音源核心可替換機制，不限制替換 LGPL 函式庫所需的除錯與逆向。
+
+音訊與封包契約見 [規格033](docs/spec/033-original-music-release.md)。固定來源與素材入口為 [tools/prepare_release.py](tools/prepare_release.py)，建置入口為 [tools/build-release.sh](tools/build-release.sh)，通用執行器差異為 [tools/dosgolem-fm.patch](tools/dosgolem-fm.patch)。
+
+[tools/package_release.py](tools/package_release.py) 組裝原生封包與跨平台獨立存檔入口。Linux使用AppImage，Windows與macOS為ZIP；完整素材與影片維持本機使用。
+
+[tools/release_smoke.py](tools/release_smoke.py) 沿既有第一洞窟正常鍵序抽測，並以X11與PulseAudio錄下實際視窗／音訊；完整錄製只留本機。
+
+[tools/platform_smoke.py](tools/platform_smoke.py) 檢查實際AppImage與Windows ZIP的原生資產定位、獨立存檔及工具列啟動。Wine為輔助基準，macOS交叉建置不當作真機驗收。
+
+[tools/make_promo.py](tools/make_promo.py) 以實際錄影、中文介面截圖及原版AdLib事件音樂合成60秒推廣影片，保存分鏡、字幕邊界與素材身份。
+
+[tools/verify_promo.py](tools/verify_promo.py) 檢查影片串流、音量、靜音、黑幀、凍結與抽樣圖；[tools/audit_release.py](tools/audit_release.py) 核對三平台架構、封包、原版不變與SHA-256總表。
+
+[tools/verify_audio.py](tools/verify_audio.py) 比較實際原版生成取樣與PulseAudio監聽的短段及節奏；不以片段相符聲稱全音訊逐取樣一致。
+
+[tools/capture_music.go](tools/capture_music.go) 以固定原版資料及音源核心錄取未跳過的原版曲段，供本機推廣片使用。
+
+2026-10-20 本輪新增原版配樂音色、三平台本機完整資料包與推廣片；使用者已確認實際時間推進及100毫秒追趕上限。實作在 [internal/prototype/sound/clock.go](internal/prototype/sound/clock.go)，契約在 [規格032](docs/spec/032-presentation-clock.md)。原生封包供使用者直接執行；Codex驗收仍須在Docker內進行。
+
+[.gitattributes](.gitattributes) 只為通用音源差異檔保留unified diff所需的context空白與Tab；Go原始碼仍以gofmt檢查。
+
 本機第一洞窟試玩版由 [VERSION](VERSION) 指定版號，以 [tools/build-local.sh](tools/build-local.sh) 呼叫 Docker 內的 [tools/prepare_local.py](tools/prepare_local.py) 建置至dist-all。啟動用 [tools/play.sh](tools/play.sh)，容器包裝見 [tools/run-local.sh](tools/run-local.sh) 與 [tools/start_game.py](tools/start_game.py)。原版、字型與本機圖面只在full-local，未加入Git或Release。
 
 代表性視窗抽測為 [tools/integration_smoke.py](tools/integration_smoke.py)，只在有界Docker／Xvfb內對實際本機包執行，收據存於同版dist-all的smoke。檢查設定重綁、解除、還原、冷重開，以及中文／HD和第一洞窟基本操作；不擴張到完整通關。

@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -22,8 +23,10 @@ import (
 	"github.com/wicanr2/dosgolem/xlate"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/controls"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/fm"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/hd"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/overlay"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/sound"
 )
 
 const width, height, scale, barHeight = 960, 680, 3, 48
@@ -35,6 +38,8 @@ type device struct {
 	key, name string
 }
 type game struct {
+	realtime             bool
+	clock                sound.Clock
 	o                    *oracle.Oracle
 	audio                *oracle.Audio
 	output               *audioOutput
@@ -247,6 +252,11 @@ func (g *game) captureBinding(buttons []bool, axes []float64) {
 }
 
 func (g *game) Update() error {
+	defer func() {
+		if g.realtime && (g.captured || g.panel || g.paused || g.releaseGate || !ebiten.IsFocused()) {
+			g.clock.Reset()
+		}
+	}()
 	defer g.audioLifecycle()
 	if g.captured {
 		g.captureTail++
@@ -409,6 +419,12 @@ func (g *game) Update() error {
 	g.edges.Sync(g, desired)
 	beforeSteps, beforeCycles := g.o.Steps(), g.o.Cycles()
 	budget := g.cycles * 1000 / 60
+	if g.realtime {
+		budget = g.clock.Budget(time.Now(), g.o.Cycles(), g.cycles)
+		if budget == 0 {
+			return nil
+		}
+	}
 	if err := g.o.RunCycles(budget); err != nil {
 		g.traceRun(beforeSteps, beforeCycles, budget, false, err)
 		var exited *oracle.ExitError
@@ -919,6 +935,9 @@ func savePNG(path string, img image.Image) error {
 func (g *game) Layout(int, int) (int, int) { return width, height }
 
 func main() {
+	if err := bundleArguments(); err != nil {
+		log.Fatal(err)
+	}
 	showVersion := flag.Bool("version", false, "顯示版本")
 	orig := flag.String("orig", "", "合法原版資料目錄，須含 ZELIARD.EXE")
 	fontPath := flag.String("font", "", "使用者提供的 Unifont HEX.gz")
@@ -931,6 +950,9 @@ func main() {
 	inputTrace := flag.String("input-trace", "", "可選：本地原版輸入／週期日誌，不覆寫既有檔案")
 	audioMode := flag.String("audio", "off", "原版音效試作：off 或 ebiten；正式預設待確認")
 	audioWAV := flag.String("audio-wav", "", "可選：將原版生成取樣另存新WAV；不是裝置監聽錄音")
+	adlib := flag.Bool("adlib", false, "使用原版 AdLib 配樂驅動；設定只寫入隔離使用者目錄")
+	fmLibrary := flag.String("fm-library", "", "可替換的 Nuked-OPL3 動態函式庫")
+	realtime := flag.Bool("realtime", false, "依實際時間推進，最多追趕100毫秒；暫停與失焦不追趕")
 	frames := flag.Int("capture-frames", 120, "GUI 測試擷取前更新次數")
 	panel := flag.Bool("show-controller", false, "GUI 測試啟動時展開手把頁")
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
@@ -1055,9 +1077,29 @@ func main() {
 	}
 	defer o.Close()
 	o.SetScratch(filepath.Join(userRoot, "game"))
+	if *adlib {
+		config, e := os.ReadFile(filepath.Join(root, "RESOURCE.CFG"))
+		if e != nil {
+			log.Fatal(e)
+		}
+		config = []byte(strings.ReplaceAll(string(config), "MSCSTD.DRV", "MSCADLIB.DRV"))
+		if e = os.WriteFile(filepath.Join(userRoot, "game/RESOURCE.CFG"), config, 0600); e != nil {
+			log.Fatal(e)
+		}
+		o.SetAdLib(true)
+	}
 	o.SetDOSBoxCycles(*cycles)
 	g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, cycles: *cycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), texture: ebiten.NewImage(width, height)}
+	if *fmLibrary != "" {
+		synth, e := fm.Open(*fmLibrary, 44100)
+		if e != nil {
+			log.Fatal(e)
+		}
+		defer synth.Close()
+		g.audio.SetFMSynth(synth)
+	}
 	g.observePath = *observePath
+	g.realtime = *realtime
 	if *inputTrace != "" {
 		trace, err := os.OpenFile(*inputTrace, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
 		if err != nil {
