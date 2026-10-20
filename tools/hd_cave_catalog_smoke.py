@@ -16,6 +16,7 @@ peligro_art = os.environ.get("ZELIARD_CAVE_PELIGRO_ART", "")
 mpp3_art = os.environ.get("ZELIARD_CAVE_MPP3_ART", "")
 mpp5_art = os.environ.get("ZELIARD_CAVE_MPP5_ART", "")
 mpp6_art = os.environ.get("ZELIARD_CAVE_MPP6_ART", "")
+mpp7_art = os.environ.get("ZELIARD_CAVE_MPP7_ART", "")
 assert candidate.is_file()
 original_start = start
 
@@ -37,6 +38,8 @@ def start():
                 command.extend(["-cave-mpp5-art", mpp5_art])
             if mpp6_art:
                 command.extend(["-cave-mpp6-art", mpp6_art])
+            if mpp7_art:
+                command.extend(["-cave-mpp7-art", mpp7_art])
         return original_popen(command, *args, **kwargs)
     subprocess.Popen = launch
     try:
@@ -183,6 +186,7 @@ try:
               "mpp3_art_directory": mpp3_art,
               "mpp5_art_directory": mpp5_art,
               "mpp6_art_directory": mpp6_art,
+              "mpp7_art_directory": mpp7_art,
               "exit_target_primary_sum": exit_target,
               "script_sha256": h(Path(__file__)), "helper_sha256": h(helper),
               "boots": boots, "shots": shots, "pairs": pairs, "normal_DOS_exit": 0,

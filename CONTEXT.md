@@ -6,13 +6,15 @@
 
 全量台帳為 [hd-coverage.json](docs/hd-coverage.json)：174筆名稱候選、84筆解壓結果與原版常式逐byte一致；分類候選含80圖像、41地圖、17音樂、36程式及20未知，不把它們當成美術分母。三平面變換已對80筆補零研究buffer通過原常式核對，四資源MMAN／TMAN／CPAT／MPAT共597個圖格、28656像素bytes及2256有效遮罩bytes與正常原版RAM一致。證據在 `workplace/full-hd-v1/planar-oracle-v2/receipt.json` 及 `grp-sources-v3/receipt.json`。CMAN／DPAT仍只有結構候選，其他GRP形狀未解，不重開已驗RLE或前版音樂。
 
-後續洞窟入口為 [規格037](docs/spec/037-all-cave-terrain-hd.md)，來源辨識、冰窟及MPP2、MPP3、MPP5、MPP6的圖集接入契約已READY並實作。五個新增家族的正常玩家路徑與其餘家族仍未完成。11組MPP地形共378格已解出原圖，MPP1全部25格與正常RAM相同；31份洞窟地圖共306048格與原版6CED..6D6D常式逐byte相同，圖集選擇端7E9B／7ECD及11項descriptor已核。正常6CEC完成來源的36×64環形地圖2304格相同，包內四份USR的正常冷讀調查皆仍為MPP1；其餘家族可達性未驗，不能計HD完成。
+後續洞窟入口為 [規格037](docs/spec/037-all-cave-terrain-hd.md)，來源辨識、冰窟及MPP2、MPP3、MPP5、MPP6、MPP7的圖集接入契約已READY並實作。六個新增家族的正常玩家路徑與其餘家族仍未完成。11組MPP地形共378格已解出原圖，MPP1全部25格與正常RAM相同；31份洞窟地圖共306048格與原版6CED..6D6D常式逐byte相同，圖集選擇端7E9B／7ECD及11項descriptor已核。正常6CEC完成來源的36×64環形地圖2304格相同，包內四份USR的正常冷讀調查皆仍為MPP1；其餘家族可達性未驗，不能計HD完成。
 
 洞窟來源研究仍沿 `workplace/full-hd-v1/cave-source-stage-audit-v1.json`，原圖、完整地圖、隔離原版常式、正常來源與IDA9.4證據分別在同根`cave-terrain-sources-v1/`、`cave-map-sources-v1/`、`cave-map-oracle-v1/`、`cave-save-survey-v1/`／`cave-save-survey-v2/`及`cave-map-ida-v2/`。此為前輪來源身份，不改稱新程式的驗收。
 
-目前程式為 `workplace/full-hd-v1/cave-mpp6-runtime-v1/zeliard-preview`，SHA-256 `52c0716372c7b527efb0b062ce7db2fabb0d515aa1b0409a120fe894b290226d`。31地圖／11圖集來源與完整32256原生像素、時間及跨地圖守衛保留。新增MPP6的36格、金黃／紫岩雙材質及非連號字帶ID；既有家族呈現行為不改。收尾入口`cave-mpp6-final-audit-v1.json`由[家族稽核](tools/hd_cave_family_audit.py)以`--family MPP6`重生至新檔。MPP6四圖1161216結構像素、全36格及缺第二材質原子拒絕通過；相同呈現器的MPP2、MPP3、MPP5、冰窟各三圖870912像素及Malicia舊圖通過。結構快照不執行VM，不當新增家族正常可達證據。
+目前程式為 `workplace/full-hd-v1/cave-mpp7-runtime-v1/zeliard-preview`，SHA-256 `1df207def6a9fa90add5f808887114b2fe683fbd7a20d8e4a9da89d911d2c750`。31地圖／11圖集來源與完整32256原生像素、時間及跨地圖守衛保留。新增MPP7的61槽，含58個可見圖格、三個已核全零槽、雙材質與非連號LLAMA字帶；既有家族呈現行為不改。收尾入口`cave-mpp7-final-audit-v1.json`由[家族稽核](tools/hd_cave_family_audit.py)以`--family MPP7`重生至新檔。MPP7四圖1161216結構像素、全61槽及原子拒絕通過；相同呈現器的MPP6四圖1161216、MPP2／MPP3／MPP5／冰窟各三圖870912像素及Malicia舊圖通過。結構快照不執行VM，不當新增家族正常可達證據。
 
-新程式同時載入五個新增家族後，正常MPP1首戰25點及回城10點完整原版狀態、USR與mtime相同；17項圖面及三項正常／來源測試無skip／fail，vet及建置通過。實際視窗`cave-mpp6-gui-v2/`正常冷F7、入洞、步行、兩組切回1152000遊戲區像素相同、回城及DOS退出0，根端已目視。來源仍MP10／MPP1，音訊關閉。GUI v1的門框邊緣Up未轉場保留原身份；v2只以方向鍵走回入洞時記錄的原版觀察值再Up，不寫原版狀態。前輪7d623290、148bdd99、bc925caa、4948bc70及e9f89d52等收據不換名為新程式；現行封包未更新。
+新程式同時載入六個新增家族後，正常MPP1首戰25點及回城10點完整原版狀態、USR與mtime相同；20項圖面及三項正常／來源測試無skip／fail，vet及建置通過。實際視窗`cave-mpp7-gui-v1/`正常冷F7、入洞、步行、兩組切回1152000遊戲區像素相同、回城及DOS退出0，根端已目視。來源仍MP10／MPP1，音訊關閉。沿前輪已驗控制器，以正常方向鍵走回入洞時記錄的原版觀察值，不寫原版狀態。前輪52c07163、7d623290、148bdd99等收據不換名為新程式；現行封包未更新。
+
+MPP7來源為SAR3記錄80，註冊在`cave-mpp7-complete-v1/manifest.json`：1464×24圖帶、兩張432×768材質、33細部、五格LLAMA字帶與三個空白槽。40、41、42的RGB及轉換資源48bytes各全零，見`cave-mpp7-source-v1/blank-slots.json`；不是缺圖回退。51..61各保留不同RGBA圖樣，事件用途未知。六張內建imagegen原圖及完整提示詞／輸入／輸出SHA在`cave-mpp7-art-v1/generation.json`，六份參考重生在`cave-mpp7-reference-replay-v1/check.json`。以`-cave-mpp7-art`選註冊目錄並搭配`-cave-art-dir`；測試／建置命令在`cave-mpp7-runtime-v1/run.sh`及`docker-command.txt`。正常MPP7進出、捲動與事件未驗，不升CONFORMED。
 
 MPP6來源為SAR3記錄79，圖面在`cave-mpp6-complete-v2/manifest.json`：864×24的36格圖帶、兩張432×768材質、五格DORADO字帶及21個其他細部。兩種材質各五個ID；字帶順序26、27、28、23、6，不能用連號範圍代替。五張選定內建imagegen原圖及七次完整請求在`cave-mpp6-art-v1/generation.json`；初版與畫風修正保留。以`-cave-mpp6-art`選該目錄，搭配`-cave-art-dir`。來源及核讀勘誤見`cave-mpp6-source-v1/`，五份參考重生在`cave-mpp6-reference-replay-v2/check.json`，測試／建置命令在`cave-mpp6-runtime-v1/run.sh`。30、31、34、35、36未出現在四份靜態地圖，事件用途未知；正常MPP6進出、捲動與事件未驗，不升CONFORMED。
 
@@ -78,7 +80,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-下一步續補MPP7等尚未接入家族的美術，並尋找正常MPP2／MPP3／MPP5／MPP6／冰窟入口驗證進出、捲動與原貌切回。尾端圖樣的事件來源仍待核，不重掃已查過且皆為MPP1的四份原包USR。圖形介面、其他城鎮、敵人／首領及20筆未知依034續補，不重畫已完成的五組圖集或重開RLE。現有`v.0.2.0-20261020`封包保持既有身份，完成後另版重建，不覆寫。下列保留各輪原始證據身份，不把舊完成項重新開啟。
+下一步續補MPP8等尚未接入家族的美術，並尋找正常MPP2／MPP3／MPP5／MPP6／MPP7／冰窟入口驗證進出、捲動與原貌切回。尾端圖樣的事件來源仍待核，不重掃已查過且皆為MPP1的四份原包USR。圖形介面、其他城鎮、敵人／首領及20筆未知依034續補，不重畫已完成的六組圖集或重開RLE。現有`v.0.2.0-20261020`封包保持既有身份，完成後另版重建，不覆寫。下列保留各輪原始證據身份，不把舊完成項重新開啟。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 

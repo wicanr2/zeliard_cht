@@ -26,6 +26,14 @@ PROFILES = {
              "material_fit":"repeat","preview_marker":26,
              "maps":["MP60","MP61","MP62","MP6D"],"text_ids":[26,27,28,23,6],
              "text":"DORADO","generation":"generation.json"},
+    "MPP7": {"count":61,"material_ids":[4,5,6,7,*range(19,30)],"secondary_material_ids":list(range(12,17)),
+             "blank_ids":[40,41,42],
+             "sheets":{"a":[1,2,3,8,9,10,11,17,18,30,31,32],
+                       "b":[33,34,35,43,44,45,47,48,49,50],"c":list(range(51,62))},
+             "material_reference":"material-reference.png","text_reference":"label-original.png",
+             "material_fit":"repeat","preview_marker":36,
+             "maps":["MP70","MP71","MP72","MP7D"],"text_ids":[36,37,38,39,46],
+             "text":"LLAMA","generation":"generation.json"},
 }
 
 
@@ -44,8 +52,10 @@ def source(project,key):
         im = Image.open(path).convert("RGBA")
         assert hashlib.sha256(im.tobytes()).hexdigest() == row["rgba_sha256"]
         natives[row["id"]] = im
-    ids = cfg["material_ids"]+cfg.get("secondary_material_ids",[])+[i for group in cfg["sheets"].values() for i in group if i not in cfg["text_ids"]]+cfg["text_ids"]
+    ids = cfg["material_ids"]+cfg.get("secondary_material_ids",[])+cfg.get("blank_ids",[])+[i for group in cfg["sheets"].values() for i in group if i not in cfg["text_ids"]]+cfg["text_ids"]
     assert sorted(ids) == list(range(1,cfg["count"]+1))
+    for i in cfg.get("blank_ids",[]):
+        assert not np.any(np.asarray(natives[i])[:,:,:3]),"空白槽必須核實原圖全零"
     return base,profile,natives,cfg
 
 
@@ -197,6 +207,9 @@ def register(project,key,out):
         rows[i] = {"id":i,"kind":"continuous_material","contact_sample":[x,y]}
         if cfg.get("secondary_material_ids"):
             rows[i]["material_group"] = 2 if i in cfg["secondary_material_ids"] else 1
+    for i in cfg.get("blank_ids",[]):
+        tiles[i] = Image.new("RGBA",(24,24))
+        rows[i] = {"id":i,"kind":"source_empty","source_nonzero_pixels":0}
     assert sorted(tiles) == list(range(1,cfg["count"]+1))
     atlas = Image.new("RGBA",(cfg["count"]*24,24))
     contact = Image.new("RGB",(1024,((cfg["count"]+7)//8)*128),"#1d2733")
@@ -245,6 +258,8 @@ def register(project,key,out):
     if cfg.get("secondary_material_ids"):
         report["secondary_material_ids"] = cfg["secondary_material_ids"]
         report["secondary_material_sha256"] = sha(out/(key.lower()+"-secondary-material-v1.png"))
+    if cfg.get("blank_ids"):
+        report["blank_ids"] = cfg["blank_ids"]
     (out/"manifest.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(report["status"],key,report["atlas_sha256"],report["material_sha256"])
 
