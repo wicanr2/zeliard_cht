@@ -48,6 +48,11 @@ def main():
     assert planar_report["status"] == "PASS_EXTRACTED_ORIGINAL_PLANAR" and len(planar_report["records"]) == 80
     assert all(x["matched"] and x["exit_code"] == 0 for x in planar_report["records"])
     assert grp_report["status"] == "PASS_FOUR_NORMAL_RESOURCE_BINDINGS"
+    castle = p/"workplace/full-hd-v1/castle-final-audit-v2.json"
+    castle_report = json.loads(castle.read_text())
+    assert castle_report["status"] == "PASS_CASTLE_HD_SCOPED"
+    for source in castle_report["source_files"]:
+        assert sha((p/source["path"]).read_bytes()) == source["sha256"]
     grp_sources = {("ZELRES2.SAR", x["record"]): x for x in grp_report["records"]}
     catalog = []
     for archive, data in originals.items():
@@ -77,6 +82,9 @@ def main():
                 if key == ("ZELRES2.SAR", 29):
                     item["hd_coverage"] = "partial_scoped_candidate_verified"
                     item["normal_path"] = "Muralla居民；規格035，交談背景仍退回原貌"
+                if key == ("ZELRES2.SAR", 33):
+                    item["hd_coverage"] = "partial_scoped_candidate_verified"
+                    item["normal_path"] = "城堡前景與四旗幟；規格036，正常Castle／Muralla往返，未更新封包"
             catalog.append(item)
     report = {"schema": 1, "objective": "完成全遊戲HD", "status": "in_progress",
               "scope_spec": "docs/spec/034-full-game-hd.md",
@@ -91,11 +99,11 @@ def main():
                                       "evidence": "workplace/full-hd-v1/town-npc-final-audit-v1.json",
                                       "source_record": "zelres2.record.29",
                                       "limits": "只驗Muralla固定來源；其他城鎮及交談背景仍有缺口"},
-                                     {"key": "castle.foreground", "status": "generated_candidate_not_connected",
+                                     {"key": "castle.foreground", "status": "scoped_candidate_verified",
                                       "spec": "docs/spec/036-castle-hd.md", "source_record": "zelres2.record.33",
-                                      "evidence": "workplace/full-hd-v1/castle-source-v3/receipt.json",
-                                      "limits": "912×64原生全景、14336正常畫帶像素與四段手繪候選；尚未校準／接入"}],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp)],
+                                      "evidence": str(castle.relative_to(p)),
+                                      "limits": "只驗城堡前景、四旗幟與Muralla往返；phase4、交談背景及其他場景仍有缺口，未更新封包"}],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle)],
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(report["counts"], ensure_ascii=False))

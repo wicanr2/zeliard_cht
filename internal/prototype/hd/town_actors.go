@@ -142,7 +142,7 @@ func (s *TownActors) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palett
 	if err != nil || dst == nil || !row.In(dst.Bounds()) || s.player.art[v.bit*5+v.phase] == nil {
 		return false
 	}
-	actors, err := townSceneSources(p, r, e)
+	actors, err := v.f.scene.ownSources(p, r, e)
 	if err != nil {
 		return false
 	}
@@ -176,7 +176,9 @@ func (s *TownActors) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palett
 		keys = append(keys, fmt.Sprintf("g%d-p%d", actor.group, phase))
 		cover(x)
 	}
-	cover(v.x)
+	if v.visible {
+		cover(v.x)
+	}
 	// 所有守衛完成才建立補丁。補丁內先還原靜態層，再按原版順序畫人物。
 	patch := image.NewRGBA(row)
 	draw.Draw(patch, row, dst, row.Min, draw.Src)
@@ -192,7 +194,7 @@ func (s *TownActors) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palett
 			at := int(v.f.base[i]) * 3
 			base := color.RGBA{palette[at], palette[at+1], palette[at+2], 255}
 			worldX := (v.f.camera+4)*24 + x
-			c := townPlayerOver(s.player.scene.art.RGBAAt(worldX, 120+y), base)
+			c := townPlayerOver(v.f.scene.art.RGBAAt(worldX, 120+y), base)
 			patch.SetRGBA(row.Min.X+x, row.Min.Y+y, c)
 		}
 	}
@@ -200,9 +202,11 @@ func (s *TownActors) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palett
 		box := image.Rect(row.Min.X+sprite.x*3, row.Min.Y, row.Min.X+sprite.x*3+48, row.Max.Y)
 		draw.Draw(patch, box, sprite.art, image.Point{}, draw.Over)
 	}
-	box := image.Rect(row.Min.X+v.x*3, row.Min.Y, row.Min.X+v.x*3+48, row.Max.Y)
-	draw.Draw(patch, box, s.player.art[v.bit*5+v.phase], image.Point{}, draw.Over)
+	if v.visible {
+		box := image.Rect(row.Min.X+v.x*3, row.Min.Y, row.Min.X+v.x*3+48, row.Max.Y)
+		draw.Draw(patch, box, s.player.art[v.bit*5+v.phase], image.Point{}, draw.Over)
+	}
 	draw.Draw(dst, row, patch, row.Min, draw.Src)
-	s.state = map[string]any{"loaded": true, "matched": true, "residents": len(sprites), "keys": keys}
+	s.state = map[string]any{"loaded": true, "matched": true, "residents": len(sprites), "keys": keys, "player_visible": v.visible}
 	return true
 }

@@ -15,20 +15,36 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--project", type=Path, required=True)
     ap.add_argument("--output", type=Path, required=True)
+    ap.add_argument("--normal-study", type=Path, help="已驗正常鍵序探針目錄；搭配checkpoint讀最近完成畫格")
+    ap.add_argument("--checkpoint", help="正常探針收據的具名檢查點")
     args = ap.parse_args()
     p, out = args.project, args.output
     if not out.is_dir() or any(out.iterdir()):
         ap.error("輸出必須是既有空目錄")
     sha = lambda b: hashlib.sha256(b).hexdigest()
+    if bool(args.normal_study) != bool(args.checkpoint):
+        ap.error("normal-study與checkpoint必須同時提供")
     path = p/CASTLE
+    memory_hash = MEMORY_HASHES[CASTLE]
+    palette_path = p/"workplace/town-hd-v1/foreground-v1/normal-v1/cold-town.palette"
+    source_receipt = None
+    if args.normal_study:
+        source_receipt = json.loads((args.normal_study/"receipt.json").read_text())
+        assert source_receipt["status"] == "PASS_NORMAL_CASTLE_OBSERVATION" and source_receipt["observer_state_equal"]
+        matches = [x for x in source_receipt["checkpoints"] if x["name"] == args.checkpoint]
+        assert len(matches) == 1 and matches[0]["castle"] and matches[0]["state_equal"]
+        assert matches[0]["source_steps"] <= matches[0]["steps"]
+        path = args.normal_study/(args.checkpoint+"-source.memory")
+        palette_path = args.normal_study/(args.checkpoint+"-source.palette")
+        memory_hash = matches[0]["source_memory_sha256"]
     memory = path.read_bytes()
-    assert sha(memory) == MEMORY_HASHES[CASTLE]
+    assert sha(memory) == memory_hash
     primary, resources = memory[0x1b10:0x11b10], memory[0x11b10:0x21b10]
     word = lambda pos: struct.unpack_from("<H", primary, pos)[0]
     assert word(0xc002) == 114 and word(0xff2c) == 0x11b1
     width, camera = word(0xc002), word(0x80)
     assert word(0xff2a)-camera*8 == 0xc017
-    palette = (p/"workplace/town-hd-v1/foreground-v1/normal-v1/cold-town.palette").read_bytes()
+    palette = palette_path.read_bytes()
     assert sha(palette) == "6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c"
     raw = (p/"workplace/full-hd-v1/decoded-v2/zelres2-33.decoded").read_bytes()
     assert sha(raw) == "831bf7b9a3cb0d31870d57d23f06e69a56d420fe17f8c27dc0c2323ddbce1339"
@@ -107,7 +123,8 @@ def main():
     phase = primary[0xe7]
     assert phase < 5
     pos = (0x6a3b if primary[0xc2] & 1 else 0x6a59)+phase*6
-    sprite(primary[0x83]*8, primary[pos:pos+6], 0x6000, 0x8000)
+    if primary[0x83] < 27:
+        sprite(primary[0x83]*8, primary[pos:pos+6], 0x6000, 0x8000)
     for y in range(64):
         for x in range(224):
             color = indexed[(78+y)*320+48+x]
@@ -124,12 +141,12 @@ def main():
         sheet.alpha_composite(panel, (0, n*256))
         panels.append({"index": n, "world_native": [start, 0, start+240, 64], "source_rgba_sha256": sha(panel.tobytes())})
     sheet.save(out/"castle-panels-reference.png")
-    report = {"schema": 1, "status": "PASS_CASTLE_FOREGROUND_SOURCE_SCOPED", "memory": CASTLE,
+    report = {"schema": 1, "status": "PASS_CASTLE_FOREGROUND_SOURCE_SCOPED", "memory": str(path),
               "memory_sha256": sha(memory), "palette_sha256": sha(palette), "map_address_space": "dosgolem01B1:C017，114欄各8圖格；CPAT圖格11B1:8100",
               "map_ids_sha256": sha(bytes(ids)), "world_rgba_sha256": sha(world.tobytes()), "world_native_size": [912, 64],
               "normal_camera": camera, "normal_foreground_pixels_verified": verified, "cache_map_differences": cache_differences, "panels": panels,
               "script_sha256": sha(Path(__file__).read_bytes()),
-              "limits": "全圖為地圖當次靜態候選；正常viewport按原版快取選圖並驗全畫帶。快取與地圖差異原因未證實，正式HD仍須保留相應變化；未宣稱全圖已走過、HD已生成或正式接入"}
+              "limits": "全圖為地圖當次靜態候選；正常viewport按原版快取選圖並驗全畫帶。正式HD須跟隨原版已畫選擇；未宣稱全圖已走過、HD已生成或正式接入"}
     (out/"receipt.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(report["status"], verified, "pixels")
 

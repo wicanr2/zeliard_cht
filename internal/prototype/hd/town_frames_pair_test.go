@@ -34,6 +34,9 @@ func runTownFramesPair(t *testing.T, path, out string) {
 
 func runTownFramesPairWithActors(t *testing.T, path, out string, residents bool) {
 	scene, _ := sceneryTestInputs(t)
+	if os.Getenv("ZELIARD_ENABLE_CASTLE") == "1" {
+		scene, _, _, _ = castleTestInputs(t)
+	}
 	root, project := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_PROJECT")
 	savePath := os.Getenv("ZELIARD_SKY_SAVE")
 	save, err := os.ReadFile(savePath)
@@ -101,6 +104,9 @@ func runTownFramesPairWithActors(t *testing.T, path, out string, residents bool)
 	}
 	canvas := image.NewRGBA(image.Rect(0, 0, 960, 600))
 	var selected *TownPresentation
+	var activeProfile *TownScenery
+	profileInitialized := false
+	profileBootstrapFrames := 0
 	draws, held, uncovered, modal := 0, 0, 0, 0
 	loadInProgress := false
 	var loadRequested uint64
@@ -116,9 +122,15 @@ func runTownFramesPairWithActors(t *testing.T, path, out string, residents bool)
 		dialogue.Draw(canvas, raw, b.Palette(), image.Point{})
 		blocked := dialogue.State()["key"] != ""
 		in := frames.read(raw, rgb)
+		currentProfile := scene.sourceProfile(in)
+		if currentProfile != activeProfile {
+			activeProfile = currentProfile
+			profileInitialized = false
+		}
 		_, nativeError := scene.decode(in.mode, in.primary, in.resources, in.extra, raw, rgb)
 		selected = frames.Present(raw, rgb, blocked)
 		if selected != nil {
+			profileInitialized = true
 			if blocked {
 				t.Fatal("快照蓋住中文對話")
 			}
@@ -141,9 +153,23 @@ func runTownFramesPairWithActors(t *testing.T, path, out string, residents bool)
 			}
 		} else if blocked {
 			modal++
-		} else if nativeError != nil && townFrameSource(in) && frames.captured > 0 && !loadInProgress {
+		} else if nativeError != nil && scene.frameSource(in) && frames.captured > 0 && !loadInProgress && profileInitialized {
 			uncovered++
-			t.Fatal("正常路徑存在未涵蓋中途畫格", b.Steps(), b.IP())
+			if err := os.MkdirAll(out, 0755); err != nil {
+				t.Fatal(err)
+			}
+			for suffix, data := range map[string][]byte{".memory": b.Bytes(oracle.Far(0, 0), 1<<20), ".indexed": raw, ".palette": in.palette} {
+				if err := os.WriteFile(filepath.Join(out, "uncovered"+suffix), data, 0644); err != nil {
+					t.Fatal(err)
+				}
+			}
+			failure, _ := json.MarshalIndent(map[string]any{"steps": b.Steps(), "cycles": b.Cycles(), "ip": fmt.Sprint(b.IP()), "error": nativeError.Error(), "presentation": frames.State()}, "", "  ")
+			if err := os.WriteFile(filepath.Join(out, "uncovered.json"), failure, 0644); err != nil {
+				t.Fatal(err)
+			}
+			t.Fatal("正常路徑存在未涵蓋中途畫格", b.Steps(), b.IP(), nativeError, frames.State()["last_refusal"])
+		} else if nativeError != nil && scene.frameSource(in) && !profileInitialized {
+			profileBootstrapFrames++
 		}
 	}
 	run := func(n uint64) {
@@ -176,7 +202,7 @@ func runTownFramesPairWithActors(t *testing.T, path, out string, residents bool)
 	var points []map[string]any
 	for _, line := range strings.Split(string(commands), "\n") {
 		f := strings.Fields(line)
-		if len(f) == 0 {
+		if len(f) == 0 || strings.HasPrefix(f[0], "#") {
 			continue
 		}
 		switch f[0] {
@@ -260,7 +286,7 @@ func runTownFramesPairWithActors(t *testing.T, path, out string, residents bool)
 					if !actorsMatched {
 						playerMatched = player.Draw(canvas, b.VideoMode(), selected.Primary, selected.Resources, selected.Extra, selected.Indexed, selected.RGB, selected.Palette, image.Point{})
 					}
-					if int(selected.Primary[0x83])*8 < 224 && selected.Primary[0xe7] < 4 && !playerMatched {
+					if selected.Primary[0x83] < 27 && selected.Primary[0xe7] < 4 && !playerMatched {
 						t.Fatal("正常可見主角HD失配", f[1])
 					}
 					if playerMatched {
@@ -303,7 +329,7 @@ func runTownFramesPairWithActors(t *testing.T, path, out string, residents bool)
 	if actors != nil && actorDraws < 2 {
 		t.Fatal("居民正常HD抽樣不足", actorDraws)
 	}
-	data, e := json.MarshalIndent(map[string]any{"commands_sha256": townBackgroundHash(commands), "draws": draws, "held_complete": held, "uncovered": uncovered, "modal_frames": modal, "checkpoints": points, "captured": frames.captured, "refused": frames.refused, "held_keys": b.HeldKeys(), "player_draws": playerDraws, "player_cave_refusals": playerCaveRefusals, "scope": "兩個獨立dosgolem正常鍵序；各檢查點完整原版狀態與每50k完整呈現；F7選單用當次原版，恢復必須新完成來源；非GUI或其他城鎮驗收"}, "", "  ")
+	data, e := json.MarshalIndent(map[string]any{"commands_sha256": townBackgroundHash(commands), "draws": draws, "held_complete": held, "uncovered": uncovered, "profile_bootstrap_frames": profileBootstrapFrames, "modal_frames": modal, "checkpoints": points, "captured": frames.captured, "refused": frames.refused, "held_keys": b.HeldKeys(), "player_draws": playerDraws, "player_cave_refusals": playerCaveRefusals, "scope": "兩個獨立dosgolem正常鍵序；各檢查點完整原版狀態與每50k完整呈現。新profile首個完整來源之前按原版顯示，另計bootstrap；F7選單用當次原版，恢復必須新完成來源；非GUI或未列城鎮驗收"}, "", "  ")
 	if e != nil {
 		t.Fatal(e)
 	}

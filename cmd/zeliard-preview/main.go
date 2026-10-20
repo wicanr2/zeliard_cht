@@ -988,6 +988,8 @@ func main() {
 	townGroundArt := flag.String("town-ground-art", "", "可選：Muralla雙層手繪地面PNG，搭配已驗前景與town-sky-reference")
 	townPlayerArt := flag.String("town-player-art-dir", "", "可選：Muralla主角八姿態手繪圖目錄，搭配已驗前景HD")
 	townResidentsArt := flag.String("town-residents-art-dir", "", "可選：Muralla五類居民40姿態手繪圖集，搭配城鎮主角與前景HD")
+	castleMemory := flag.String("castle-memory", "", "可選：城堡正常冷新局固定1MiB參考，搭配castle-art-dir與完整遠山")
+	castleArt := flag.String("castle-art-dir", "", "可選：城堡3倍世界圖與四姿態旗幟PNG目錄，搭配castle-memory")
 	caveArt := flag.String("cave-art-dir", "", "可選：Malicia手繪地形圖目錄，角色與物件保留原貌")
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
@@ -1178,6 +1180,21 @@ func main() {
 			log.Printf("城鎮前景HD未載入，保留原貌：%v", err)
 		}
 		g.townFrames = hd.NewTownFrames(g.o, g.townSceneryHD)
+	}
+	if *castleMemory != "" || *castleArt != "" {
+		var castle *hd.TownScenery
+		castle, err = hd.NewCastleScenery(root, *castleMemory, *castleArt, g.townBackgroundHD)
+		if err == nil {
+			if g.townSceneryHD == nil {
+				g.townSceneryHD = castle
+				g.townFrames = hd.NewTownFrames(g.o, castle)
+			} else {
+				err = g.townSceneryHD.AttachCastle(castle)
+			}
+		}
+		if err != nil {
+			log.Printf("城堡HD未載入，保留既有圖面：%v", err)
+		}
 	}
 	if *townGroundArt != "" {
 		g.townGroundHD, err = hd.NewTownGround(g.townSceneryHD, *townSkyRef, *townGroundArt)

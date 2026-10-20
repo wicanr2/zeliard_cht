@@ -39,4 +39,4 @@ RLE解壓已完成限定逐byte驗證。前輪直接把解壓結果當六位元�
 
 [三平面研究工具](../../tools/hd_planar.py) 與 [原版常式對照](../../tools/hd_planar_oracle.go) 對80筆補零研究buffer通過逐byte核對，收據為 `planar-oracle-v2/receipt.json`。這只證明變換，不代表80筆完整GRP形狀已解。[GRP來源工具](../../tools/hd_grp_sources.py) 的 `grp-sources-v3/receipt.json` 另證實MMAN152、TMAN46、CPAT157及MPAT242圖格，共597個／28656bytes，以及2256個有效遮罩bytes與正常原版RAM相同。CMAN164與DPAT191仍為結構候選，不升正常來源等級；NPC尾端資料用途仍未知。
 
-城堡的原版全景、快取差異及四段手繪候選見 [036](036-castle-hd.md)。居民限定增量見035；對話背景、其他城鎮、洞窟與全量人物仍有缺口。不得因解壓或圖格來源一致就跳過正式HD繪製與正常路徑驗證。
+城堡前景與原版四旗幟動畫已接入候選版，限定CONFORMED範圍見 [036](036-castle-hd.md)，未更新既有封包。居民限定增量見035；對話背景、其他城鎮、洞窟與全量人物仍有缺口。不得因解壓或圖格來源一致就跳過正式HD繪製與正常路徑驗證。

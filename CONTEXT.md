@@ -8,9 +8,13 @@
 
 居民HD已接入候選版，限定驗收見 [規格035](docs/spec/035-town-residents-hd.md) 與 `workplace/full-hd-v1/town-npc-final-audit-v1.json`。五類40姿態／34種RGBA、五張手繪圖、下層還原及居民先於主角的共同合成具備。六點正常原版狀態配對、實際視窗兩頁中文及四組原貌切回通過，每組576000遊戲區像素相同。程式SHA為 `3bdc2098989064bf4d315fbc7e5042764004324877859a0086d2e9cc915407c6`，入口在 `town-npc-runtime-v1/`，尚未更新v.0.2.0封包。交談時背景仍退回原貌，其他城鎮與全部姿態正常可達性未驗，不稱全城鎮完成。
 
-城堡增量入口為 [規格036](docs/spec/036-castle-hd.md)，目前DRAFT。`castle-source-v3/receipt.json`保存912×64原生前景、四段製圖參考及正常城堡畫帶14336像素重建。地圖ID4／已畫快取ID3五處旗幟差異須保留，原因仍為強推論。`castle-art-v1/generation.json`保存內建imagegen完整提示詞、來源與1214×1295四段手繪候選，SHA為cd6af931。下一步核旗幟變體、量裁切及入口映射，再依036推進READY與正式接入；不把候選圖計為HD覆蓋完成。
+城堡增量已接入候選版，[規格036](docs/spec/036-castle-hd.md)限定CONFORMED。原生912×64前景直接註冊為2736×192，四張24×24旗幟按原版已畫快取ID2..5選擇；正常754次更新已證實原版循環。主門、亭台、共用地面、居民與主角具HD；已知phase4及交談背景仍退回原貌，不稱完整城鎮完成。
 
-本輪收尾入口為 `workplace/full-hd-v1/runtime-stage-audit-v1.json`，可由同目錄 `runtime-stage-audit-v1.py` 在既有Pillow容器重生到新的收據檔。居民四項單元測試無skip／fail，SAR解碼的40個居民RGBA與既有來源逐項相同，15個新／關聯檔的索引、Python語法、文件連結及已驗程式SHA均通過。既有封包身份不變；全遊戲目標維持進行中。
+目前城堡程式為 `workplace/full-hd-v1/castle-runtime-v3/zeliard-preview`，SHA-256 `6670698f72fbd6d2c537693db0149e09553f280124a09de5c04deefe3d543d7a`。收尾入口 `castle-final-audit-v2.json` 可由 [稽核工具](tools/hd_castle_audit.py) 在既有Pillow／ffprobe容器重生至新檔。四項城堡及四項居民單元測試無skip／fail；13點正常原版狀態相同，11穩定點及2轉場點符合當次來源生命週期，0未涵蓋。實際視窗正常往返、四旗幟與10組原貌切回通過，5760000遊戲區像素還原相同；舊Muralla正常路徑回歸通過。這些增量尚未更新v.0.2.0封包。
+
+城堡完整提示詞與來源在 `castle-art-v2/generation.json` 及 `castle-animation-v1/generation.json`，註冊座標／SHA在 `castle-registration-v1/manifest.json`。正常來源為 `castle-normal-v2/receipt.json`，配對為 `castle-pair-v6/`，實際視窗為 `castle-gui-v2/`；以上均位於 `workplace/full-hd-v1/`。12秒內部動畫影片關閉音訊，不當作新推廣片。[來源索引](docs/castle-source-index.json)保留原始32EA／32EE／68AC／6950與證據分級，由探針及IDA9.4匯出工具自動合併。
+
+居民前輪收尾入口仍為 `workplace/full-hd-v1/runtime-stage-audit-v1.json`，保留3bdc2098的原身份；不將舊收據換稱目前城堡程式。既有封包身份不變；全遊戲目標維持進行中。
 
 README 已加入手冊故事背景、原貌／HD 成對截圖、目前封包城鎮及第一洞窟畫面，以及各含16類的原版／HD素材總覽。這是使用者指定的文件縮圖例外；完整解析度素材及封包仍留本機。圖片來源與輸出雜湊見 [圖片來源清單](docs/images/provenance.json)，重建入口為 [製圖工具](tools/readme_images.py)，不擴張原有玩法驗收範圍。
 
@@ -24,6 +28,7 @@ README 已加入手冊故事背景、原貌／HD 成對截圖、目前封包城�
 | 節奏 | 使用者已選定實際時間推進，最多追趕100ms，暫停、設定與失焦不追趕 | Clock測試及新版正常視窗通過；兩個4096音框片段在實際監聽中相符，0.5秒起點跨度比1.0；不宣稱全輸出零丟樣或硬即時 |
 | 原版與來源 | 原版29檔不變；固定136份程式／文字／音源來源 | 執行器隔離副本只增加通用FMSynth介面，其餘檔案與原始快照相同；共用dosgolem未改 |
 | 第一洞窟 | 中文、HD、移動、攻擊、跳躍、裝備與鍵盤重開恢復通過 | gui-v4九張實際視窗，正常DOS退出0；同一二進位SHA-256 `d86dd040ec0fc1a3622e832defa11d634c2af14a9a438a7b19a69de5e882f0d9` |
+| 城堡增量 | 前景、四旗幟、地面與共用人物已接候選版，正常Castle／Muralla往返通過 | 規格036限定CONFORMED、castle-final-audit-v2；主角phase4、交談背景及其餘場景仍有缺口，未更新封包 |
 | 手把 | 工具列選擇、按鈕／軸、保存及斷線釋放軟體串接沿已驗來源 | 實體USB／藍牙未接機測試 |
 | Linux | x86_64 AppImage完成，解出封包的AppRun已實際啟動 | 原生資料定位、所有指定資產及獨立使用者存檔通過 |
 | Windows | x86_64完整資料ZIP完成，Wine輔助啟動通過 | 未驗Windows真機與實體音訊裝置 |

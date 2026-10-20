@@ -79,21 +79,23 @@ type townPlayerFrame struct {
 	underlay      []byte
 	npc, player   []byte
 	x, bit, phase int
+	visible       bool
 }
 
 func (s *TownPlayer) prepare(mode uint8, p, r, e, raw, rgb, palette []byte) (*townPlayerFrame, error) {
-	if s == nil || len(p) != 65536 || p[0xe7] > 3 || !townFrameSource(townFrameInput{mode: mode, primary: p, resources: r, extra: e, palette: palette}) {
+	if s == nil || len(p) != 65536 || p[0xe7] > 3 || !s.scene.frameSource(townFrameInput{mode: mode, primary: p, resources: r, extra: e, palette: palette}) {
 		return nil, fmt.Errorf("主角來源拒絕")
 	}
 	f, err := s.scene.decode(mode, p, r, e, raw, rgb)
 	if err != nil {
 		return nil, err
 	}
-	actors, err := townSceneSources(p, r, e)
+	actors, err := f.scene.ownSources(p, r, e)
 	if err != nil {
 		return nil, err
 	}
 	v := &townPlayerFrame{f: f, underlay: append([]byte(nil), f.base...), npc: make([]byte, 14336), player: make([]byte, 14336), x: int(p[0x83]) * 8, bit: int(p[0xc2] & 1), phase: int(p[0xe7])}
+	v.visible = p[0x83] < 27
 	paint := func(x int, ids []byte, atlas, masks int, mask []byte, apply bool) error {
 		for col := 0; col < 2; col++ {
 			for row := 0; row < 3; row++ {
@@ -146,8 +148,10 @@ func (s *TownPlayer) prepare(mode uint8, p, r, e, raw, rgb, palette []byte) (*to
 		table = 0x6a3b
 	}
 	table += v.phase * 6
-	if err := paint(v.x, p[table:table+6], 0x6000, 0x8000, v.player, false); err != nil {
-		return nil, err
+	if v.visible {
+		if err := paint(v.x, p[table:table+6], 0x6000, 0x8000, v.player, false); err != nil {
+			return nil, err
+		}
 	}
 	for i, opaque := range v.player {
 		if opaque != 0 && !f.foreground[i] {
@@ -164,7 +168,7 @@ func townPlayerOver(c, old color.RGBA) color.RGBA {
 
 func (s *TownPlayer) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palette []byte, origin image.Point) bool {
 	v, err := s.prepare(mode, p, r, e, raw, rgb, palette)
-	if err != nil || s.art[v.bit*5+v.phase] == nil {
+	if err != nil || !v.visible || s.art[v.bit*5+v.phase] == nil {
 		return false
 	}
 	return s.drawPrepared(dst, v, origin)
@@ -196,7 +200,7 @@ func (s *TownPlayer) drawPrepared(dst *image.RGBA, v *townPlayerFrame, origin im
 					c := base
 					if v.npc[i] == 0 {
 						worldX := (v.f.camera+4)*24 + px*3 + dx
-						c = townPlayerOver(s.scene.art.RGBAAt(worldX, (40+y)*3+dy), base)
+						c = townPlayerOver(v.f.scene.art.RGBAAt(worldX, (40+y)*3+dy), base)
 					}
 					patch.SetRGBA(box.Min.X+x*3+dx, box.Min.Y+y*3+dy, c)
 				}

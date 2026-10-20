@@ -328,7 +328,11 @@
 
 - [三平面研究工具](tools/hd_planar.py) 與 [原版常式對照](tools/hd_planar_oracle.go) 在Docker內對80筆補零研究buffer核對轉換，不等同80筆圖像格式或HD完成。
 - [GRP來源擷取](tools/hd_grp_sources.py) 保存四個正常資源共597圖格及有效遮罩的原版RAM對照；CMAN／DPAT仍為結構候選。
-- [城堡來源擷取](tools/hd_castle_sources.py) 與 [規格036](docs/spec/036-castle-hd.md) 保存912×64前景、原版快取變體及手繪候選的下一閘門。圖面與完整提示詞在 `workplace/full-hd-v1/castle-art-v1/`，尚未正式接入。
+- [城堡來源擷取](tools/hd_castle_sources.py) 與 [規格036](docs/spec/036-castle-hd.md) 保存912×64前景、原版快取變體及限定CONFORMED契約。圖面與完整提示詞在 `workplace/full-hd-v1/castle-art-v2/`、`castle-animation-v1/`，註冊產物在`castle-registration-v1/`；只接候選版，未更新封包。
+- [城堡來源索引](docs/castle-source-index.json) 保留原始32EA／32EE／68AC／6950、證據等級及來源；[正常原版探針](tools/hd_castle_probe.go) 與 [IDA9.4匯出](tools/ida_castle_evidence.py) 自動合併此索引，不用散文或推測名稱替代原始定位。
+- [城堡合成](internal/prototype/hd/castle.go) 載入2736×192世界圖及四張24×24旗幟，按獨立來源選擇Castle／Muralla；[測試](internal/prototype/hd/castle_test.go) 核八個正常來源、原子退回、主角右邊界及跨場撤除。
+- [城堡素材註冊](tools/hd_castle_register.py) 固定原生座標、門口與接縫，直接取樣HD；[正常鍵序](tools/castle-hd.commands) 保存冷新局、步行、離場及返回，禁止以注入狀態代替。
+- [城堡視窗抽測](tools/hd_castle_smoke.py) 與 [最終稽核](tools/hd_castle_audit.py) 保存四旗幟、原貌切回、獨立像素及已驗程式身份；輸出在 `workplace/full-hd-v1/`，限036所列範圍。
 
 新增研究文件須同輪掛進本索引或 CONTEXT 的證據入口。不得將暫存、舊待辦或綠色單元測試當作原版一致證據。
 

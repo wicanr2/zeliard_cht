@@ -34,11 +34,11 @@
     },
     {
       "key": "castle.foreground",
-      "status": "generated_candidate_not_connected",
+      "status": "scoped_candidate_verified",
       "spec": "docs/spec/036-castle-hd.md",
       "source_record": "zelres2.record.33",
-      "evidence": "workplace/full-hd-v1/castle-source-v3/receipt.json",
-      "limits": "912×64原生全景、14336正常畫帶像素與四段手繪候選；尚未校準／接入"
+      "evidence": "workplace/full-hd-v1/castle-final-audit-v2.json",
+      "limits": "只驗城堡前景、四旗幟與Muralla往返；phase4、交談背景及其他場景仍有缺口，未更新封包"
     }
   ],
   "proofs": [
@@ -61,6 +61,10 @@
     {
       "path": "workplace/full-hd-v1/grp-sources-v3/receipt.json",
       "sha256": "5cff20fbebfb2b3222be9d6590188d5ce86db327ac3c1b66ec671542b0131f2a"
+    },
+    {
+      "path": "workplace/full-hd-v1/castle-final-audit-v2.json",
+      "sha256": "6d2f7d2ed6b7645551c6ef683aca7bdef2cf32d6f37a566f892fb340c01599c8"
     }
   ],
   "archives": [
@@ -1713,8 +1717,8 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed",
+      "hd_coverage": "partial_scoped_candidate_verified",
+      "normal_path": "城堡前景與四旗幟；規格036，正常Castle／Muralla往返，未更新封包",
       "decoder": {
         "kind": 6,
         "bytes": 7792,

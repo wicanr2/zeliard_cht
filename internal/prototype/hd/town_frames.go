@@ -90,7 +90,7 @@ func townFrameSource(in townFrameInput) bool {
 
 func (t *TownFrames) clear() { t.complete = nil; t.drawing = false }
 func (t *TownFrames) begin(in townFrameInput) {
-	if !townFrameSource(in) {
+	if !t.scene.frameSource(in) {
 		t.clear()
 		return
 	}
@@ -99,7 +99,7 @@ func (t *TownFrames) begin(in townFrameInput) {
 func cloneTownBytes(b []byte) []byte { return append([]byte(nil), b...) }
 func (t *TownFrames) finish(in townFrameInput) {
 	t.drawing = false
-	if !townFrameSource(in) {
+	if !t.scene.frameSource(in) {
 		t.refused++
 		t.lastRefusal = map[string]any{"steps": in.steps, "cycles": in.cycles, "reason": "source"}
 		t.clear()
@@ -138,7 +138,13 @@ func (t *TownFrames) selectFrame(in townFrameInput, blocked bool) *TownPresentat
 	t.state = map[string]any{"used": false, "drawing": t.drawing, "captured": t.captured, "refused": t.refused, "scope": "完成時刻的城鎮畫帶；畫帶外為當次原版"}
 	t.state["last_refusal"] = t.lastRefusal
 	f := t.complete
-	if blocked || f == nil || len(in.indexed) != 64000 || len(in.rgb) != 192000 || !townFrameSource(in) || in.steps < f.Steps || in.cycles < f.Cycles || (!t.drawing && !townFrameEqual(in.indexed, f.SourceIndexed)) {
+	if blocked || f == nil || len(in.indexed) != 64000 || len(in.rgb) != 192000 || !t.scene.frameSource(in) || in.steps < f.Steps || in.cycles < f.Cycles || (!t.drawing && !townFrameEqual(in.indexed, f.SourceIndexed)) {
+		t.clear()
+		return nil
+	}
+	current := t.scene.sourceProfile(in)
+	saved := t.scene.sourceProfile(townFrameInput{mode: in.mode, primary: f.Primary, resources: f.Resources, extra: f.Extra, palette: f.Palette})
+	if current != saved {
 		t.clear()
 		return nil
 	}
@@ -150,6 +156,21 @@ func (t *TownFrames) selectFrame(in townFrameInput, blocked bool) *TownPresentat
 		copy(rgb[start*3:end*3], f.RGB[start*3:end*3])
 	}
 	t.state["used"] = true
+	if saved.castle != nil {
+		t.state["profile"] = "castle"
+		var flags []map[string]int
+		for col := 0; col < 28; col++ {
+			for row := 0; row < 3; row++ {
+				id := int(f.Primary[0xe000+col*8+row])
+				if id >= 2 && id <= 5 {
+					flags = append(flags, map[string]int{"column": col, "row": row, "id": id})
+				}
+			}
+		}
+		t.state["flag_cells"] = flags
+	} else {
+		t.state["profile"] = "muralla"
+	}
 	t.state["source_steps"] = f.Steps
 	t.state["source_cycles"] = f.Cycles
 	t.state["lag_steps"] = in.steps - f.Steps

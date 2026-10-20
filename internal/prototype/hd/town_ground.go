@@ -52,7 +52,7 @@ func NewTownGround(scene *TownScenery, reference, artwork string) (*TownGround, 
 // Draw先驗完整原版前景、地面色號及RGB；任何失配都不寫畫布。
 func (s *TownGround) Draw(dst *image.RGBA, mode uint8, p, r, e, raw, rgb, palette []byte, origin image.Point) bool {
 	box := image.Rect(144, 426, 816, 474).Add(origin)
-	if s == nil || !box.In(dst.Bounds()) || !townFrameSource(townFrameInput{mode: mode, primary: p, resources: r, extra: e, palette: palette}) {
+	if s == nil || !box.In(dst.Bounds()) || !s.scene.frameSource(townFrameInput{mode: mode, primary: p, resources: r, extra: e, palette: palette}) {
 		return false
 	}
 	_, err := s.scene.decode(mode, p, r, e, raw, rgb)

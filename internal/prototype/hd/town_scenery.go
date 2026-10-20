@@ -29,11 +29,13 @@ type townSceneSign struct {
 const townSceneTerrainTiles = 240
 
 type TownScenery struct {
-	tiles   [215][8]byte
-	palette []byte
-	art     *image.RGBA
-	font    bitmap.Font
-	signs   []townSceneSign
+	tiles         [215][8]byte
+	palette       []byte
+	art           *image.RGBA
+	font          bitmap.Font
+	signs         []townSceneSign
+	castle        *castleProfile
+	castleVariant *TownScenery
 }
 
 func townSceneWord(b []byte, p int) int { return int(binary.LittleEndian.Uint16(b[p:])) }
@@ -157,14 +159,24 @@ func (s *TownScenery) Draw(dst *image.RGBA, mode uint8, primary, resources, extr
 	if err != nil {
 		return false
 	}
+	owner := f.scene
+	var flags []castleFlagPaint
+	if owner.castle != nil {
+		var ok bool
+		flags, ok = owner.castle.prepareFlags(dst, mode, primary, resources, indexed, rgb, f, origin)
+		if !ok {
+			return false
+		}
+		owner.castle.paintBackground(dst, flags)
+	}
 	for y := 0; y < 192; y++ {
 		for x := 0; x < 672; x++ {
 			i := (y/3)*224 + x/3
-			if !f.foreground[i] || f.opaque[i] {
+			if !f.foreground[i] || f.opaque[i] || len(f.flags) != 0 && f.flags[i] != 0 {
 				continue
 			}
 			worldX := (f.camera+4)*24 + x
-			c := s.art.RGBAAt(worldX, y)
+			c := owner.art.RGBAAt(worldX, y)
 			if c.A == 0 {
 				continue
 			}
@@ -174,8 +186,11 @@ func (s *TownScenery) Draw(dst *image.RGBA, mode uint8, primary, resources, extr
 			dst.SetRGBA(px, py, color.RGBA{uint8(uint32(c.R) + uint32(old.R)*inv/255), uint8(uint32(c.G) + uint32(old.G)*inv/255), uint8(uint32(c.B) + uint32(old.B)*inv/255), 255})
 		}
 	}
+	for _, flag := range flags {
+		draw.Draw(dst, flag.box, flag.art, image.Point{}, draw.Over)
+	}
 	if chinese {
-		for _, sign := range s.signs {
+		for _, sign := range owner.signs {
 			cx := box.Min.X + (sign.worldX-(f.camera+4)*8)*3
 			safe := image.Rect(cx-48, box.Min.Y+102, cx+48, box.Min.Y+120)
 			if !safe.In(box) {
@@ -183,7 +198,7 @@ func (s *TownScenery) Draw(dst *image.RGBA, mode uint8, primary, resources, extr
 			}
 			draw.Draw(dst, safe, image.NewUniform(color.RGBA{47, 30, 18, 255}), image.Point{}, draw.Src)
 			text := image.Rect(cx-sign.width/2, safe.Min.Y, cx-sign.width/2+sign.width, safe.Max.Y)
-			s.font.Draw(dst, text, sign.text, color.RGBA{255, 231, 160, 255})
+			owner.font.Draw(dst, text, sign.text, color.RGBA{255, 231, 160, 255})
 		}
 	}
 	return true
@@ -197,6 +212,8 @@ type townSceneFrame struct {
 	camera             int
 	foreground, opaque []bool
 	base, decoded      []byte
+	flags              []byte
+	scene              *TownScenery
 }
 
 func townSceneTile(b []byte, off int) [64]byte {
@@ -220,6 +237,7 @@ func townSceneSources(p, r, e []byte) ([]townSceneActor, error) {
 	}{
 		{p[0x3000:0x3628], "73f650db23e2c2fe32c6a218ff5ab57d26f7c2200faab027003827e0575f67c7"},
 		{p[0x6975:0x6a77], "ca30aab0ce543dd922095b669255fe1a76dbcc5256992e1ee5b437fb91925182"},
+		{p[0x6950:0x6975], "8a7c0b5eaab587ccec33a8cf20c84aa0219e72da794ac9286993b134694090f5"},
 		{r[0x4000:0x5d80], "396a3b47dd240301fae669a494230194944987e2c46e32eaf35baa8e50d36825"},
 		{r[0x6000:0x68a0], "045d4246ae0be72df3ac0201bc9ac8e5e1b50829783d6c79727fce7af0ef66c7"},
 		{r[0x8000:0xae00], "6cddbaa678370307422a6a60798c0d75a53c46deacc1a9f299a716c40d234b45"},
@@ -232,6 +250,13 @@ func townSceneSources(p, r, e []byte) ([]townSceneActor, error) {
 		if townBackgroundHash(g.b) != g.h {
 			return nil, fmt.Errorf("source guard %d", i)
 		}
+	}
+	return townSceneActorRecords(p)
+}
+
+func townSceneActorRecords(p []byte) ([]townSceneActor, error) {
+	if len(p) != 65536 {
+		return nil, fmt.Errorf("居民記錄段長度不符")
 	}
 	actors := []townSceneActor{}
 	for pos := townSceneWord(p, 0xc00f); ; pos += 8 {
@@ -250,21 +275,35 @@ func townSceneSources(p, r, e []byte) ([]townSceneActor, error) {
 }
 
 func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFrame, error) {
+	f, err := s.decodeOwn(mode, p, r, e, raw, rgb)
+	if err != nil && s.castleVariant != nil {
+		if _, sourceError := s.ownSources(p, r, e); sourceError != nil {
+			return s.castleVariant.decodeOwn(mode, p, r, e, raw, rgb)
+		}
+	}
+	return f, err
+}
+
+func (s *TownScenery) decodeOwn(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFrame, error) {
 	if mode != 0x13 || len(raw) != 64000 || len(rgb) != 192000 {
 		return nil, fmt.Errorf("顯示輸入不符")
 	}
-	actors, err := townSceneSources(p, r, e)
+	actors, err := s.ownSources(p, r, e)
 	if err != nil {
 		return nil, err
 	}
 	camera, mp := townSceneWord(p, 0x80), townSceneWord(p, 0xff2a)
-	if townSceneWord(p, 0xff2c) != 0x11b1 || townSceneWord(r, 0x8000) != 0x8006 || mp-camera*8 != 0xc017 || townSceneWord(p, 0xc002) != 215 || camera+31 >= 215 {
+	width, terrain := 215, townSceneTerrainTiles
+	if s.castle != nil {
+		width, terrain = 114, 157
+	}
+	if townSceneWord(p, 0xff2c) != 0x11b1 || townSceneWord(r, 0x8000) != 0x8006 || mp-camera*8 != 0xc017 || townSceneWord(p, 0xc002) != width || camera+31 >= width {
 		return nil, fmt.Errorf("map geometry")
 	}
 	under := func(wx int) (int, error) {
 		for _, a := range actors {
 			if a.x == wx {
-				if a.under >= townSceneTerrainTiles {
+				if a.under >= terrain {
 					return 0, fmt.Errorf("unverified nested townSceneActor underlay")
 				}
 				return a.under, nil
@@ -272,7 +311,10 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 		}
 		return 0, fmt.Errorf("missing townSceneActor underlay")
 	}
-	f := &townSceneFrame{camera: camera, foreground: make([]bool, 14336), opaque: make([]bool, 14336), base: make([]byte, 14336)}
+	f := &townSceneFrame{camera: camera, foreground: make([]bool, 14336), opaque: make([]bool, 14336), base: make([]byte, 14336), scene: s}
+	if s.castle != nil {
+		f.flags = make([]byte, 14336)
+	}
 	for col := 0; col < 28; col++ {
 		for row := 0; row < 8; row++ {
 			id := int(p[0xe000+col*8+row])
@@ -286,7 +328,11 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 					}
 				}
 			}
-			if id >= townSceneTerrainTiles || id != int(s.tiles[camera+4+col][row]) {
+			canonical := id
+			if s.castle != nil && id >= 2 && id <= 5 {
+				canonical = 2
+			}
+			if id >= terrain || canonical != int(s.tiles[camera+4+col][row]) {
 				return nil, fmt.Errorf("townSceneTile source mismatch %d %d", col, row)
 			}
 			pixels := townSceneTile(r, 0x8100+id*48)
@@ -294,6 +340,9 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 				for dx := 0; dx < 8; dx++ {
 					x, y := col*8+dx, row*8+dy
 					i := y*224 + x
+					if s.castle != nil && row < 3 && id >= 2 && id <= 5 {
+						f.flags[i] = byte(id)
+					}
 					bg := row < 3 && r[0x8006+id] != 0 && r[0xd000+id*8+dy]&(0x80>>dx) != 0
 					f.foreground[i] = !bg
 					if bg {
@@ -363,8 +412,10 @@ func (s *TownScenery) decode(mode uint8, p, r, e, raw, rgb []byte) (*townSceneFr
 		table = 0x6a3b
 	}
 	table += phase * 6
-	if err := sprite(int(p[0x83])*8, p[table:table+6], 0x6000, 0x8000); err != nil {
-		return nil, err
+	if p[0x83] < 27 {
+		if err := sprite(int(p[0x83])*8, p[table:table+6], 0x6000, 0x8000); err != nil {
+			return nil, err
+		}
 	}
 	for y := 0; y < 64; y++ {
 		for x := 0; x < 224; x++ {

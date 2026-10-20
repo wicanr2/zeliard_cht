@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "input_name": "workplace/full-hd-v1/castle-edge-ida-v1/primary.segment",
+  "input_sha256": "aed45060ee02eafa07b41891d326ac0217a8afdd2957d79b401369a8bb2fc11d",
+  "address_space": "IDA binary base0＝此快照dosgolem01B1段內偏移；1MiB RAM檔案定位另加1B10",
+  "entries": [
+    {
+      "address": "0x32EA",
+      "level": "已證實",
+      "semantic": "sub_31D8從ES:[DI+1]取動畫表下一圖格，後續32EE寫入原版地圖。正常CPAT觀察涵蓋2→3→4→5→2",
+      "evidence": ["docs/spec/036-castle-hd.md", "workplace/full-hd-v1/castle-normal-v1/receipt.json", "workplace/town-hd-v1/foreground-v1/ida-foreground-evidence-v3.json"]
+    },
+    {
+      "address": "0x32EE",
+      "level": "已證實",
+      "semantic": "保留原運算元MOV [SI-1],AL；將表選擇結果寫回DS當次地圖，已畫E000快取仍保留當次呈現圖格",
+      "evidence": ["docs/spec/036-castle-hd.md", "workplace/full-hd-v1/castle-normal-v1/receipt.json", "workplace/town-hd-v1/foreground-v1/ida-foreground-evidence-v3.json"]
+    },
+    {
+      "address": "0x68AC",
+      "level": "已證實",
+      "semantic": "呼叫6B1C、6975、6950及cs:off_3004的原版城鎮呈現入口；不將後續硬體等待或輸入服務當成重製規則",
+      "evidence": ["docs/spec/036-castle-hd.md", "workplace/full-hd-v1/castle-edge-ida-v1/evidence.json"]
+    },
+    {
+      "address": "0x6950",
+      "level": "已證實",
+      "semantic": "sub_6950讀byte_83，CMP AL,1Bh後只有JB分支設定E000兩欄三列FF；27以上直接返回。真實右邊界畫格不畫半個主角",
+      "evidence": ["docs/spec/036-castle-hd.md", "workplace/full-hd-v1/castle-edge-ida-v1/evidence.json", "workplace/full-hd-v1/castle-pair-v2/uncovered.memory"]
+    }
+  ]
+}

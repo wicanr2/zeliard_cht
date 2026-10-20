@@ -1,0 +1,48 @@
+# 正常冷新局到城堡，原版鍵盤；不讀入機器狀態或注入位置。
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+shot cold
+run 1000000
+shot idle-1
+run 1000000
+shot idle-2
+run 1000000
+shot idle-3
+key 0x4d 2000000
+run 500000
+shot right-1
+key 0x4b 4000000
+run 500000
+shot left-1
+key 0x4d 10000000
+run 1000000
+shot right-2
+key 0x4d 10000000
+run 1000000
+shot right-3
+key 0x4d 10000000
+run 1000000
+shot right-4
+key 0x4d 10000000
+run 1000000
+shot right-5
+key 0x4b 10000000
+run 1000000
+shot left-return-1
+key 0x4b 10000000
+run 1000000
+shot left-return-2
+key 0x4b 10000000
+run 1000000
+shot left-return-3

@@ -106,7 +106,11 @@ func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed,
 		}
 	}
 	if tileLimit == 0 {
-		return nil, false
+		if castleResources(primary, resources) {
+			tileLimit = 157
+		} else {
+			return nil, false
+		}
 	}
 	mask := make([]bool, 224*78)
 	matches := func(x, y int, want byte) bool {
