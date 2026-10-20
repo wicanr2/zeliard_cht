@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "input_name": "workplace/combat-v1/cave-entered.primary",
+  "input_sha256": "12d91918212c4688a575bc31d395c133c7232f99ead769c7cfbc680333545c93",
+  "address_space": "IDA binary base0＝此正常洞窟快照dosgolem01B1段內偏移；不等於SAR檔案偏移",
+  "entries": [
+    {
+      "address": "0x6C98",
+      "level": "已證實",
+      "semantic": "保留sub_6C98與C01B定位；正常載入按水平起點解36欄至E000、每欄64格。本輪正常6CEC完成來源2304格全部與離線地圖相同",
+      "evidence": ["workplace/combat-v1/ida-cave-v3.json", "workplace/full-hd-v1/cave-save-survey-v2/receipt.json", "docs/spec/037-all-cave-terrain-hd.md"]
+    },
+    {
+      "address": "0x6CFA",
+      "level": "已證實",
+      "semantic": "保留原間接跳躍與四項表；壓縮byte高兩位選run分支，31份真實地圖與原常式逐byte相同",
+      "evidence": ["workplace/full-hd-v1/cave-map-oracle-v1/receipt.json", "workplace/combat-v1/ida-cave-v3.json"]
+    },
+    {
+      "address": "0x6D57",
+      "level": "已證實",
+      "semantic": "保留sub_6D57；解出64格單欄，以36-byte行距寫入ES:DI。31份地圖共306048格及最終SI均已核對",
+      "evidence": ["workplace/full-hd-v1/cave-map-oracle-v1/receipt.json", "workplace/combat-v1/ida-cave-v3.json"]
+    },
+    {
+      "address": "0x7E9B",
+      "level": "已證實",
+      "semantic": "保留REP MOVSB；AL先取地圖尾首byte後，SI所指四byte複製至9EF6..9EF9，故9EF7取尾端+2",
+      "evidence": ["workplace/full-hd-v1/cave-map-ida-v1/evidence.json", "workplace/combat-v1/ida-cave-v3.json"]
+    },
+    {
+      "address": "0x7ECD",
+      "level": "已證實",
+      "semantic": "保留MOV BL,byte_9EF7；乘11後加9C43選MPP descriptor，載入11B1:8000。固定正常段11項descriptor逐一對應SAR3記錄74..84",
+      "evidence": ["workplace/full-hd-v1/cave-map-ida-v1/evidence.json", "workplace/combat-v1/cave-entered.primary", "workplace/full-hd-v1/cave-save-survey-v2/receipt.json"]
+    }
+  ]
+}

@@ -6,6 +6,10 @@
 
 全量台帳為 [hd-coverage.json](docs/hd-coverage.json)：174筆名稱候選、84筆解壓結果與原版常式逐byte一致；分類候選含80圖像、41地圖、17音樂、36程式及20未知，不把它們當成美術分母。三平面變換已對80筆補零研究buffer通過原常式核對，四資源MMAN／TMAN／CPAT／MPAT共597個圖格、28656像素bytes及2256有效遮罩bytes與正常原版RAM一致。證據在 `workplace/full-hd-v1/planar-oracle-v2/receipt.json` 及 `grp-sources-v3/receipt.json`。CMAN／DPAT仍只有結構候選，其他GRP形狀未解，不重開已驗RLE或前版音樂。
 
+後續洞窟入口為 [規格037](docs/spec/037-all-cave-terrain-hd.md)，目前DRAFT。11組MPP地形共378格已解出原圖，MPP1全部25格與正常RAM相同；31份洞窟地圖共306048格與原版6CED..6D6D常式逐byte相同，圖集選擇端7E9B／7ECD及11項descriptor已核。正常6CEC完成來源的36×64環形地圖2304格相同，包內四份USR的正常冷讀調查皆仍為MPP1；其餘家族可達性未驗，不能計HD完成。
+
+本輪洞窟來源稽核為 `workplace/full-hd-v1/cave-source-stage-audit-v1.json`，由 [來源稽核工具](tools/hd_cave_source_audit.py)重生至新檔。原圖、完整地圖、隔離原版常式、正常來源與IDA9.4證據分別在同根`cave-terrain-sources-v1/`、`cave-map-sources-v1/`、`cave-map-oracle-v1/`、`cave-save-survey-v1/`／`cave-save-survey-v2/`及`cave-map-ida-v2/`。冰窟21格的兩版手繪候選在`cave-ice-art-v1/`及`cave-ice-art-v2/`，各有內建imagegen完整提示詞；空白格殘留alpha與裁切未驗，尚未接入。正式程式及現行封包仍沿下列城堡／前版身份。
+
 居民HD已接入候選版，限定驗收見 [規格035](docs/spec/035-town-residents-hd.md) 與 `workplace/full-hd-v1/town-npc-final-audit-v1.json`。五類40姿態／34種RGBA、五張手繪圖、下層還原及居民先於主角的共同合成具備。六點正常原版狀態配對、實際視窗兩頁中文及四組原貌切回通過，每組576000遊戲區像素相同。程式SHA為 `3bdc2098989064bf4d315fbc7e5042764004324877859a0086d2e9cc915407c6`，入口在 `town-npc-runtime-v1/`，尚未更新v.0.2.0封包。交談時背景仍退回原貌，其他城鎮與全部姿態正常可達性未驗，不稱全城鎮完成。
 
 城堡增量已接入候選版，[規格036](docs/spec/036-castle-hd.md)限定CONFORMED。原生912×64前景直接註冊為2736×192，四張24×24旗幟按原版已畫快取ID2..5選擇；正常754次更新已證實原版循環。主門、亭台、共用地面、居民與主角具HD；已知phase4及交談背景仍退回原貌，不稱完整城鎮完成。
@@ -60,7 +64,7 @@ ZIP 包含 `ZELIARD.EXE`、`GAME.BIN`、`ZELRES1.SAR` 至 `ZELRES3.SAR`、多個
 
 ## 下一步
 
-目前先推進 `workplace/full-hd-v1/` 的全量資源分類、原版圖像解碼與場景對應，再按規格034擴充手繪圖面及正式接入。現有`v.0.2.0-20261020`封包保持既有身份，完成後另版重建，不覆寫。下列保留各輪原始證據身份，不把舊完成項重新開啟。
+目前先依037註冊冰窟前21格與核相鄰接縫，沿11組地形／31份地圖的已核來源擴充美術，並建立後續家族的代表性正常入口。其餘圖像與20筆未知仍續盤點。現有`v.0.2.0-20261020`封包保持既有身份，完成後另版重建，不覆寫。下列保留各輪原始證據身份，不把舊完成項重新開啟。
 
 前輪武器商人HD已接入可撤回前端，三姿態、區外不寫入、原版畫格不改動及缺圖／未知畫格／色盤／短畫格退回測試通過。正常冷讀檔到商店、未購物離店1000、重進店購買後離店800與三姿態HD切換均通過，該輪收據使用固定48e9c0bc建置。三張1536×1024圖與完整內建imagegen提示詞在 `workplace/merchant-hd-v1/`，只有本地研究用途。該輪測試與建置紀錄為同目錄 `hd-test-v2.jsonl`、`no-purchase-test-v2.jsonl`及 `build-v2.log`。
 

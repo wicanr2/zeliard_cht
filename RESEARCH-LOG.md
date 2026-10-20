@@ -994,3 +994,13 @@ header `18 AF 02 08`第三byte亦加到目標DI，因此X為 `0x18×4+0x02=98`�
 - IDA Pro9.4／IDAPython匯出輸入為該快照01B1段，65536bytes SHA-256 aed45060ee02eafa07b41891d326ac0217a8afdd2957d79b401369a8bb2fc11d。IDA binary base0對應該段內位址，不能與SAR檔案偏移混用。保留sub_6950原名：6950讀byte_83、6953 CMP AL,1Bh、6955 JB只接受0..26；其餘6957 RET。通過時才標E000兩欄各三格為FF。sub_68AC依序呼叫6B1C、6975、6950、3004，與原版失敗畫面一致，不需追無關helper。
 - [城堡來源索引](docs/castle-source-index.json)保留32EA／32EE／68AC／6950原始定位、已證實等級與證據。IDA匯出`castle-edge-ida-v2/evidence.json`及正常探針自動合併索引，索引SHA-256 dbd4cc1e8d9341620c40dfae79554d61ff4209cb540fddaab5acab7e57670e5e。未改原始函式、欄位名或運算元。6950..6975精確SHA守衛及真實邊界14336像素核對補入既有模型，居民仍可顯示HD。
 - Castle守衛只採CPAT157圖格與232個有效遮罩bytes；MMAN152、TMAN46及其遮罩沿已驗來源。背景、原生重建、圖面及alpha分層核對；共用地面224×16來源SHA為80322194e1e97e020451cdd184bfbfd6dd4e4de8bfbc074453b8f1484c53a83b。其他GRP、phase4與交談背景仍未知或未接入，不因城堡正常往返通過而升格。
+
+### 11組洞窟地形與31份地圖
+
+- 已證實：SAR3記錄74..84解壓後的MPP1..MPPB，各保留48-byte header，圖格數依序25、34、43、21、52、36、61、43、38、20、5。全部378格三平面變換沿已核原常式；MPP1的header與正常11B1:8000相同，全部1200像素bytes與11B1:8030相同。正常1MiB SHA-256 e44c7555e68e61d3176cd40306ae7fc909a53b6216481de1290f5a013b20e76a可回查prose-v1/progression-v1原收據，並非新注入來源。其餘十組只升結構／靜態來源，不稱正常到達。
+- 已證實：固定正常段cave-entered.primary的01B1:6CED以壓縮byte高兩位選四類run。類型0為count=byte+1、下一byte為圖格；類型1為count=((byte>>4)&3)+2、圖格=(byte&15)+1；類型2為count=byte&63、圖格0；類型3為單格byte&63。sub_6D57每欄解至64格，以36-byte列距寫ES:DI。SAR3記錄20..50寬42..320，C01B起、C019為結束指標，31份合306048格與隔離原始常式逐byte相同，最終SI皆正確。
+- 輸入段65536bytes SHA-256 12d91918212c4688a575bc31d395c133c7232f99ead769c7cfbc680333545c93；擷取6CED..6D6D原始bytes SHA-256 cc712d2efe92fb89ca3d93f5da41e15d98716dd21fbac994cbd12718aed2537b。Go1.24.13沿既有隔離dosgolem來源workplace/music-release-v1/release-build/dosgolem執行，來源身份沿該release-build/identity.json；原常式31次退出0，2881666指令。這是格式契約，不是正常玩家場景路徑或遊戲通關。
+- 已證實：原主流程61EE從word_C000取地圖尾，61F2先LODSB後呼叫sub_7E93。7E9B將後續四byte複製至9EF6..9EF9，故9EF7讀地圖尾+2。7ECD讀此byte、乘11加9C43，7EDF指定8000後經原載入服務取得圖集。固定段的11項descriptor為02、4B..55及MPP1.GRP..MPPB.GRP，索引byte減1對應SAR3記錄74..84。31份真實地圖selector都在範圍內，MP73選MPPB。
+- IDA Pro9.4／IDAPython輸出在cave-map-ida-v2/evidence.json，binary base0對應此正常01B1段內偏移。SAR3 record payload偏移及解壓buffer偏移另列，不能混作IDA位址。新分級索引保留原始sub_6C98、6CFA間接跳躍、sub_6D57、7E9B與7ECD；匯出自動合併，未分級指令仍為未知，不用自訂名稱替代證據。
+- 正常來源補證據：四份包內USR冷讀共12點，加新版SAVEM1三點，兩獨立dosgolem的完整RAM、VGA、色盤、暫存器、IP、steps、cycles、檔案與鍵盤狀態相同；所有正常入洞來源仍為MPP1。新版在01B1:6CEC保存初始化完成1MiB SHA-256 cc6023f47fbd9e7a4af12655a09067e9638711a6e696abd8676fe5f9b7da08c6，水平起點45，36欄×64列的E000來源2304格與原始解壓結果相同。完成畫格另有18格門口標示寫入，不將運行中差異當壓縮錯誤，也未忽略差異宣稱完整畫面相同。
+- 冰窟MPP4的21格原圖與MP40靜態研究圖作構圖，原有岩面材質只作手繪風格參考。內建imagegen兩版2048×768候選及完整提示詞只留本機。v1 SHA為226b6af3407afd9ed3a5d8cd7cf6645fe8c8ceae17e5ae0dc6e32a53614f0913；v2為16fb57a71cf5ec0fe377afec7fc972e1d8b51ec4cdb83f6f52b05454e9ce21fc。兩版透明像素分別764397及829549，但未用的三格仍有殘留alpha；不升READY、不稱已註冊或正式HD。

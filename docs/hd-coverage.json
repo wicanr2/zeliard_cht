@@ -7,6 +7,9 @@
     "container_records": 194,
     "named_candidates": 174,
     "verified_decoded_records": 84,
+    "verified_cave_maps": 31,
+    "verified_cave_map_cells": 306048,
+    "cave_terrain_source_tiles": 378,
     "classification_candidates": {
       "unknown": 20,
       "program_candidate": 36,
@@ -39,6 +42,14 @@
       "source_record": "zelres2.record.33",
       "evidence": "workplace/full-hd-v1/castle-final-audit-v2.json",
       "limits": "只驗城堡前景、四旗幟與Muralla往返；phase4、交談背景及其他場景仍有缺口，未更新封包"
+    },
+    {
+      "key": "cave.terrain.ice",
+      "status": "generated_candidate_not_connected",
+      "spec": "docs/spec/037-all-cave-terrain-hd.md",
+      "source_record": "zelres3.record.77",
+      "evidence": "workplace/full-hd-v1/cave-ice-art-v2/generation.json",
+      "limits": "21格原圖與兩版手繪候選；空白格alpha及裁切未驗，未接入正式前端"
     }
   ],
   "proofs": [
@@ -65,6 +76,10 @@
     {
       "path": "workplace/full-hd-v1/castle-final-audit-v2.json",
       "sha256": "6d2f7d2ed6b7645551c6ef683aca7bdef2cf32d6f37a566f892fb340c01599c8"
+    },
+    {
+      "path": "workplace/full-hd-v1/cave-source-stage-audit-v1.json",
+      "sha256": "fa907ee8b30601f7868d6a714e8ae42dec6fa94b6efee1d5708cba541cb6420d"
     }
   ],
   "archives": [
@@ -2721,7 +2736,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 240,
+        "height": 64,
+        "columns_sha256": "c3c659b0d2cafbfcb880efbef7eb20e3486d8afc9bce33c004fb6e20fd6feb22",
+        "family_candidate": "MPP1",
+        "selector_offset": 5675,
+        "selector_raw": 0,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.21",
@@ -2741,7 +2766,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 73,
+        "height": 64,
+        "columns_sha256": "1a3604fbf596b5cdbee2bca64c3babc92ece2cdcc0a30b28a7dfa9a7aa15166a",
+        "family_candidate": "MPP1",
+        "selector_offset": 524,
+        "selector_raw": 0,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.22",
@@ -2761,7 +2796,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 224,
+        "height": 64,
+        "columns_sha256": "3539fa3850f9e2563ea81c3abebe0c2c9b1705cf9de48061b58a9175061f048a",
+        "family_candidate": "MPP2",
+        "selector_offset": 6193,
+        "selector_raw": 1,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.23",
@@ -2781,7 +2826,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 96,
+        "height": 64,
+        "columns_sha256": "4a4224bb8486bc6c20d58d24ab5b5e93823dbc9d4f10fdfbd8b868236f3082dc",
+        "family_candidate": "MPP2",
+        "selector_offset": 2879,
+        "selector_raw": 1,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.24",
@@ -2801,7 +2856,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 52,
+        "height": 64,
+        "columns_sha256": "b3af3cbaafc0b877669250ca91efc55227dc6c0694889a49a673e9d428e0c284",
+        "family_candidate": "MPP2",
+        "selector_offset": 814,
+        "selector_raw": 1,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.25",
@@ -2821,7 +2886,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 204,
+        "height": 64,
+        "columns_sha256": "473064d2cd8d0b6c4ee5b4c9e0eed653bd4d076053074be884556067352dd234",
+        "family_candidate": "MPP3",
+        "selector_offset": 3164,
+        "selector_raw": 2,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.26",
@@ -2841,7 +2916,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 204,
+        "height": 64,
+        "columns_sha256": "87e3ef32b703408f9be99b7cf9422b23b13e7aad86c82fd2bbca99fd4e24c7ba",
+        "family_candidate": "MPP3",
+        "selector_offset": 3749,
+        "selector_raw": 2,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.27",
@@ -2861,7 +2946,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 73,
+        "height": 64,
+        "columns_sha256": "d9d34a38dbbb01e1b23cb283ea974a181fc801dea831650d2927f67da43228c2",
+        "family_candidate": "MPP3",
+        "selector_offset": 442,
+        "selector_raw": 2,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.28",
@@ -2881,7 +2976,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 320,
+        "height": 64,
+        "columns_sha256": "7db7da4d15637f33cc9fe5d5c02af0b3995e06afc504b9b2be86f7a555f53275",
+        "family_candidate": "MPP4",
+        "selector_offset": 6431,
+        "selector_raw": 3,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.29",
@@ -2901,7 +3006,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 192,
+        "height": 64,
+        "columns_sha256": "6c71937c956734c4bd2806f1ac24e5956ce573f7472860072bd7edd01833c761",
+        "family_candidate": "MPP4",
+        "selector_offset": 4537,
+        "selector_raw": 3,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.30",
@@ -2921,7 +3036,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 73,
+        "height": 64,
+        "columns_sha256": "01ba8b8a062c419045ace7203ed2a17795bdb18d99df7ffb209e0242c692ed18",
+        "family_candidate": "MPP4",
+        "selector_offset": 565,
+        "selector_raw": 3,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.31",
@@ -2941,7 +3066,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 240,
+        "height": 64,
+        "columns_sha256": "bf80ea9b3c8a91e2d973d9c0177078db6fdcc931b76c53bc545584d502e43b2d",
+        "family_candidate": "MPP5",
+        "selector_offset": 6399,
+        "selector_raw": 4,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.32",
@@ -2961,7 +3096,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 240,
+        "height": 64,
+        "columns_sha256": "0e59c8efd37c06d903fc0233251f6c0f1d7584105ab26ea7809cb0660990b810",
+        "family_candidate": "MPP5",
+        "selector_offset": 6924,
+        "selector_raw": 4,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.33",
@@ -2981,7 +3126,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 73,
+        "height": 64,
+        "columns_sha256": "5fc62f1d15f9fd121c2fb9f25a1052c2c96cec5b71db14860db3aeb43bf747ea",
+        "family_candidate": "MPP5",
+        "selector_offset": 575,
+        "selector_raw": 4,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.34",
@@ -3001,7 +3156,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 320,
+        "height": 64,
+        "columns_sha256": "d96fd5058e328e9ca022c2eeb55cb85d9e7248af984d45e5ff545fcaa289afe6",
+        "family_candidate": "MPP6",
+        "selector_offset": 6444,
+        "selector_raw": 5,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.35",
@@ -3021,7 +3186,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 256,
+        "height": 64,
+        "columns_sha256": "51fa9a25b73af590e303be19606e5385f8b6ce9f50ddf49e99d6a6ad163843ac",
+        "family_candidate": "MPP6",
+        "selector_offset": 5415,
+        "selector_raw": 5,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.36",
@@ -3041,7 +3216,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 73,
+        "height": 64,
+        "columns_sha256": "1cfe23ab7fddcb5c6e605ec2e7e177e33405ca030e32d2f7525dc965f40a44ef",
+        "family_candidate": "MPP6",
+        "selector_offset": 1297,
+        "selector_raw": 5,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.37",
@@ -3061,7 +3246,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 73,
+        "height": 64,
+        "columns_sha256": "22f3b21b47c5acdad6831cd572f115f087d46556e8d367d922c2fb01c31dd4c8",
+        "family_candidate": "MPP6",
+        "selector_offset": 722,
+        "selector_raw": 5,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.38",
@@ -3081,7 +3276,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 208,
+        "height": 64,
+        "columns_sha256": "7d0c40fddcca2f2daea4c7ab60da6f98858e68bba193ad287f57fdd308f92eb5",
+        "family_candidate": "MPP7",
+        "selector_offset": 7525,
+        "selector_raw": 6,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.39",
@@ -3101,7 +3306,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 196,
+        "height": 64,
+        "columns_sha256": "ebf1a936eaef998e65e6e2c162a82510784ca0900d24d3f8df7e8cd6c67bc9df",
+        "family_candidate": "MPP7",
+        "selector_offset": 6090,
+        "selector_raw": 6,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.40",
@@ -3121,7 +3336,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 128,
+        "height": 64,
+        "columns_sha256": "b41159a84e84eca74920a7855ac8387f53fb7ff9ae6ef0b528d861a273339a35",
+        "family_candidate": "MPP7",
+        "selector_offset": 4503,
+        "selector_raw": 6,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.41",
@@ -3141,7 +3366,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 73,
+        "height": 64,
+        "columns_sha256": "8a82683d701616aec6ec7bb290bd489c5dfab7bb1ec8068e8da5e35ab8386a81",
+        "family_candidate": "MPPB",
+        "selector_offset": 403,
+        "selector_raw": 10,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.42",
@@ -3161,7 +3396,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 70,
+        "height": 64,
+        "columns_sha256": "92408ebfe19e25413b5d0887b0ba32e6c24ad9a44bd4f0b3750cc0ccfa77ab95",
+        "family_candidate": "MPP7",
+        "selector_offset": 696,
+        "selector_raw": 6,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.43",
@@ -3181,7 +3426,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 256,
+        "height": 64,
+        "columns_sha256": "587204d0c690a5f47e9b3206b16c66038e5f2cea3c143ee849c5b0352f4d2b30",
+        "family_candidate": "MPP8",
+        "selector_offset": 6329,
+        "selector_raw": 7,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.44",
@@ -3201,7 +3456,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 256,
+        "height": 64,
+        "columns_sha256": "5e5b0100050bbb45a231faaf7ffbf3fb1f339aa3bd584bbb5f4e52840432a2af",
+        "family_candidate": "MPP8",
+        "selector_offset": 6346,
+        "selector_raw": 7,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.45",
@@ -3221,7 +3486,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 192,
+        "height": 64,
+        "columns_sha256": "bf71958a558aa25155221193268434ddfb5b952bed29b140c6eb4de35ab22e85",
+        "family_candidate": "MPP8",
+        "selector_offset": 4944,
+        "selector_raw": 7,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.46",
@@ -3241,7 +3516,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 128,
+        "height": 64,
+        "columns_sha256": "9b64decb908fe500168b95714f64c7f799f2194483005930ea3fb705dc3a8379",
+        "family_candidate": "MPP8",
+        "selector_offset": 3130,
+        "selector_raw": 7,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.47",
@@ -3261,7 +3546,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 64,
+        "height": 64,
+        "columns_sha256": "d449c040f753fd029c8d2d7cda352b8905638959c5a3b8d5b8f30d3e27dafaa5",
+        "family_candidate": "MPP8",
+        "selector_offset": 1407,
+        "selector_raw": 7,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.48",
@@ -3281,7 +3576,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 70,
+        "height": 64,
+        "columns_sha256": "c4e0c777a0663e24f8b394f3bd5d23e13d1e3be918fe2e5662d2d3759480e7e2",
+        "family_candidate": "MPP8",
+        "selector_offset": 617,
+        "selector_raw": 7,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.49",
@@ -3301,7 +3606,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 42,
+        "height": 64,
+        "columns_sha256": "de47cbebe28729804b56b705806fdde326e0cd2281a213adb99e3849e9e12410",
+        "family_candidate": "MPP9",
+        "selector_offset": 471,
+        "selector_raw": 8,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.50",
@@ -3321,7 +3636,17 @@
         }
       ],
       "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed"
+      "normal_path": "not_assessed",
+      "map_source": {
+        "width": 73,
+        "height": 64,
+        "columns_sha256": "bf09fe2ed8f06048c0b82f829a27a64d69d401201344df60fc8d418da6785218",
+        "family_candidate": "MPPA",
+        "selector_offset": 987,
+        "selector_raw": 9,
+        "level": "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收",
+        "evidence": "workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+      }
     },
     {
       "key": "zelres3.record.51",
@@ -3945,6 +4270,15 @@
         "bytes": 1248,
         "sha256": "0b991410e2069c785b2db5781f2f662862d2985a7c536438cbe892b4ebdce32c",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP1",
+        "tiles": 25,
+        "source_sha256": "0b991410e2069c785b2db5781f2f662862d2985a7c536438cbe892b4ebdce32c",
+        "packed_sha256": "bb873820c81d32ff533a5fb1e74ec0f0fca64f917d89d6f7dc57796dfe516de7",
+        "status": "PASS_NORMAL_RESOURCE_BINDING",
+        "runtime_bytes_verified": 1248,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -3971,6 +4305,15 @@
         "bytes": 1680,
         "sha256": "66d849269082061d658ab07dab2f33a44fe5e231ebce64599bb8e48d54ba34e6",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP2",
+        "tiles": 34,
+        "source_sha256": "66d849269082061d658ab07dab2f33a44fe5e231ebce64599bb8e48d54ba34e6",
+        "packed_sha256": "a84dd4687f8ec67d320ef0fdd2d83c3050544e31cc804867ea216f1616afef99",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -3997,6 +4340,15 @@
         "bytes": 2112,
         "sha256": "66e9e07a7fc7677853baafb82c15a653338979fe73ce57f291f939719ba54b91",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP3",
+        "tiles": 43,
+        "source_sha256": "66e9e07a7fc7677853baafb82c15a653338979fe73ce57f291f939719ba54b91",
+        "packed_sha256": "b19a3e201325e198d44ef5399e721a148e7f17a804f69ebccd402d1b2e179cdf",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -4023,6 +4375,15 @@
         "bytes": 1056,
         "sha256": "41edc9380a37931fec4c0ee81ec79aff61c64e71b7c8e78101a3a88c44036995",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP4",
+        "tiles": 21,
+        "source_sha256": "41edc9380a37931fec4c0ee81ec79aff61c64e71b7c8e78101a3a88c44036995",
+        "packed_sha256": "3dc9e2988acda4222832a45df8fc2d62589c53f17ac3edbbed878be6dee1a645",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -4049,6 +4410,15 @@
         "bytes": 2544,
         "sha256": "964ab425d1f2d215fd4286ef53c0780090fa2663c8fc3b221f95b45f68005588",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP5",
+        "tiles": 52,
+        "source_sha256": "964ab425d1f2d215fd4286ef53c0780090fa2663c8fc3b221f95b45f68005588",
+        "packed_sha256": "51ae7fec2bd8b14f5affe35a0337eaa0ea632efa5ee15554d29279e27a68faf0",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -4075,6 +4445,15 @@
         "bytes": 1776,
         "sha256": "44dc5d86e69709bbe571b1cf86008a745a91e80d897437b68aeecc4cbe8b4325",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP6",
+        "tiles": 36,
+        "source_sha256": "44dc5d86e69709bbe571b1cf86008a745a91e80d897437b68aeecc4cbe8b4325",
+        "packed_sha256": "a90b2faacf3e4895cdfef2690805d80fec4ddd9141a791dc64d42d93e3abe812",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -4101,6 +4480,15 @@
         "bytes": 2976,
         "sha256": "89bf9b7d268985362e099b6b0db29c04ca4b48444857f70a7e0bacf82df26b14",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP7",
+        "tiles": 61,
+        "source_sha256": "89bf9b7d268985362e099b6b0db29c04ca4b48444857f70a7e0bacf82df26b14",
+        "packed_sha256": "8f653d969c43b66220777fdd56ce331c5297df9d006163b90be3b1fbe51b32f8",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -4127,6 +4515,15 @@
         "bytes": 2112,
         "sha256": "47ddb3770034d6dfa890e41daaa8c1337f1838c9b752371fc6e8da103a367966",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP8",
+        "tiles": 43,
+        "source_sha256": "47ddb3770034d6dfa890e41daaa8c1337f1838c9b752371fc6e8da103a367966",
+        "packed_sha256": "cef8e47d836ddcc42a98e0ef1547801616aaafc339dbff514e1fd45843141bf8",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -4153,6 +4550,15 @@
         "bytes": 1872,
         "sha256": "b60665deae37a452a76bd79ff1f9bc1695b2ddc33752058fdc8122a3e9ee253e",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPP9",
+        "tiles": 38,
+        "source_sha256": "b60665deae37a452a76bd79ff1f9bc1695b2ddc33752058fdc8122a3e9ee253e",
+        "packed_sha256": "4f763bae4ad2146762dc93abca82a5267421cbe8d85fb73fd36f2449e9def604",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -4179,6 +4585,15 @@
         "bytes": 1008,
         "sha256": "6610bddf655550d5157ae228172851b92b5204b30a7ae2b6e5d1a30122995521",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPPA",
+        "tiles": 20,
+        "source_sha256": "6610bddf655550d5157ae228172851b92b5204b30a7ae2b6e5d1a30122995521",
+        "packed_sha256": "76c2286e1dadfe7a53712d2bb658214b54dd294be759be26762e14e63682e9d9",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {
@@ -4205,6 +4620,15 @@
         "bytes": 288,
         "sha256": "cd053fb5fc7025b95207cb0d238c5bf17bf4b08611c2e44112cdd099b72684a6",
         "level": "已證實：與擷取原版常式逐byte相同，非正常遊戲路徑驗收"
+      },
+      "cave_terrain_source": {
+        "key": "MPPB",
+        "tiles": 5,
+        "source_sha256": "cd053fb5fc7025b95207cb0d238c5bf17bf4b08611c2e44112cdd099b72684a6",
+        "packed_sha256": "955f31b5fe960cd3157f68586858cbad6049c0efe57ebe769b4010583a79fbf4",
+        "status": "STRUCTURAL_SOURCE_CANDIDATE",
+        "runtime_bytes_verified": 0,
+        "evidence": "workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
       }
     },
     {

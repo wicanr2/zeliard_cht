@@ -53,6 +53,15 @@ def main():
     assert castle_report["status"] == "PASS_CASTLE_HD_SCOPED"
     for source in castle_report["source_files"]:
         assert sha((p/source["path"]).read_bytes()) == source["sha256"]
+    cave = p/"workplace/full-hd-v1/cave-source-stage-audit-v1.json"
+    cave_report = json.loads(cave.read_text())
+    assert cave_report["status"] == "PASS_CAVE_SOURCE_STAGE"
+    for source in cave_report["source_files"]+cave_report["proofs"]:
+        assert sha((p/source["path"]).read_bytes()) == source["sha256"]
+    terrain_path = p/"workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
+    terrain_sources = {x["record"]: x for x in json.loads(terrain_path.read_text())["profiles"]}
+    cave_maps_path = p/"workplace/full-hd-v1/cave-map-sources-v1/receipt.json"
+    cave_maps = {x["record"]: x for x in json.loads(cave_maps_path.read_text())["records"]}
     grp_sources = {("ZELRES2.SAR", x["record"]): x for x in grp_report["records"]}
     catalog = []
     for archive, data in originals.items():
@@ -85,11 +94,22 @@ def main():
                 if key == ("ZELRES2.SAR", 33):
                     item["hd_coverage"] = "partial_scoped_candidate_verified"
                     item["normal_path"] = "城堡前景與四旗幟；規格036，正常Castle／Muralla往返，未更新封包"
+            if archive == "ZELRES3.SAR" and entry["index"] in terrain_sources:
+                source = terrain_sources[entry["index"]]
+                item["cave_terrain_source"] = {k: source[k] for k in ("key", "tiles", "source_sha256", "packed_sha256", "status", "runtime_bytes_verified")}
+                item["cave_terrain_source"]["evidence"] = str(terrain_path.relative_to(p))
+            if archive == "ZELRES3.SAR" and entry["index"] in cave_maps:
+                source = cave_maps[entry["index"]]
+                item["map_source"] = {k: source[k] for k in ("width", "height", "columns_sha256", "family_candidate", "selector_offset", "selector_raw")}
+                item["map_source"]["level"] = "已證實的原版解壓及descriptor選擇；非正常到達或HD驗收"
+                item["map_source"]["evidence"] = str(cave.relative_to(p))
             catalog.append(item)
     report = {"schema": 1, "objective": "完成全遊戲HD", "status": "in_progress",
               "scope_spec": "docs/spec/034-full-game-hd.md",
               "counts": {"container_records": len(catalog), "named_candidates": sum(bool(x["names"]) for x in catalog),
-                         "verified_decoded_records": len(verified), "classification_candidates": dict(Counter(x["classification"] for x in catalog))},
+                         "verified_decoded_records": len(verified), "verified_cave_maps": len(cave_maps),
+                         "verified_cave_map_cells": cave_report["decoded_map_cells"], "cave_terrain_source_tiles": cave_report["terrain_tiles"],
+                         "classification_candidates": dict(Counter(x["classification"] for x in catalog))},
               "limits": ["194是SAR容器記錄數，尚不是美術素材分母；不換算HD完成百分比",
                          "not_assessed表示尚未將既有局部HD與此全量記錄逐項對應，不否定前版已驗成果",
                          "檔名／副檔名只作分類候選，不能單憑GRP或MDT宣稱已解圖、全部可達或已HD"],
@@ -102,8 +122,12 @@ def main():
                                      {"key": "castle.foreground", "status": "scoped_candidate_verified",
                                       "spec": "docs/spec/036-castle-hd.md", "source_record": "zelres2.record.33",
                                       "evidence": str(castle.relative_to(p)),
-                                      "limits": "只驗城堡前景、四旗幟與Muralla往返；phase4、交談背景及其他場景仍有缺口，未更新封包"}],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle)],
+                                      "limits": "只驗城堡前景、四旗幟與Muralla往返；phase4、交談背景及其他場景仍有缺口，未更新封包"},
+                                     {"key": "cave.terrain.ice", "status": "generated_candidate_not_connected",
+                                      "spec": "docs/spec/037-all-cave-terrain-hd.md", "source_record": "zelres3.record.77",
+                                      "evidence": "workplace/full-hd-v1/cave-ice-art-v2/generation.json",
+                                      "limits": "21格原圖與兩版手繪候選；空白格alpha及裁切未驗，未接入正式前端"}],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave)],
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(report["counts"], ensure_ascii=False))

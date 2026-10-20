@@ -326,6 +326,11 @@
 
 全遊戲後續來源入口：
 
+- [全洞窟地形來源](tools/hd_cave_sources.py) 擷取SAR3的MPP1..MPPB原生圖格與分組總覽；[規格037](docs/spec/037-all-cave-terrain-hd.md)分開正常RAM已核與結構候選。輸出留`workplace/full-hd-v1/cave-terrain-sources-v1/`，不把解圖當HD完成。
+- [洞窟存檔來源探針](tools/hd_cave_save_probe.go) 在兩個獨立dosgolem冷讀包內四份USR，只用原版按鍵擷取場景與圖像來源；存檔前史未知，不當新局全流程或HD驗收。
+- [洞窟地圖解碼](tools/hd_cave_maps.py) 保存31份地圖原始柱狀資料與靜態研究圖；[原版地圖常式對照](tools/hd_cave_map_oracle.go)執行原始6CED..6D6D逐欄核對，與正常可達性分列。
+- [洞窟地形分級索引](docs/cave-terrain-source-index.json) 保留固定正常段的原始定位；[IDA9.4來源匯出](tools/ida_cave_resource_evidence.py)自動合併索引，未達已證實的項目加警示。
+- [洞窟來源稽核](tools/hd_cave_source_audit.py)核378圖格、31份地圖、原版常式、正常初始化及美術候選身份；參數為`--project`、`--output`，只接受新輸出檔，不把來源通過升格為HD完成。
 - [三平面研究工具](tools/hd_planar.py) 與 [原版常式對照](tools/hd_planar_oracle.go) 在Docker內對80筆補零研究buffer核對轉換，不等同80筆圖像格式或HD完成。
 - [GRP來源擷取](tools/hd_grp_sources.py) 保存四個正常資源共597圖格及有效遮罩的原版RAM對照；CMAN／DPAT仍為結構候選。
 - [城堡來源擷取](tools/hd_castle_sources.py) 與 [規格036](docs/spec/036-castle-hd.md) 保存912×64前景、原版快取變體及限定CONFORMED契約。圖面與完整提示詞在 `workplace/full-hd-v1/castle-art-v2/`、`castle-animation-v1/`，註冊產物在`castle-registration-v1/`；只接候選版，未更新封包。
