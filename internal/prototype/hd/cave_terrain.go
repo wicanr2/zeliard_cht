@@ -19,6 +19,10 @@ type CaveTerrain struct {
 	mpp5        *caveTerrainArt
 	mpp6        *caveTerrainArt
 	mpp7        *caveTerrainArt
+	mpp8        *caveTerrainArt
+	mpp9        *caveTerrainArt
+	mppa        *caveTerrainArt
+	mppb        *caveTerrainArt
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -208,6 +212,14 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			art = s.mpp6
 		case "MPP7":
 			art = s.mpp7
+		case "MPP8":
+			art = s.mpp8
+		case "MPP9":
+			art = s.mpp9
+		case "MPPA":
+			art = s.mppa
+		case "MPPB":
+			art = s.mppb
 		default:
 			return false
 		}

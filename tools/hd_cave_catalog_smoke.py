@@ -17,6 +17,7 @@ mpp3_art = os.environ.get("ZELIARD_CAVE_MPP3_ART", "")
 mpp5_art = os.environ.get("ZELIARD_CAVE_MPP5_ART", "")
 mpp6_art = os.environ.get("ZELIARD_CAVE_MPP6_ART", "")
 mpp7_art = os.environ.get("ZELIARD_CAVE_MPP7_ART", "")
+remaining_art = {f: os.environ.get("ZELIARD_CAVE_"+f+"_ART", "") for f in ("MPP8", "MPP9", "MPPA", "MPPB")}
 assert candidate.is_file()
 original_start = start
 
@@ -40,6 +41,9 @@ def start():
                 command.extend(["-cave-mpp6-art", mpp6_art])
             if mpp7_art:
                 command.extend(["-cave-mpp7-art", mpp7_art])
+            for family, directory in remaining_art.items():
+                if directory:
+                    command.extend(["-cave-"+family.lower()+"-art", directory])
         return original_popen(command, *args, **kwargs)
     subprocess.Popen = launch
     try:
@@ -78,8 +82,12 @@ def align_cave_exit(target):
     for _ in range(24):
         s = wait("正常洞窟來源", ready, 15)
         value = s["native_primary_0080"]+s["native_primary_0083"]
-        if value == target:
+        # 即時觀察可能跨過單一座標；鄰近值只用來嘗試Up，是否離洞由原版轉場判定。
+        # v1輸入紀錄顯示控制器反覆左右跨過目標，最後因持續等候位移而逾時。
+        if abs(value-target) <= 2:
+            exit_alignment.append({"target":target,"observed":value,"steps":s["steps"],"action":"try-original-up"})
             return
+        exit_alignment.append({"target":target,"observed":value,"steps":s["steps"],"action":"left" if value>target else "right"})
         scan = 0x4b if value > target else 0x4d
         edge(scan,True)
         try:
@@ -100,6 +108,7 @@ def frozen(name):
 
 
 pairs = []
+exit_alignment = []
 
 
 def compare(name):
@@ -187,13 +196,16 @@ try:
               "mpp5_art_directory": mpp5_art,
               "mpp6_art_directory": mpp6_art,
               "mpp7_art_directory": mpp7_art,
+              "remaining_family_art_directories": remaining_art,
               "exit_target_primary_sum": exit_target,
+              "exit_alignment": exit_alignment,
               "script_sha256": h(Path(__file__)), "helper_sha256": h(helper),
               "boots": boots, "shots": shots, "pairs": pairs, "normal_DOS_exit": 0,
               "limits": "只驗MPP1正常冷讀、入洞、步行、HD切回及回城；未驗其他洞窟或新冰窟美術"}
     (O/"receipt.json").write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n")
     print(report["status"], flush=True)
 except Exception:
+    (O/"failed-observations.json").write_text(json.dumps({"shots":shots,"pairs":pairs,"exit_alignment":exit_alignment},ensure_ascii=False,indent=2)+"\n")
     if process is not None and process.poll() is None:
         invoke(["import", "-window", window, str(O/"failed-live.png")])
         (O/"failed-state.json").write_text(json.dumps(state(),ensure_ascii=False,indent=2)+"\n")

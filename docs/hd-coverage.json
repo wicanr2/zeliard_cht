@@ -48,7 +48,7 @@
       "status": "connected_structural_verified_normal_path_pending",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "source_record": "zelres3.record.77",
-      "evidence": "workplace/full-hd-v1/cave-mpp7-final-audit-v1.json",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
       "registered_tiles": 21,
       "limits": "21格完整手繪圖集接入可選前端，三份合成結構快照與光球取樣通過；正常冰窟進出、捲動及20／21事件用途未驗；MPP1回歸不當冰窟驗收"
     },
@@ -57,7 +57,7 @@
       "status": "connected_structural_verified_normal_path_pending",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "source_record": "zelres3.record.75",
-      "evidence": "workplace/full-hd-v1/cave-mpp7-final-audit-v1.json",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
       "registered_tiles": 34,
       "limits": "34格固定圖集接入可選前端，三份結構快照及全34格繪圖通過；正常進出／捲動及26..34事件用途待驗；不當全洞窟完成"
     },
@@ -66,7 +66,7 @@
       "status": "connected_structural_verified_normal_path_pending",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "source_record": "zelres3.record.76",
-      "evidence": "workplace/full-hd-v1/cave-mpp7-final-audit-v1.json",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
       "registered_tiles": 43,
       "limits": "43格、九個材質ID及完整BOSQUE字帶已接；三份結構快照、全格及三家族共存通過；正常進出／捲動／事件待驗，不當全洞窟完成"
     },
@@ -75,7 +75,7 @@
       "status": "connected_structural_verified_normal_path_pending",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "source_record": "zelres3.record.78",
-      "evidence": "workplace/full-hd-v1/cave-mpp7-final-audit-v1.json",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
       "registered_tiles": 52,
       "limits": "52格、20個材質ID及32個細部已接；三份結構快照、全格及四家族共存通過；正常進出／捲動及48..52事件用途待驗，不當全洞窟完成"
     },
@@ -84,7 +84,7 @@
       "status": "connected_structural_verified_normal_path_pending",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "source_record": "zelres3.record.79",
-      "evidence": "workplace/full-hd-v1/cave-mpp7-final-audit-v1.json",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
       "registered_tiles": 36,
       "limits": "36格、金黃／紫岩雙材質與非連號DORADO字帶已接；四份結構快照、全格及五家族共存通過；正常進出／捲動與尾端圖樣事件用途待驗，不當全洞窟完成"
     },
@@ -93,7 +93,7 @@
       "status": "connected_structural_verified_normal_path_pending",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "source_record": "zelres3.record.80",
-      "evidence": "workplace/full-hd-v1/cave-mpp7-final-audit-v1.json",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
       "registered_tiles": 61,
       "visible_tiles": 58,
       "source_empty_slots": [
@@ -104,12 +104,52 @@
       "limits": "61槽、赤紅／白熱雙材質、LLAMA字帶及三個原版空白槽已接；四份結構快照、58個可見圖格、十一尾端圖樣差異與六家族共存通過；正常進出／捲動／事件待驗，不當全洞窟完成"
     },
     {
+      "key": "cave.terrain.MPP8",
+      "status": "connected_structural_verified_normal_path_pending",
+      "spec": "docs/spec/037-all-cave-terrain-hd.md",
+      "source_record": "zelres3.record.81",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
+      "registered_tiles": 43,
+      "visible_tiles": 40,
+      "limits": "固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"
+    },
+    {
+      "key": "cave.terrain.MPP9",
+      "status": "connected_structural_verified_normal_path_pending",
+      "spec": "docs/spec/037-all-cave-terrain-hd.md",
+      "source_record": "zelres3.record.82",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
+      "registered_tiles": 38,
+      "visible_tiles": 38,
+      "limits": "固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"
+    },
+    {
+      "key": "cave.terrain.MPPA",
+      "status": "connected_structural_verified_normal_path_pending",
+      "spec": "docs/spec/037-all-cave-terrain-hd.md",
+      "source_record": "zelres3.record.83",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
+      "registered_tiles": 20,
+      "visible_tiles": 19,
+      "limits": "固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"
+    },
+    {
+      "key": "cave.terrain.MPPB",
+      "status": "connected_structural_verified_normal_path_pending",
+      "spec": "docs/spec/037-all-cave-terrain-hd.md",
+      "source_record": "zelres3.record.84",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
+      "registered_tiles": 5,
+      "visible_tiles": 5,
+      "limits": "固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"
+    },
+    {
       "key": "cave.source.catalog",
       "status": "implemented_scoped_sampling",
       "spec": "docs/spec/037-all-cave-terrain-hd.md",
       "maps": 31,
       "terrain_profiles": 11,
-      "evidence": "workplace/full-hd-v1/cave-mpp7-final-audit-v1.json",
+      "evidence": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
       "limits": "來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"
     }
   ],
@@ -143,8 +183,8 @@
       "sha256": "fa907ee8b30601f7868d6a714e8ae42dec6fa94b6efee1d5708cba541cb6420d"
     },
     {
-      "path": "workplace/full-hd-v1/cave-mpp7-final-audit-v1.json",
-      "sha256": "99c72edc30108a2ba08967f0d52a11056ee674fd9a6e9ba6b187cac1fd29446e"
+      "path": "workplace/full-hd-v1/cave-final-families-audit-v1.json",
+      "sha256": "01feb2a13705e07516e638efb2581034d68fb294a64651922d5deeaa71730689"
     }
   ],
   "archives": [
@@ -4573,8 +4613,8 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed",
+      "hd_coverage": "connected_structural_verified_normal_path_pending",
+      "normal_path": "MPP8／MPP9／MPPA／MPPB圖面與九份結構地圖已驗；正常到達、進出、捲動及事件待驗，不當全洞窟完成",
       "decoder": {
         "kind": 7,
         "bytes": 2112,
@@ -4608,8 +4648,8 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed",
+      "hd_coverage": "connected_structural_verified_normal_path_pending",
+      "normal_path": "MPP8／MPP9／MPPA／MPPB圖面與九份結構地圖已驗；正常到達、進出、捲動及事件待驗，不當全洞窟完成",
       "decoder": {
         "kind": 7,
         "bytes": 1872,
@@ -4643,8 +4683,8 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed",
+      "hd_coverage": "connected_structural_verified_normal_path_pending",
+      "normal_path": "MPP8／MPP9／MPPA／MPPB圖面與九份結構地圖已驗；正常到達、進出、捲動及事件待驗，不當全洞窟完成",
       "decoder": {
         "kind": 7,
         "bytes": 1008,
@@ -4678,8 +4718,8 @@
           "level": "強推論：與已證實11byte descriptor形狀相同，逐一consumer仍須核對"
         }
       ],
-      "hd_coverage": "not_assessed",
-      "normal_path": "not_assessed",
+      "hd_coverage": "connected_structural_verified_normal_path_pending",
+      "normal_path": "MPP8／MPP9／MPPA／MPPB圖面與九份結構地圖已驗；正常到達、進出、捲動及事件待驗，不當全洞窟完成",
       "decoder": {
         "kind": 1,
         "bytes": 288,

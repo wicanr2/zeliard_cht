@@ -997,6 +997,10 @@ func main() {
 	caveMPP5Art := flag.String("cave-mpp5-art", "", "可選：MPP5的52格手繪圖集，需同時指定cave-art-dir")
 	caveMPP6Art := flag.String("cave-mpp6-art", "", "可選：MPP6的36格雙材質手繪圖集，需同時指定cave-art-dir")
 	caveMPP7Art := flag.String("cave-mpp7-art", "", "可選：MPP7的61槽雙材質手繪圖集，需同時指定cave-art-dir")
+	caveMPP8Art := flag.String("cave-mpp8-art", "", "可選：MPP8的43槽雙字帶手繪圖集，需同時指定cave-art-dir")
+	caveMPP9Art := flag.String("cave-mpp9-art", "", "可選：MPP9的38格手繪圖集，需同時指定cave-art-dir")
+	caveMPPAArt := flag.String("cave-mppa-art", "", "可選：MPPA的20槽雙材質手繪圖集，需同時指定cave-art-dir")
+	caveMPPBArt := flag.String("cave-mppb-art", "", "可選：MPPB的5格手繪圖集，需同時指定cave-art-dir")
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
 	caveObjectArt := flag.String("cave-object-art-dir", "", "可選：洞窟動態物件手繪圖集目錄，搭配洞窟地形HD")
@@ -1165,6 +1169,21 @@ func main() {
 			if *caveMPP7Art != "" {
 				if e := g.caveTerrainHD.LoadMPP7(*caveMPP7Art); e != nil {
 					log.Printf("MPP7地形HD未載入，保留該家族原貌：%v", e)
+				}
+			}
+			for _, extra := range []struct {
+				name, dir string
+				load      func(string) error
+			}{
+				{"MPP8", *caveMPP8Art, g.caveTerrainHD.LoadMPP8},
+				{"MPP9", *caveMPP9Art, g.caveTerrainHD.LoadMPP9},
+				{"MPPA", *caveMPPAArt, g.caveTerrainHD.LoadMPPA},
+				{"MPPB", *caveMPPBArt, g.caveTerrainHD.LoadMPPB},
+			} {
+				if extra.dir != "" {
+					if e := extra.load(extra.dir); e != nil {
+						log.Printf("%s地形HD未載入，保留該家族原貌：%v", extra.name, e)
+					}
 				}
 			}
 			if *caveObjectArt != "" {

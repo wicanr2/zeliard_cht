@@ -34,11 +34,39 @@ PROFILES = {
              "material_fit":"repeat","preview_marker":36,
              "maps":["MP70","MP71","MP72","MP7D"],"text_ids":[36,37,38,39,46],
              "text":"LLAMA","generation":"generation.json"},
+    "MPP8": {"count":43,"material_ids":[7,8,21,23,26],"blank_ids":[17,18,19],
+             "sheets":{"a":[1,2,3,4,5,6,9,10,11,12,15,16],
+                       "b":[20,22,24,25,27,28,37,38,39,40,41],"c":[42,43]},
+             "labels":[{"key":"label","ids":[29,30,31,32,33],"text":"PUREZA","reference":"label-original.png"},
+                       {"key":"label2","ids":[34,35,36,13,14],"text":"ESCO","reference":"label2-original.png"}],
+             "material_reference":"material-reference.png","material_fit":"repeat","preview_marker":29,"preview_markers":{"MP81":34},
+             "maps":["MP80","MP81","MP82","MP83","MP84","MP8D"],
+             "text_ids":[29,30,31,32,33,34,35,36,13,14],"text":"PUREZA / ESCO","generation":"generation.json"},
+    "MPP9": {"count":38,"material_ids":list(range(19,39)),
+             "sheets":{"a":list(range(1,13)),"b":list(range(13,19))},
+             "material_reference":"material-reference.png","material_fit":"repeat","preview_marker":20,
+             "maps":["MP90"],"text_ids":[],"text":"","generation":"generation.json"},
+    "MPPA": {"count":20,"material_ids":[3,4],"secondary_material_ids":[17,18,19],"blank_ids":[20],
+             "sheets":{"a":[1,2,*range(5,15)],"b":[15,16]},
+             "material_reference":"material-reference.png","material_fit":"repeat","preview_marker":9,
+             "maps":["MPA0"],"text_ids":[],"text":"","generation":"generation.json"},
+    "MPPB": {"count":5,"material_ids":[1,2,3],"sheets":{"a":[4,5]},
+             "material_reference":"material-reference.png","material_fit":"repeat","preview_marker":2,
+             "maps":["MP73"],"text_ids":[],"text":"","generation":"generation.json"},
 }
 
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def label_groups(cfg):
+    if cfg.get("labels"):
+        return cfg["labels"]
+    if cfg["text_ids"]:
+        return [{"key":"label","ids":cfg["text_ids"],"text":cfg["text"],
+                 "reference":cfg.get("text_reference","label-34-38-original.png")}]
+    return []
 
 
 def source(project,key):
@@ -85,11 +113,11 @@ def prepare(project,key,out):
             d.text((x+8,y+6),str(i),fill="white")
             im.paste(natives[i].resize((192,192),Image.Resampling.NEAREST),(x+32,y+40))
         im.save(out/"secondary-material-reference.png")
-    if cfg["text_ids"]:
-        strip = Image.new("RGBA",(len(cfg["text_ids"])*8,8))
-        for n,i in enumerate(cfg["text_ids"]):
+    for label in label_groups(cfg):
+        strip = Image.new("RGBA",(len(label["ids"])*8,8))
+        for n,i in enumerate(label["ids"]):
             strip.paste(natives[i],(n*8,0))
-        strip.resize((1000,200),Image.Resampling.NEAREST).save(out/cfg.get("text_reference","label-34-38-original.png"))
+        strip.resize((1000,200),Image.Resampling.NEAREST).save(out/label["reference"])
     meta = {"schema":1,"profile":key,"source_sha256":profile["source_sha256"],**cfg,
             "references":[{"file":f.name,"sha256":sha(f)} for f in out.glob("*.png")],
             "limits":["原圖等比例展示供imagegen參考，不計HD產物。","視覺分類不推定圖格用途、碰撞或事件；字帶另依實際相鄰順序核對。"]}
@@ -147,7 +175,7 @@ def register(project,key,out):
         path = art_dir/row["file"]
         assert sha(path) == row["sha256"]
         images[row["key"]] = Image.open(path).convert("RGBA")
-    assert set(images) == {"material",*("details_"+k for k in cfg["sheets"]),*(["label"] if cfg["text_ids"] else []),*(["secondary_material"] if cfg.get("secondary_material_ids") else [])}
+    assert set(images) == {"material",*("details_"+k for k in cfg["sheets"]),*(r["key"] for r in label_groups(cfg)),*(["secondary_material"] if cfg.get("secondary_material_ids") else [])}
     assert images["material"].getchannel("A").getextrema() == (255,255)
     def fit_material(im):
         im = im.convert("RGB")
@@ -186,18 +214,18 @@ def register(project,key,out):
             sprite.putalpha(Image.fromarray(np.minimum(np.asarray(sprite.getchannel("A")),mask).astype("uint8")))
             tiles[i] = sprite
             rows[i] = {"id":i,"kind":"detail","sheet":group,"slot":n,"art_crop":crop,"native_bounds":native_bounds}
-    if cfg["text_ids"]:
-        label = images["label"]
+    for group in label_groups(cfg):
+        label = images[group["key"]]
         assert label.getchannel("A").getextrema() == (0,255)
         crop = label.getchannel("A").point(lambda v:255 if v>=128 else 0).getbbox()
         assert crop is not None
-        strip = label.crop(crop).convert("RGBa").resize((len(cfg["text_ids"])*24,24),Image.Resampling.LANCZOS).convert("RGBA")
-    for n,i in enumerate(cfg["text_ids"]):
-        sprite = Image.new("RGBA",(24,24),(0,0,0,255))
-        sprite.alpha_composite(strip.crop((n*24,0,(n+1)*24,24)))
-        tiles[i] = sprite
-        rows[i] = {"id":i,"kind":"graphic_label","text":cfg["text"],"art_crop":crop,"strip_part":n,
-                   "superseded_detail":rows.get(i)}
+        strip = label.crop(crop).convert("RGBa").resize((len(group["ids"])*24,24),Image.Resampling.LANCZOS).convert("RGBA")
+        for n,i in enumerate(group["ids"]):
+            sprite = Image.new("RGBA",(24,24),(0,0,0,255))
+            sprite.alpha_composite(strip.crop((n*24,0,(n+1)*24,24)))
+            tiles[i] = sprite
+            rows[i] = {"id":i,"kind":"graphic_label","text":group["text"],"art_crop":crop,"strip_part":n,
+                       "superseded_detail":rows.get(i)}
     for n,i in enumerate(cfg["material_ids"]+cfg.get("secondary_material_ids",[])):
         x,y = n%18*24,n//18*24
         chosen_texture = secondary_texture if i in cfg.get("secondary_material_ids",[]) else texture
@@ -236,7 +264,8 @@ def register(project,key,out):
         assert sha(path) == row["columns_sha256"]
         columns = np.frombuffer(path.read_bytes(),dtype="uint8").reshape((row["width"],64))
         # 固定原始圖格ID為離線構圖錨點，不推定文字或事件含義。
-        marker = np.argwhere(columns == cfg.get("preview_marker",35))
+        marker_id = cfg.get("preview_markers",{}).get(row["name"].removesuffix(".MDT"),cfg.get("preview_marker",35))
+        marker = np.argwhere(columns == marker_id)
         if not len(marker):
             marker = np.argwhere(columns == 15)
         cx,cy = (int(marker[0,0])-10,int(marker[0,1])-8) if len(marker) else (10,8)
@@ -260,6 +289,8 @@ def register(project,key,out):
         report["secondary_material_sha256"] = sha(out/(key.lower()+"-secondary-material-v1.png"))
     if cfg.get("blank_ids"):
         report["blank_ids"] = cfg["blank_ids"]
+    if cfg.get("labels"):
+        report["labels"] = cfg["labels"]
     (out/"manifest.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(report["status"],key,report["atlas_sha256"],report["material_sha256"])
 

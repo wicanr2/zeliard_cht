@@ -207,6 +207,50 @@
 
 收尾入口`cave-mpp7-final-audit-v1.json`由[家族稽核](../../tools/hd_cave_family_audit.py)以`--family MPP7`重生至新檔。結構快照不執行VM，35點正常配對與視窗仍為MPP1，不當MPP7正常可達或事件證據。音訊關閉，未驗實體手把。MPP8等家族、正常新增家族路徑與全遊戲HD仍待完成；既有封包、版號及影片未更新。
 
+## MPP8／MPP9／MPPA／MPPB圖面準備
+
+狀態：READY。先以DRAFT完成四組來源、圖面、空白槽、字帶及九份靜態預覽核對，再於正式載入器實作前審查本契約。正常玩家路徑仍未知，不升CONFORMED。
+
+| 家族 | SAR3記錄 | 槽數 | 原版空白槽 | 靜態地圖 |
+|---|---:|---:|---|---|
+| MPP8 | 81 | 43 | 17、18、19 | MP80、MP81、MP82、MP83、MP84、MP8D |
+| MPP9 | 82 | 38 | 無 | MP90 |
+| MPPA | 83 | 20 | 20 | MPA0 |
+| MPPB | 84 | 5 | 無 | MP73 |
+
+- 原圖、48-byte header及每槽48-byte轉換資源的身份沿`cave-terrain-sources-v1/receipt.json`與`cave-catalog-fixtures-v1/`。來源檢視及鄰接樣本分別放在`cave-mpp8-source-v1/`、`cave-mpp9-source-v1/`、`cave-mppa-source-v1/`、`cave-mppb-source-v1/`。這是結構證據，不當正常玩家到達。
+- MPP8的連續藍色晶岩只限7、8、21、23、26。25個細部分三張圖保留原生輪廓，金黃上緣不併入藍岩。MP80的29、30、31、32、33依序拼成PUREZA；MP81的34、35、36、13、14拼成ESCO。兩段分別整詞取樣再分回原ID，不能以連號範圍或單格猜字。完整核讀在`cave-mpp8-source-v1/label-review.json`；原始SAR2的Esco village僅佐證拼字，不作圖格映射或正常路徑證據。
+- MPP9的19..38為紫色岩面，其餘18格保留紅色光點、藍紫片段及黃白斜片的各自形狀。不把1..8不同亮度及外形的紅色片段合成相同材質。無已核字帶，不新增文字。
+- MPPA的3、4為灰綠砌石，17..19為深藍砌石，使用兩張獨立材質。其餘14格保留紅色地面、彩色橫帶、紫黃直柱及兩個斜片。MPPB的1..3為橙黃紅表面，4、5兩個綠色光點分開製作；地圖來源為MP73，不由圖集名稱猜MPB0。
+- 共106槽、102個可見圖格與四個原版空白槽。空白槽須同時核原圖RGB與轉換資源全零，再保留透明24×24圖格。圖面用途分類不推定碰撞、事件、傷害或動畫順序。
+- 以內建imagegen製作15張來源圖，保存完整提示詞、參考及輸出SHA於各家族`cave-*-art-v1/generation.json`。[家族素材工具](../../tools/hd_cave_family_art.py)新增多字帶註冊及四家族離線分組，輸出沿既有`cave-*-complete-v1/`。舊家族圖面及歷史收據不覆寫。
+- 本批正常進出、捲動、事件、存讀後恢復與原貌切回未驗。後續仍須來源／色盤／完整原生畫面／時間／同地圖守衛、固定圖面SHA及尺寸、原子載入與失配拒絕、九圖獨立像素及全槽抽驗，再做正常玩家路徑。離線圖面不升CONFORMED，不稱全洞窟或全遊戲完成。
+
+四份`cave-*-complete-v1/offline-check.json`證實106槽與九份靜態預覽完整重生，沒有缺少可見圖格。各家族`reference-check.json`核對15份生成參考及四槽資源全零；`cave-mpp8-art-v1/legacy-reference-check.json`另核舊四家族20份參考PNG不變。接觸表、MP80／MP81、MP90、MPA0及MP73預覽已目視，未執行VM。
+
+| 家族 | 圖帶尺寸 | 圖帶SHA-256 | 432×768主材質SHA-256 |
+|---|---|---|---|
+| MPP8 | 1032×24 | `792e1da6cbbf2a7e4b5ae5bce74d29acde6c3bee260160c5d912dfd4d751a745` | `2f1582610aff83f95bdbd0cae51175dd4da08552601457cfdce1f30544bfd59e` |
+| MPP9 | 912×24 | `235abc0d25a62bd9cdf345b30e74d699d3d86993d64cb33f90f58d21112ce212` | `cde46e75fdfd0d18b9f4682e54a778527f1dfe8e5b39700442934b3740065ac7` |
+| MPPA | 480×24 | `21366e96cab4e9b56d1e2235cd37b5be798610c4f1f6f8978cf389554e0af1c8` | `4e86784dcac7be673d83df2cd60d4453a6bf8e202e729c9c30eda76b2716f267` |
+| MPPB | 120×24 | `6e866a7c88551b5a6959a176c4c633a8e58555121b5ad4fb82818ec2411faafe` | `f3bd7e1c7729fc8f3fb4fb9350e6d7e164c0c72475b2ad058f354672b387921f` |
+
+- MPPA第二材質為432×768深藍砌石，SHA-256 `2db572fdcb06c866514921659550264aa406bc029a5bb6c6b2ff2972868cf9e3`。每組先核完整圖帶、材質及尺寸，全部成立才原子交換該家族；缺圖、損圖或第二材質缺失須保留已載圖集。
+- 可選前端參數為`-cave-mpp8-art`、`-cave-mpp9-art`、`-cave-mppa-art`、`-cave-mppb-art`，皆搭配既有`-cave-art-dir`。按完整來源選家族，不以色盤或檔名猜場景；既有六個新增家族與Malicia的圖面行為不變。
+- 字帶只用明列10個MPP8 ID；材質沿既有連續欄首末包絡、環形位址鏡射及等比例重複取樣。其餘圖樣按原生輪廓。空白槽由原版全零解碼保留，不把缺資產當空白。固定槽數43／38／20／5及未知下一ID、末格來源byte、主體資源、原生像素、時間與跨地圖失配，均須在畫布寫入前拒絕。
+- 正式驗證需九圖2612736獨立像素、全106槽、雙字帶、MPPA雙材質及原子拒絕，並同時載入十個新增家族回歸既有圖面與正常MPP1首戰／回城。這些回歸不當新增四家族正常可達或全遊戲完成。
+
+## 四家族限定驗證
+
+MPP8／MPP9／MPPA／MPPB的READY契約已實作，正常新增家族路徑仍未驗，不升CONFORMED。Go1.24.13候選在`workplace/full-hd-v1/cave-final-families-runtime-v1/zeliard-preview`，SHA-256 `55bfa76b14d0a7db309d96ba1a008d0bfda4f995c176f1d242958b4e8cef1d4d`。
+
+- 九份真實靜態網格組合進結構快照，正式Draw與獨立Python預覽2612736像素相同，區外及來源不變。全部106槽、102可見圖格、四個原版全零／透明槽、兩組字帶、雙材質及缺資產／末格來源／主體資源／原生像素／跨地圖／數量錯配／未知下一ID原子拒絕通過。
+- 十個新增家族同時載入，既有六家族結構地圖與Malicia圖面回歸通過。23項圖面與三項正常／來源測試無skip／fail，vet與建置通過。正常MPP1首戰25點、回城10點完整原版狀態、USR與mtime相同。
+- `cave-final-families-gui-v2/`以同一候選及十組圖集參數正常冷F7、入洞、步行、兩組原貌切回1152000遊戲區像素相同、回城與DOS退出0，根端已目視。v1控制器反覆跨過要求的精確位置，失敗紀錄保留。v2只在鄰近觀察值嘗試Up，原版實際轉場才算離洞，不宣稱精確命中範圍。
+- [四家族稽核](../../tools/hd_cave_remaining_audit.py)核來源、15張生成圖及完整提示詞、15份新參考、20份舊參考、離線重生、測試與視窗，輸出`cave-final-families-audit-v1.json`。舊MPP7及更早收據保持原身份；新程式不改VM、輸入、存檔或音樂。
+
+結構快照不執行VM。35點正常配對與實際視窗仍為MPP1，音訊關閉，不當新增四家族正常可達、事件、音色或實體手把證據。MPP1未全量對應圖格、正常新家族路徑、其他城鎮、敵人／首領與其餘美術仍待完成。全遊戲HD維持進行中，既有封包、版號及影片不改。
+
 ## 第三版冰窟註冊研究紀錄
 
 新參考只含原圖1..14。生成圖`cave-ice-art-v3/ice-terrain-handpaint-v3.png`為1254×1254，SHA-256 `9a09979a2c70a893c73a1dc876fe248862202573f4ce0b0c898a596bbd71b118`。不透明連續材質`cave-ice-material-v1/ice-material-handpaint-v1.png`同尺寸，SHA-256 `a8fef8473861ffe9a41d7f7cfe44dd6fda8ec94db154023034714c8fd88d4bc2`。兩者由內建imagegen產生，完整提示詞、輸入與輸出SHA各在generation.json。

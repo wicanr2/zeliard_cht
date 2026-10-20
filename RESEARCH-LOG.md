@@ -1073,3 +1073,20 @@ SAR3記錄80的解壓SHA-256 `89bf9b7d268985362e099b6b0db29c04ca4b48444857f70a7e
 - 六張內建imagegen原圖直接註冊為1464×24圖帶與兩張432×768材質，不放大原版8×8冒稱HD。圖帶SHA為`74e79828e3f1921388118ac82de7b1550670de109df4ab0954d7a9dfce5adea7`；赤紅材質為`b593a591f787a075fb1a9b37bfa458048b744b0cca18992c462ae4a69b8eaf47`，白熱材質為`297dd13c6bcc41807856f979aaaf455fd708f5f99a3a7ee160b758e91b07baa0`。51..61的註冊RGBA雜湊十一種皆不同，沒有合併成同一材質；六份實際生成參考重生SHA相同。
 - 四份靜態地圖未使用的ID為[34, 45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61]，其事件或動畫用途仍未知。四圖1161216像素、全61槽、58個可見圖格、空白槽及原子拒絕通過；MPP6四圖、其他四個新增家族各三圖與Malicia回歸通過。結構快照不執行VM，不當正常MPP7可達證據。
 - 候選`1df207def6a9fa90add5f808887114b2fe683fbd7a20d8e4a9da89d911d2c750`的MPP1首戰／回城35點完整原版狀態、USR與mtime相同。實際視窗兩組切回1152000遊戲區像素相同，正常回城與DOS退出0。MPP7正常進出、捲動、事件及全遊戲HD仍待完成。
+
+## 2026-10-20 MPP8／MPP9／MPPA／MPPB圖面來源
+
+已證實：SAR3記錄81..84的原始解壓、48-byte header及逐槽48-byte轉換資源沿cave-terrain-sources-v1/receipt.json與既有原版常式證據。fixture從檔案偏移0放header，對應預期11B1:8000；偏移48開始逐槽資料，對應預期11B1:8030。本輪未以正常後段RAM證實可達性，不把檔案偏移當正常載入位址證據。
+
+| 家族／記錄 | 原始解壓SHA-256 | 完整轉換fixture SHA-256 |
+|---|---|---|
+| MPP8／81 | `47ddb3770034d6dfa890e41daaa8c1337f1838c9b752371fc6e8da103a367966` | `8a5a3e0c71172f033449795e2650906b6e62540ef6e99759aa2a90ea07efa063` |
+| MPP9／82 | `b60665deae37a452a76bd79ff1f9bc1695b2ddc33752058fdc8122a3e9ee253e` | `9035c8c51d1c0a350ddb5a18ec38d34b70ac77a64d191e76d8f9df26961a8891` |
+| MPPA／83 | `6610bddf655550d5157ae228172851b92b5204b30a7ae2b6e5d1a30122995521` | `bbad71f3dd200ddec78763dba359fc878210cabae849492b1f18da711276789c` |
+| MPPB／84 | `cd053fb5fc7025b95207cb0d238c5bf17bf4b08611c2e44112cdd099b72684a6` | `43f014e537acd84f22a8ed36cbc46291256fc9074b0e945155aa05a91091392f` |
+
+已證實的靜態地圖關係為MPP8六圖MP80／MP81／MP82／MP83／MP84／MP8D、MPP9的MP90、MPPA的MPA0及MPPB的MP73。各source-review.json保留逐ID使用數及鄰接樣本。MPP8的29..33完整拼為PUREZA，34／35／36／13／14拼為ESCO；原始SAR2檔案偏移0x410c7的Esco village僅核拼字，原檔SHA與bytes保存在label-review.json，不當圖形映射或正常到達證據。
+
+已證實的空白來源為MPP8的17／18／19與MPPA的20，RGB及每槽48個轉換bytes全零。四份reference-check.json保留檢查；正式Go解碼另以64個全零色號核對。其餘102個可見圖格皆有生成及註冊圖面。連續材質、灰綠／深藍分組與字帶覆繪是明示外觀處理，不推定碰撞、事件或動畫語意。
+
+素材工具使用Docker內Python3.11.2、Pillow9.4.0、NumPy1.24.2，Go1.24.13只接入呈現層；共用dosgolem來源未改。九圖2612736像素比對的是正式Draw與獨立離線預覽，結構快照不執行VM。正常MPP1的35點與GUI v2另作回歸；四個新家族正常到達、捲動及事件仍為未知。證據入口為[規格037](docs/spec/037-all-cave-terrain-hd.md)及workplace/full-hd-v1/cave-final-families-audit-v1.json。

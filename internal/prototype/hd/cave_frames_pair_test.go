@@ -139,6 +139,7 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 			t.Fatal(e)
 		}
 	}
+	loadRemainingNormalTestArt(t, art)
 	if dir := os.Getenv("ZELIARD_CAVE_PELIGRO_ART"); dir != "" {
 		if e = art.LoadPeligro(dir); e != nil {
 			t.Fatal(e)
@@ -403,6 +404,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 			t.Fatal(e)
 		}
 	}
+	loadRemainingNormalTestArt(t, art)
 	if dir := os.Getenv("ZELIARD_CAVE_PLAYER_ART"); dir != "" {
 		if art == nil {
 			t.Fatal("主角HD須搭配已驗地形")

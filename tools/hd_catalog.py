@@ -48,9 +48,9 @@ def main():
     assert planar_report["status"] == "PASS_EXTRACTED_ORIGINAL_PLANAR" and len(planar_report["records"]) == 80
     assert all(x["matched"] and x["exit_code"] == 0 for x in planar_report["records"])
     assert grp_report["status"] == "PASS_FOUR_NORMAL_RESOURCE_BINDINGS"
-    runtime_catalog = p/"workplace/full-hd-v1/cave-mpp7-final-audit-v1.json"
+    runtime_catalog = p/"workplace/full-hd-v1/cave-final-families-audit-v1.json"
     runtime_catalog_report = json.loads(runtime_catalog.read_text())
-    assert runtime_catalog_report["status"] == "PASS_MPP7_STRUCTURAL_AND_MPP1_REGRESSION"
+    assert runtime_catalog_report["status"] == "PASS_REMAINING_CAVE_FAMILIES_STRUCTURAL_AND_MPP1_REGRESSION"
     for source in runtime_catalog_report["source_files"]+runtime_catalog_report["proofs"]:
         assert sha((p/source["path"]).read_bytes()) == source["sha256"]
     current_sources = {r["path"]:r["sha256"] for r in runtime_catalog_report["source_files"]}
@@ -112,6 +112,9 @@ def main():
                 if entry["index"] in (75,76,77,78,79,80):
                     item["hd_coverage"] = "connected_structural_verified_normal_path_pending"
                     item["normal_path"] = "MPP2／MPP3／MPP5／MPP6／MPP7／冰窟正常進出、捲動與事件待驗；結構像素見037，MPP1回歸另列"
+                if entry["index"] in (81,82,83,84):
+                    item["hd_coverage"] = "connected_structural_verified_normal_path_pending"
+                    item["normal_path"] = "MPP8／MPP9／MPPA／MPPB圖面與九份結構地圖已驗；正常到達、進出、捲動及事件待驗，不當全洞窟完成"
             if archive == "ZELRES3.SAR" and entry["index"] in cave_maps:
                 source = cave_maps[entry["index"]]
                 item["map_source"] = {k: source[k] for k in ("width", "height", "columns_sha256", "family_candidate", "selector_offset", "selector_raw")}
@@ -167,6 +170,12 @@ def main():
                                       "limits":"來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"}],
               "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog)],
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
+    for family,count,visible,record in (("MPP8",43,40,81),("MPP9",38,38,82),("MPPA",20,19,83),("MPPB",5,5,84)):
+        report["runtime_components"].insert(-1, {
+            "key":"cave.terrain."+family,"status":"connected_structural_verified_normal_path_pending",
+            "spec":"docs/spec/037-all-cave-terrain-hd.md","source_record":f"zelres3.record.{record}",
+            "evidence":str(runtime_catalog.relative_to(p)),"registered_tiles":count,"visible_tiles":visible,
+            "limits":"固定圖面、來源、全槽及結構地圖已驗；十家族共存與正常MPP1回歸通過。正常新增家族可達與事件未驗，不當全遊戲HD完成。"})
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(report["counts"], ensure_ascii=False))
 
