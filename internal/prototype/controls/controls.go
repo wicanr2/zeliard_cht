@@ -39,10 +39,11 @@ type Settings struct {
 	Selected string                        `json:"selected"`
 	Deadzone float64                       `json:"deadzone"`
 	Profiles map[string]map[string]Binding `json:"profiles"`
+	Keyboard map[string]string             `json:"keyboard,omitempty"`
 }
 
 func Default() Settings {
-	return Settings{Version: 1, Deadzone: .25, Profiles: map[string]map[string]Binding{}}
+	return Settings{Version: 1, Deadzone: .25, Profiles: map[string]map[string]Binding{}, Keyboard: DefaultKeyboard()}
 }
 
 func Load(path string) (Settings, error) {
@@ -59,6 +60,12 @@ func Load(path string) (Settings, error) {
 	}
 	if s.Version != 1 || math.IsNaN(s.Deadzone) || s.Deadzone < .05 || s.Deadzone > .9 || s.Profiles == nil {
 		return s, fmt.Errorf("手把設定格式或死區無效")
+	}
+	if s.Keyboard == nil {
+		s.Keyboard = DefaultKeyboard()
+	}
+	if err := s.ValidateKeyboard(); err != nil {
+		return s, err
 	}
 	for _, profile := range s.Profiles {
 		for action, binding := range profile {

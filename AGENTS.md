@@ -11,6 +11,10 @@
 
 ## 已授權目標
 
+2026-10-20 最新完成標準由使用者明確限定：第一個洞窟能玩、抽樣對話中文、HD正常、手把串接，工具列內可設定手把與鍵盤，選單中文。以此清單及代表性整合抽測收尾，不要求完整通關、逐筆文字／場景驗證或完成所有後段美術。未抽驗實體裝置與範圍照實列出，不延伸成新的完成閘門。
+
+2026-10-20 使用者調整驗收標準：採代表性正常流程抽測，不要求完整通關。已有共同來源與顯示契約的批次內容，抽代表樣本，不為同一機制逐筆重跑。適當測試通過後轉向製作與交付，保留已知問題及未抽驗範圍，不把抽測等同所有內容均已製作完成。
+
 - 參考 `/home/anr2/cht/softworld_san`，使用 dosgolem 推進《神劍封魔》的繁體中文化與 HD。
 - 工具列提供搖桿／手把選項，能選擇並綁定系統已辨識的藍牙與 USB 手把。
 - 建立私人 GitHub 儲存庫。README 的故事背景以本地中文手冊為來源。
@@ -104,6 +108,14 @@
 - 收尾檢查本專案容器與 root-owned 檔案，停止並刪除不再需要的容器。不得全域清理其他專案資源。
 
 ## 文件索引與權責
+
+本機第一洞窟試玩版由 [VERSION](VERSION) 指定版號，以 [tools/build-local.sh](tools/build-local.sh) 呼叫 Docker 內的 [tools/prepare_local.py](tools/prepare_local.py) 建置至dist-all。啟動用 [tools/play.sh](tools/play.sh)，容器包裝見 [tools/run-local.sh](tools/run-local.sh) 與 [tools/start_game.py](tools/start_game.py)。原版、字型與本機圖面只在full-local，未加入Git或Release。
+
+代表性視窗抽測為 [tools/integration_smoke.py](tools/integration_smoke.py)，只在有界Docker／Xvfb內對實際本機包執行，收據存於同版dist-all的smoke。檢查設定重綁、解除、還原、冷重開，以及中文／HD和第一洞窟基本操作；不擴張到完整通關。
+
+限定範圍的收尾核對使用 [tools/audit_local.py](tools/audit_local.py)，核實際GUI收據、Linux架構、素材manifest與來源身份，輸出同版smoke/audit.json。實體手把未接入時保留此限制，不宣稱已做USB／藍牙實機測試。
+
+工具列鍵盤設定入口為 [cmd/zeliard-preview/keyboard.go](cmd/zeliard-preview/keyboard.go)，穩定鍵名、交換與映射見 [internal/prototype/controls/keyboard.go](internal/prototype/controls/keyboard.go)，相容與保存抽測見 [keyboard_test.go](internal/prototype/controls/keyboard_test.go)。契約沿規格001的「工具列鍵盤設定」，研究與建置收據沿CONTEXT。
 
 [盾牌名稱與數字規格](docs/spec/024-shield-inventory-label.md)保存前置空白、後畫數字與中文安全區的證據閘門；來源存檔只經原版F7讀取隔離副本，取得過程保持未知。
 

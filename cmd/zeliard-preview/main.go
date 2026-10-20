@@ -28,6 +28,8 @@ import (
 
 const width, height, scale, barHeight = 960, 680, 3, 48
 
+var version = "development"
+
 type device struct {
 	id        ebiten.GamepadID
 	key, name string
@@ -44,6 +46,8 @@ type game struct {
 	devices              []device
 	edges                controls.Edges
 	panel, paused        bool
+	keyboardPanel        bool
+	releaseGate          bool
 	focus                int
 	listening            string
 	neutral              []float64
@@ -263,11 +267,14 @@ func (g *game) Update() error {
 	defer func() { g.previousButtons = buttons; g.previousActions = actions }()
 	if !ebiten.IsFocused() {
 		g.edges.Sync(g, nil)
+		g.releaseGate = true
 		return nil
 	}
 	just := func(a string) bool { return actions[a] && !g.previousActions[a] }
-	if !g.panel && just("toolbar") {
+	if !g.panel && (just("toolbar") || g.keyboardToolbarPressed()) {
 		g.panel = true
+		g.keyboardPanel = g.keyboardToolbarPressed()
+		g.releaseGate = true
 		g.edges.Sync(g, nil)
 	}
 	x, y := ebiten.CursorPosition()
@@ -280,8 +287,17 @@ func (g *game) Update() error {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
-		g.panel = !g.panel
+		g.panel = !g.panel || g.keyboardPanel
+		g.keyboardPanel = false
 		g.listening = ""
+		g.releaseGate = true
+		g.edges.Sync(g, nil)
+	}
+	if click && point.In(image.Rect(748, 8, 952, 40)) {
+		g.panel = !g.panel || !g.keyboardPanel
+		g.keyboardPanel = true
+		g.listening = ""
+		g.releaseGate = true
 		g.edges.Sync(g, nil)
 	}
 	if click && point.In(image.Rect(548, 8, 740, 40)) {
@@ -290,15 +306,24 @@ func (g *game) Update() error {
 	}
 	if g.panel {
 		g.edges.Sync(g, nil)
+		if click && point.In(image.Rect(720, 90, 900, 122)) {
+			g.keyboardPanel = !g.keyboardPanel
+			g.listening, g.notice = "", ""
+		}
 		if g.listening != "" {
-			g.captureBinding(buttons, axes)
+			if g.keyboardPanel {
+				g.captureKeyboard()
+			} else {
+				g.captureBinding(buttons, axes)
+			}
 			return nil
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || click && point.In(image.Rect(740, 560, 900, 600)) {
 			g.panel = false
+			g.releaseGate = true
 			return nil
 		}
-		if inpututil.IsKeyJustPressed(ebiten.KeyTab) || click && point.In(image.Rect(60, 135, 900, 175)) {
+		if !g.keyboardPanel && (inpututil.IsKeyJustPressed(ebiten.KeyTab) || click && point.In(image.Rect(60, 135, 900, 175))) {
 			g.nextDevice()
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) || just("down") {
@@ -308,26 +333,43 @@ func (g *game) Update() error {
 			g.focus = (g.focus + len(controls.Actions) - 1) % len(controls.Actions)
 		}
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || just("attack") {
-			g.beginBind(controls.Actions[g.focus], axes)
+			if g.keyboardPanel {
+				g.beginKeyboardBind(controls.Actions[g.focus])
+			} else {
+				g.beginBind(controls.Actions[g.focus], axes)
+			}
 		}
 		if click {
 			for i, a := range controls.Actions {
 				if point.In(actionRect(i)) {
 					g.focus = i
-					g.beginBind(a, axes)
+					if g.keyboardPanel {
+						g.beginKeyboardBind(a)
+					} else {
+						g.beginBind(a, axes)
+					}
 				}
 			}
 		}
-		if click && point.In(image.Rect(60, 560, 360, 600)) && g.selected >= 0 {
-			g.settings.Profiles[g.settings.Selected] = map[string]controls.Binding{}
-			g.save()
+		if click && point.In(image.Rect(60, 560, 360, 600)) {
+			if g.keyboardPanel {
+				g.settings.Keyboard = controls.DefaultKeyboard()
+				g.save()
+			} else if g.selected >= 0 {
+				g.settings.Profiles[g.settings.Selected] = map[string]controls.Binding{}
+				g.save()
+			}
 		}
 		if click && point.In(image.Rect(400, 560, 690, 600)) {
-			g.settings.Deadzone += .05
-			if g.settings.Deadzone > .51 {
-				g.settings.Deadzone = .10
+			if g.keyboardPanel {
+				g.bindKeyboard("")
+			} else {
+				g.settings.Deadzone += .05
+				if g.settings.Deadzone > .51 {
+					g.settings.Deadzone = .10
+				}
+				g.save()
 			}
-			g.save()
 		}
 		return nil
 	}
@@ -335,9 +377,27 @@ func (g *game) Update() error {
 		g.edges.Sync(g, nil)
 		return nil
 	}
+	if g.releaseGate {
+		g.edges.Sync(g, nil)
+		if len(inpututil.AppendPressedKeys(nil)) != 0 {
+			return nil
+		}
+		for _, active := range actions {
+			if active {
+				return nil
+			}
+		}
+		g.releaseGate = false
+		return nil
+	}
 	desired := map[uint8]bool{}
+	legacy := map[string]uint8{}
 	for key, scan := range keyboard {
-		if ebiten.IsKeyPressed(key) {
+		legacy[key.String()] = scan
+	}
+	mapping := g.settings.KeyboardMap(legacy)
+	for key := range keyboard {
+		if scan := mapping[key.String()]; scan != 0 && ebiten.IsKeyPressed(key) {
 			desired[scan] = true
 		}
 	}
@@ -421,6 +481,7 @@ func (g *game) traceRun(steps, cycles, budget uint64, audio bool, err error) {
 }
 
 var keyboard = map[ebiten.Key]uint8{
+	ebiten.KeyF11: 0x57, ebiten.KeyF12: 0x58, ebiten.KeyNumpad0: 0x52,
 	ebiten.KeyArrowLeft: 0x4b, ebiten.KeyArrowRight: 0x4d, ebiten.KeyArrowUp: 0x48, ebiten.KeyArrowDown: 0x50,
 	ebiten.KeyNumpad1: 0x4f, ebiten.KeyNumpad2: 0x50, ebiten.KeyNumpad3: 0x51, ebiten.KeyNumpad4: 0x4b, ebiten.KeyNumpad5: 0x4c, ebiten.KeyNumpad6: 0x4d, ebiten.KeyNumpad7: 0x47, ebiten.KeyNumpad8: 0x48, ebiten.KeyNumpad9: 0x49,
 	ebiten.KeySpace: 0x39, ebiten.KeyAltLeft: 0x38, ebiten.KeyEnter: 0x1c, ebiten.KeyEscape: 0x01, ebiten.KeyControlLeft: 0x1d, ebiten.KeyShiftLeft: 0x2a, ebiten.KeyShiftRight: 0x36,
@@ -513,7 +574,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			itemSale = g.dialogue.ItemSaleState()
 			itemExplanation = g.dialogue.ItemExplanationState()
 		}
-		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "held_keys": held, "frames": g.frames,
+		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "keyboard_panel": g.keyboardPanel, "keyboard_bindings": g.settings.Keyboard, "input_gate": g.releaseGate, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "held_keys": held, "frames": g.frames,
 			"town_dialogue": townDialogue,
 			"hd_enabled":    g.hdEnabled, "town_sky_hd_matched": g.townSkyHDMatched,
 			"town_background_hd_matched": g.townBackgroundMatch,
@@ -682,7 +743,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
-	g.button(image.Rect(348, 8, 540, 40), g.label("controller"), g.panel)
+	g.button(image.Rect(348, 8, 540, 40), g.label("controller"), g.panel && !g.keyboardPanel)
+	g.button(image.Rect(748, 8, 952, 40), g.label("keyboard_settings"), g.panel && g.keyboardPanel)
 	pause := "pause"
 	if g.paused {
 		pause = "resume"
@@ -690,11 +752,12 @@ func (g *game) Draw(screen *ebiten.Image) {
 	g.button(image.Rect(548, 8, 740, 40), g.label(pause), g.paused)
 	g.text(image.Rect(12, 650, 948, 678), g.label("prototype"))
 	if g.hdEnabled && !g.hdMatched {
-		g.text(image.Rect(748, 8, 948, 40), g.label("hd_fallback"))
+		g.text(image.Rect(12, 650, 948, 678), g.label("hd_fallback")+"　"+g.label("prototype"))
 	}
 	if g.panel {
 		draw.Draw(g.canvas, image.Rect(40, 80, 920, 630), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
 		g.text(image.Rect(60, 90, 900, 120), g.label("panel_title"))
+		g.button(image.Rect(720, 90, 900, 122), g.label("keyboard_settings"), false)
 		deviceName := g.label("none")
 		if len(g.devices) > 0 {
 			deviceName = g.label("choose")
@@ -727,6 +790,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.button(image.Rect(60, 560, 360, 600), g.label("clear"), false)
 		g.button(image.Rect(400, 560, 690, 600), fmt.Sprintf("%s %.2f", g.label("deadzone"), g.settings.Deadzone), false)
 		g.button(image.Rect(740, 560, 900, 600), g.label("close"), false)
+		if g.keyboardPanel {
+			draw.Draw(g.canvas, image.Rect(40, 80, 920, 630), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
+			g.drawKeyboardPanel()
+		}
 	}
 	g.texture.WritePixels(g.canvas.Pix)
 	screen.DrawImage(g.texture, nil)
@@ -794,7 +861,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				itemSale = g.dialogue.ItemSaleState()
 				itemExplanation = g.dialogue.ItemExplanationState()
 			}
-			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose,
+			meta, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "elapsed_cycles": g.o.Cycles(), "held_keys": g.o.HeldKeys(), "panel": g.panel, "keyboard_panel": g.keyboardPanel, "keyboard_bindings": g.settings.Keyboard, "input_gate": g.releaseGate, "mode": g.o.VideoMode(), "intro_stamps": stamps, "intro_scroll_rows": rows, "intro_scroll_sources": sources, "dialogue_glyphs": dialogueGlyphs, "dialogue_paragraphs": dialogueParagraphs, "dialogue_rejections": dialogueRejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "hd_enabled": g.hdEnabled, "hd_matched": g.hdMatched, "king_hd_matched": g.kingHDMatched, "king_hd_pose": g.kingHDPose, "sage_hd_matched": g.sageHDMatched, "sage_hd_pose": g.sageHDPose,
 				"town_dialogue": func() map[string]any {
 					if g.townDialogue != nil {
 						return g.townDialogue.State()
@@ -852,6 +919,7 @@ func savePNG(path string, img image.Image) error {
 func (g *game) Layout(int, int) (int, int) { return width, height }
 
 func main() {
+	showVersion := flag.Bool("version", false, "顯示版本")
 	orig := flag.String("orig", "", "合法原版資料目錄，須含 ZELIARD.EXE")
 	fontPath := flag.String("font", "", "使用者提供的 Unifont HEX.gz")
 	textPath := flag.String("text", "text/host.json", "前端中文資料")
@@ -923,6 +991,10 @@ func main() {
 	}
 	itemPalette := flag.String("item-palette", "", "可選：道具店原版色盤")
 	flag.Parse()
+	if *showVersion {
+		fmt.Println(version)
+		return
+	}
 	if *audioMode != "off" && *audioMode != "ebiten" {
 		log.Fatal("-audio 須為 off 或 ebiten")
 	}
