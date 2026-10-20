@@ -557,3 +557,17 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 建置 | 34項圖面／來源回歸及三項正常／來源測試無skip／fail，vet及build通過；未更新三平台封包或影片 |
 
 候選 `workplace/full-hd-v1/cave-door-runtime-v1/zeliard-preview` SHA-256 `009a15d92a2fd9e6376cf2b8954e71139578481efc2a78dd6db4ed8e9dc54bb2`。收尾入口 `workplace/full-hd-v1/cave-door-final-audit-v1.json`由[門框稽核](tools/hd_cave_door_runtime_audit.py)重生至新檔。045只將98/open升限定CONFORMED，其他九變體未正常到達；其餘角色、武器、敵人／首領、城鎮及後段仍未完成。
+
+## 2026-10-21 青藍刀光十姿態
+
+| 範圍 | 結果與限制 |
+|---|---|
+| 來源 | 正常平台配對已存22個去重來源均能完整重建；含12主角、十武器，不重新蒐集原畫格 |
+| 圖面 | 十刀光的原生輪廓與已驗姿態各自相同、RGBA有16至54像素不同；另生成青藍圖集並直接註冊96×96，不沿用銀白顏色 |
+| 正常保存來源 | 十個新鍵均匹配；92160註冊RGBA與5152透明度合成像素獨立相同，完整／主體來源未寫入 |
+| 退回與舊圖 | 缺圖、最後一圖損壞時保留全部20個原pose指標；未知鍵不借圖，既有十銀白圖RGBA雜湊維持相同 |
+| 正常兩路 | 十鍵均已觀察，已匹配武器畫格18／30、缺圖為零；13點完整原版狀態及USR bytes／mtime相同 |
+| 實際GUI | 出劍、魔法石、門框、平台等六組切回3456000遊戲區像素相同，原版狀態不變、正常DOS退出0、存檔未變；青藍刀光已目視，未做GUI逐像素混色宣稱 |
+| 檢查 | 38項圖面／來源、當前原子測試與三項正常／來源測試無skip／fail，vet與build通過 |
+
+候選 `workplace/full-hd-v1/cave-cyan-weapon-runtime-v2/zeliard-preview` SHA-256 `587e53e5ca885ccdfbf3ee91115153446d5b0a18981baac3c7568128c815233a`；收尾入口 `workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json`。046只升青藍武器部分CONFORMED；主角18／100缺圖畫格去重為12鍵，其他武器與後段仍待補，沒有更新封包及影片。

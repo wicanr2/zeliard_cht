@@ -158,6 +158,7 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 		if e != nil {
 			t.Fatal(e)
 		}
+		loadCyanNormalArt(t, weapon)
 		art.SetWeapon(weapon)
 	}
 	weaponCoverage := newCaveWeaponCoverage(weapon)
@@ -429,6 +430,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		if e != nil {
 			t.Fatal(e)
 		}
+		loadCyanNormalArt(t, weapon)
 		art.SetWeapon(weapon)
 	}
 	weaponCoverage := newCaveWeaponCoverage(weapon)

@@ -1082,6 +1082,7 @@ func main() {
 	caveMPPBArt := flag.String("cave-mppb-art", "", "可選：MPPB的5格手繪圖集，需同時指定cave-art-dir")
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
+	caveCyanWeaponArt := flag.String("cave-weapon-cyan-art", "", "可選：青藍刀光十姿態，須同時指定cave-weapon-art-dir")
 	caveObjectArt := flag.String("cave-object-art-dir", "", "可選：洞窟動態物件手繪圖集目錄，搭配洞窟地形HD")
 	cavePortalArt := flag.String("cave-portal-art", "", "可選：Muralla洞窟入口手繪圖，搭配洞窟地形HD")
 	townSignsText := flag.String("town-signs-text", "", "可選：Muralla招牌中文TSV，搭配前景HD")
@@ -1284,6 +1285,11 @@ func main() {
 				if e != nil {
 					log.Printf("洞窟武器HD未載入，保留武器原貌：%v", e)
 				} else {
+					if *caveCyanWeaponArt != "" {
+						if err := weapon.LoadCyan(*caveCyanWeaponArt); err != nil {
+							log.Printf("青藍刀光未載入，保留原有武器圖組：%v", err)
+						}
+					}
 					g.caveTerrainHD.SetWeapon(weapon)
 				}
 			}

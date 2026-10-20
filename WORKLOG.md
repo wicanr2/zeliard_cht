@@ -1407,3 +1407,14 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - GUI沿fd2-promo:20261017-r1，2GiB／2CPU／192程序／外層480秒與內層450秒、UID1000、網路關閉，專案及AppDir唯讀、指定GUI輸出可寫。使用 `ZELIARD_GUI_MAGIA=1`、`ZELIARD_GUI_DOORS=1`與十一圖集、平台、魔法石、新門框參數。冷F7正常使用物品、門框、平台升降再升及離開，五組原貌切回2880000像素相同、6912門框高清像素獨立相同，正常DOS退出0、存檔不變、根端已目視。Xvfb與遊戲由finally收回。
 - 收尾入口 `cave-door-final-audit-v1.json`，候選SHA-256 009a15d92a2fd9e6376cf2b8954e71139578481efc2a78dd6db4ed8e9dc54bb2。045僅98/open限定CONFORMED，其他九種只有結構驗證。覆蓋清單銜接現行來源，舊GUI、失敗與封包保持身份。下一步直接沿已存主角／武器來源鍵補圖，後段、城鎮及其他美術仍在完整目標範圍。
 - 收尾核所有當前來源與證據雜湊、Python語法、新檔索引及相對連結；root-owned檔案與md目錄皆零，無本專案容器殘留，遠端仍PRIVATE。提交／推送及遠端回讀結果另存 `cave-door-runtime-v1/repository-sync.json`。
+
+## 2026-10-21 已存武器缺圖及青藍十姿態
+
+- 上輪門框接入及實際GUI屬實際進展。本輪核乾淨HEAD eae76ae、目前狀態與工作清單，沿規格閘門及圖像生成入口，不另開代理。直接重解已保存來源，主角去重12鍵、武器十鍵，22份完整原生重建與來源雜湊相同。
+- 十武器輪廓各自唯一符合既有姿態、原生包絡相同，RGBA有16至54像素不同。一次內建imagegen編輯現有十刀光圖集，生成青藍變體；完整提示詞、引用／輸出SHA及原cache路徑在 `cave-cyan-weapon-art-v1/generation.json`，十張96×96註冊與來源在complete-v1，已目視，未把原版放大冒稱HD。
+- 046武器部分達READY後接入固定鍵及PNG雜湊的原子載入，CLI為 `-cave-weapon-cyan-art`，保留原十圖及既有最後圖層。不改主角、原版狀態、動作、數值、CPU、輸入或USR。完整原圖、生成圖與來源只留本機，沒有加入Git。
+- Go沿dosgolem-go-ebiten:1.24-r1，2GiB／2CPU／128程序、180秒外層、UID1000、網路關閉；專案唯讀，格式化只窄掛hd／cmd，full-hd-v1及gocache可寫、gomodcache唯讀。初次測試錯假設刀光存在完全不透明像素，實際註冊alpha最大253／254；修正為依PNG透明度核獨立混色，保留v1失敗。v2的38項回歸、vet及build通過，92160註冊RGBA與5152混色像素相同。另補全20個pose指標的原子性檢查，僅重跑受影響的單一測試通過。
+- 正常配對沿verify_cave_platform.sh，加DOOR、MAGIA、CYAN_WEAPON及REQUIRE_PRESENTATION=1，普通／魔法石兩檔鍵序合跑。13點完整原版狀態及USR bytes／mtime相同；新十鍵均觀察，武器可見缺圖為零。主角缺圖仍18／100畫格，不混算完成。
+- GUI沿fd2-promo:20261017-r1，2GiB／2CPU／192程序、480秒外層／450秒內層、UID1000、網路關閉，專案與AppDir唯讀、指定GUI輸出可寫。新增正常持劍擷取，六組原貌切回3456000像素及原版狀態相同，正常DOS退出0、USR bytes／mtime不變，根端已目視青藍刀光。finally回收遊戲與Xvfb。GUI只做實際抽樣，不冒稱5152混色像素亦由GUI核對。
+- 候選 `cave-cyan-weapon-runtime-v2/zeliard-preview` SHA-256 587e53e5ca885ccdfbf3ee91115153446d5b0a18981baac3c7568128c815233a，收尾 `cave-cyan-weapon-final-audit-v1.json`。覆蓋清單銜接新來源，046僅青藍武器限定CONFORMED。主角12鍵、其他美術與後段仍阻止完整目標完成，封包、影片及版號未更新。
+- 收尾核當前來源與所有收尾證據SHA、Python語法、新檔索引及相對連結；root-owned檔案與md目錄皆零，無本專案殘留容器，遠端仍PRIVATE。提交／推送回讀結果保存於 `cave-cyan-weapon-runtime-v2/repository-sync.json`。

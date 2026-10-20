@@ -16,6 +16,35 @@ assert h(save) == '03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d377
 actions = []
 magia_enabled = os.environ.get('ZELIARD_GUI_MAGIA') == '1'
 doors_enabled = os.environ.get('ZELIARD_GUI_DOORS') == '1'
+cyan_enabled = os.environ.get('ZELIARD_GUI_CYAN_WEAPON') == '1'
+
+def cyan_ready(s):
+    weapon = s.get('cave_weapon_hd') or {}
+    return ready(s) and weapon.get('matched') and weapon.get('pose',-1)>=10
+
+def compare_cyan():
+    edge(0x39,True)
+    try:
+        wait('正常青藍刀光HD',cyan_ready,20)
+        click(644,24)
+    finally:
+        edge(0x39,False)
+    wait('刀光畫面暫停',lambda s:s['paused'] and not held(s),15)
+    assert cyan_ready(state()),'暫停未保留青藍刀光'
+    hd(False)
+    original=frozen('cyan-weapon-original')
+    hd(True)
+    painted=frozen('cyan-weapon-hd')
+    assert cyan_ready(painted)
+    hd(False)
+    returned=frozen('cyan-weapon-returned')
+    for field in ('steps','cycles','oracle_memory_sha256','oracle_indexed_sha256','oracle_palette_sha256'):
+        assert original[field]==painted[field]==returned[field],field
+    pairs.append({'name':'cyan-weapon','original':'cyan-weapon-original.png','hd':'cyan-weapon-hd.png','returned':'cyan-weapon-returned.png'})
+    hd(True)
+    click(644,24)
+    wait('刀光抽測後繼續',lambda s:not s['paused'],15)
+    print('PAIR cyan-weapon',flush=True)
 
 def xvalue(s):
     return s['native_primary_0080']+s['native_primary_0083']
@@ -92,6 +121,8 @@ try:
     # 正常來源對照：繩索原點41、跳躍起點40、平台原點44。
     move(0x4b,lambda s:xvalue(s)<=41,'走到繩索')
     move(0x50,lambda s:yvalue(s)>=22,'沿繩索下降')
+    if cyan_enabled:
+        compare_cyan()
     for _ in range(5):
         key(0x39,100000)
         advance(400000)
@@ -143,10 +174,10 @@ try:
     assert process.returncode==0
     assert h(user/'SAVETEST.usr')==h(save)
     assert (user/'SAVETEST.usr').stat().st_mtime_ns==save.stat().st_mtime_ns
-    report={'status':'PASS_CAVE_DOOR_GUI_SCOPED' if doors_enabled else 'PASS_CAVE_MAGIA_GUI_SCOPED' if magia_enabled else 'PASS_CAVE_PLATFORM_GUI_SCOPED','binary_sha256':h(candidate),
+    report={'status':'PASS_CAVE_CYAN_WEAPON_GUI_SCOPED' if cyan_enabled else 'PASS_CAVE_DOOR_GUI_SCOPED' if doors_enabled else 'PASS_CAVE_MAGIA_GUI_SCOPED' if magia_enabled else 'PASS_CAVE_PLATFORM_GUI_SCOPED','binary_sha256':h(candidate),
             'script_sha256':h(Path(__file__)),'catalog_helper_sha256':h(catalog),'helper_sha256':h(helper),
             'source_save_sha256':h(save),'boots':boots,'shots':shots,'pairs':pairs,'actions':actions,
-            'normal_DOS_exit':0,'save_unchanged':True,'magia_enabled':magia_enabled,'doors_enabled':doors_enabled,
+            'normal_DOS_exit':0,'save_unchanged':True,'magia_enabled':magia_enabled,'doors_enabled':doors_enabled,'cyan_enabled':cyan_enabled,
             'limits':'僅此正常冷F7、物品使用、平台升降與HD切回；其他共用圖格、魔法與全遊戲仍待完成'}
     (O/'receipt.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(report['status'],flush=True)

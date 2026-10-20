@@ -6,6 +6,11 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 門框呈現：[來源守衛與十圖載入](internal/prototype/hd/cave_doors.go)，依045的原始記錄與完整矩陣唯讀覆繪。
 門框驗證：[正常來源及十變體測試](internal/prototype/hd/cave_doors_test.go)，分列正常站位、結構圖面與原子退回證據。
 門框稽核：[正式收尾工具](tools/hd_cave_door_runtime_audit.py)，核來源／十圖／正常配對及實際視窗，再銜接覆蓋清單。
+已存裝備缺圖：[規格046](docs/spec/046-cave-saved-gear-hd.md)及[來源研究](internal/prototype/hd/cave_saved_gear_study_test.go)，直接重解正常平台配對已存快照，不重蒐相同姿態。
+青藍刀光註冊：[十姿態圖面工具](tools/hd_cyan_weapon_art.py)，以完整原生輪廓核對既有姿態，另註冊已生成的青藍圖面。
+青藍刀光接入：[固定鍵與原子圖組](internal/prototype/hd/cave_weapon_cyan.go)，沿046保留舊十圖及未知來源退回。
+青藍刀光驗證：[已存來源與原子回歸](internal/prototype/hd/cave_weapon_cyan_test.go)，核十鍵、直接高清像素及來源未寫入。
+青藍刀光稽核：[來源／圖面／正常路徑／GUI](tools/hd_cyan_weapon_runtime_audit.py)，分列獨立混色與視窗抽樣範圍。
 門框原始載入端：[IDA9.4窄範圍匯出](tools/ida_cave_door.py)，保留原始函式、位址與運算元，未分級項標為未知。
 
 魔法石正式來源與高清圖層：[cave_magia.go](internal/prototype/hd/cave_magia.go)，依[044](docs/spec/044-cave-magia-presentation.md)的完整來源及可見／清除契約接入。
