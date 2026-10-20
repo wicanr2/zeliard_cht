@@ -345,6 +345,14 @@
 - [背向來源索引](docs/town-back-source-index.json)及[IDA匯出](tools/ida_town_back_evidence.py)保存主角表與居民底圖還原的原始位址、bytes及分級語意，從既有城堡資料庫的一次性副本匯出。
 - [背向視窗抽測](tools/hd_town_back_smoke.py)沿既有城堡GUI工具，在Docker內走正常進門、暫停與原貌切回；輸出只放workplace，不以離線圖代替實際視窗。
 - [背向稽核](tools/hd_town_back_audit.py)核來源、圖面、正常原版配對與實際視窗，將GUI待驗和已通過項目分開；輸出至workplace的新檔，不覆寫舊收據。
+- [室內資源規格](docs/spec/039-interior-resources.md)及[室內IDA匯出](tools/ida_interior_evidence.py)保存民房／旅館的原始模組、圖塊排列與來源等級；格式對照不代替正常可達性。
+- [室內原圖重建](tools/hd_interior_sources.py)依原版索引表重建OMOYA、INN及正常長老對照，列出已用／未用圖格與動畫候選，不以直接排列圖塊字典當完整原圖。
+- [室內圖面註冊](tools/hd_interior_register.py)將內建生成圖直接取樣至3倍，保存五張圖及七個旅館來源的別名關係；固定旅館共用背景，正常入口仍另驗。
+- [室內位址索引](docs/interior-source-index.json)分OMOYA與INNAPRO保存原始名稱、位址基準、圖表尺寸及分級語意；IDA匯出自動合併，不改原函式名。
+- [小屋與旅館覆繪](internal/prototype/hd/interior.go)以原版程式、資源、色盤與整張原生畫格選圖；小屋正常路徑及GUI限定通過，旅館七個表項共用四張圖，正常到達與GUI仍待驗。
+- [室內測試](internal/prototype/hd/interior_test.go)核完整來源、五張圖、來源別名與原子拒絕，依[小屋正常鍵序](tools/hut-hd.commands)從冷新局走到亭台、入小屋及離開；旅館結構fixture不冒稱正常路徑。
+- [室內視窗抽測](tools/hd_interior_smoke.py)從正常冷新局進城堡小屋，核石像完整圖面、原貌切回與離開，不把結構旅館圖當正常到達。
+- [室內稽核](tools/hd_interior_audit.py)核247圖格、五張圖、正常來源與實際小屋GUI像素，分列旅館結構通過與正常路徑待驗，供覆蓋清單重生引用。
 - [MPP3圖面載入](internal/prototype/hd/cave_mpp3.go)按037固定43格、九個材質ID與完整BOSQUE字帶；[MPP3測試](internal/prototype/hd/cave_mpp3_test.go)核結構像素、全43格、界限及三家族共存，正常到達另驗。
 - [MPP2圖面載入](internal/prototype/hd/cave_peligro.go)按037固定34格圖面與材質，與冰窟共用整組載入；[MPP2測試](internal/prototype/hd/cave_peligro_test.go)核三份結構快照、尾端九格及來源／載入拒絕，不能當正常到達證據。
 - [洞窟家族稽核](tools/hd_cave_family_audit.py)接受MPP2／MPP3／MPP5／MPP6／MPP7，核原始靜態地圖格、完整註冊、合成像素、MPP1正常回歸及實際視窗；MPP7另核全零資源與十一尾端圖樣的RGBA差異。舊收據重生須用當輪來源工作樹與相符driver。新增家族先補037來源及接入契約，不以任意參數跳過守衛。

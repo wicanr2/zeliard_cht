@@ -1,0 +1,26 @@
+# 冷新局，正常走到城堡亭台，進小屋看石像，再按空白離開。
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+shot cold
+key 0x4d 12500000
+run 500000
+shot pavilion-door
+key 0x48 250000
+run 12000000
+shot hut-first
+run 8000000
+shot hut-stable
+key 0x39 500000
+run 8000000
+shot castle-return

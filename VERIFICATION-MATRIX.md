@@ -495,3 +495,18 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 建置與清理 | 通過 | Go1.24.13、vet／build；Python語法、來源索引與擁有權通過，無本專案殘留容器 |
 
 候選town-back-runtime-v4/zeliard-preview的SHA-256為47242da727080f1ca5c59726d0192ef625faf54762490d6cdc40516fe3ef2b43，位於workplace/full-hd-v1/。同根town-back-audit-v1.json狀態SOURCE_ART_NORMAL_PASSED_GUI_PENDING，由[背向稽核](tools/hd_town_back_audit.py)重生至新檔。038保持READY；其餘城鎮、美術與新封包尚未完成。
+
+## 2026-10-21 小屋石像與旅館
+
+| 驗證 | 結果 | 範圍與限制 |
+|---|---|---|
+| 原版圖塊排列 | 通過 | 小屋135格用於17×16圖，旅館112格用於七表項／四種圖像；全部247格均有引用 |
+| 正常來源 | 小屋與長老通過 | 小屋6480bytes／17408像素，長老7968bytes／6144像素；旅館只有靜態consumer |
+| 五張手繪圖 | 已接入 | 408×384與288×192直接合成；六次內建imagegen請求含石像姿態修正，舊錯圖不接入 |
+| 合成與退回 | 523836像素通過 | 四項測試無skip／fail；八來源畫格、別名、缺圖整組拒絕、區外及旅館原版一像素框保留 |
+| 原版正常配對 | 五點通過 | 冷新局、亭台、進小屋看石像、空白離開；完整RAM、暫存器、畫面、色盤、指令／週期與I/O相同 |
+| 小屋實際視窗 | 通過 | 原圖／HD各156672獨立像素相同；兩組切回1152000像素相同、回城堡及正常DOS退出0，根端目視，音訊關閉 |
+| 旅館正常路徑 | 待驗 | 已接圖與結構fixture不當正常到達、事件或GUI完成 |
+| 建置與覆蓋台帳 | 通過 | Go1.24.13、vet／build；新來源與來源修訂鏈已重生，未更新三平台封包或影片 |
+
+程式interior-runtime-v1/zeliard-preview的SHA-256為19ba636f317a5ebce2866f518f0ae1c7f000e1155d28d6f9948a553dbce729c2，位於workplace/full-hd-v1/。同根interior-final-audit-v2.json由[室內稽核](tools/hd_interior_audit.py)重生至新檔，狀態PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI。039小屋限定CONFORMED、旅館READY；全遊戲HD仍未完成。

@@ -4,11 +4,15 @@
 
 目前目標已由使用者擴大為「完成全遊戲HD」，狀態為進行中。沿既有手繪奇幻與dosgolem覆繪架構，原貌／規則／存檔不改。第一洞窟完成仍是上一版交付範圍，不能作為這次目標的完成依據。完整覆蓋入口為 [規格034](docs/spec/034-full-game-hd.md)，原版三個SAR的194筆記錄已完成邊界與雜湊盤點，圖像分類及覆蓋分母尚在建立。
 
-本輪新增城鎮主角背向圖與接入，[規格038](docs/spec/038-town-player-back.md)保持READY，實際視窗待驗。正常進門時居民標記已還原成底圖，舊解碼器多畫居民，已依IDA9.4與兩張正常來源修正。兩朝向共用48×72背向手繪圖，保留舊八姿態，未載入或來源失配時退回。原版28672像素完全相同、獨立HD6912像素在每色2階整數取捨內相符，兩條冷新局進門完整原版狀態相同；三項新測試、十項回歸、19個Castle／Muralla正常點、vet及建置通過。三次GUI未捕捉到短暫背向畫格，不算GUI通過，不為此改原版時序。
+本輪完成小屋石像HD的正常路徑，旅館四種圖像另已接入，[規格039](docs/spec/039-interior-resources.md)分別列小屋限定CONFORMED、旅館READY待正常到達及GUI。兩資源247個圖格均由原版索引表覆蓋，五張手繪圖及六次完整內建imagegen請求在`workplace/full-hd-v1/interior-art-v1/generation-v2.json`，註冊在`interior-complete-v2/`。四項測試無skip／fail，523836個合成像素、五點正常完整原版狀態、vet及build通過。GUI從冷新局正常走到城堡亭台、Up進小屋看石像、空白離開；小屋原圖與HD各156672像素獨立相同，兩組原貌切回1152000遊戲區像素相同，正常DOS退出0，根端已目視。旅館仍只有原版靜態consumer與結構合成，不當正常到達。
 
-目前候選為`workplace/full-hd-v1/town-back-runtime-v4/zeliard-preview`，SHA-256 `47242da727080f1ca5c59726d0192ef625faf54762490d6cdc40516fe3ef2b43`。以`-town-player-back-art workplace/full-hd-v1/town-neutral-complete-v1`選載，需既有城鎮主角及前景參數。收尾入口`workplace/full-hd-v1/town-back-audit-v1.json`由[背向稽核](tools/hd_town_back_audit.py)產生，狀態為SOURCE_ART_NORMAL_PASSED_GUI_PENDING。完整原圖及提示詞沿`town-neutral-art-v1/generation.json`，圖面重生見`town-back-art-replay-v1/`。診斷觀察改在本次合成後寫入，避免前一畫格的HD狀態混入；不改原版更新。新封包未建立，以下洞窟／城堡收據保留原程式身份。
+目前候選為`workplace/full-hd-v1/interior-runtime-v1/zeliard-preview`，SHA-256 `19ba636f317a5ebce2866f518f0ae1c7f000e1155d28d6f9948a553dbce729c2`。以`-interior-art-dir workplace/full-hd-v1/interior-complete-v2`選載固定圖組，其他標準參數見`interior-gui-v1/receipt.json`的啟動命令。收尾入口`workplace/full-hd-v1/interior-final-audit-v2.json`由[室內稽核](tools/hd_interior_audit.py)重生。正常原始來源為`hut-normal-v2/`及`home-normal-v1/`，完整圖表與兩個正常資源的6480／7968bytes、17408／6144像素綁定在`interior-layout-v2/receipt.json`；IDA9.4資料庫及分級匯出在`interior-ida-v2/`。這些皆位於`workplace/full-hd-v1/`。封包、版號、影片與README縮圖未更新。
 
-全量台帳為 [hd-coverage.json](docs/hd-coverage.json)：174筆名稱候選、84筆解壓結果與原版常式逐byte一致；分類候選含80圖像、41地圖、17音樂、36程式及20未知，不把它們當成美術分母。三平面變換已對80筆補零研究buffer通過原常式核對，四資源MMAN／TMAN／CPAT／MPAT共597個圖格、28656像素bytes及2256有效遮罩bytes與正常原版RAM一致。證據在 `workplace/full-hd-v1/planar-oracle-v2/receipt.json` 及 `grp-sources-v3/receipt.json`。CMAN／DPAT仍只有結構候選，其他GRP形狀未解，不重開已驗RLE或前版音樂。
+前輪新增城鎮主角背向圖與接入，[規格038](docs/spec/038-town-player-back.md)保持READY，實際視窗待驗。正常進門時居民標記已還原成底圖，舊解碼器多畫居民，已依IDA9.4與兩張正常來源修正。兩朝向共用48×72背向手繪圖，保留舊八姿態，未載入或來源失配時退回。原版28672像素完全相同、獨立HD6912像素在每色2階整數取捨內相符，兩條冷新局進門完整原版狀態相同；三項新測試、十項回歸、19個Castle／Muralla正常點、vet及建置通過。三次GUI未捕捉到短暫背向畫格，不算GUI通過，不為此改原版時序。
+
+前輪背向候選為`workplace/full-hd-v1/town-back-runtime-v4/zeliard-preview`，SHA-256 `47242da727080f1ca5c59726d0192ef625faf54762490d6cdc40516fe3ef2b43`。以`-town-player-back-art workplace/full-hd-v1/town-neutral-complete-v1`選載，需既有城鎮主角及前景參數。收尾入口`workplace/full-hd-v1/town-back-audit-v1.json`由[背向稽核](tools/hd_town_back_audit.py)產生，狀態為SOURCE_ART_NORMAL_PASSED_GUI_PENDING。完整原圖及提示詞沿`town-neutral-art-v1/generation.json`，圖面重生見`town-back-art-replay-v1/`。診斷觀察改在本次合成後寫入，避免前一畫格的HD狀態混入；不改原版更新。以下洞窟／城堡收據保留原程式身份。
+
+全量台帳為 [hd-coverage.json](docs/hd-coverage.json)：174筆名稱候選、84筆解壓結果與原版常式逐byte一致；分類候選含80圖像、41地圖、17音樂、36程式及20未知，不把它們當成美術分母。三平面變換已對80筆補零研究buffer通過原常式核對，四資源MMAN／TMAN／CPAT／MPAT共597個圖格、28656像素bytes及2256有效遮罩bytes與正常原版RAM一致；本輪另核小屋與長老兩個GRP的301格／14448轉換bytes，旅館112格仍屬靜態結構來源。覆蓋清單已新增三筆室內來源、小屋與旅館元件及後續來源修訂鏈，不把舊GUI換稱新程式。CMAN／DPAT及其餘GRP仍待補，不重開已驗RLE或前版音樂。
 
 後續洞窟入口為 [規格037](docs/spec/037-all-cave-terrain-hd.md)，來源辨識及十個新增家族的圖集接入契約已READY並實作，正常新增家族路徑未驗。11組MPP地形共378格已解出原圖，MPP1全部25格來源與正常RAM相同，圖面已補齊；31份洞窟地圖共306048格與原版6CED..6D6D常式逐byte相同，圖集選擇端7E9B／7ECD及11項descriptor已核。正常6CEC完成來源的36×64環形地圖2304格相同，包內四份USR的正常冷讀調查皆仍為MPP1；其餘家族可達性未驗，不能計HD完成。
 
@@ -65,6 +69,7 @@ README 已加入手冊故事背景、原貌／HD 成對截圖、目前封包城�
 | 原版與來源 | 原版29檔不變；固定136份程式／文字／音源來源 | 執行器隔離副本只增加通用FMSynth介面，其餘檔案與原始快照相同；共用dosgolem未改 |
 | 第一洞窟 | 中文、HD、移動、攻擊、跳躍、裝備與鍵盤重開恢復通過 | gui-v4九張實際視窗，正常DOS退出0；同一二進位SHA-256 `d86dd040ec0fc1a3622e832defa11d634c2af14a9a438a7b19a69de5e882f0d9` |
 | 城堡增量 | 前景、四旗幟、地面與共用人物已接候選版，正常Castle／Muralla往返通過 | 規格036限定CONFORMED；038背向已接入待GUI，交談背景及其餘場景仍有缺口，未更新封包 |
+| 室內增量 | 小屋石像正常進出及GUI限定通過；旅館四圖已接 | 規格039分列小屋CONFORMED與旅館READY；247圖格、五張圖、五個正常點與兩組GUI切回通過，不當旅館正常到達 |
 | 手把 | 工具列選擇、按鈕／軸、保存及斷線釋放軟體串接沿已驗來源 | 實體USB／藍牙未接機測試 |
 | Linux | x86_64 AppImage完成，解出封包的AppRun已實際啟動 | 原生資料定位、所有指定資產及獨立使用者存檔通過 |
 | Windows | x86_64完整資料ZIP完成，Wine輔助啟動通過 | 未驗Windows真機與實體音訊裝置 |

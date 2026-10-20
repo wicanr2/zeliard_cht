@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "address_space": "每個BIN的IDA base A000＝該檔偏移0；未正常進入的模組不當正常快照",
+  "inputs": [
+    {
+      "file": "OMOYPRO.BIN",
+      "sha256": "738f6ff33e36685ae0908605d4db50e4f5df7486e098401b0bc5e033972aee37",
+      "entries": [
+        {"address": "0xA00C", "level": "已證實", "semantic": "MOV SI,A239h載入原始OMOYA.GRP descriptor；後續A011呼叫cs:010C。只證來源選擇，不證正常入口。", "evidence": ["docs/spec/039-interior-resources.md", "workplace/full-hd-v1/interior-ida-v1/OMOYPRO-evidence.json"]},
+        {"address": "0xA104", "level": "已證實", "semantic": "原sub_A104從A129索引表、BX=0C1E開始；16列各17格，BH逐格加1、BL逐列加8，以cs:3016繪圖。正常長老對照證實BH為8像素橫向格、BL為像素y。", "evidence": ["docs/spec/039-interior-resources.md", "workplace/full-hd-v1/interior-ida-v1/OMOYPRO-evidence.json", "workplace/full-hd-v1/interior-layout-v1/receipt.json"]}
+      ],
+      "tables": [{"address": "0xA129", "bytes": 272, "level": "已證實", "semantic": "17×16個零基圖塊ID；完整136×128圖像，原版位置96,30。"}]
+    },
+    {
+      "file": "INNAPRO.BIN",
+      "sha256": "7b3dedeb10111d671b0d9245ea457d6235cb620d629ef9f49616348cf8073da5",
+      "entries": [
+        {"address": "0xA00B", "level": "已證實", "semantic": "MOV SI,A2E1h載入原始INN.GRP descriptor，後續A010呼叫cs:010C。", "evidence": ["docs/spec/039-interior-resources.md", "workplace/full-hd-v1/interior-ida-v1/INNAPRO-evidence.json"]},
+        {"address": "0xA17F", "level": "已證實", "semantic": "AL乘20加A281選四個20格表，BX=0827；四列各五格，共40×32，原版位置64,39。觸發語意與正常可達性另驗。", "evidence": ["docs/spec/039-interior-resources.md", "workplace/full-hd-v1/interior-ida-v1/INNAPRO-evidence.json"]},
+        {"address": "0xA1AA", "level": "已證實", "semantic": "原sub_A1AA從A1CF表、BX=0717開始；八列各12格，共96×64，原版位置56,23。", "evidence": ["docs/spec/039-interior-resources.md", "workplace/full-hd-v1/interior-ida-v1/INNAPRO-evidence.json", "workplace/full-hd-v1/interior-layout-v1/receipt.json"]},
+        {"address": "0xA22F", "level": "已證實", "semantic": "原sub_A22F選A279的兩個2×2圖表，在64,39繪16×16；不由靜態常式推定正式事件時間或亂數。", "evidence": ["docs/spec/039-interior-resources.md", "workplace/full-hd-v1/interior-ida-v1/INNAPRO-evidence.json"]}
+      ],
+      "tables": [
+        {"address": "0xA1CF", "bytes": 96, "level": "已證實", "semantic": "12×8零基圖塊ID的完整基底。"},
+        {"address": "0xA279", "bytes": 8, "level": "已證實", "semantic": "兩個2×2小圖；與其他表合成後以像素去重，不猜觸發。"},
+        {"address": "0xA281", "bytes": 80, "level": "已證實", "semantic": "四個5×4小圖；四表中兩個與基底圖像相同，另兩個為不同手勢。"}
+      ]
+    }
+  ]
+}

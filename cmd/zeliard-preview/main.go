@@ -93,6 +93,8 @@ type game struct {
 	townPlayerMatch      bool
 	townActorsHD         *hd.TownActors
 	townActorsMatch      bool
+	interiorHD           *hd.Interiors
+	interiorHDMatch      bool
 	kingHD               *hd.King
 	kingHDMatched        bool
 	kingHDPose           int
@@ -660,6 +662,16 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.churchHDMatched, g.churchHDFrame = g.churchHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.churchHDMatched
 	}
+	g.interiorHDMatch = false
+	g.interiorHD.Clear()
+	if g.hdEnabled && g.interiorHD != nil && w == 320 && h == 200 {
+		var palette []byte
+		for _, color := range g.o.Palette() {
+			palette = append(palette, color[:]...)
+		}
+		g.interiorHDMatch = g.interiorHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0), 65536), g.o.Bytes(oracle.Far(0x11b1, 0), 65536), raw, rawRGB, palette, image.Pt(0, barHeight))
+		g.hdMatched = g.hdMatched || g.interiorHDMatch
+	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(raw, rawRGB)
 		clear(g.overlayPixels)
@@ -695,7 +707,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil {
+	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.merchantHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -809,6 +821,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"native_primary_0080":        g.o.Word(oracle.Far(0x1b1, 0x0080)),
 			"church_hd_matched":          churchMatched,
 			"church_hd_frame":            churchFrame,
+			"interior_hd_matched":        g.interiorHDMatch,
+			"interior_hd":                g.interiorHD.State(),
 			"native_primary_0082":        g.o.Byte(oracle.Far(0x1b1, 0x0082)),
 			"native_primary_0084":        g.o.Byte(oracle.Far(0x1b1, 0x0084)),
 			"native_primary_0090":        g.o.Word(oracle.Far(0x1b1, 0x0090)),
@@ -991,6 +1005,7 @@ func main() {
 	townPlayerArt := flag.String("town-player-art-dir", "", "可選：Muralla主角八姿態手繪圖目錄，搭配已驗前景HD")
 	townPlayerBackArt := flag.String("town-player-back-art", "", "可選：城鎮主角背向手繪圖目錄，搭配town-player-art-dir")
 	townResidentsArt := flag.String("town-residents-art-dir", "", "可選：Muralla五類居民40姿態手繪圖集，搭配城鎮主角與前景HD")
+	interiorArt := flag.String("interior-art-dir", "", "可選：小屋石像與旅館四種畫面的固定手繪圖組")
 	castleMemory := flag.String("castle-memory", "", "可選：城堡正常冷新局固定1MiB參考，搭配castle-art-dir與完整遠山")
 	castleArt := flag.String("castle-art-dir", "", "可選：城堡3倍世界圖與四姿態旗幟PNG目錄，搭配castle-memory")
 	caveArt := flag.String("cave-art-dir", "", "可選：Malicia手繪地形圖目錄，角色與物件保留原貌")
@@ -1277,6 +1292,12 @@ func main() {
 		g.townActorsHD, err = hd.NewTownActors(g.townPlayerHD, *townResidentsArt)
 		if err != nil {
 			log.Printf("城鎮居民HD未載入，保留既有圖面：%v", err)
+		}
+	}
+	if *interiorArt != "" {
+		g.interiorHD, err = hd.NewInteriors(root, *interiorArt)
+		if err != nil {
+			log.Printf("小屋與旅館HD未載入，保留原貌：%v", err)
 		}
 	}
 	if *kingRefA != "" || *kingRefB != "" || *kingArt != "" || *kingSpeakingArt != "" {

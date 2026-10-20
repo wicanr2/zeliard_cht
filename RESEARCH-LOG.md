@@ -1112,3 +1112,15 @@ SAR3記錄80的解壓SHA-256 `89bf9b7d268985362e099b6b0db29c04ca4b48444857f70a7e
 圖面沿內建imagegen保存於town-neutral-art-v1/generation.json，完整提示詞與兩參考SHA保留；48×72 PNG為d84525e69589decf0045cc32b35032eaea862c967e9876df5294cf208d3096f4，重生相同。Python3.11.2／Pillow9.4.0另核兩朝向共6912個HD像素，最大每色偏差2，來自整數alpha取捨，僅屬明示高清外觀容差，不用來容許原版畫面或原版狀態差異。
 
 已證實的正常路徑為兩個獨立dosgolem冷新局，以原版方向鍵從左右朝向走到主門再按Up；兩條都在完成回呼取得phase4並合成HD，完整原版狀態相同。實際Xvfb視窗尚未捕捉背向畫格，未知其可見時窗與前端取樣的關係，不因此宣稱已驗GUI或修改原版等待。其他城鎮與其餘phase4配置仍未知。稽核入口town-back-audit-v1.json明確保留此限制。
+
+## 2026-10-21 小屋、旅館與室內圖塊字典
+
+已證實：長老正常96×64畫格的96個8×8圖格可全部反查KENJYA字典。重建索引表與SAR2檔案偏移116348及正常01B1:A9B6的96bytes完全相同。連續排GRP像素及直接排圖塊的兩種研究圖皆不能當完整原圖；前兩列近似相同是早期索引多為連號，之後重用空白等圖塊才顯出錯位。此反例保存在interior-source-v1/。
+
+已證實的OMOYA程式輸入為SAR2記錄11，原始payload SHA-256 738f6ff33e36685ae0908605d4db50e4f5df7486e098401b0bc5e033972aee37；圖像記錄19解壓SHA ec6b6a1c4511d3ac627e6f13dfc6e8bc3476fa72051ee9794aec63653eb7fe25。INNAPRO為記錄16，程式SHA 7b3dedeb10111d671b0d9245ea457d6235cb620d629ef9f49616348cf8073da5；INN圖像記錄24解壓SHA f01edaecf5f67a7ff9c8dea2209a3d73a66d5b97b738c40af31541e3e36cc8b8。兩者的RLE及三平面算法沿既有原版常式收據，不重開解碼研究。
+
+IDA9.4對每個BIN採base A000對應檔案偏移0，未與SAR偏移混用。sub_A104從A129取272個ID，BX=0C1E、16列17欄，得到136×128、位置96,30的小屋石像。sub_A1AA從A1CF取96個ID、BX=0717，得到96×64、位置56,23的旅館。旅館A279兩份2×2及A281四份5×4表由原函式分別讀取，位置皆64,39。七個合成表項有四種不同像素，基底／ambient-0／rest-0／rest-1相同；別名只作導覽，不推定未驗事件觸發或時間。原名、bytes、xref與分級索引沿[室內索引](docs/interior-source-index.json)及interior-ida-v2/。
+
+已證實的正常小屋入口：冷新局城堡01B1:C009指向C3CA，原始兩筆為95、1及52、0。先保留原數值，再正常右行至世界位置760並Up，實際載入OMOYA及顯示石像，才將95、1與此入口關聯。正常hut-stable完整RAM SHA為54ee22787d0acfe9f07331543cd1a0ce06bfbd2f2842adef1a526e9c3768c98e，轉換6480bytes及17408像素與原圖相同。正常長老完整RAM SHA為9846e900784145498af99f4589a19503fb96dd9821a54ce7525aa5850aed14d1，另核7968bytes及6144像素。這兩條來源不代替旅館正常可達性。
+
+手繪圖由內建imagegen生成，六次完整請求及五張選定圖保存在interior-art-v1/generation-v2.json。Python3.11.2、Pillow9.4.0及既有整數面積取樣註冊到3倍，不先縮成原版。小屋姿態修正與旅館共用背景限制為明示外觀處理，原版表及程式不改。GUI小屋原版／HD各156672像素與獨立PNG完全相同，正常原版配對及GUI另列；旅館仍為靜態構圖與來源守衛。證據入口為[039](docs/spec/039-interior-resources.md)及interior-final-audit-v2.json，不宣稱全室內完成。

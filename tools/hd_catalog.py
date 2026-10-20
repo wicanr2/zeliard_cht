@@ -48,27 +48,44 @@ def main():
     assert planar_report["status"] == "PASS_EXTRACTED_ORIGINAL_PLANAR" and len(planar_report["records"]) == 80
     assert all(x["matched"] and x["exit_code"] == 0 for x in planar_report["records"])
     assert grp_report["status"] == "PASS_FOUR_NORMAL_RESOURCE_BINDINGS"
+    back = p/"workplace/full-hd-v1/town-back-audit-v1.json"
+    interior = p/"workplace/full-hd-v1/interior-final-audit-v2.json"
+    back_report, interior_report = json.loads(back.read_text()), json.loads(interior.read_text())
+    assert back_report["status"] == "SOURCE_ART_NORMAL_PASSED_GUI_PENDING"
+    assert interior_report["status"] == "PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI"
+    # 舊收據保留原程式身份。來源後續有修訂時，必須由具名新稽核銜接，不能把舊GUI換稱新程式。
+    latest_sources, replacement_evidence, source_revisions = {}, {}, []
+    for audit_path, audit in ((back, back_report), (interior, interior_report)):
+        for row in audit["source_files"]:
+            latest_sources[row["path"]] = row["sha256"]
+            replacement_evidence[row["path"]] = str(audit_path.relative_to(p))
+    def validate_audit(audit_path, audit):
+        for row in audit.get("source_files", []):
+            actual = sha((p/row["path"]).read_bytes())
+            if actual != row["sha256"]:
+                assert actual == latest_sources.get(row["path"]), (str(audit_path), row["path"])
+                source_revisions.append({"path":row["path"],"historical_audit":str(audit_path.relative_to(p)),
+                                         "historical_sha256":row["sha256"],"current_sha256":actual,
+                                         "replacement_evidence":replacement_evidence[row["path"]],
+                                         "limits":"原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"})
+        for row in audit.get("proofs", []):
+            assert sha((p/row["path"]).read_bytes()) == row["sha256"]
+    validate_audit(back, back_report)
+    validate_audit(interior, interior_report)
+    interior_path = p/"workplace/full-hd-v1/interior-layout-v2/receipt.json"
+    interior_sources = {row["graphics_record"]:row for row in json.loads(interior_path.read_text())["records"]}
     runtime_catalog = p/"workplace/full-hd-v1/cave-mpp1-final-audit-v1.json"
     runtime_catalog_report = json.loads(runtime_catalog.read_text())
     assert runtime_catalog_report["status"] == "PASS_MPP1_EXTRAS_AND_ELEVEN_TERRAIN_FAMILIES"
-    for source in runtime_catalog_report["source_files"]+runtime_catalog_report["proofs"]:
-        assert sha((p/source["path"]).read_bytes()) == source["sha256"]
-    current_sources = {r["path"]:r["sha256"] for r in runtime_catalog_report["source_files"]}
+    validate_audit(runtime_catalog, runtime_catalog_report)
     castle = p/"workplace/full-hd-v1/castle-final-audit-v2.json"
     castle_report = json.loads(castle.read_text())
     assert castle_report["status"] == "PASS_CASTLE_HD_SCOPED"
-    for source in castle_report["source_files"]:
-        actual = sha((p/source["path"]).read_bytes())
-        if source["path"] == "cmd/zeliard-preview/main.go":
-            # 入口另增冰窟旗標，身份沿本輪稽核；城堡完整視窗仍保留6670698f原身份。
-            assert actual == current_sources[source["path"]]
-        else:
-            assert actual == source["sha256"]
+    validate_audit(castle, castle_report)
     cave = p/"workplace/full-hd-v1/cave-source-stage-audit-v1.json"
     cave_report = json.loads(cave.read_text())
     assert cave_report["status"] == "PASS_CAVE_SOURCE_STAGE"
-    for source in cave_report["source_files"]+cave_report["proofs"]:
-        assert sha((p/source["path"]).read_bytes()) == source["sha256"]
+    validate_audit(cave, cave_report)
     terrain_path = p/"workplace/full-hd-v1/cave-terrain-sources-v1/receipt.json"
     terrain_sources = {x["record"]: x for x in json.loads(terrain_path.read_text())["profiles"]}
     cave_maps_path = p/"workplace/full-hd-v1/cave-map-sources-v1/receipt.json"
@@ -118,6 +135,19 @@ def main():
                 if entry["index"] in (81,82,83,84):
                     item["hd_coverage"] = "connected_structural_verified_normal_path_pending"
                     item["normal_path"] = "MPP8／MPP9／MPPA／MPPB圖面與九份結構地圖已驗；正常到達、進出、捲動及事件待驗，不當全洞窟完成"
+            if archive == "ZELRES2.SAR" and entry["index"] in interior_sources:
+                source = interior_sources[entry["index"]]
+                item["interior_source"] = {k:source[k] for k in ("name","program_record","program_sha256","graphics_sha256","packed_sha256","tile_count","covered_tile_ids","unreferenced_tile_ids","normal_binding","frames","source_level")}
+                item["interior_source"]["evidence"] = str(interior_path.relative_to(p))
+                if entry["index"] == 19:
+                    item["hd_coverage"] = "connected_scoped_normal_path_verified"
+                    item["normal_path"] = "冷新局走到城堡亭台、Up進小屋看石像、空白離開；完整原版配對與實際視窗通過，見039。不代表全遊戲完成"
+                elif entry["index"] == 24:
+                    item["hd_coverage"] = "connected_structural_verified_normal_path_pending"
+                    item["normal_path"] = "112圖格及七表項／四種圖像已接固定圖組，結構合成與退回通過；旅館正常到達、事件與GUI待驗"
+                else:
+                    item["hd_coverage"] = "partial_scoped_candidate_verified"
+                    item["normal_path"] = "長老166圖格7968bytes與正常RAM相同，基底6144像素已核；既有兩畫格HD沿前版，其他表與圖格未全量接入"
             if archive == "ZELRES3.SAR" and entry["index"] in cave_maps:
                 source = cave_maps[entry["index"]]
                 item["map_source"] = {k: source[k] for k in ("width", "height", "columns_sha256", "family_candidate", "selector_offset", "selector_raw")}
@@ -129,6 +159,8 @@ def main():
               "counts": {"container_records": len(catalog), "named_candidates": sum(bool(x["names"]) for x in catalog),
                          "verified_decoded_records": len(verified), "verified_cave_maps": len(cave_maps),
                          "verified_cave_map_cells": cave_report["decoded_map_cells"], "cave_terrain_source_tiles": cave_report["terrain_tiles"],
+                         "interior_source_tiles":sum(x["tile_count"] for x in interior_sources.values()),
+                         "new_hut_inn_source_tiles":247,"normal_bound_interior_resources":2,
                          "classification_candidates": dict(Counter(x["classification"] for x in catalog))},
               "limits": ["194是SAR容器記錄數，尚不是美術素材分母；不換算HD完成百分比",
                          "not_assessed表示尚未將既有局部HD與此全量記錄逐項對應，不否定前版已驗成果",
@@ -142,7 +174,7 @@ def main():
                                      {"key": "castle.foreground", "status": "scoped_candidate_verified",
                                       "spec": "docs/spec/036-castle-hd.md", "source_record": "zelres2.record.33",
                                       "evidence": str(castle.relative_to(p)),
-                                      "limits": "只驗城堡前景、四旗幟與Muralla往返；phase4、交談背景及其他場景仍有缺口，未更新封包"},
+                                      "limits": "原城堡視窗保留6670698f身份；背向另沿038，GUI未驗。交談背景及其他場景仍有缺口，未更新封包"},
                                      {"key": "cave.terrain.ice", "status": "connected_structural_verified_normal_path_pending",
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "source_record": "zelres3.record.77",
                                       "evidence": str(runtime_catalog.relative_to(p)), "registered_tiles":21,
@@ -171,7 +203,8 @@ def main():
                                       "spec": "docs/spec/037-all-cave-terrain-hd.md", "maps":31,"terrain_profiles":11,
                                       "evidence":str(runtime_catalog.relative_to(p)),
                                       "limits":"來源辨識已接入，正常35點與實際視窗只驗MPP1；不當其他家族正常可達或HD完成"}],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog)],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path)],
+              "source_revisions":source_revisions,
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     for family,count,visible,record in (("MPP8",43,40,81),("MPP9",38,38,82),("MPPA",20,19,83),("MPPB",5,5,84)):
         report["runtime_components"].insert(-1, {
@@ -184,6 +217,17 @@ def main():
         "spec":"docs/spec/037-all-cave-terrain-hd.md","source_record":"zelres3.record.74",
         "evidence":str(runtime_catalog.relative_to(p)),"registered_tiles":25,
         "limits":"原有14格與材質保持相同，另補15及兩組圖牌。三構圖與十一家族共存、正常MPP1首戰／回城回歸通過；正常Satono到達與後段事件仍未驗。"})
+    for component in [
+        {"key":"town.player.back","status":"source_art_normal_passed_gui_pending","spec":"docs/spec/038-town-player-back.md",
+         "source_record":"zelres2.record.31","evidence":str(back.relative_to(p)),
+         "limits":"兩朝向共用背向圖，正常完成回呼合成已核；實際背向視窗未捕捉，保持待驗。"},
+        {"key":"interior.hut","status":"scoped_normal_path_and_gui_verified","spec":"docs/spec/039-interior-resources.md",
+         "source_record":"zelres2.record.19","evidence":str(interior.relative_to(p)),"registered_images":1,
+         "limits":"只驗正常進小屋看石像及離開，不把旅館或其他劇情分支算完成。"},
+        {"key":"interior.inn","status":"connected_structural_verified_normal_path_pending","spec":"docs/spec/039-interior-resources.md",
+         "source_record":"zelres2.record.24","evidence":str(interior.relative_to(p)),"registered_images":4,
+         "limits":"七表項按像素共用四張圖；正常入口、觸發與GUI未驗，不宣稱正常旅館完成。"}]:
+        report["runtime_components"].insert(-1,component)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     print(json.dumps(report["counts"], ensure_ascii=False))
 
