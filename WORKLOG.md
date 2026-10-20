@@ -1390,3 +1390,10 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - GUI v2正常F7、使用魔法石、跳上／升降／再升及離開，四組原貌切回2304000遊戲區像素、4554結晶HD像素獨立相同，正常DOS退出0、USR bytes／mtime不變，根端已目視。離開截圖本身有地形及魔法石HD；最初稽核v1誤把稍後瞬時日誌當該截圖未匹配，v2依實際截圖狀態更正，舊檔不覆寫。保留的真缺口是v1物品後站位，原因待核，不先猜入口裁切。
 - 候選 `cave-magia-runtime-v1/zeliard-preview` SHA-256 9b0e3ef010145ec232246d6f9011ff15c619fa4e6f2060efbf8374f75be8d3bb。收尾 `cave-magia-final-audit-v2.json`核來源、測試、兩正常路徑與GUI，覆蓋JSON銜接現行來源，歷史READY與平台收據保留身份。044只升已列範圍CONFORMED，耗盡／部分遮擋／邊緣、其他站位、主角／武器與後段缺圖仍待補，完整目標active。封包、版號、影片及README縮圖未更新。
 - 收尾重生、文件入口、擁有權、容器與Git同步結果另存 `cave-magia-runtime-v1/repository-sync.json`。下一步先重生v1物品後站位的完整來源並查地形拒絕；不把原貌退回算HD完成。
+
+## 2026-10-21 共用門框缺口定位
+
+- 回答全素材HD狀態時核目前程式與最新收據，確認完整目標仍進行中。十一組洞窟378槽已具圖面，不能當後段正常路徑、敵人／首領或其他城鎮完成。八城鎮候選尚待校準與接入，未更新封包或影片。
+- 有界GUI日誌探針重播4614筆原輸入，完整核每筆steps／cycles／暫存器及目標RAM、完成／主體來源SHA，原始USR bytes／mtime不變。實際失敗原因為無招牌98/open四列門框，原地形守衛只接受Muralla五列矩陣。來源位於 `cave-station-source-v1/`，沒有改原版或正式呈現器。
+- 門框原始載入端沿IDA9.4既有py312-v1 image、UID1000及唯讀原始DB，僅副本可寫。31圖163筆12byte記錄與五標記、兩矩陣已綁定原始bytes；十張原圖已目視。v1誤把門框視為RLE底圖，v2修正為C00A表項，成功收據為 `cave-door-source-v2/receipt.json`。v2首次容器命令錯用不存在的python，改為同image的python3後乾淨重跑，不當產品缺陷。
+- Go重播沿dosgolem-go-ebiten:1.24-r1，來源解碼沿eob-audio-capture:20261009-r3；均有逾時、資源上限、UID1000、網路關閉、唯讀專案及明確輸出。045保持DRAFT，只有來源研究，下一步補十圖美術及READY契約後正式接入。既有候選9b0e3ef0與044驗收保持原身份。

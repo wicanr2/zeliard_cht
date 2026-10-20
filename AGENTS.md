@@ -1,5 +1,9 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保存日誌的每筆暫存器／步數與目標RAM及完成來源雜湊，不以來源重播代替GUI驗收。
+無招牌共用門框：[規格045](docs/spec/045-cave-untitled-doors.md)及[來源盤點](tools/hd_cave_door_sources.py)，不把新變體套成Muralla入口。
+門框原始載入端：[IDA9.4窄範圍匯出](tools/ida_cave_door.py)，保留原始函式、位址與運算元，未分級項標為未知。
+
 魔法石正式來源與高清圖層：[cave_magia.go](internal/prototype/hd/cave_magia.go)，依[044](docs/spec/044-cave-magia-presentation.md)的完整來源及可見／清除契約接入。
 魔法石正式測試：[cave_magia_test.go](internal/prototype/hd/cave_magia_test.go)，核27正常來源、獨立高清像素、清除／重疊、來源及圖面原子拒絕。
 魔法石正式稽核：[hd_cave_magia_runtime_audit.py](tools/hd_cave_magia_runtime_audit.py)，核原版狀態、GUI獨立像素及原貌切回；未匹配地形站位仍列出。

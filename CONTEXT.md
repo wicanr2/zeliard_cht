@@ -13,8 +13,10 @@
 | 實際視窗 | 冷F7正常使用魔法石、跳上／升降／再升及離開平台；四組原貌切回2304000像素相同，4554結晶HD像素獨立相同，DOS退出0、USR bytes／mtime不變，根端已目視 |
 | 收尾證據 | `workplace/full-hd-v1/cave-magia-final-audit-v2.json`，由[魔法石正式稽核](tools/hd_cave_magia_runtime_audit.py)重生至新檔 |
 | 本輪接入 | [044](docs/spec/044-cave-magia-presentation.md)限定CONFORMED；可見／清除／重疊分層，完整來源守衛及原始主角／武器鍵保留；原三平台拒絕點現皆有HD |
-| 待補 | GUI v1物品使用後站位原版效果可解、地形HD未匹配，原因待核；耗盡／部分遮擋／邊緣、主角／武器缺圖、其他共用圖格與後段仍待補 |
+| 待補 | GUI v1物品後地形HD拒絕已定位為無招牌98/open門框，045仍DRAFT待素材及接入；耗盡／部分遮擋／邊緣、主角／武器缺圖、其他共用圖格與後段仍待補 |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
+
+最新研究為[規格045](docs/spec/045-cave-untitled-doors.md)：`workplace/full-hd-v1/cave-station-source-v1/`逐筆重播4614筆GUI輸入，目標RAM及完成來源SHA均相同，確認舊Muralla守衛拒絕無招牌98/open門框。`cave-door-source-v2/receipt.json`綁定五種標記各兩種矩陣、31地圖163筆原始記錄及十張已目視原圖。這是來源研究，尚無新HD素材或正式接入；候選程式與封包身份維持原樣。下一步補門框美術及READY契約，隨後修正同一站位的HD退回。
 
 最新正式入口為 `workplace/full-hd-v1/cave-magia-final-audit-v2.json`。使用 `-cave-magia-art workplace/full-hd-v1/cave-magia-complete-v1`，搭配既有洞窟、MPP1及共用平台參數；完整GUI命令在 `cave-magia-gui-v2/receipt.json`。27份已存來源、清除／重疊、來源與素材原子拒絕及獨立HD像素均已核，不再重做這批素材。正常配對為 `cave-magia-hd-pair-v1/`：魔法石三點474完成來源／92拒絕、普通平台十點211／42，兩路存檔bytes與mtime不變，13個具名點皆有來源與HD。
 
