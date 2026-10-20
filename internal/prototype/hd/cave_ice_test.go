@@ -34,12 +34,17 @@ func iceRead(t *testing.T, path string) []byte {
 // 原生地形於此組合，故只驗資料／繪圖，不作冰窟原版行為或正常可達證據。
 func iceStructuralFrame(t *testing.T, name string, grid []byte) (*CavePresentation, []cavePixel) {
 	t.Helper()
+	return caveStructuralFrame(t, "MPP4", name, grid)
+}
+
+func caveStructuralFrame(t *testing.T, resourceKey, name string, grid []byte) (*CavePresentation, []cavePixel) {
+	t.Helper()
 	root, points := caveFixtures(t)
 	f := cavePresentedFixture(t, root, points[20])
 	actor := append([]cavePixel(nil), f.Decoded.Actor...)
 	b := iceStudy(t)
 	header := iceRead(t, filepath.Join(b, "cave-catalog-fixtures-v1", name+".header"))
-	resource := iceRead(t, filepath.Join(b, "cave-catalog-fixtures-v1/MPP4.resource"))
+	resource := iceRead(t, filepath.Join(b, "cave-catalog-fixtures-v1", resourceKey+".resource"))
 	if len(grid) != 504 {
 		t.Fatal("網格尺寸不符")
 	}
@@ -85,13 +90,19 @@ func TestCaveIceIndependentStaticMaps(t *testing.T) {
 	if err = art.LoadIce(filepath.Join(b, "cave-ice-complete-v1")); err != nil {
 		t.Fatal(err)
 	}
-	for _, name := range []string{"MP40", "MP41", "MP4D"} {
+	checkCaveStaticMaps(t, art, "MPP4", "cave-ice-complete-v1", []string{"MP40", "MP41", "MP4D"})
+}
+
+func checkCaveStaticMaps(t *testing.T, art *CaveTerrain, resourceKey, folder string, names []string) {
+	t.Helper()
+	b := iceStudy(t)
+	for _, name := range names {
 		t.Run(name, func(t *testing.T) {
-			grid := iceRead(t, filepath.Join(b, "cave-ice-complete-v1", name+"-grid.bin"))
-			f, actor := iceStructuralFrame(t, name, grid)
+			grid := iceRead(t, filepath.Join(b, folder, name+"-grid.bin"))
+			f, actor := caveStructuralFrame(t, resourceKey, name, grid)
 			canvas := caveOriginalCanvas(f)
 			before, memory, body := cloneTownBytes(canvas.Pix), cloneTownBytes(f.Memory), cloneTownBytes(f.BodyMemory)
-			wantImage, e := png.Decode(bytes.NewReader(iceRead(t, filepath.Join(b, "cave-ice-complete-v1", name+"-offline-hd.png"))))
+			wantImage, e := png.Decode(bytes.NewReader(iceRead(t, filepath.Join(b, folder, name+"-offline-hd.png"))))
 			if e != nil {
 				t.Fatal(e)
 			}

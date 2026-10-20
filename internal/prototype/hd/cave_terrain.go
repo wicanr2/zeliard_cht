@@ -1,4 +1,4 @@
-// Malicia靜態地形HD。來源、包絡、取樣與退回規則見規格011。
+// 洞窟靜態地形HD。來源、包絡、取樣與退回規則見規格011及037。
 package hd
 
 import (
@@ -11,9 +11,10 @@ import (
 )
 
 type CaveTerrain struct {
-	tiles       [22][]color.NRGBA
+	tiles       [128][]color.NRGBA
 	material    []color.NRGBA
-	ice         *caveIceArt
+	ice         *caveTerrainArt
+	peligro     *caveTerrainArt
 	player      *CavePlayer
 	playerState map[string]any
 	weapon      *CaveWeapon
@@ -175,14 +176,27 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		return false
 	}
 	r := f.Memory[0x11b10:0x21b10]
-	tiles, material, limit, rockLast, letters := s.tiles, s.material, 15, 8, false
+	tiles, material, limit, rockLast, extraArt := s.tiles, s.material, 15, 8, false
+	textFirst, textLast := 0, 0
 	if townBackgroundHash(r[0x8030:0x8030+14*48]) != "69f3a97cfe0356b544b67e462c5c59835a72c66099086e68f2f81b47f6cfa74b" {
 		entry, terrain := caveTerrainIdentity(f.Memory)
 		bodyEntry, _ := caveTerrainIdentity(f.BodyMemory)
-		if s.ice == nil || entry == nil || bodyEntry == nil || entry.record != bodyEntry.record || terrain.key != "MPP4" {
+		if entry == nil || bodyEntry == nil || entry.record != bodyEntry.record {
 			return false
 		}
-		tiles, material, limit, rockLast, letters = s.ice.tiles, s.ice.material, 22, 12, true
+		var art *caveTerrainArt
+		switch terrain.key {
+		case "MPP4":
+			art, limit, rockLast, textFirst, textLast = s.ice, 22, 12, 15, 19
+		case "MPP2":
+			art, limit, rockLast, textFirst, textLast = s.peligro, 35, 20, 21, 25
+		default:
+			return false
+		}
+		if art == nil {
+			return false
+		}
+		tiles, material, extraArt = art.tiles, art.material, true
 	}
 	if !cavePaintTimeline(f.Paints, f.BodySteps, f.BodyCycles, f.Steps, f.Cycles) {
 		return false
@@ -201,7 +215,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		}
 	}
 	var grid [18][28]byte
-	var decoded [22][]byte
+	var decoded [128][]byte
 	if len(material) != 432*768 {
 		return false
 	}
@@ -215,7 +229,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 		}
 	}
 	for _, c := range d.Cells {
-		if letters && int(c.ID) >= limit {
+		if extraArt && int(c.ID) >= limit {
 			return false
 		}
 		grid[(c.Y-14)/8][(c.X-48)/8] = c.ID
@@ -290,7 +304,7 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 					if !rock[(gy+y/3)*224+gx+x/3] {
 						continue
 					}
-				} else if !(letters && id >= 15 && id <= 19) && decoded[id][(y/3)*8+x/3] == 0 {
+				} else if !(extraArt && id >= textFirst && id <= textLast) && decoded[id][(y/3)*8+x/3] == 0 {
 					continue
 				}
 				c := tiles[id][y*24+x]
@@ -303,8 +317,8 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 				}
 				px, py := cell.X*3+x+origin.X, cell.Y*3+y+origin.Y
 				old := dst.RGBAAt(px, py)
-				if letters {
-					// MPP4圖面取代原生地形色；動態、主角與武器稍後依原順序回畫。
+				if extraArt {
+					// 新圖面取代原生地形色；動態、主角與武器稍後依原順序回畫。
 					old = color.RGBA{A: 255}
 				}
 				a, inv := uint32(c.A), uint32(255-c.A)
