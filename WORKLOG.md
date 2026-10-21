@@ -1478,3 +1478,5 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 050封包已完成：`dist-all/v.0.3.1-20261021/full-local/Zeliard-v.0.3.1-20261021-Linux-x86_64.AppImage`，173705720 bytes，SHA-256 `524367bef009657dda2d6bfb6888853f22b471c04be72ab4674ce552c2eb3826`。Go編譯成功，binary SHA-256 `c6ffa7db462e6a0ff1bbf871cacc9978fe91e117c0df232e41a4288f0ada7756`。manifest記錄9151個內含檔案與原始碼輸入，明示automatic_tests／launch_check／gameplay_check均為false。僅留本機，未建立或上傳含原版資料的Release。
 
 本次修正版收尾刪除348053504配置bytes，連先前候選清理共2552184832 bytes，約2.38GiB；生成圖及歷史候選保留。專案Docker容器為零，root-owned檔案與誤建.md目錄為零；未清除其他專案資源。
+
+程式與文件已提交`79729c8`並推送私人儲存庫`origin/main`。未上傳原版資料、字型、生成圖、工作區或AppImage。
