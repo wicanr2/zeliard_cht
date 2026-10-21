@@ -4,7 +4,9 @@
 
 ## 最新指示與正在製作
 
-使用者最新指示：先補齊全圖HD並全部整合，之後才一次驗收。期間不抽驗、不啟動遊戲、不提前打新包。前版v.0.3.1只代表先前候選，不能用作本批完成證據。
+已完成[051雙版本三平台交付](docs/spec/051-dual-edition-release.md)：顯示串接、新版60秒推廣片、CHT及CHT-HD各三平台完整包。版本v.0.4.0-20261021，正式輸出dist-all同版，工作區workplace/release-v040。CHT不附HD圖庫，CHT-HD預設HD並包含完整補圖；兩版共用相同程式與相容存檔。
+
+先補圖再一次整合的製作階段已結束。本次依接續授權完成封包啟動、第一洞窟錄影與影片檢查，不重跑完整原版對拍或通關。v.0.3.1保留前次候選身份。
 
 ## 目前狀態表
 
@@ -13,12 +15,16 @@
 | 美術製作 | 已盤點來源的補繪完成；43組來源、30張新增生成原圖，沿用先前場景及敵人圖面 |
 | 原版接入 | registered/complete-art.json共8,392筆完整／局部來源及1,221個主角／刀光組裝鍵；完整物件來源由1,562增至1,631 |
 | 範圍 | 八室內完整圖庫、所有已列人物／城鎮圖塊、裝備物品、法術、交談後景、ZEL2、片頭／結局與四套表情動畫均有圖面及接入 |
-| 整合檢查 | Docker內Go編譯成功，正式載入器一次載入全部圖格、物件及城鎮清單；沒有遊戲、GUI或原版對拍 |
-| 本地程式 | workplace/full-hd-v1/manual-hd-v1/zeliard-preview-complete；未發行，標記hd-integration-unreleased |
-| 人工驗收 | 待一次整體檢視；未知來源、未知裝備組合及Pureza191安全保留原貌，不能由美術數量推導全遊戲每幀覆蓋率 |
-| 封包 | 不提前打包；v.0.3.1仍是前次範圍，不包含本批補圖 |
+| 整合檢查 | 新版正常F7進城鎮、教堂中文對話、原貌／HD切換、第一洞窟操作、工具列重綁／解除／還原及正常退出；12張實際視窗 |
+| 封包 | dist-all/v.0.4.0-20261021/full-local；CHT／CHT-HD各有Linux x86_64 AppImage、Windows x86_64 ZIP、macOS通用.app ZIP |
+| 平台檢查 | 兩版Linux實際解出AppImage啟動；兩版Windows以Wine輔助啟動；兩版macOS核雙架構及.app結構。六包各含29份相同原版資料，內容／雜湊／模式通過 |
+| 推廣片 | promo/Zeliard-v.0.4.0-20261021-promo.mp4；60秒、1280×720、H.264／AAC雙聲道；mean -18.6dB、peak -4.5dB，無長黑幀或長靜音，字幕與結尾卡已目視 |
+| 驗收邊界 | 未完整通關或逐幀驗全遊戲，未知來源與Pureza191仍退回；Windows／macOS真機及實體USB／藍牙未驗 |
+| 工作區清理 | 清除重複建置、解壓及快取約7.20GiB；正式交付、唯一素材、錄影與存檔保留。專案容器、root-owned檔案及誤建.md目錄均零 |
 
-製作入口為[來源整理](tools/hd_complete_sources.py)、[登錄](tools/hd_complete_register.py)與[覆繪層](internal/prototype/hd/complete_art.go)。來源、生成請求、引用及輸出雜湊留在既有工作區；registered/complete-art.json包含輸入檔與工具雜湊。整合日誌為compile-complete.log及load-complete.log，收尾記錄在integration-result.json。舊tail.json的3,908個任意切片已由正確構圖取代製作用途，不再逐格生成錯位圖案。完整原圖、提示詞及來源保留。
+本版入口為[建置](tools/build_dual_release.sh)、[封包](tools/package_dual_release.py)、[錄影](tools/record_dual_release.py)、[剪輯](tools/make_dual_promo.py)及[六包核對](tools/audit_dual_release.py)。正式SHA256SUMS.json、smoke/release-audit.json及promo/quality.json保留輸入、輸出與驗收身份；workplace/release-v040/identity.json固定程式與dosgolem副本。清理記錄為同工作區cleanup.json。完整包與影片只留本機，程式及文件推送私人儲存庫。
+
+050素材入口仍為[來源整理](tools/hd_complete_sources.py)、[登錄](tools/hd_complete_register.py)及[覆繪層](internal/prototype/hd/complete_art.go)。完整原圖、提示詞、來源與43組／30圖／8,392筆登錄維持原身份；integration-result.json保留先前未發行整合版的編譯／載入檢查。舊tail.json任意切片不再作現行待生成清單。
 
 ## 前次候選與封包範圍
 

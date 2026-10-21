@@ -1496,3 +1496,28 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 所有圖面接入後，Docker內Go1.24.13編譯前端成功，另以正式載入器一次載入全部清單圖檔、尺寸與雜湊，輸出ALL_MANIFEST_ASSETS_LOADED。沒有test、vet、原版對拍、GUI或遊戲啟動。binary為hd-integration-unreleased；實際畫面、接縫與動畫待一次整體人工驗收。不產新AppImage，不改v.0.3.1或前版影片。結果與所有輸入／輸出身份保存在integration-result.json，詳[CONTEXT](CONTEXT.md#目前狀態表)。
 
 收尾清除本輪可重建Go快取195,510,272配置bytes，約186MiB；保留整合binary、全部生成圖、提示詞、原始輸入與正式舊包。root-owned檔案與誤建.md目錄均零，專案Docker容器為零，沒有全域清理其他專案資源。README現況路由另命中retro-remake-readme-standard並已載入。程式與文件推送私人origin/main，原版資料、生成素材及工作區不入Git。
+
+## 2026-10-21 051雙版本三平台完整版與新版推廣片
+
+使用者授權完成串接、重新錄製推廣片，並將原版＋中文與原版＋中文＋HD分開提供三平台完整版。依路由載入dist-all、版號、影片流水線及原版素材規則，使用復古重製技能的verification-and-handoff；Windows ZIP另讀UTF-8規則，更新README時讀README標準。沒有開新玩法重製引擎或重跑完整對拍。
+
+- 版號v.0.4.0-20261021。兩版共用固定程式，CHT不含HD圖庫，CHT-HD收錄050全量補圖並預設HD。新增-hd啟動參數，工具列的可用性統一涵蓋manual／world／interior圖層。play.sh預設HD版，--cht選原貌中文。原版規則、資料、存檔及音樂事件不改。
+- 執行bash tools/build_dual_release.sh all。沿Go1.24.13、既有MinGW及macOS SDK15.5工具映像，Linux為AppImage、Windows為x86_64 ZIP、macOS為Intel／Apple Silicon通用.app ZIP。固定來源與工具映像ID保存於workplace/release-v040/identity.json與toolchain-images.json；原版及生成素材來源唯讀。
+- 首批CHT把僅供HD的town-signs-text當成一般翻譯旗標，啟動時誤試載入未附的HD前景；查明後從CHT參數移除，HD版保留。首批未發tag或Release，完整移至attempt-1保留身份，再從乾淨輸入重建同一未發布版號。跨兩個bind掛載點rename先遇EXDEV，改在同一專案掛載內移動；第二次prepare曾因舊交付仍在而依防覆寫守衛停止。這些環境／準備記錄沒有算作產品通過。
+- 兩版Linux實際解出AppImage並經AppRun啟動，兩版Windows ZIP以Wine輔助啟動。六包逐檔尺寸與SHA、相同29份原版、中文、粉圓字型、音源、預設模式、架構及macOS權限／結構通過；Windows README為UTF-8 BOM與CRLF。Windows／macOS真機及實體USB／藍牙未測。
+- 以這次AppImage的相同二進位重新錄影，沿既有正常F7、城鎮、教堂對話、第一洞窟及正常退出，保存12張實際視窗。鍵盤頁重綁／解除／還原、關閉鍵隔離與設定重啟均按腳本記錄；錄影前已還原Space，重啟所核也是Space，不把它擴張為本輪重新證實任意自訂鍵持久化。原版與HD對照為順序切換的正常視窗，不宣稱同狀態逐像素對拍。
+- 新60秒影片採深藍金色、圓體標題、原貌／HD對照及兩版結尾。第一音樂候選取新遊玩WAV，含原版換場造成2.09秒停頓，被訊號檢查拒絕；保留候選影片、日誌及原WAV後，改用先前已追溯的原版標題曲連續擷取。只重混音，不重畫或改換新錄影。配樂仍是原版MSCADLIB事件與Nuked-OPL3，沒有另作曲。
+- 最終影片60秒、1280×720、H.264／AAC雙聲道，平均-18.6dB、峰值-4.5dB，無兩秒以上靜音或連續黑幀。字卡為明列靜態段，遊戲中2.56秒停頓另分類；六格抽幀與57秒結尾卡目視，字幕無裁切。技術音訊檢查不冒稱喇叭實聽。
+- tools/audit_dual_release.py回報PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE。清理後在一次性容器重建Linux暫存解壓層，再核六包通過，證明不依賴被清除的建置副本。正式封包及影片只留dist-all同版，程式與文件推送私人origin/main，tag採同一完整版號；不建立含原版素材的遠端Release。
+
+清除本輪重複建置、解壓、Wine與專案Go快取共7,732,875,264配置bytes，約7.20GiB。原版、唯一生成圖、提示詞、字型、錄影、源音訊、存檔、固定原始碼及正式交付保留。首批失敗日誌、參數與一份CHT AppImage保留。root-owned與誤建.md目錄均零；容器清理由Docker標籤另核。
+
+| 交付檔案 | bytes | SHA-256 |
+|---|---:|---|
+| full-local/Zeliard-v.0.4.0-20261021-CHT-HD-Linux-x86_64.AppImage | 197859832 | `c6549aa24e6e7bb17916864127d8733c88aaba71c29c248f96a0ac610199d230` |
+| full-local/Zeliard-v.0.4.0-20261021-CHT-macOS-universal.zip | 20020524 | `17dab596917e8d0589151d86ebe2c0ddb6379406a7dce3deb1dfc08b81605e27` |
+| full-local/Zeliard-v.0.4.0-20261021-CHT-HD-macOS-universal.zip | 209139721 | `437ef013605828229ffe3f2727ec3d0603305921274ee80a982485a9f0dcb708` |
+| full-local/Zeliard-v.0.4.0-20261021-CHT-Windows-x86_64.zip | 12906469 | `0bf98e5bce1e947db20459ef1a194773143d83267a30809c0c95226dbe39ee5d` |
+| full-local/Zeliard-v.0.4.0-20261021-CHT-Linux-x86_64.AppImage | 14866936 | `eb3f3ea9b42aad3ca650753008b13307151b0ede875c728bfa108f6bd300666b` |
+| full-local/Zeliard-v.0.4.0-20261021-CHT-HD-Windows-x86_64.zip | 200593291 | `da7c2d6a128e84ccb60da62f2c96123ddb6890b41903362787c6ca697b6c0dca` |
+| promo/Zeliard-v.0.4.0-20261021-promo.mp4 | 5039155 | `bca18fc19f4f375f8f385f795cce0a764aeb9978f385536f5f7ecc5cb3577b7b` |

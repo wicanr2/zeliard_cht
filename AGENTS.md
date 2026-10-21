@@ -2,9 +2,17 @@
 
 ## 2026-10-21最新使用者指示
 
-使用者接續要求先補齊全圖HD並全部整合，之後才一次驗收。期間不抽驗、不試玩、不提前另包候選；不得以部分補圖當本輪完成。沿用050及[全量來源整理](tools/hd_complete_sources.py)，製作台帳在既有工作區的completion-sources.json，完整請求及生成圖沿generated/，不另建工作根。
+使用者已接續授權完成串接、新推廣片與兩種版本各三平台完整版，依[051雙版本交付](docs/spec/051-dual-edition-release.md)。取代先前暫不打包的階段安排。入口為[build_dual_release.sh](tools/build_dual_release.sh)與[package_dual_release.py](tools/package_dual_release.py)，中間產物只放workplace/release-v040/。允許本次封包啟動及錄影所需整合檢查，不重開完整對拍或通關。正式產物只放dist-all/v.0.4.0-20261021/，完整素材與影片留本機。
 
-全圖補繪登錄：[hd_complete_register.py](tools/hd_complete_register.py)。43組來源、30張內建生成圖與8,392個完整／局部來源已接入[全圖覆繪層](internal/prototype/hd/complete_art.go)，清單在同工作區的registered/complete-art.json。只用原版資源段、原生圖樣及透明遮罩選圖；主角與武器沿原版8×8元件組裝。整合版尚未入AppImage，不用舊v.0.3.1宣稱包含本批素材。實際畫面及未知來源由整體人工驗收處理。
+新版錄影：[record_dual_release.py](tools/record_dual_release.py)沿既有正常第一洞窟鍵序重新擷取；剪輯：[make_dual_promo.py](tools/make_dual_promo.py)，使用新版實際視窗與原版音樂；影片檢查沿[verify_promo.py](tools/verify_promo.py)。六包核對：[audit_dual_release.py](tools/audit_dual_release.py)，逐包驗內容與模式，分開Linux、Wine與macOS結構身份。啟動檢查由[platform_smoke.py](tools/platform_smoke.py)選CHT／CHT-HD；不把Wine或結構檢查當真機。
+
+交付後清理：[cleanup_dual_release.py](tools/cleanup_dual_release.py)先核六包與影片SHA，才移除本輪重複建置、解壓、Wine及專案Go快取。清單與配置bytes在workplace/release-v040/cleanup.json，唯一來源與正式交付保留；稽核需要的Linux解壓層可在一次性容器重建。
+
+下列050內容保存先補圖、再整合的已完成素材階段。現行封包與錄影授權依上方051，不再套用當時暫不打包的階段安排。
+
+使用者前次要求先補齊全圖HD並全部整合，之後才一次驗收。期間不抽驗、不試玩、不提前另包候選；不得以部分補圖當本輪完成。沿用050及[全量來源整理](tools/hd_complete_sources.py)，製作台帳在既有工作區的completion-sources.json，完整請求及生成圖沿generated/，不另建工作根。
+
+全圖補繪登錄：[hd_complete_register.py](tools/hd_complete_register.py)。43組來源、30張內建生成圖與8,392個完整／局部來源已接入[全圖覆繪層](internal/prototype/hd/complete_art.go)，清單在同工作區的registered/complete-art.json。只用原版資源段、原生圖樣及透明遮罩選圖；主角與武器沿原版8×8元件組裝。本批素材已由051收錄，舊v.0.3.1不含本批補圖。實際畫面及未知來源由整體人工驗收處理。
 
 本次改走[050全圖像HD與人工驗證交付](docs/spec/050-manual-hd-delivery.md)。使用者已明確取消接下來的自動測試、對拍與GUI驗證，直接製作及接入HD全圖像，剩下交人工驗證，再打包含遊戲的Linux AppImage並清理workspace。不要重複詢問或重新開啟舊驗證閘門；編譯與封包照常進行，未人工確認的結果如實標示。原版規則與存檔不改，未知來源保持原貌，不稱全覆蓋已驗。此最新指示優先於下方歷史測試要求。
 

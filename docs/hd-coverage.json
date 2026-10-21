@@ -6531,5 +6531,17 @@
       "Pureza第316欄ID191來源仍未知，不補造圖塊。",
       "未宣稱全遊戲每幀、正常到達與原版一致性已驗。"
     ]
+  },
+  "current_release": {
+    "version": "v.0.4.0-20261021",
+    "status": "PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE",
+    "editions": [
+      "CHT",
+      "CHT-HD"
+    ],
+    "packages": 6,
+    "promo_seconds": 60,
+    "manifest": "dist-all/v.0.4.0-20261021/SHA256SUMS.json",
+    "scope": "Linux啟動、Windows Wine輔助啟動、macOS通用架構與結構；正常第一洞窟錄影。全遊戲、真機與實體手把未驗。"
   }
 }

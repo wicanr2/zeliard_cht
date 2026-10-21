@@ -6,6 +6,7 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 051雙版本三平台與新版推廣片 | PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE | v.0.4.0-20261021，六包各含29份相同原版資料，CHT無HD圖庫且原貌啟動，CHT-HD完整補圖且HD啟動。Linux兩AppImage實際啟動、Windows兩ZIP以Wine輔助啟動；macOS兩ZIP核Intel／Apple Silicon與.app權限／結構。新版正常第一洞窟、教堂中文、原貌／HD切換與操作頁錄影，12張實際視窗、正常DOS退出0。新片60秒1280×720，音量-18.6／-4.5dB，無長黑幀／靜音，既定字卡及2.56秒遊戲停頓已分類，字幕與結尾目視。入口dist-all同版smoke/release-audit.json、promo/quality.json及SHA256SUMS.json。Windows／macOS真機、實體手把及全遊戲未驗 |
 | 050全圖補繪整合 | ART_INTEGRATED_MANUAL_REVIEW_PENDING | 30張生成圖、43組來源、8,392個完整／局部圖樣及1,221個主角／刀光組裝鍵已接入。Go前端編譯成功，正式載入器一次載入全部圖格、城鎮及1,631個物件來源，核圖檔尺寸與SHA-256。沒有啟動遊戲、GUI、對拍或抽樣試玩；接縫、遮擋、動畫、未知來源及實際可達由整體人工驗收。`workplace/full-hd-v1/manual-hd-v1/integration-result.json`保存輸入與輸出身份。v.0.3.1包不包含本批補圖 |
 | 049已存刀光、物件與地形遮罩 | 限定CONFORMED | 候選e8fcc66f；17份原生完整重建548352像素零差，八圖46080RGBA、2304原生遮罩點、2066刀光及26692物件獨立混色相同。54項圖面／來源及三項正常／來源檢查、vet／build通過；首檔一項skip另已單獨補跑舊35份全幅10160640像素。兩路253／564完成來源、拒絕0／2，主角／刀光／物件缺圖零、13點完整原版與USR相同。GUI v2正常繩索下降、遮罩物件、原貌切回576000像素、DOS退出0及USR不變，根端已目視。v1診斷欄名錯誤保留；其他城鎮、魔法石拒絕、首領及全遊戲美術仍待補。入口`workplace/full-hd-v1/cave-unmatched-final-audit-v1.json`，不更新舊封包身份 |
 | 魔法石102正式圖層與平台代表路徑 | 044限定CONFORMED | 候選9b0e3ef0；27原版來源、可見／清除／重疊及31878獨立HD像素，11種來源失配、缺圖／壞圖原子拒絕通過。31項回歸、當前原子測試、三項正常／來源測試、vet／build無skip／fail。普通／魔法石兩路13點完整原版狀態、存檔bytes／mtime相同，原三個拒絕點皆有HD。GUI v2正常F7、使用魔法石、平台升降再升及離開、四組原貌切回2304000像素、4554結晶HD像素獨立相同，正常DOS退出0，根端已目視。入口`workplace/full-hd-v1/cave-magia-final-audit-v2.json`。v1物品後站位有原版效果來源但地形HD未匹配，仍待查；v2離開截圖已匹配。92／42來源拒絕、耗盡／部分遮擋／邊緣及主角／武器缺圖不外推完成 |

@@ -2,7 +2,7 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-已盤點的 HD 圖面已補繪並整合到前端，包含城鎮、室內、洞窟、人物、敵人、首領、裝備、法術、片頭與結局。全部整合後交一次人工驗收，未知或不符來源仍保留原貌。完整範圍見 [規格034](docs/spec/034-full-game-hd.md)，製作與接入見 [規格050](docs/spec/050-manual-hd-delivery.md)。目前 AppImage 仍是前次候選，尚未收錄這次補圖。
+提供「原版＋中文（CHT）」及「原版＋中文＋HD（CHT-HD）」兩套三平台完整包。CHT保留原版美術，不附HD圖庫；CHT-HD預設開啟手繪HD，可從工具列切回原貌。兩版都包含原版遊戲、圓體中文、配樂音色改善及鍵盤／手把設定，存檔相容。交付方式見[規格051](docs/spec/051-dual-edition-release.md)。
 
 | 範圍 | 目前狀態 |
 |---|---|
@@ -10,10 +10,10 @@
 | 洞窟 | 沿用11組地形、門框與物件；八組敵人、十組首領及第二階段模板均有HD圖面 |
 | 主角與武器 | 保留既有完整姿態，加入主角230個原生圖塊與三組刀光301個圖塊的組裝；未知來源安全退回 |
 | 片頭、結局與介面 | 已接入補繪插畫、頭像表情、幻影階段、結局合成、裝備物品圖示與法術效果 |
-| 整合狀態 | 前端編譯及全清單素材載入完成；沒有抽樣試玩，實際畫面待一次人工驗收 |
-| 平台封包 | Linux AppImage維持前次候選；Windows、macOS維持前版，本批尚未打包 |
+| 整合狀態 | 新版正常進入第一洞窟，已重錄代表中文對話、原貌／HD切換及操作設定；全遊戲每幀仍未驗 |
+| 平台封包 | 兩版各有Linux AppImage、Windows ZIP及macOS通用ZIP；Linux啟動、Wine輔助啟動及六包內容檢查完成 |
 
-既有完整資料包包含原版遊戲、繁體中文與當時的手繪HD素材。本批只製圖、接入、編譯及全清單載入，沒有啟動遊戲或重跑對拍。先前第一洞窟試玩的結果保留前版身份，不當作本批通過證據。
+HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝備法術、片頭與結局補圖，來源與接入見[規格050](docs/spec/050-manual-hd-delivery.md)。未知或不符來源保留原貌；不以完整資料包或第一洞窟錄影宣稱全遊戲翻譯、每幀HD或完整通關已驗收。
 
 中文採用較圓潤的[jf open 粉圓2.1](https://github.com/justfont/open-huninn-font/releases/tag/v2.1)，在工具列、對話、選單與狀態列依顯示尺寸合成柔邊，保留原字距及文字區域。字型採OFL-1.1，授權全文隨本機包附上。製作方式見[字型工具](tools/prepare_rounded_font.py)。
 
@@ -33,9 +33,9 @@
 
 左側為原版美術，右側為手繪 HD。每組取自同一暫停狀態的實際視窗，兩側皆開啟繁體中文覆繪。教堂圖展示當時的肖像覆繪，邊框與狀態列仍保留原貌；這些截圖只呈現已驗證的場景。
 
-![目前封包的城鎮與第一洞窟 HD 實際畫面](docs/images/gameplay-hd.jpg)
+![前版封包的城鎮與第一洞窟 HD 實際畫面](docs/images/gameplay-hd.jpg)
 
-前版封包的 Muralla 城鎮與 Malicia 第一洞窟實際截圖，保留工具列與狀態列。可從工具列切換原貌／HD、選擇手把及設定鍵盤。本輪未重拍畫面。
+前版封包的 Muralla 城鎮與 Malicia 第一洞窟實際截圖，保留工具列與狀態列。可從工具列切換原貌／HD、選擇手把及設定鍵盤。本頁截圖保留前版，新版實錄見下方推廣片。
 
 ## 素材總覽
 
@@ -53,23 +53,27 @@
 
 ## 開始遊玩
 
-Linux 人工驗證候選放在 `dist-all/v.0.3.1-20261021/full-local/`，包含遊戲資料，未上傳 GitHub：
+本機完整版放在 `dist-all/v.0.4.0-20261021/full-local/`，包含遊戲資料，未上傳GitHub。檔名以`Zeliard-v.0.4.0-20261021-`開頭：
 
-| 平台 | 檔案 |
-|---|---|
-| Linux x86_64 | `Zeliard-v.0.3.1-20261021-Linux-x86_64.AppImage` |
+| 平台 | 原版＋中文 | 原版＋中文＋HD |
+|---|---|---|
+| Linux x86_64 | `CHT-Linux-x86_64.AppImage` | `CHT-HD-Linux-x86_64.AppImage` |
+| Windows x86_64 | `CHT-Windows-x86_64.zip` | `CHT-HD-Windows-x86_64.zip` |
+| macOS Intel／Apple Silicon | `CHT-macOS-universal.zip` | `CHT-HD-macOS-universal.zip` |
 
-Windows 與 macOS 前版仍在 `dist-all/v.0.2.0-20261020/full-local/`，分別為 `Zeliard-v.0.2.0-20261020-Windows-x86_64.zip` 及 `Zeliard-v.0.2.0-20261020-macOS-universal.zip`。本頁截圖與60秒推廣片維持前版身份。
+前版封包保留在各自版號目錄。本頁既有截圖維持前版身份，新版另附60秒實錄推廣片。
 
-Windows解壓縮後開啟 `Zeliard.exe`，macOS解壓縮後開啟 `Zeliard.app`。Linux可直接執行AppImage，也可在專案目錄執行：
+Windows解壓縮後開啟`Zeliard.exe`，macOS開啟`Zeliard-CHT.app`或`Zeliard-CHT-HD.app`。Linux可直接執行所選AppImage，也可在專案目錄啟動HD版：
 
 ```sh
 bash tools/play.sh
 ```
 
-原生封包不需要Docker。若Linux缺少FUSE，可在新目錄以AppImage的 `--appimage-extract` 解開後執行 `squashfs-root/AppRun`。此方式曾在前版抽測，新版未重跑。
+原貌中文版使用`bash tools/play.sh --cht`。兩套包分開提供，安裝位置不影響共用存檔格式。
 
-工具列可切換原貌／HD，並開啟「搖桿／手把」及「鍵盤設定」。藍牙先在系統配對，USB手把先插入，再選裝置及綁定。鍵盤可重綁、解除、還原預設，兩種設定都會保存。
+原生封包不需要Docker。若Linux缺少FUSE，可在新目錄以AppImage的`--appimage-extract`解開，再執行`squashfs-root/AppRun`。兩版已使用此方式啟動檢查。
+
+工具列可開啟「搖桿／手把」及「鍵盤設定」，HD版另可切換原貌／HD。藍牙先在系統配對，USB手把先插入，再選裝置及綁定。鍵盤可重綁、解除、還原預設，兩種設定都會保存。
 
 | 預設按鍵 | 操作 |
 |---|---|
@@ -84,9 +88,9 @@ bash tools/play.sh
 
 包內附自建存檔SAVETEST，可按F7讀取後從Muralla鎮向右進入第一洞窟。存檔與操作設定保存在系統使用者設定目錄的 `Zeliard-CHT`：Linux為 `~/.config/Zeliard-CHT/`，Windows為 `%AppData%\Zeliard-CHT\`，macOS為 `~/Library/Application Support/Zeliard-CHT/`。可用 `ZELIARD_USER_DIR` 指定其他目錄。
 
-60秒推廣影片在 `dist-all/v.0.2.0-20261020/promo/`。檔案大小與SHA-256見同版 `SHA256SUMS.json`，抽測見 `smoke/`。封包與影片包含原版資料、音樂、字型及研究圖面，只供本機使用，不得上傳或散布。
+新版60秒推廣片在`dist-all/v.0.4.0-20261021/promo/Zeliard-v.0.4.0-20261021-promo.mp4`，使用這次實際遊戲錄影、雙版本對照與原版標題曲。檔案大小與SHA-256見同版`SHA256SUMS.json`，封包檢查見`smoke/`。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
 
-本次 Linux 建置入口為 [tools/build_linux_manual.sh](tools/build_linux_manual.sh)，使用 Docker 與固定的本地原版、字型及 HD 圖組，只編譯及打包，拒絕覆寫既有輸出。新版沒有啟動或試玩收據。前版三平台流程保留於 [tools/build-release.sh](tools/build-release.sh)。版號由 [VERSION](VERSION) 指定；目前狀態見 [CONTEXT.md](CONTEXT.md)。
+三平台雙版本建置入口為[tools/build_dual_release.sh](tools/build_dual_release.sh)，使用Docker與固定的本地原版、字型及HD圖組，拒絕覆寫既有輸出。錄影、影片與六包核對入口見[規格051](docs/spec/051-dual-edition-release.md)。版號由[VERSION](VERSION)指定；目前狀態見[CONTEXT.md](CONTEXT.md)。
 
 ## 開發方向
 

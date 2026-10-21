@@ -301,7 +301,7 @@ func (g *game) Update() error {
 	if click && point.In(image.Rect(8, 8, 150, 40)) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && (g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.merchantFramesHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil) {
+	if click && point.In(image.Rect(158, 8, 340, 40)) && g.hasHDArtwork() {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
@@ -765,7 +765,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hd != nil {
 		hdLabel = "hd_ready"
 	}
-	if g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.merchantFramesHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil {
+	if g.hasHDArtwork() {
 		hdLabel = "hd_art_ready"
 	}
 	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
@@ -1027,6 +1027,10 @@ func savePNG(path string, img image.Image) error {
 }
 func (g *game) Layout(int, int) (int, int) { return width, height }
 
+func (g *game) hasHDArtwork() bool {
+	return g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.merchantFramesHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil || g.manualArtwork != nil || g.worldTowns != nil
+}
+
 func main() {
 	if err := bundleArguments(); err != nil {
 		log.Fatal(err)
@@ -1046,6 +1050,7 @@ func main() {
 	adlib := flag.Bool("adlib", false, "使用原版 AdLib 配樂驅動；設定只寫入隔離使用者目錄")
 	fmLibrary := flag.String("fm-library", "", "可替換的 Nuked-OPL3 動態函式庫")
 	realtime := flag.Bool("realtime", false, "依實際時間推進，最多追趕100毫秒；暫停與失焦不追趕")
+	startHD := flag.Bool("hd", false, "啟動時開啟已載入的HD圖庫，可由工具列切回原貌")
 	frames := flag.Int("capture-frames", 120, "GUI 測試擷取前更新次數")
 	panel := flag.Bool("show-controller", false, "GUI 測試啟動時展開手把頁")
 	introRef := flag.String("intro-reference", "", "可選：本地 probe 的片頭原文參考畫格，只覆繪一句")
@@ -1541,6 +1546,7 @@ func main() {
 			log.Printf("居民對話試譯未載入，保留原文：%v", err)
 		}
 	}
+	g.hdEnabled = *startHD && g.hasHDArtwork()
 	ebiten.SetWindowTitle(g.label("title"))
 	g.output, err = newAudioOutput(*audioMode, *audioWAV)
 	if err != nil {

@@ -1,7 +1,7 @@
 {
   "title": "神劍封魔：繁體中文 HD",
   "original": "原貌",
-  "hd": "HD 待製作",
+  "hd": "未安裝 HD",
   "hd_ready": "HD 畫面",
   "hd_art_ready": "HD 畫面",
   "hd_fallback": "此畫面保留原貌",
@@ -24,7 +24,7 @@
   "saved": "設定已保存",
   "disconnected": "手把已斷線，已放開所有動作",
   "keyboard": "原版鍵盤仍可操作；Esc 保留原版暫停功能。",
-  "prototype": "第一洞窟試玩版；鍵盤與手把可在工具列設定。",
+  "prototype": "繁體中文；鍵盤與手把可在工具列設定。",
   "left": "向左",
   "right": "向右",
   "jump": "向上／跳躍",
