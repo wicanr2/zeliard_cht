@@ -529,3 +529,7 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 - [影片沿用核對](tools/promote_release_media.py)在Docker內接受原錄製完整版號，核對新舊遊戲來源、dosgolem及素材身份，保留影片錄製版號。
 - [交付清理](tools/cleanup_dual_release.py)先驗正式產物雜湊；正式結案可加`--closeout`，只清除明列組裝、解壓、Wine、Go快取及影片中間片段，保留來源、唯一素材、存檔與收據。
 - 唯一目前狀態及完成邊界見[CONTEXT.md](CONTEXT.md)，結案歷程見[WORKLOG.md](WORKLOG.md)。舊版tag及交付不覆寫。
+
+[規格055](docs/spec/055-cave-artifact-context.md)管理無資源綁定插畫片段的母圖上下文守衛，證據與原Ada同狀態重生在workplace/hd-cave-artifact-v1。只修顯示誤匹配，不覆寫已發布1.0.0。
+
+[055回歸檢查](internal/prototype/hd/complete_art_context_test.go)使用固定Ada原生來源拒絕結局片段，保留正確母圖、上下文失配與邊界裁切正反例。[Ada剪輯](tools/make_ada_promo.py)可用ZELIARD_PROMO_WORK指定workplace下的新工作區，避免覆寫歷次錄影。

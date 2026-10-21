@@ -1594,3 +1594,33 @@ CONTEXT改為唯一精簡現況，WORKLIST改為已結案清單。舊CONTEXT與W
 主機gh auth status已通過，回讀儲存庫為PRIVATE。只推原始碼、文件、既有已授權文件縮圖與正式tag，GitHub Release只含說明與自動來源快照，不上傳任何完整版或影片。正式來源提交由同名tag固定，發布回讀紀錄另追加。
 
 054發布回讀：正式來源提交`556a113bf890936588ff9d29ee0095b06527a471`，annotated tag物件`81682b7341537d825ea6bc7ad68625eca6b2fba2`，main與新tag已原子推送。GitHub Release https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.0-20261021 已建立，2026-10-21T09:35:02Z發布，isDraft=false、isPrerelease=false、assets=[]，儲存庫回讀PRIVATE。回讀證明為workplace/release-v100/github-publication.json，正式manifest亦附來源commit及tag。此段發布回讀與README連結作後續純文件提交；已發布tag不移動。結案無待續工作。
+
+## 2026-10-21 055洞窟誤貼結局圖塊修正
+
+使用者提供推廣片局部截圖，要求消除主角進洞後右上方異常方塊。本輪是1.0.0結案後的新顯示缺陷，其他已完成範圍及未驗限制不重開。路由命中復古遊戲畫面修正，沿reverse-engineer-retro-game-remake的既有來源與同狀態規則，載入spec-gated-workflow；升修訂版及建立新交付前重讀正式版號與dist-all契約。
+
+### 已證實根因
+
+Pillow／numpy比對Ada的cave-played-HD.png原生159,90區域與已登錄24×24圖，定位complete-yuu3-final-000-x120-y072.png。其原版8×8只有一個色號2，其餘為0，來自256×192結局插畫YUU3+YUU4，資源組bindings為空。現行局部圖樣在洞窟巧合匹配，沒有母圖上下文，造成綠色方塊；左側另一個無關片段同樣來自這條路徑。
+
+使用原Ada輸入日誌，在固定正式dosgolem來源重生5,064筆，逐筆原版暫存器／時鐘相同，觀察RAM、完成RAM／主體／原生畫面SHA皆與原紀錄相同。完成來源step247835674、觀察step247916034。首次沿舊探針預設MSCSTD，第二筆暫存器即不同，保留為replay-source-std-driver，分類為重播設定差異；hd_gui_frame_probe.go新增明確-adlib旗標，在獨立scratch依前端方式建立MSCADLIB設定並SetAdLib，原日誌即可重生，不改原輸入。根因清單、使用者圖、來源、舊程式診斷及回歸輸出保存workplace/hd-cave-artifact-v1，索引在055規格及CONTEXT。
+
+### 變更與限定驗證
+
+055在原生來源證據完成後由READY進實作。CompleteArtwork讀取既有schema1的derivative_of及登錄器-xNNN-yNNN座標，核對母圖、組、位置及原生子圖像素。無資源綁定的插畫片段必須核對母圖全部可見原生上下文才覆繪，失配保留既有下層。沿原有記憶體綁定的來源、專用HD、原美術與原版玩法不變，不用遮黑或塗改影片處理。
+
+TestCompleteArtworkCaveContext以真實Ada重生畫面拒絕結局片段，另驗正確母圖、其他像素失配及畫面邊界裁切，原版來源不變。移動補圖層20次基準約7.62ms，不宣稱整體FPS。測試及研究只在既有Docker／Go1.24.13，固定workplace/release-v100/dosgolem來源，沒有改共用dosgolem。新規格與測試同輪加入AGENTS索引。make_ada_promo.py支援ZELIARD_PROMO_WORK，拒絕workplace以外工作根，避免新錄影覆寫舊版。
+
+依同日修訂契約定v.1.0.1-20261021，拒絕覆寫1.0.0。沿build_dual_release.sh all重建六包，Linux兩版實際啟動，Windows兩版Wine輔助啟動，macOS通用架構與.app結構、全部內容／SHA／模式／29原版檔／字型／音源／存檔目錄核對通過。hd_runtime_smoke.py正常冷F7、入洞、接敵變色／特殊受傷HD、原貌切回、正常DOS退出0及USR bytes／mtime不變，PASS_HD_RUNTIME_DAMAGE_GUI。audit_dual_release.py --runtime-fix為PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE。
+
+### 新Ada錄影、交付及清理
+
+沿已授權SSH agent及登入腳本、既有kdzz-gpu-verify:20261021-r1，在新的zeliard-promo-v101-20261021工作根用非root、唯讀AppImage及原版、獨立存檔錄製；登入資訊與憑證不入專案。實際NVIDIA RTX 2000 Ada、VirtualGL EGL及NVENC證據與遊戲GPU函式庫保存。正常DOS退出0、USR不變，PASS_ADA_NEW_GAMEPLAY_CAPTURE。新cave-played-HD.png已目視，頭部右上與左側誤貼圖消失，主角／洞窟／門框HD正常；前後錄影是各次正常遊玩，同狀態根因另以原日誌重生證明。
+
+make_ada_promo.py以新錄影產出55.48秒960×680／60fps同期聲片段，以及60秒1280×720推廣片。同期聲mean -21.6dB、peak -4.5dB，推廣片原版標題曲mean -18.6dB、peak -4.5dB。verify_promo.py兩片PASS，無長黑幀，推廣片無長靜音或未分類長凍結；contact-sheet、57秒結尾卡、字幕及洞窟畫面已目視。沒有使用舊影片冒充新錄，也沒有塗改實際遊玩畫格。
+
+唯一現行交付dist-all/v.1.0.1-20261021，六個完整包及兩片新影片的大小／SHA在SHA256SUMS.json，來源在workplace/release-v101/identity.json，055證據及影片QA摘要另附manifest。1.0.0及更早tag、封包、影片均保留原身份。
+
+清理前核八個成品SHA，cleanup_dual_release.py清除3,839,844,352配置bytes的本版組裝／解壓／Wine／Go快取；本次Ada傳輸tar及已合併無聲中間影片另清262,053,888配置bytes，共4,101,898,240配置bytes，約3.82GiB。保留原版、唯一素材、原始錄影／PCM／WAV、提示詞、字型、存檔、來源及收據。Ada另核錄影及AppImage SHA，清重複輸入與解包層，專屬容器為零。清理後再核八個成品、固定來源與目前程式相同，root-owned檔案與.md目錄為零，Go快取為空，收據為release-v101/hygiene.json與ada-promo-v101/兩份cleanup。
+
+只推原始碼、文件及正式修訂tag，完整包及影片仍只留本機。沒有通關或真機手把新增聲明，本輪必要工作已完成；GitHub發布回讀另追加。

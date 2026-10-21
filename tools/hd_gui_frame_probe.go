@@ -11,6 +11,7 @@ import (
 	"image"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/hd"
@@ -20,6 +21,7 @@ func main() {
 	project := flag.String("project", "", "唯讀專案")
 	gui := flag.String("gui", "", "已有GUI研究目錄")
 	output := flag.String("output", "", "既有空輸出")
+	adlib := flag.Bool("adlib", false, "重播明確採AdLib的GUI，沿前端建立獨立RESOURCE.CFG")
 	flag.Parse()
 	need := func(e error) {
 		if e != nil {
@@ -95,6 +97,12 @@ func main() {
 	need(os.WriteFile(copySave, save, 0644))
 	need(os.Chtimes(copySave, stamp.ModTime(), stamp.ModTime()))
 	o.SetScratch(scratch)
+	if *adlib {
+		config := read(filepath.Join(orig, "RESOURCE.CFG"))
+		config = []byte(strings.ReplaceAll(string(config), "MSCSTD.DRV", "MSCADLIB.DRV"))
+		need(os.WriteFile(filepath.Join(scratch, "RESOURCE.CFG"), config, 0600))
+		o.SetAdLib(true)
+	}
 	o.SetDOSBoxCycles(header.CyclesPerMS)
 	o.TraceFiles()
 	audio := o.NewAudio(header.SampleRate)
@@ -186,6 +194,7 @@ func main() {
 	}
 	write("probe-source.go", read(filepath.Join(*project, "tools/hd_gui_frame_probe.go")))
 	report := map[string]any{"status": "PASS_GUI_JOURNAL_SOURCE_RECONSTRUCTION", "script_sha256": sha(read(filepath.Join(*output, "probe-source.go"))), "records": count, "journal_sha256": sha(journal), "observation_sha256": sha(read(statePath)), "target_steps": wanted.Steps, "source_steps": selected.Steps, "body_steps": selected.BodySteps, "memory_sha256": sha(selected.Memory), "body_memory_sha256": sha(selected.BodyMemory), "indexed_sha256": sha(selected.SourceIndexed), "native_cells": selected.Decoded.Cells, "cell_id_counts": ids, "terrain_hd_matched": matched, "common_hd": art.CommonState(), "magia_hd": art.MagiaState(), "save_unchanged": true, "limits": "同GUI日誌之原版來源重生；只載地形、平台與魔法石作拒絕診斷，非GUI或完整前端畫面驗收。"}
+	report["adlib"] = *adlib
 	data, e := json.MarshalIndent(report, "", "  ")
 	need(e)
 	write("receipt.json", append(data, 10))

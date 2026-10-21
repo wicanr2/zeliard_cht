@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 )
 
 type completeBinding struct {
@@ -26,11 +27,14 @@ type completeEntry struct {
 	Group, Width, Height int
 	Source, File         string
 	Hash                 string `json:"sha256"`
+	DerivativeOf         string `json:"derivative_of"`
 	Raster, Mask, Colors []byte
 	art                  image.Image
 	pixels               []color.NRGBA
 	ax, ay, anchorLen    int
 	baseline             byte
+	context              *completeEntry
+	contextX, contextY   int
 }
 type completePlacement struct {
 	entry *completeEntry
@@ -137,6 +141,36 @@ func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
 		}
 		s.entries = append(s.entries, e)
 	}
+	parents := make(map[string]*completeEntry, len(m.Entries))
+	for i := range m.Entries {
+		e := &m.Entries[i]
+		if parents[e.File] != nil {
+			return nil, fmt.Errorf("全圖來源檔名重複")
+		}
+		parents[e.File] = e
+	}
+	for _, e := range s.entries {
+		if e.DerivativeOf == "" || len(s.groups[e.Group].Bindings) != 0 {
+			continue
+		}
+		parent := parents[e.DerivativeOf]
+		if parent == nil || parent.Group != e.Group || parent.Source != e.Source || parent.DerivativeOf != "" {
+			return nil, fmt.Errorf("插畫片段母圖不符：%s", e.File)
+		}
+		// schema1既有登錄器以母圖名及-xNNN-yNNN保存原生裁切座標。
+		prefix := strings.TrimSuffix(parent.File, ".png")
+		var x, y int
+		_, err := fmt.Sscanf(strings.TrimPrefix(e.File, prefix), "-x%d-y%d.png", &x, &y)
+		if err != nil || e.File != fmt.Sprintf("%s-x%03d-y%03d.png", prefix, x, y) || x < 0 || y < 0 || x+e.Width > parent.Width || y+e.Height > parent.Height {
+			return nil, fmt.Errorf("插畫片段座標不符：%s", e.File)
+		}
+		for row := 0; row < e.Height; row++ {
+			if !bytes.Equal(e.Raster[row*e.Width:(row+1)*e.Width], parent.Raster[(y+row)*parent.Width+x:(y+row)*parent.Width+x+e.Width]) {
+				return nil, fmt.Errorf("插畫片段來源不符：%s", e.File)
+			}
+		}
+		e.context, e.contextX, e.contextY = parent, x, y
+	}
 	for _, e := range m.Components {
 		if e.Width != 8 || e.Height != 8 || len(e.Raster) != 64 || filepath.Base(e.File) != e.File {
 			return nil, fmt.Errorf("人物補繪元件不符")
@@ -223,6 +257,31 @@ func completeAnchor(b []byte) uint64 {
 	return uint64(b[0])
 }
 
+// 無記憶體綁定的插畫片段須同時符合母圖可見上下文，防止單一色點跨場景誤貼。
+func (e *completeEntry) contextMatches(raw []byte, x, y int) bool {
+	parent := e.context
+	if parent == nil {
+		return true
+	}
+	left, top := x-e.contextX, y-e.contextY
+	visible := image.Rect(left, top, left+parent.Width, top+parent.Height).Intersect(image.Rect(0, 0, 320, 200))
+	if visible.Empty() {
+		return false
+	}
+	for py := visible.Min.Y; py < visible.Max.Y; py++ {
+		for px := visible.Min.X; px < visible.Max.X; px++ {
+			at := (py-top)*parent.Width + px - left
+			if len(parent.Mask) != 0 && parent.Mask[at] == 0 {
+				continue
+			}
+			if raw[py*320+px] != parent.Raster[at] {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Point) bool {
 	if s == nil {
 		return false
@@ -276,7 +335,7 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 								}
 							}
 						}
-						if match {
+						if match && e.contextMatches(raw, px, py) {
 							s.placements = append(s.placements, completePlacement{e, px, py})
 						}
 					}

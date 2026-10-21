@@ -644,3 +644,15 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 未驗限制 | Windows／macOS真機、實體手把、完整通關與全遊戲逐幀仍未驗；未知來源及Pureza191保留原貌，不因正式版號改證據等級 |
 
 收據在dist-all/v.1.0.0-20261021/smoke及promo，來源證明在workplace/release-v100/formal-promotion.json。正式清單為同版SHA256SUMS.json。workspace清理先核八個正式產物SHA，清除5,335,515,136配置bytes，明細為同工作區cleanup.json。
+
+## 055洞窟插畫片段誤匹配
+
+| 範圍 | 結果 |
+|---|---|
+| 同原版來源 | 原Ada5,064筆鍵緣及RunCycles重播，暫存器／時鐘／觀察RAM與完成原生畫面SHA相同，原版存檔不變 |
+| 根因與修正 | yuu3-final無資源綁定的8×8結局片段被誤貼於159,90，補母圖可見上下文後拒絕；正確母圖、邊界裁切及失配反例通過，原版RAM不變 |
+| 正常新包GUI | v.1.0.1正常冷F7進洞、接敵變色及特殊受傷HD、原貌切回、DOS退出0，USR bytes／mtime不變 |
+| 新Ada畫面 | 新1.0.1以VirtualGL EGL／NVENC重新錄製；cave-played-HD已目視，主角右上方與左側誤貼片段消失，主角／背景／門框HD保留；新舊錄影不稱整局同狀態 |
+| 新封包與影片 | 六包內容／SHA、Linux啟動、Wine輔助啟動、macOS架構與.app結構通過；新55.48秒實錄與60秒推廣片AV及字幕／黑幀／凍結檢查通過 |
+
+證據入口[055](docs/spec/055-cave-artifact-context.md)，固定來源workplace/hd-cave-artifact-v1，正式交付dist-all/v.1.0.1-20261021。沒有全遊戲通關、逐幀、Windows／macOS真機或實體手把新聲明。

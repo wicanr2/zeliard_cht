@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """053：以ada新錄實機畫面製作連續遊玩片段及60秒推廣片。"""
 from pathlib import Path
-import array,hashlib,json,re,subprocess,wave
+import array,hashlib,json,os,re,subprocess,wave
 from PIL import Image,ImageDraw,ImageFont,ImageOps
 
-P=Path('/project');W=P/'workplace/ada-promo-v1';C=W/'received/recording';S=W/'received/capture'
+P=Path('/project');W=P/os.environ.get('ZELIARD_PROMO_WORK','workplace/ada-promo-v1');C=W/'received/recording';S=W/'received/capture'
+assert W.resolve().is_relative_to((P/'workplace').resolve())
 VERSION=(P/'VERSION').read_text().strip();O=P/'dist-all'/VERSION/'promo';T=W/'edit'
 T.mkdir();assert O.is_dir() and not list(O.glob('*.mp4'))
 receipt=json.loads((C/'receipt.json').read_text());assert receipt['status']=='PASS_ADA_NEW_GAMEPLAY_CAPTURE'
