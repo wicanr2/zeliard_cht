@@ -150,6 +150,7 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 		if e != nil {
 			t.Fatal(e)
 		}
+		loadExtraPlayerNormalArt(t, player)
 		art.SetPlayer(player)
 	}
 	var weapon *CaveWeapon
@@ -419,6 +420,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		loadExtraPlayerNormalArt(t, player)
 		art.SetPlayer(player)
 	}
 	var weapon *CaveWeapon

@@ -11,6 +11,10 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 青藍刀光接入：[固定鍵與原子圖組](internal/prototype/hd/cave_weapon_cyan.go)，沿046保留舊十圖及未知來源退回。
 青藍刀光驗證：[已存來源與原子回歸](internal/prototype/hd/cave_weapon_cyan_test.go)，核十鍵、直接高清像素及來源未寫入。
 青藍刀光稽核：[來源／圖面／正常路徑／GUI](tools/hd_cyan_weapon_runtime_audit.py)，分列獨立混色與視窗抽樣範圍。
+主角保存姿態註冊：[十二來源圖面工具](tools/hd_saved_player_art.py)，核既有持盾輪廓，直接註冊新圖與六種可見色彩變體。
+主角保存姿態接入：[十二鍵與原子圖組](internal/prototype/hd/cave_player_extra.go)，依046保留原55姿態及原版當次配色時機。
+主角保存姿態驗證：[來源／混色／遮擋／原子載入](internal/prototype/hd/cave_player_extra_test.go)，核12鍵、六個變色及原55圖不變。
+主角保存姿態稽核：[來源／圖面／正常配對／GUI](tools/hd_saved_player_runtime_audit.py)，區分完成來源缺圖歸零與其餘來源拒絕。
 門框原始載入端：[IDA9.4窄範圍匯出](tools/ida_cave_door.py)，保留原始函式、位址與運算元，未分級項標為未知。
 
 魔法石正式來源與高清圖層：[cave_magia.go](internal/prototype/hd/cave_magia.go)，依[044](docs/spec/044-cave-magia-presentation.md)的完整來源及可見／清除契約接入。

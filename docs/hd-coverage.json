@@ -201,7 +201,17 @@
       "evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
       "registered_variants": 10,
       "existing_silver_variants_preserved": 10,
-      "limits": "已存十來源及兩條正常平台路徑武器缺圖為零，實際GUI出劍與切回通過；主角12來源、其他武器與後段仍待補。"
+      "limits": "已存十來源及兩條正常平台路徑武器缺圖為零，實際GUI出劍與切回通過；主角保存來源另由046擴充，其他武器與後段仍待補。"
+    },
+    {
+      "key": "cave.player.saved_extra",
+      "status": "scoped_normal_path_and_gui_verified",
+      "spec": "docs/spec/046-cave-saved-gear-hd.md",
+      "evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "registered_source_keys": 12,
+      "palette_variants": 6,
+      "existing_poses_preserved": 55,
+      "limits": "兩條路徑的已選完成來源無主角／武器缺圖；42／92次來源拒絕及其他場景仍待補，不當每畫格或全遊戲完成。"
     },
     {
       "key": "cave.terrain.MPP1",
@@ -422,6 +432,10 @@
     {
       "path": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
       "sha256": "180cb7381d608c3ffb147c0d269296d2788b84b3c519133188343023d4759e4f"
+    },
+    {
+      "path": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "sha256": "2b485bfbe78ddccc09129ad3cf40cefdd9547d371485bc9650f53a9600fad7c5"
     }
   ],
   "source_revisions": [
@@ -429,8 +443,8 @@
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/town-back-audit-v1.json",
       "historical_sha256": "7e1641657ca1b198d496aaea84502e2cf8e7aeffdade651cb85502abf13af73a",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -445,48 +459,48 @@
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/interior-final-audit-v2.json",
       "historical_sha256": "733c210d45724dcf6978c3f944bf94cc727740e8c79992e521d5d29be4c4d8bf",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/interior-final-audit-v2.json",
       "historical_sha256": "7aa6fe044bcca04e00935b32a2a5a8b90dd86454a03c1473002bd8d584ac252e",
-      "current_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/sage-frames-final-audit-v1.json",
       "historical_sha256": "a359b2414fb3d8d35556dc6a38303a3ce25987b31ff2bc18e4b6134a42bf32d7",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/sage-frames-final-audit-v1.json",
       "historical_sha256": "44e76dee7ff991f28b7bccc7c9f9165b2019dfb78855c5f37edcc56f5a3adbb9",
-      "current_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
       "historical_sha256": "10bb86c8b4813bd4379e504ac572f1f88290ab8db5d172c8cc1c45b43bd304aa",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
       "historical_sha256": "d6b9c8ee99331606a8a6643c54cac6db665ec16c00d15a75383391107bc893e4",
-      "current_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -501,8 +515,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "historical_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
-      "current_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -517,8 +531,8 @@
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "historical_sha256": "2919a8794c72a4a9133ea600f8f4baac0676ae4f98209ce2c702f6c436802c24",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -533,8 +547,8 @@
       "path": "internal/prototype/hd/cave_frames_pair_test.go",
       "historical_audit": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "historical_sha256": "80c337c2d9dfd31d088d242dbafcce320c711ff7f42d3dac6201a938518c3a53",
-      "current_sha256": "d6679eae09b956d5d9a53e58351078421149399a361ba2eb2cc199fc0d6f6648",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "d923218613c8c90ed6bfb48744b5287dde90f98e27625c9d463de59b951012a6",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -557,40 +571,40 @@
       "path": "tools/hd_cave_platform_smoke.py",
       "historical_audit": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "historical_sha256": "d1d73bcf8a773723fa492280acaebff78a49dd3bb4d637a8e0aed9a0375e6b6a",
-      "current_sha256": "9783382397d242b3e7e0ee6b9dcc561b7c6fe230f956416cf14ed1e210d14073",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a96823cde6999a1e8f5ce37cf7c19c00ac8cf16247c5890883a64a61a90ee7f5",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_cave_catalog_smoke.py",
       "historical_audit": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "historical_sha256": "7d73bd2799a3781796c5b3c168fa7bd4747f117cd33326ce6eedd4323dfd81f1",
-      "current_sha256": "888c15a72fbfab91dfb98bd139e7d134ed5df632029b2dcad4c7defce3e8071b",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "9a59589cd413628b72bc00aca61ec7c69a6fc3351e4977af542740a6c09f6b6e",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "historical_sha256": "15b87dda1f52e44812b46c2a45a31ef20e6ae81c520f7911974d9acdba199f1b",
-      "current_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-magia-stage-audit-v1.json",
       "historical_sha256": "4fd0aba26859586584a2efed07b27202b58aea4b1167e737564891ced340f184",
-      "current_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
       "historical_sha256": "1315d169047d99c7874f64ee49a4cb4b51a8bc52f7fcbfc4c436543820b8bd7f",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -605,8 +619,8 @@
       "path": "internal/prototype/hd/cave_frames_pair_test.go",
       "historical_audit": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
       "historical_sha256": "1516ea179e4f51836820bc3143f9c21b2409a407c142dd469f08d95bab4aeaad",
-      "current_sha256": "d6679eae09b956d5d9a53e58351078421149399a361ba2eb2cc199fc0d6f6648",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "d923218613c8c90ed6bfb48744b5287dde90f98e27625c9d463de59b951012a6",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -621,64 +635,104 @@
       "path": "tools/hd_cave_platform_smoke.py",
       "historical_audit": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
       "historical_sha256": "28408ea1813c4ed11027f378db99f2e988db234a48becf9ea88fbf9708099bc1",
-      "current_sha256": "9783382397d242b3e7e0ee6b9dcc561b7c6fe230f956416cf14ed1e210d14073",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a96823cde6999a1e8f5ce37cf7c19c00ac8cf16247c5890883a64a61a90ee7f5",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_cave_catalog_smoke.py",
       "historical_audit": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
       "historical_sha256": "8eef586e35486cb4b0657176baab91abe4dffb2ed7275702fbe7312baafe6420",
-      "current_sha256": "888c15a72fbfab91dfb98bd139e7d134ed5df632029b2dcad4c7defce3e8071b",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "9a59589cd413628b72bc00aca61ec7c69a6fc3351e4977af542740a6c09f6b6e",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
       "historical_sha256": "4af7d1fabdc2f8bab40dff1fd82c8640f6f4f598928aa2c6b5d8d27934ec7b8a",
-      "current_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/cave-door-final-audit-v1.json",
       "historical_sha256": "241525f888f81d13bd3492d8688fd6c98cecec0a596b259c363939d114a2d619",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_cave_platform_smoke.py",
       "historical_audit": "workplace/full-hd-v1/cave-door-final-audit-v1.json",
       "historical_sha256": "4d7bdf5e1709a52bfc0a9835cc7c853076e6ca16bd2616148be85fb47ca8ad19",
-      "current_sha256": "9783382397d242b3e7e0ee6b9dcc561b7c6fe230f956416cf14ed1e210d14073",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a96823cde6999a1e8f5ce37cf7c19c00ac8cf16247c5890883a64a61a90ee7f5",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_cave_catalog_smoke.py",
       "historical_audit": "workplace/full-hd-v1/cave-door-final-audit-v1.json",
       "historical_sha256": "d16bdb27b4213e7b86fa0c71ef2887e2bffb16f6972e94a162be7c88626b559e",
-      "current_sha256": "888c15a72fbfab91dfb98bd139e7d134ed5df632029b2dcad4c7defce3e8071b",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "9a59589cd413628b72bc00aca61ec7c69a6fc3351e4977af542740a6c09f6b6e",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-door-final-audit-v1.json",
       "historical_sha256": "b0f3e4406742dba17e7b2d5308e81fb8d8a92785ef06de12d5247863c5deeb0a",
-      "current_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "cmd/zeliard-preview/main.go",
+      "historical_audit": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "historical_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "internal/prototype/hd/cave_frames_pair_test.go",
+      "historical_audit": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "historical_sha256": "d6679eae09b956d5d9a53e58351078421149399a361ba2eb2cc199fc0d6f6648",
+      "current_sha256": "d923218613c8c90ed6bfb48744b5287dde90f98e27625c9d463de59b951012a6",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_cave_platform_smoke.py",
+      "historical_audit": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "historical_sha256": "9783382397d242b3e7e0ee6b9dcc561b7c6fe230f956416cf14ed1e210d14073",
+      "current_sha256": "a96823cde6999a1e8f5ce37cf7c19c00ac8cf16247c5890883a64a61a90ee7f5",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_cave_catalog_smoke.py",
+      "historical_audit": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "historical_sha256": "888c15a72fbfab91dfb98bd139e7d134ed5df632029b2dcad4c7defce3e8071b",
+      "current_sha256": "9a59589cd413628b72bc00aca61ec7c69a6fc3351e4977af542740a6c09f6b6e",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_catalog.py",
+      "historical_audit": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "historical_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
+      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
       "historical_sha256": "1aba5d7813e95905faf145fc82aff56c2ca5f1b87dacdd542916df0906c501b1",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -693,8 +747,8 @@
       "path": "internal/prototype/hd/cave_frames_pair_test.go",
       "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
       "historical_sha256": "aac63307e1cce166047391343a38b6405fe75a6e69fcce41d1afa4f0249517c4",
-      "current_sha256": "d6679eae09b956d5d9a53e58351078421149399a361ba2eb2cc199fc0d6f6648",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "d923218613c8c90ed6bfb48744b5287dde90f98e27625c9d463de59b951012a6",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -717,8 +771,8 @@
       "path": "tools/hd_cave_catalog_smoke.py",
       "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
       "historical_sha256": "2608a9397e4df930bca905330227e3840e6b33abb8db1d7fe149745f59a438f6",
-      "current_sha256": "888c15a72fbfab91dfb98bd139e7d134ed5df632029b2dcad4c7defce3e8071b",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "9a59589cd413628b72bc00aca61ec7c69a6fc3351e4977af542740a6c09f6b6e",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -757,8 +811,8 @@
       "path": "cmd/zeliard-preview/main.go",
       "historical_audit": "workplace/full-hd-v1/castle-final-audit-v2.json",
       "historical_sha256": "15612c0fed1b27c3b020ea8cb20d231285e43c7c5aa7ae4fa51f2863c6773b3d",
-      "current_sha256": "8d457107400e5ea36d84f425a9918e939af35ea9b7b186c9f507b3c6f6d89d1c",
-      "replacement_evidence": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
+      "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
+      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     }
   ],

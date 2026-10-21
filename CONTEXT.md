@@ -6,17 +6,21 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，青藍刀光十姿態已接入，兩條正常路徑武器缺圖為零；完整目標仍進行中 |
-| 目前候選 | `workplace/full-hd-v1/cave-cyan-weapon-runtime-v2/zeliard-preview`，SHA-256 `587e53e5ca885ccdfbf3ee91115153446d5b0a18981baac3c7568128c815233a` |
-| 來源與圖面 | 22個去重來源含12主角、十武器；十青藍刀光輪廓與既有姿態相同、RGBA有16至54像素不同，另註冊十張96×96圖面 |
-| 最近測試 | 38項圖面／來源回歸、當前原子測試及三項正常／來源測試無skip／fail；92160註冊RGBA、5152透明度合成像素、13點完整原版狀態、vet及build通過 |
-| 實際視窗 | 冷F7正常出劍、使用魔法石、門框及平台升降；六組原貌切回3456000像素相同、青藍刀光HD已目視，DOS退出0、USR bytes／mtime不變 |
-| 收尾證據 | `workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json`，由[青藍刀光稽核](tools/hd_cyan_weapon_runtime_audit.py)重生至新檔 |
-| 本輪接入 | [046](docs/spec/046-cave-saved-gear-hd.md)的青藍武器十姿態限定CONFORMED；既有銀白十圖、原版位置與時序保留；主角12來源鍵仍DRAFT |
-| 待補 | 主角12個已存來源鍵及色彩變體、其他門框正常抽樣、共用物件／敵人／首領、城鎮與後段仍待補；不要重蒐已存姿態 |
+| 更新 | 2026-10-21，主角12來源鍵與六個色彩變體已接入；兩條路徑已選完成來源無主角／武器缺圖，完整目標仍進行中 |
+| 目前候選 | `workplace/full-hd-v1/cave-saved-player-runtime-v1/zeliard-preview`，SHA-256 `473dddb1c21b057d345db531c4a822000bf26cc7e488a1324980e1b6e83be0d4` |
+| 來源與圖面 | 12張72×72直接高清姿態，含六個黃／藍／紫變體；與027持盾參考比對，七個輪廓不同、五個輪廓相同但顏色不同，原55登錄保留 |
+| 最近測試 | 42項圖面／來源及三項正常／來源測試無skip／fail；62208註冊RGBA、31376未遮擋混色像素、13點完整原版狀態、vet及build通過 |
+| 實際視窗 | 冷F7正常新主角姿態、短按出劍、物品後門框與平台升降；七組切回4032000像素相同，DOS退出0、USR bytes／mtime不變，根端已目視 |
+| 收尾證據 | `workplace/full-hd-v1/cave-saved-player-final-audit-v1.json`，由[主角保存姿態稽核](tools/hd_saved_player_runtime_audit.py)重生至新檔 |
+| 本輪接入 | [046](docs/spec/046-cave-saved-gear-hd.md)的主角12鍵及青藍武器十鍵限定CONFORMED；六變色沿原版ActorRaster選圖，未自訂週期 |
+| 待補 | 原42／92次來源拒絕、GUI v2所見01B1:FF41=1分支、其他共用物件／敵人／首領、城鎮與後段仍待補；不重做已驗12主角圖 |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
 
-最新正式入口為 `workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json`。以 `-cave-weapon-cyan-art workplace/full-hd-v1/cave-cyan-weapon-complete-v1`搭配既有武器、十一洞窟圖集及其他已驗圖層；完整命令在 `cave-cyan-weapon-gui-v1/receipt.json`。原圖、完整內建imagegen提示詞與引用SHA在 `cave-cyan-weapon-art-v1/generation.json`，原cache保留。兩正常路徑的十青藍鍵均已觀察，武器缺圖為零。主角來源已去重並匯出在 `cave-saved-gear-source-v1/receipt.json`，下一步直接比對這12鍵，不重蒐、不重做十刀光。
+最新正式入口為 `workplace/full-hd-v1/cave-saved-player-final-audit-v1.json`。以 `-cave-player-extra-art workplace/full-hd-v1/cave-saved-player-complete-v1`搭配原主角圖組及其他已驗參數；完整命令在 `cave-saved-player-gui-v3/receipt.json`。完整內建imagegen提示詞、兩引用SHA、原圖及cache路徑在 `cave-saved-player-art-v1/generation.json`。12鍵均在兩正常路徑觀察，已選完成來源的主角／武器缺圖為零；不把42／92次來源拒絕當HD通過。
+
+下一步先沿 `cave-saved-player-gui-v2/boot1/inputs.jsonl`與failed-state.json重生FF41=1的被拒候選，再核來源守衛；不猜旗標意義或放寬守衛。GUI v1跳過頭到原點46，v3以正常方向鍵站穩44；v2長按攻擊途中遇到未支援分支，v3改回已驗短按。兩次失敗的driver、日誌與原圖保留。其他城鎮及後段仍屬完整目標。
+
+前輪青藍刀光入口 `cave-cyan-weapon-final-audit-v1.json`與候選保持原身份；目前候選的青藍刀光及原55主角回歸另見本輪收據。
 
 前輪門框正式入口為 `workplace/full-hd-v1/cave-door-final-audit-v1.json`，保持原候選與五組GUI的身份；現行候選的門框及平台回歸另見本輪收據。
 
@@ -24,7 +28,7 @@
 
 GUI v1的物品使用後站位有完成來源及102圖樣，整幅地形HD仍拒絕；當時腳本在此等候而逾時，原圖、狀態與 `boot1/inputs.jsonl` 保留。v2先沿正常鍵盤走到既有跳躍／平台觀察點，四組切回與離開截圖均有地形及魔法石HD，正常DOS退出0。稽核v1曾把離開也列成未匹配，v2依實際截圖狀態更正，舊檔保留。該站位已由045重生並確認為另一種門框，現在已補圖及接入；舊收據保留失敗身份。
 
-前輪魔法石路徑有100個未匹配主角畫格、普通路徑18畫格，來源鍵去重後共12個，仍待補；該兩路的十個武器來源鍵已由046補齊，不再列缺圖。舊收據及來源保持原身份，不相加畫格數當素材總數。本輪音訊關閉，未重建封包或影片。
+前輪魔法石／普通路徑的100／18個主角缺圖畫格已由046的12個來源鍵補齊，原先十個武器來源鍵亦已補。當前已選來源分別156／419個主角畫格匹配、缺圖為零；舊收據保持原身份，不相加畫格數當素材總數。42／92次來源拒絕及新FF41分支仍未完成。本輪音訊關閉，未重建封包或影片。
 
 前輪READY研究入口為 `workplace/full-hd-v1/cave-magia-stage-audit-v1.json`，由[研究稽核](tools/hd_cave_magia_audit.py)重生至新檔。正常拒絕來源、候選分類、IDA9.4分級證據分別為 `cave-magia-source-v3/`、`cave-magia-diff-v5/`、`cave-magia-ida-v9/`。27來源包含24個回呼抽樣及三個命令觀察點，只有後三點在該觀察邊界做雙原版完整狀態配對，不冒稱27點機器配對。初次只照保存位置重畫有三張各多46像素；分類可見／已清除後全部零差。
 

@@ -1248,3 +1248,15 @@ Esco另用內建imagegen修正首片局部WEAPON招牌及原版單排四長窗�
 READY後正式載入十個固定來源鍵與PNG雜湊。92160個註冊RGBA及5152個混色像素獨立相同，完整／主體RAM未寫入；原始十銀白圖保持相同。兩條正常路徑重新執行後，十個青藍鍵均有觀察，可見武器缺圖為零；13點完整原版狀態與USR bytes／mtime相同。GUI另有真實出劍畫面及六組原貌切回，不把單元混色數冒稱GUI像素驗證。
 
 收尾入口 `cave-cyan-weapon-final-audit-v1.json`限定046青藍十姿態CONFORMED。主角12鍵仍DRAFT，原來18／100個主角缺圖畫格保持缺口；下一步使用已匯出的完整原圖及來源，不重蒐、不重做十刀光。
+
+## 2026-10-21 主角12鍵與六種色彩變體
+
+已證實：沿前輪 `cave-saved-gear-source-v1/`，不重蒐既有來源。對照 `workplace/prose-v1/cave-shield-inventory-v1/receipt.json`與17個原生Raster，七鍵輪廓不同；五鍵輪廓相同、RGBA有183至207像素不同。完整比較保存 `cave-saved-player-source-v1/receipt.json`，註冊工具亦重核原生鍵與輪廓。六個新來源有黃／藍／紫配色；只視為已觀察顯示狀態，不推定受傷、保護、法術或裝備意義。
+
+內建imagegen以12來源總覽及既定持盾英雄為引用，產生1086×1448透明圖集，SHA-256 c2779d1d775eb89baa0be91de5bf567ea205b7fba502fd7d56f6a9ae899ca803。完整提示詞、引用／輸出SHA與原cache路徑在 `cave-saved-player-art-v1/generation.json`。等分格界會碰到腳尖及alpha1淡點，不能直接裁切；沿既有NPC註冊的alpha96墨跡，再按實際透明列間隔取框並留兩像素抗鋸齒。原RGBA未重畫或改色，十二結果已目視。
+
+READY後接入固定來源鍵、PNG雜湊及原生包絡，新增12個登錄，保留原55登錄。六個變色由當次ActorRaster鍵選取，沒有新增計時或改原記憶體。十二保存來源全匹配，62208註冊RGBA與31376未遮擋混色像素獨立相同，原完整／主體RAM不變，原55圖雜湊相同。
+
+兩正常路徑的已選完成來源，主角匹配156／419畫格、主角及武器缺圖為零；13點完整原版狀態及USR bytes／mtime相同。42／92次來源拒絕不列通過。GUI v3有新主角55、短按青藍刀光及門框／平台七組原貌切回，4032000像素相同、正常DOS退出0、存檔不變，根端已目視；六色彩變體不冒稱逐一GUI出現。
+
+新未完成分支：GUI v2長按攻擊測試途中，完成候選01B1:FF41=1，守衛回報unobserved actor profile並退回。候選steps 202440421、body_steps 202428860，RAM SHA-256 c43f08361e64e6abaa0b9f0f1818d42305556a89c5652937e28e60cbc7b52a6c、主體SHA-256 0fa4da56ec7b063d0185e449410f04a562d224283e3a29ba5f4aa2856472dffc；這是dosgolem實模式位址，不是EXE檔案偏移。日誌在 `cave-saved-player-gui-v2/boot1/inputs.jsonl`，下一步由同一日誌重生被拒來源。旗標意義仍未知，不因畫面像某種效果就命名或放行。

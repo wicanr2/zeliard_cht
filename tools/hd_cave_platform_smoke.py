@@ -17,34 +17,61 @@ actions = []
 magia_enabled = os.environ.get('ZELIARD_GUI_MAGIA') == '1'
 doors_enabled = os.environ.get('ZELIARD_GUI_DOORS') == '1'
 cyan_enabled = os.environ.get('ZELIARD_GUI_CYAN_WEAPON') == '1'
+extra_player_enabled = os.environ.get('ZELIARD_GUI_EXTRA_PLAYER') == '1'
 
 def cyan_ready(s):
     weapon = s.get('cave_weapon_hd') or {}
     return ready(s) and weapon.get('matched') and weapon.get('pose',-1)>=10
 
-def compare_cyan():
-    edge(0x39,True)
+def extra_player_ready(s):
+    player = s.get('cave_player_hd') or {}
+    return ready(s) and player.get('matched') and 55<=player.get('pose',-1)<67
+
+def compare_action(name,scan,condition,label):
+    edge(scan,True)
     try:
-        wait('正常青藍刀光HD',cyan_ready,20)
+        wait(label,condition,20)
         click(644,24)
     finally:
-        edge(0x39,False)
-    wait('刀光畫面暫停',lambda s:s['paused'] and not held(s),15)
-    assert cyan_ready(state()),'暫停未保留青藍刀光'
+        edge(scan,False)
+    wait('動作畫面暫停',lambda s:s['paused'] and not held(s),15)
+    capture_paused_action(name,condition)
+
+def capture_paused_action(name,condition):
+    assert condition(state()),'暫停未保留指定HD動作'
     hd(False)
-    original=frozen('cyan-weapon-original')
+    original=frozen(name+'-original')
     hd(True)
-    painted=frozen('cyan-weapon-hd')
-    assert cyan_ready(painted)
+    painted=frozen(name+'-hd')
+    assert condition(painted)
     hd(False)
-    returned=frozen('cyan-weapon-returned')
+    returned=frozen(name+'-returned')
     for field in ('steps','cycles','oracle_memory_sha256','oracle_indexed_sha256','oracle_palette_sha256'):
         assert original[field]==painted[field]==returned[field],field
-    pairs.append({'name':'cyan-weapon','original':'cyan-weapon-original.png','hd':'cyan-weapon-hd.png','returned':'cyan-weapon-returned.png'})
+    pairs.append({'name':name,'original':name+'-original.png','hd':name+'-hd.png','returned':name+'-returned.png'})
     hd(True)
     click(644,24)
-    wait('刀光抽測後繼續',lambda s:not s['paused'],15)
-    print('PAIR cyan-weapon',flush=True)
+    wait('動作抽測後繼續',lambda s:not s['paused'],15)
+    print('PAIR '+name,flush=True)
+
+def compare_cyan():
+    # 沿正常配對的100000步短按及400000步間隔；不長按到未知FF41分支。
+    for _ in range(6):
+        key(0x39,100000)
+        try:
+            wait('短按後青藍刀光HD',cyan_ready,.6)
+        except TimeoutError:
+            advance(400000)
+            continue
+        click(644,24)
+        wait('刀光暫停',lambda s:s['paused'] and not held(s),15)
+        if cyan_ready(state()):
+            capture_paused_action('cyan-weapon',cyan_ready)
+            return
+        click(644,24)
+        wait('錯過刀光後繼續',lambda s:not s['paused'],15)
+        advance(400000)
+    raise RuntimeError('正常短按未擷取到青藍刀光')
 
 def xvalue(s):
     return s['native_primary_0080']+s['native_primary_0083']
@@ -69,6 +96,19 @@ def platform(s):
 def platform_row(s):
     point = s['cave_common_hd']['placements'][0]
     return (s['native_primary_0082']+(point['Y']-14)//8) & 63
+
+def align_platform_origin():
+    # 原043正常來源已驗主角原點44、足部欄48；跳躍放開後仍可能多走兩格。
+    # 只送正常方向鍵修正站位，不因畫面有平台就假定已站上操作位置。
+    for _ in range(12):
+        s=wait('平台完成來源',platform,15)
+        x=xvalue(s)
+        if x==44 and yvalue(s)==(platform_row(s)-3)&63:
+            return
+        if x!=44:
+            key(0x4b if x>44 else 0x4d,100000)
+        advance(300000)
+    raise RuntimeError('未站穩已驗平台原點44')
 
 def magia_ready(s):
     value = s.get('cave_magia_hd') or {}
@@ -117,6 +157,10 @@ try:
     advance(20000000)
     hd(True)
     wait('正常入洞',ready,30)
+    if extra_player_enabled:
+        compare_action('extra-player',0x4b,extra_player_ready,'正常主角擴充姿態')
+        if xvalue(state())<=41:
+            move(0x4d,lambda s:xvalue(s)>=42,'回到繩索右側')
     # 原版0080+0083是主角繪圖原點，平台表的足部欄位另加4。
     # 正常來源對照：繩索原點41、跳躍起點40、平台原點44。
     move(0x4b,lambda s:xvalue(s)<=41,'走到繩索')
@@ -153,6 +197,8 @@ try:
     move(0x49,lambda s:xvalue(s)>=44,'正常向右跳上平台')
     advance(500000)
     wait('平台HD來源',platform,20)
+    if extra_player_enabled:
+        align_platform_origin()
     compare('platform-board')
     move(0x48,lambda s:platform(s) and platform_row(s)<=17,'平台升起')
     compare('platform-raised')
@@ -174,10 +220,10 @@ try:
     assert process.returncode==0
     assert h(user/'SAVETEST.usr')==h(save)
     assert (user/'SAVETEST.usr').stat().st_mtime_ns==save.stat().st_mtime_ns
-    report={'status':'PASS_CAVE_CYAN_WEAPON_GUI_SCOPED' if cyan_enabled else 'PASS_CAVE_DOOR_GUI_SCOPED' if doors_enabled else 'PASS_CAVE_MAGIA_GUI_SCOPED' if magia_enabled else 'PASS_CAVE_PLATFORM_GUI_SCOPED','binary_sha256':h(candidate),
+    report={'status':'PASS_CAVE_EXTRA_PLAYER_GUI_SCOPED' if extra_player_enabled else 'PASS_CAVE_CYAN_WEAPON_GUI_SCOPED' if cyan_enabled else 'PASS_CAVE_DOOR_GUI_SCOPED' if doors_enabled else 'PASS_CAVE_MAGIA_GUI_SCOPED' if magia_enabled else 'PASS_CAVE_PLATFORM_GUI_SCOPED','binary_sha256':h(candidate),
             'script_sha256':h(Path(__file__)),'catalog_helper_sha256':h(catalog),'helper_sha256':h(helper),
             'source_save_sha256':h(save),'boots':boots,'shots':shots,'pairs':pairs,'actions':actions,
-            'normal_DOS_exit':0,'save_unchanged':True,'magia_enabled':magia_enabled,'doors_enabled':doors_enabled,'cyan_enabled':cyan_enabled,
+            'normal_DOS_exit':0,'save_unchanged':True,'magia_enabled':magia_enabled,'doors_enabled':doors_enabled,'cyan_enabled':cyan_enabled,'extra_player_enabled':extra_player_enabled,
             'limits':'僅此正常冷F7、物品使用、平台升降與HD切回；其他共用圖格、魔法與全遊戲仍待完成'}
     (O/'receipt.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(report['status'],flush=True)

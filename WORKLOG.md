@@ -1418,3 +1418,14 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - GUI沿fd2-promo:20261017-r1，2GiB／2CPU／192程序、480秒外層／450秒內層、UID1000、網路關閉，專案與AppDir唯讀、指定GUI輸出可寫。新增正常持劍擷取，六組原貌切回3456000像素及原版狀態相同，正常DOS退出0、USR bytes／mtime不變，根端已目視青藍刀光。finally回收遊戲與Xvfb。GUI只做實際抽樣，不冒稱5152混色像素亦由GUI核對。
 - 候選 `cave-cyan-weapon-runtime-v2/zeliard-preview` SHA-256 587e53e5ca885ccdfbf3ee91115153446d5b0a18981baac3c7568128c815233a，收尾 `cave-cyan-weapon-final-audit-v1.json`。覆蓋清單銜接新來源，046僅青藍武器限定CONFORMED。主角12鍵、其他美術與後段仍阻止完整目標完成，封包、影片及版號未更新。
 - 收尾核當前來源與所有收尾證據SHA、Python語法、新檔索引及相對連結；root-owned檔案與md目錄皆零，無本專案殘留容器，遠端仍PRIVATE。提交／推送回讀結果保存於 `cave-cyan-weapon-runtime-v2/repository-sync.json`。
+
+## 2026-10-21 主角12來源圖面與顏色變體
+
+- 上輪青藍武器接入、正常缺圖歸零屬實際進展。本輪核乾淨HEAD 73992a8、目前狀態及工作清單，命中規格閘門與圖像生成；GUI兩次失敗後另載既有正常玩家路徑驗證入口，沒有開代理。對12個已存主角鍵直接比對027持盾來源，不重蒐已知姿態。
+- 一次內建imagegen產生12圖、含六個黃／藍／紫變體；完整提示詞及引用／輸出SHA在 `cave-saved-player-art-v1/generation.json`，原cache保留。初次等分裁切碰格界；檢查發現alpha1背景淡點及腳尖越過名義分列，沿NPC既有alpha96政策及真實透明間隔校準，直接取樣72×72，原RGBA不改色，結果已目視。
+- 046主角部分READY後才接固定鍵與圖面雜湊的原子載入，CLI為 `-cave-player-extra-art`，保留原55圖與原版當次配色。十二保存來源、六個變色、62208註冊RGBA及31376未遮擋混色像素通過，原始RAM不變。42項圖面／來源及三項正常／來源測試無skip／fail，vet及build通過。
+- Go沿dosgolem-go-ebiten:1.24-r1，2GiB／2CPU／128程序、180秒外層、UID1000、網路關閉；專案唯讀、格式化僅窄掛hd／cmd，full-hd-v1與gocache可寫、gomodcache唯讀。正常回歸沿verify_cave_platform.sh加PLAYER_EXTRA及原DOOR／MAGIA／CYAN_WEAPON，兩檔正常鍵序合跑、REQUIRE_PRESENTATION=1。13點完整原版狀態及USR bytes／mtime相同，已選來源主角／武器缺圖均為零；42／92次來源拒絕保留。
+- GUI沿fd2-promo:20261017-r1，2GiB／2CPU／192程序、480秒外層／450秒內層，UID1000、網路關閉；專案及AppDir唯讀、具名GUI輸出可寫。v1四組畫面通過後升降等候逾時，原版原點46而非已驗44；v3以正常方向鍵站穩44，不改產品或原版狀態。v2在長按刀光採樣途中進入FF41=1未支援來源，未宣稱產品通過；v3沿正常配對的100000步短按／400000步間隔採樣。v1／v2的driver、原圖、狀態及輸入日誌保留。
+- v3冷F7正常新主角、短按刀光、物品後門框、平台升降及離開，七組原貌切回4032000像素相同、正常DOS退出0、USR bytes／mtime不變，根端已目視。finally回收遊戲與Xvfb。六個變色只稱保存來源通過，不當逐一GUI。稽核初稿誤讀診斷primary_fields所在層，改核同steps的last_refusal與主體欄位後乾淨重跑，非產品缺陷。
+- 候選 `cave-saved-player-runtime-v1/zeliard-preview` SHA-256 473dddb1c21b057d345db531c4a822000bf26cc7e488a1324980e1b6e83be0d4，收尾 `cave-saved-player-final-audit-v1.json`。覆蓋清單銜接新來源，046僅所列12主角鍵及十青藍武器限定CONFORMED。FF41=1、原42／92次來源拒絕及其他場景／美術仍未完成，封包、影片及版號未更新。下一步先由v2日誌重生被拒來源，不猜旗標、不放寬守衛。
+- 收尾核全部當前來源及收尾證據SHA、Python語法、新檔入口與相對連結；root-owned檔案與md目錄皆零，無本專案容器殘留，遠端仍PRIVATE。提交／推送回讀結果另存 `cave-saved-player-runtime-v1/repository-sync.json`。

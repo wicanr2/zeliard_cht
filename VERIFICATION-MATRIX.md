@@ -571,3 +571,17 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 檢查 | 38項圖面／來源、當前原子測試與三項正常／來源測試無skip／fail，vet與build通過 |
 
 候選 `workplace/full-hd-v1/cave-cyan-weapon-runtime-v2/zeliard-preview` SHA-256 `587e53e5ca885ccdfbf3ee91115153446d5b0a18981baac3c7568128c815233a`；收尾入口 `workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json`。046只升青藍武器部分CONFORMED；主角18／100缺圖畫格去重為12鍵，其他武器與後段仍待補，沒有更新封包及影片。
+
+## 2026-10-21 主角保存來源12圖與變色
+
+| 範圍 | 結果與限制 |
+|---|---|
+| 原生來源 | 12個已存鍵均依完整／主體RAM、畫面與色盤重解；相對027的17持盾參考，七個輪廓不同、五個輪廓相同但顏色不同 |
+| 圖面 | 一次內建imagegen圖集，12張72×72直接高清註冊，含六個黃／藍／紫變體；原RGBA未改色，裁切沿alpha96及實際透明列間隔 |
+| 合成與退回 | 62208註冊RGBA及31376未遮擋混色像素獨立相同；來源未寫入、未知鍵不借圖、缺圖／最後圖損壞時67個指標不變，原55圖雜湊相同 |
+| 正常配對 | 12鍵均被觀察，兩路已選來源主角／武器缺圖為零；主角匹配畫格156／419，13點完整原版狀態與USR bytes／mtime相同 |
+| 實際GUI | v3正常冷F7、新主角55、短按刀光、門框及平台升降，七組切回4032000像素相同；DOS退出0、存檔不變，根端已目視 |
+| GUI失敗保留 | v1主角跳至原點46，未站在已驗44；v2長按途中遇FF41=1被拒來源。driver、原圖及日誌保留，不把後者稱為已完成 |
+| 檢查及限制 | 42項圖面／來源及三項正常／來源測試無skip／fail，vet及build通過。六變色只驗保存正常來源，未逐一GUI；42／92次來源拒絕仍在 |
+
+候選 `workplace/full-hd-v1/cave-saved-player-runtime-v1/zeliard-preview` SHA-256 `473dddb1c21b057d345db531c4a822000bf26cc7e488a1324980e1b6e83be0d4`，收尾 `workplace/full-hd-v1/cave-saved-player-final-audit-v1.json`。046僅列明來源CONFORMED，其他分支、美術與後段仍待補，封包及影片未更新。
