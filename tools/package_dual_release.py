@@ -79,7 +79,7 @@ def prepare():
         write(root/'runtime-args.json',list(entries.items()))
         write(root/'bundle-options.json',['-adlib','-audio','ebiten','-realtime','-hd='+str(edition=='CHT-HD').lower()])
         (root/'VERSION').write_text(VERSION+'\n');(root/'EDITION').write_text(edition+'\n')
-    write(W/'identity.json',{'version':VERSION,'source_files':inventory(W/'sources'),'dosgolem_files':inventory(W/'dosgolem'),'original_files':inventory(P/'workplace/orig'),'asset_sources':sources,'complete_art_sha256':sha(MANUAL/'complete-art.json'),'rights':'full-local only'})
+    write(W/'identity.json',{'version':VERSION,'source_files':inventory(W/'sources'),'dosgolem_files':inventory(W/'dosgolem'),'original_files':inventory(P/'workplace/orig'),'asset_sources':sources,'complete_art_sha256':sha(MANUAL/'complete-art.json'),'coherent-bosses_sha256':sha(MANUAL/'coherent-bosses.json'),'cave-transition_sha256':sha(MANUAL/'cave-transition.json'),'rights':'full-local only'})
     print('PREPARED',VERSION,EDITIONS,flush=True)
 
 def archive(source,target):

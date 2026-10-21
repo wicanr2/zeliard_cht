@@ -6,6 +6,9 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 057入洞過場與058首領美術修正版 | v.1.0.2限定完成 | 正式Linux AppImage正常冷F7、城鎮擦除16筆、過場HD29筆，過場中途整幅回退0，正常DOS退出0，USR bytes／mtime不變。連續視覺片段10.434秒、960×680／30fps，無音軌，代表畫格已目視；入口同版smoke/integration/receipt.json、contact.jpg及transition-playthrough.mp4。背景以兩側完整錨點與逐8×8原生圖格核對，未完成格保留原版。三項限定檢查及原城鎮未知／對話拒絕均通過，不宣稱全遊戲逐幀或完整通關 |
+| 058五組完整首領構圖 | 代表姿態與素材接入完成 | 章魚、飛鳥、藍白魔像、獨眼魔、披風魔王先重繪整體，再依原生模板裁切；430模板及README同圖已更新。五個完整姿態的來源、區外不寫入與失配拒絕通過。未涵蓋象限保留原版，尚未正常到達後段或逐一核對首領全動畫。入口workplace/hd-boss-coherent-v1/registration.json及規格058 |
+| v.1.0.2六個完整版 | PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE | CHT／CHT-HD分開，Linux兩AppImage實際啟動，Windows兩ZIP經Wine輔助啟動，macOS兩ZIP核對Intel／Apple Silicon通用架構及.app結構；六包逐檔SHA、原版29檔、模式、中文字型、音源與新HD清單核對通過。入口同版smoke/release-audit.json及SHA256SUMS.json。沒有新增Windows／macOS真機、實體手把、Ada錄影或全遊戲驗收聲明 |
 | 053 ada遊玩實錄與新片 | 限定完成 | v.0.4.1原包在ada的RTX 2000 Ada上，以VirtualGL EGL及NVENC新錄；renderer及實際遊戲GPU函式庫、原始影片與二進位SHA保留。正常F7、城鎮、教堂中文、原貌／HD、洞窟操作及設定頁，DOS退出0、USR bytes／mtime不變。連續片55.45秒960×680／60fps含同期聲，mean -21.5／peak -3.6dB；推廣片60秒1280×720，mean -18.6／peak -4.5dB。訊號檢查及字幕／結尾目視通過，32秒新錄遊玩影片，其餘為同次實際截圖與字卡。不冒稱通關、全遊戲每幀、實體手把或逐取樣音畫同步。入口同版promo/provenance.json、quality.json及gameplay-quality.json |
 | 052 HD效能與受傷 | 限定CONFORMED | v.0.4.1-20261021。兩份真實移動畫面44.319ms→6.624ms，完整RGBA相同；五份正常接敵特殊姿態原版重建零差、HD元件組裝通過，三組未知反例仍拒絕。正常冷F7接敵變色與E8特殊姿態，兩組原貌／HD／HD返回共六張視窗，CPU／RAM／indexed／palette不變、HD返回576000像素相同，DOS退出0、USR bytes／mtime不變，根端已目視。兩版六包逐檔核對、Linux啟動、Windows Wine輔助啟動、macOS架構／結構通過。八組怪物與十組首領縮圖見README。未做真機手把、Windows／macOS真機或完整通關；補圖層速度不當整遊戲FPS保證 |
 | 051雙版本三平台與新版推廣片 | PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE | v.0.4.0-20261021，六包各含29份相同原版資料，CHT無HD圖庫且原貌啟動，CHT-HD完整補圖且HD啟動。Linux兩AppImage實際啟動、Windows兩ZIP以Wine輔助啟動；macOS兩ZIP核Intel／Apple Silicon與.app權限／結構。新版正常第一洞窟、教堂中文、原貌／HD切換與操作頁錄影，12張實際視窗、正常DOS退出0。新片60秒1280×720，音量-18.6／-4.5dB，無長黑幀／靜音，既定字卡及2.56秒遊戲停頓已分類，字幕與結尾目視。入口dist-all同版smoke/release-audit.json、promo/quality.json及SHA256SUMS.json。Windows／macOS真機、實體手把及全遊戲未驗 |

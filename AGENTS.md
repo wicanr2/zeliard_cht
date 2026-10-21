@@ -535,3 +535,13 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 [055回歸檢查](internal/prototype/hd/complete_art_context_test.go)使用固定Ada原生來源拒絕結局片段，保留正確母圖、上下文失配與邊界裁切正反例。[Ada剪輯](tools/make_ada_promo.py)可用ZELIARD_PROMO_WORK指定workplace下的新工作區，避免覆寫歷次錄影。
 
 [角色總覽重組布局](docs/images/creatures-layout.json)保存README代表姿態的來源坐標與固定參考雜湊，由[總覽工具](tools/readme_creatures.py)以本地原版8×8圖格和既有HD元件重組；完整原生覆蓋及透明邊界須吻合後才更新文件縮圖。此入口不改正式遊戲。
+
+[五組首領完整構圖規格](docs/spec/058-coherent-boss-hd.md)及[登錄工具](tools/hd_boss_coherent.py)管理使用者否決的章魚、飛鳥、魔像、獨眼魔與披風魔王。完整圖、請求及舊輸入保存在workplace/hd-boss-coherent-v1；先畫完整角色再裁切，不把元件數當完整動畫驗收。
+
+[入洞過場規格](docs/spec/057-cave-transition-hd.md)及[登錄工具](tools/hd_cave_transition.py)管理原版正常入洞來源、HD完整背景與城鎮擦除。日誌重生、原圖、請求及生成來源位於workplace/hd-cave-transition-v1。
+
+[素材與過場檢查](internal/prototype/hd/transition_coherent_test.go)核對原版日誌取樣、完整首領代表姿態、異常來源拒絕及區外不寫入；[正常視窗入口](tools/hd_transition_smoke.py)只走冷F7、入洞及退出，不擴大通關範圍。
+
+[城鎮擦除](internal/prototype/hd/town_wipe.go)以TownFrames完成回呼來源辨識原版變黑遮罩，完成來源與主畫面的ApplyErase共同維持HD至全黑；不用上一個Draw的暫存圖冒稱最新原版來源。
+
+[過場原生日誌重生](tools/hd_transition_probe.go)在固定dosgolem副本重播原生鍵緣、逐筆核對暫存器與時鐘，保存有界步數範圍的畫面、色盤及壓縮RAM。使用Docker及既有空輸出，CLI旗標見該工具`-h`；不把未核對的GUI完整RAM列為same-state。

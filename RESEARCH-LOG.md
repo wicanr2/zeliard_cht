@@ -1,5 +1,15 @@
 # 原版與手冊證據
 
+## 2026-10-21：057入洞過場來源與058首領布局
+
+- 輸入：EXE SHA `fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341`、ZELRES3.SAR SHA `9c19b9c317d3006e11f8a5cad8ea1f226f8043e11c6467fa27f10eef33175ef0`、USR SHA `03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c`。工具為Go1.24.13、既有release-v100/dosgolem副本，原生IRQ／RunCycles日誌，不注入狀態。
+- 已證實：入洞原版固定背景為224×144，區域為320×200畫布的[48,14,272,158)。18張不同角色位置多數還原每點至少16/18一致，色號SHA `054e31ebab40662de49d9023c6d3b3561e5a4dfb88a8ba25481f8cbc56c74329`。原版色盤整段為`6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c`，並非色盤切換造成回退。
+- 已證實：GUI-v2兩筆背景中間來源的CS:IP為01B1:46AA及01B1:46E1，ES=A000，DI=31421及43349。此處位址為DOS segment:offset，對應解包後運行記憶體，不是EXE檔案偏移。差異恰在DI或DI+1，後續來源恢復固定背景。強推論為圖格產生中途的暫態；正式實作以背景錨點與完整8×8來源核對，不依推論、位址特例或容差判斷。
+- 勘誤：初版probe沒有保留USR mtime，兩筆完整RAM SHA與GUI不同。以同日誌、相同設定補Chtimes後，兩點1MiB RAM SHA分別為`4415ba5318586be75772c4ce323313f31c1bc8b1b2d95e0333fbf8a66a17ce9f`及`0a302d76004f53101ab47f1d5396d7aa5d93cd2515af82275b218f735fa33896`，與GUI相同。證據在workplace/hd-cave-transition-v1/oracle-mtime-corrected與mtime-correction.json；未修改遊戲來配合證據。
+- 已證實的靜態布局：五組首領完整姿態由原生16×16模板及8×8象限組成，來源見docs/images/creatures-layout.json及creatures-provenance.json。布局參考Kuro-chan圖集及地圖，固定鏡像提交c23b5f91ad31eb75b2f63a312a42e161e26096d8；外部PNG只供坐標核對，不取其像素當本地原版。五張新HD先畫完整構圖再裁切；這不證明後段正常出場或全動畫。
+
+本輪再現入口為[過場重生工具](tools/hd_transition_probe.go)，輸出、每筆原始定位、輸入與工具SHA保存於上述工作區。規格及目前範圍見[057](docs/spec/057-cave-transition-hd.md)、[058](docs/spec/058-coherent-boss-hd.md)與[驗證矩陣](VERIFICATION-MATRIX.md)。較早研究保持當時身份，不被此節改寫。
+
 ## 2026-10-21：052受擊變色及持盾特殊姿態
 
 - 固定原版EXE SHA-256 `fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341`，SAVEM1.USR SHA-256 `03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c`。Go1.24.13與既有專案dosgolem副本，唯讀原版，正常F7使用可寫USR副本。來源與工具雜湊在workplace/hd-runtime-v1/probe/receipt.json，原始鍵序為同工作區hurt.commands。

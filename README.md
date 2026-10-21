@@ -18,7 +18,7 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-正式版 [1.0.1](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.1-20261021) 已結案。提供「原版＋中文（CHT）」及「原版＋中文＋HD（CHT-HD）」兩套三平台完整包。CHT保留原版美術，不附HD圖庫；CHT-HD預設開啟手繪HD，可從工具列切回原貌。兩版都包含原版遊戲、圓體中文、配樂音色改善及鍵盤／手把設定，存檔相容。交付方式見[規格051](docs/spec/051-dual-edition-release.md)。
+正式修正版 [1.0.2](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.2-20261021) 提供「原版＋中文（CHT）」及「原版＋中文＋HD（CHT-HD）」兩套三平台完整包。CHT保留原版美術，不附HD圖庫；CHT-HD預設開啟手繪HD，可從工具列切回原貌。兩版都包含原版遊戲、圓體中文、配樂音色改善及鍵盤／手把設定，存檔相容。交付方式見[規格051](docs/spec/051-dual-edition-release.md)。
 
 HD 圖樣搜尋已加速，並補上持盾受擊後特殊姿態的高清接入。正常接敵變色與後續姿態均保留 HD 背景和角色，原版移動速度與規則不變。修正與驗證範圍見[規格052](docs/spec/052-hd-runtime-damage.md)。
 
@@ -67,13 +67,15 @@ HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝
 
 ![十組魔王與首領代表姿態，原版與HD完整重組對照](docs/images/bosses-overview.jpg)
 
-每組左側為原版，右側為既有手繪 HD 素材，已將零散圖格重組為完整角色。上圖涵蓋八個區域的30組代表姿態，下圖展示10組首領姿態，包含魔王的披風與戰鬥兩種姿態；數量不等於敵人種類數。HD透明處保留原版下層，部分既有素材接縫仍可見。
+每組左側為原版，右側為手繪 HD 素材，已將零散圖格重組為完整角色。上圖涵蓋八個區域的30組代表姿態，下圖展示10組首領姿態，包含魔王的披風與戰鬥兩種姿態；數量不等於敵人種類數。
+
+章魚、飛鳥、魔像、獨眼魔與披風魔王採完整構圖重繪，再裁出動畫元件，總覽與遊戲使用同一份圖。魔像保留原版藍白色塊造型；獨眼魔的皮膚及魔王披風連續繪製，移除分格接縫。尚未由完整圖涵蓋的動畫元件保留原貌，詳見[首領美術範圍](docs/spec/058-coherent-boss-hd.md)。
 
 這些是素材重組圖，後段實際出場與完整動畫仍待人工檢視。首領標題依外觀描述，不作官方譯名。布局參考Kuro-chan整理、由[nolanvenhola/zeliard](https://github.com/nolanvenhola/zeliard/tree/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource)保存的圖集與地圖；輸出像素取自本地原版與既有HD素材。固定布局見[重組配置](docs/images/creatures-layout.json)，來源與雜湊見[總覽來源清單](docs/images/creatures-provenance.json)，可用[製圖工具](tools/readme_creatures.py)重建。
 
 ## 開始遊玩
 
-本機完整版放在 `dist-all/v.1.0.1-20261021/full-local/`，包含遊戲資料，未上傳GitHub。檔名以`Zeliard-v.1.0.1-20261021-`開頭：
+本機完整版放在 `dist-all/v.1.0.2-20261021/full-local/`，包含遊戲資料，未上傳GitHub。檔名以`Zeliard-v.1.0.2-20261021-`開頭：
 
 | 平台 | 原版＋中文 | 原版＋中文＋HD |
 |---|---|---|
@@ -81,7 +83,7 @@ HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝
 | Windows x86_64 | `CHT-Windows-x86_64.zip` | `CHT-HD-Windows-x86_64.zip` |
 | macOS Intel／Apple Silicon | `CHT-macOS-universal.zip` | `CHT-HD-macOS-universal.zip` |
 
-前版封包保留在各自版號目錄。本版修正洞窟主角附近誤貼結局圖塊的顯示錯誤，重新編譯六個封包，並在Ada重錄遊玩片段與推廣片，詳見[規格055](docs/spec/055-cave-artifact-context.md)。
+前版封包保留在各自版號目錄。本版補上HD入洞過場，讓城鎮擦除及洞壁繪製保持連續；章魚、飛鳥、魔像、獨眼魔與披風魔王改以完整構圖重繪。六個封包均已更新，範圍見[過場修正](docs/spec/057-cave-transition-hd.md)與[首領美術](docs/spec/058-coherent-boss-hd.md)。
 
 Windows解壓縮後開啟`Zeliard.exe`，macOS開啟`Zeliard-CHT.app`或`Zeliard-CHT-HD.app`。Linux可直接執行所選AppImage，也可在專案目錄啟動HD版：
 
@@ -108,16 +110,17 @@ bash tools/play.sh
 
 包內附自建存檔SAVETEST，可按F7讀取後從Muralla鎮向右進入第一洞窟。存檔與操作設定保存在系統使用者設定目錄的 `Zeliard-CHT`：Linux為 `~/.config/Zeliard-CHT/`，Windows為 `%AppData%\Zeliard-CHT\`，macOS為 `~/Library/Application Support/Zeliard-CHT/`。可用 `ZELIARD_USER_DIR` 指定其他目錄。
 
-隨修正版附上的影片使用v.1.0.1在ada的NVIDIA RTX 2000 Ada實際錄製，以VirtualGL硬體繪圖及NVENC擷取。包含城鎮、教堂中文對話、原貌／HD切換與第一洞窟操作，另展示工具列設定。詳細來源見[規格053](docs/spec/053-ada-gameplay-promo.md)。
+Ada推廣影片保留v.1.0.1的實錄，以NVIDIA RTX 2000 Ada、VirtualGL及NVENC擷取，包含城鎮、教堂中文對話、原貌／HD切換、第一洞窟與工具列。這兩片尚未收錄1.0.2的過場及首領修正，來源見[規格053](docs/spec/053-ada-gameplay-promo.md)。1.0.2另附正式Linux封包的連續入洞視覺檢查片段，無音軌。
 
 | 影片 | 本機路徑 |
 |---|---|
 | 連續遊玩，保留同期遊戲音效 | `dist-all/v.1.0.1-20261021/promo/Zeliard-v.1.0.1-20261021-ada-gameplay.mp4` |
 | 60秒推廣片，1280×720，原版標題曲配樂 | `dist-all/v.1.0.1-20261021/promo/Zeliard-v.1.0.1-20261021-promo.mp4` |
+| 1.0.2入洞過場檢查，960×680，無音軌 | `dist-all/v.1.0.2-20261021/smoke/integration/transition-playthrough.mp4` |
 
 各版檔案大小與SHA-256見同版`SHA256SUMS.json`，影片檢查在`promo/`，封包檢查在`smoke/`。v.0.4.0影片保留原身份。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
 
-洞窟的插畫片段會核對母圖的可見來源，避免小圖樣誤貼到主角或背景。舊1.0.0封包及影片保持原身份；本版影片來自修正後程式的新Ada實錄。
+洞窟的插畫片段會核對母圖的可見來源，避免小圖樣誤貼到主角或背景。舊封包與影片均保持原身份，未用舊影片冒稱新版實錄。
 
 三平台雙版本建置入口為[tools/build_dual_release.sh](tools/build_dual_release.sh)，使用Docker與固定的本地原版、字型及HD圖組，拒絕覆寫既有輸出。錄影、影片與六包核對入口見[規格051](docs/spec/051-dual-edition-release.md)。版號由[VERSION](VERSION)指定；目前狀態見[CONTEXT.md](CONTEXT.md)。
 

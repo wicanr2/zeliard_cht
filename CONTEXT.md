@@ -2,44 +2,35 @@
 
 更新日期：2026-10-21，Asia/Taipei。
 
-## 文件更新056
-
-已完成README遊戲簡介與中文手冊故事背景，並將碎片圖庫替換為八區30組怪物、10組首領代表姿態的原版／HD完整重組圖。使用原生8×8全色圖格、16×16母圖上下文及既有HD象限，40組原生像素全部匹配；透明處沿正式覆繪方式保留原版下層，既有HD接縫不另補畫。這是靜態素材重組，不增加後段實際出場或完整動畫的驗收聲明。
-
-工作區為workplace/readme-creatures-v2，布局與固定參考來源見[重組配置](docs/images/creatures-layout.json)，逐格來源及輸出SHA見[總覽來源](docs/images/creatures-provenance.json)，重建入口為[製圖工具](tools/readme_creatures.py)。此輪只改文件及縮圖，正式程式、六個封包與影片維持v.1.0.1-20261021，無須重包。
-
 ## 目前狀態表
 
-現行正式修正版為 **v.1.0.1-20261021**。使用者回報推廣片洞窟主角右上方異常方塊，[055](docs/spec/055-cave-artifact-context.md)已完成修正。先前1.0.0結案範圍維持，沒有重新開啟完整通關或後段逐幀驗收。
+現行修正版為 **v.1.0.2-20261021**。本次處理入洞過場與五組首領HD造型，並補上README遊戲簡介、手冊故事與完整角色總覽。既有結案範圍維持。
 
 | 項目 | 現況 |
 |---|---|
-| 洞窟方塊 | 已證實為無資源綁定的結局YUU3局部插畫，原生8×8只有單一色點，誤匹配到主角旁；現已核對母圖可見上下文才覆繪 |
-| 原版來源 | 原Ada日誌重生5,064筆，暫存器／時鐘／RAM／原生完成畫面SHA相同；沒有改規則、資料、碰撞、座標或存檔 |
-| 修正檢查 | 真實來源拒絕、正確母圖及邊界裁切正例、外圍像素失配反例通過；補圖層基準約7.62ms，不宣稱全遊戲FPS |
-| 實際畫面 | 新1.0.1在Ada重新錄製；主角右上方及左側誤貼片段消失，主角、門框及洞窟HD保留，已目視 |
-| 完整包 | CHT／CHT-HD各有Linux x86_64 AppImage、Windows x86_64 ZIP、macOS Intel／Apple Silicon通用ZIP，共六包 |
-| 封包驗證 | Linux兩版實際啟動、Windows兩版Wine輔助啟動、macOS兩版架構及.app結構；六包逐檔SHA、29個原版檔案、模式、字型／音源與存檔目錄核對通過 |
-| 正常玩家路徑 | 新1.0.1正常冷F7、入洞、接敵變色／特殊受傷HD、原貌切回、正常DOS退出0，USR內容及mtime不變 |
-| 新影片 | Ada新實錄約55.48秒，960×680／60fps及同期聲；新推廣片60秒、1280×720，以原版標題曲配樂。音畫、非靜音、黑幀／凍結檢查通過，字幕、結尾及洞窟畫面已目視 |
-| 清理 | 本次本機清理4,101,898,240配置bytes，約3.82GiB，明細以release-v101/cleanup.json及ada-promo-v101/cleanup-local.json為準；原版、素材、存檔、錄影、證據及舊正式版均保留 |
+| 入洞過場 | 原版完成回呼提供城鎮擦除來源；洞壁核對兩側錨點與逐8×8圖格，未完成單格保留原版，其餘維持HD |
+| 五組首領 | 章魚、飛鳥、藍白魔像、獨眼魔及披風魔王改用完整構圖，再裁切回原生元件；遊戲與README使用同一圖面 |
+| 覆蓋邊界 | 五張代表姿態及430個模板已更新；930個未涵蓋非空象限保留原貌，未驗完整首領動畫或後段正常出場 |
+| README | 已補中文手冊故事背景，30組怪物及10組首領代表姿態以完整角色呈現，來源及雜湊可回查 |
+| 完整包 | CHT與CHT-HD分開，各有Linux x86_64 AppImage、Windows x86_64 ZIP、macOS Intel／Apple Silicon通用ZIP |
+| 封包驗證 | Linux兩版實際啟動、Windows兩版Wine輔助啟動、macOS兩版架構及.app結構；六包內容、SHA、原版資料、模式、字型、音源及新增素材核對通過 |
+| 正常入洞 | 正式Linux包冷F7、入洞及DOS退出0；16筆擦除、29筆HD過場，中途整幅回退0，USR內容與mtime不變 |
+| 影片 | 本版附10.434秒無音軌入洞檢查片段；Ada推廣片保留1.0.1原身份，本輪未重錄 |
 
-## 正式交付與重建入口
+## 正式交付與證據入口
 
-- 唯一現行交付：`dist-all/v.1.0.1-20261021/`。六個含遊戲完整版在`full-local/`，兩片新影片在`promo/`，驗證在`smoke/`，八份成品的大小及SHA-256在`SHA256SUMS.json`。全部只留本機。
-- 固定來源及清理：`workplace/release-v101/identity.json`、`cleanup.json`及`hygiene.json`。原1.0.0、0.4.1及以前tag／交付保持原身份。
-- 根因及同狀態來源：`workplace/hd-cave-artifact-v1/`，含原使用者截圖、重播輸入／來源、誤貼清單、修正前後診斷圖、回歸及效能日誌。入口為[055規格](docs/spec/055-cave-artifact-context.md)、[覆繪層](internal/prototype/hd/complete_art.go)及[回歸檢查](internal/prototype/hd/complete_art_context_test.go)。
-- 新Ada原始錄影：`workplace/ada-promo-v101/received/`，含GPU renderer、原始影片、PulseAudio PCM、原版WAV、輸入與十張代表視窗。新舊實錄是各次正常遊玩，不宣稱整局同狀態；同狀態根因證據另由舊日誌重生。
-- 重建用[雙版本入口](tools/build_dual_release.sh)及[包裝工具](tools/package_dual_release.py)，讀取[VERSION](VERSION)。先建立同版本空workplace/release-v101再由Docker重建，拒絕覆寫既有正式輸出。影片用[錄影工具](tools/record_ada_promo.py)及[剪輯工具](tools/make_ada_promo.py)，剪輯時設`ZELIARD_PROMO_WORK=workplace/ada-promo-v101`。
-- [封包啟動](tools/platform_smoke.py)、[正常受傷HD](tools/hd_runtime_smoke.py)、[六包核對](tools/audit_dual_release.py)、[影片檢查](tools/verify_promo.py)及[清理](tools/cleanup_dual_release.py)保留可重現入口。實際命令及結果見[WORKLOG](WORKLOG.md#2026-10-21-055洞窟誤貼結局圖塊修正)。
-- GitHub維持私人儲存庫`wicanr2/zeliard_cht`，[1.0.1正式修正版Release](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.1-20261021)已發布，非草稿／非預發行，tag固定來源提交`3705f3c`。只推來源、文件及原已授權文件縮圖，assets為空；完整包與影片不上傳。
+- 唯一現行交付為`dist-all/v.1.0.2-20261021/`。六個含遊戲完整版在`full-local/`，驗證與入洞片段在`smoke/`，大小及SHA-256在`SHA256SUMS.json`。完整版只留本機。
+- 固定來源為`workplace/release-v102/identity.json`；六包核對在`dist-all/v.1.0.2-20261021/smoke/release-audit.json`，正常入洞在`smoke/integration/receipt.json`。Linux正式執行檔SHA為`031cfe6f45e6d3f48f588e1e31b0c09950106ef512dfcfb1bf474a83c1814037`。
+- [057過場規格](docs/spec/057-cave-transition-hd.md)與`workplace/hd-cave-transition-v1/`保存原版重生、來源、連續畫面及mtime勘誤。[重生工具](tools/hd_transition_probe.go)保留存檔mtime，兩個具名觀察點完整RAM與GUI相同，不外推整局parity。
+- [058首領規格](docs/spec/058-coherent-boss-hd.md)與`workplace/hd-boss-coherent-v1/`保存完整圖、舊圖、登錄、提示詞及來源。`art-notes.json`是選用美術與提示詞索引。正式圖組在`workplace/full-hd-v1/manual-hd-v1/registered/`。
+- 圖庫入口為[重組配置](docs/images/creatures-layout.json)、[來源清單](docs/images/creatures-provenance.json)與[製圖工具](tools/readme_creatures.py)。手冊、原始檔名與SHA見[RESEARCH-LOG](RESEARCH-LOG.md)。原始ZIP／RAR留在根目錄，固定遊戲資料在`workplace/orig/`。
+- [雙版本重建入口](tools/build_dual_release.sh)與[包裝工具](tools/package_dual_release.py)讀取[VERSION](VERSION)，在Docker內使用固定輸入，拒絕覆寫既有正式輸出。[六包核對](tools/audit_dual_release.py)以`--transition-fix`驗本版；[正常過場檢查](tools/hd_transition_smoke.py)及[清理工具](tools/cleanup_dual_release.py)保留重現入口。
+- GitHub維持私人儲存庫`wicanr2/zeliard_cht`。只推來源、文件與已授權文件縮圖，完整包、完整素材及影片不上傳。發布與清理結果見[WORKLOG](WORKLOG.md#2026-10-21-057058-入洞過場與五組首領構圖修正)。歷次tag、Release、封包與影片保持原身份。
 
 ## 既有實作與驗收邊界
 
-維持dosgolem直接執行原版、3倍手繪HD與繁體中文唯讀覆繪。已整合43組來源、30張新增圖、8,392筆完整／局部來源及1,221個主角／刀光組裝鍵；中文使用粉圓2.1。工具列可設定鍵盤與系統已辨識USB／藍牙手把，藍牙由系統配對。配樂用原版AdLib與Nuked-OPL3，實際時間推進最多追趕100毫秒，暫停／失焦不追趕。
+維持dosgolem直接執行原版、3倍手繪HD與繁體中文唯讀覆繪。中文使用粉圓2.1。工具列可設定鍵盤與系統已辨識USB／藍牙手把，藍牙由系統配對。配樂使用原版AdLib與Nuked-OPL3，實際時間推進最多追趕100毫秒，暫停與失焦不追趕。
 
-未完整通關、未逐幀核全遊戲或逐一到達後段；未知來源及Pureza191保留原貌。Windows／macOS真機及實體USB／藍牙手把仍未驗，Wine及合成輸入不能代替實機。這些是明示限制，不自動重開舊待辦。
+未完整通關、未逐幀核全遊戲或逐一到達後段；未知來源及Pureza191保留原貌。Windows／macOS真機及實體USB／藍牙手把仍未驗，Wine與合成輸入不能代替實機。這些是明示限制，不自動重開舊待辦。
 
-## 素材與文件索引
-
-原始ZIP／RAR保留根目錄，固定遊戲在workplace/orig。手冊故事、來源及雜湊見[RESEARCH-LOG](RESEARCH-LOG.md)。完整HD原圖、提示詞、registered及rounded-font在workplace/full-hd-v1/manual-hd-v1，入口[050](docs/spec/050-manual-hd-delivery.md)。HD加速及受傷來源見[052](docs/spec/052-hd-runtime-damage.md)，初次Ada方法見[053](docs/spec/053-ada-gameplay-promo.md)。[README](README.md)保留故事、原版／HD、素材、怪物及首領總覽；[VERIFICATION-MATRIX](VERIFICATION-MATRIX.md)保留實際範圍。舊CONTEXT／WORKLIST可回查各版Git，歷程留在唯一[WORKLOG](WORKLOG.md)。
+既有全圖整合見[050](docs/spec/050-manual-hd-delivery.md)，加速與受傷HD見[052](docs/spec/052-hd-runtime-damage.md)，Ada方法見[053](docs/spec/053-ada-gameplay-promo.md)，洞窟誤貼根因見[055](docs/spec/055-cave-artifact-context.md)。[README](README.md)保存穩定使用入口，[VERIFICATION-MATRIX](VERIFICATION-MATRIX.md)保存實際驗證範圍，歷程只追加至[WORKLOG](WORKLOG.md)。

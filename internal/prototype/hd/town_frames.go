@@ -12,6 +12,8 @@ type TownFrames struct {
 	original          *oracle.Oracle
 	scene             *TownScenery
 	complete          *TownPresentation
+	wipeSource        *TownPresentation
+	wipeErased        int
 	drawing           bool
 	captured, refused uint64
 	state             map[string]any
@@ -23,6 +25,8 @@ type TownFrames struct {
 type TownPresentation struct {
 	Indexed, RGB, Primary, Resources, Extra, SourceIndexed, Palette []byte
 	Steps, Cycles                                                   uint64
+	Wiping                                                          bool
+	EraseMask                                                       []byte
 }
 
 var townPresentationBox = image.Rect(48, 24, 272, 158)
@@ -112,6 +116,8 @@ func (t *TownFrames) finish(in townFrameInput) {
 		return
 	}
 	t.complete = &TownPresentation{Indexed: cloneTownBytes(in.indexed), RGB: cloneTownBytes(in.rgb), Primary: cloneTownBytes(in.primary), Resources: cloneTownBytes(in.resources), Extra: cloneTownBytes(in.extra), SourceIndexed: cloneTownBytes(in.indexed), Palette: cloneTownBytes(in.palette), Steps: in.steps, Cycles: in.cycles}
+	t.wipeSource = t.complete
+	t.wipeErased = 0
 	t.captured++
 	t.lastRefusal = nil
 }
@@ -138,14 +144,27 @@ func (t *TownFrames) selectFrame(in townFrameInput, blocked bool) *TownPresentat
 	t.state = map[string]any{"used": false, "drawing": t.drawing, "captured": t.captured, "refused": t.refused, "scope": "完成時刻的城鎮畫帶；畫帶外為當次原版"}
 	t.state["last_refusal"] = t.lastRefusal
 	f := t.complete
-	if blocked || f == nil || len(in.indexed) != 64000 || len(in.rgb) != 192000 || !t.scene.frameSource(in) || in.steps < f.Steps || in.cycles < f.Cycles || (!t.drawing && !townFrameEqual(in.indexed, f.SourceIndexed)) {
+	sourceOK := f != nil && t.scene.frameSource(in)
+	wipeCandidate := !sourceOK || (!t.drawing && f != nil && !townFrameEqual(in.indexed, f.SourceIndexed))
+	if !blocked && wipeCandidate && t.wipeSource != nil {
+		if wiping, erased := nativeTownWipe(in, t.wipeSource); wiping != nil && erased >= t.wipeErased {
+			t.wipeErased = erased
+			t.state["used"], t.state["wiping"], t.state["erased"] = true, true, erased
+			t.state["source_steps"] = wiping.Steps
+			t.state["source_indexed_sha256"] = townBackgroundHash(wiping.SourceIndexed)
+			return wiping
+		}
+	}
+	if blocked || f == nil || len(in.indexed) != 64000 || len(in.rgb) != 192000 || !sourceOK || in.steps < f.Steps || in.cycles < f.Cycles || (!t.drawing && !townFrameEqual(in.indexed, f.SourceIndexed)) {
 		t.clear()
+		t.wipeSource = nil
 		return nil
 	}
 	current := t.scene.sourceProfile(in)
 	saved := t.scene.sourceProfile(townFrameInput{mode: in.mode, primary: f.Primary, resources: f.Resources, extra: f.Extra, palette: f.Palette})
 	if current != saved {
 		t.clear()
+		t.wipeSource = nil
 		return nil
 	}
 	raw, rgb := cloneTownBytes(in.indexed), cloneTownBytes(in.rgb)

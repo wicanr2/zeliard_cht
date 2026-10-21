@@ -65,6 +65,11 @@ def main():
     palettefile = root / 'workplace/music-release-v1/release-build/AppDir/assets/town/frame/palette.bin'
     palette = np.frombuffer(palettefile.read_bytes(), np.uint8).reshape(256, 3)
     source(palettefile, '本地原版來源色表')
+    wholefile = artdir / 'registered/coherent-bosses.json'
+    whole = {}
+    if wholefile.exists():
+        source(wholefile, '058完整構圖首領，同一份素材接入正式覆繪')
+        whole = {r['key']: r for r in json.loads(wholefile.read_text())['figures']}
     source(root / 'workplace/orig/ZELRES3.SAR', '原版怪物來源封存檔')
     fontfile = artdir / 'rounded-font/jf-openhuninn-2.1.ttf'
     source(fontfile, '既有粉圓字型')
@@ -160,6 +165,18 @@ def main():
         assert bounds is not None
         native = native.crop(bounds)
         hd = hd.crop(tuple(v * 3 for v in bounds))
+        whole_source = None
+        if figure['key'] in whole:
+            r = whole[figure['key']]
+            raw = np.frombuffer(base64.b64decode(r['raster']), np.uint8).reshape(r['height'], r['width'])
+            assert np.array_equal(np.array(native.convert('RGB')), palette[raw]), figure['key']
+            path = artdir / 'registered' / r['file']
+            assert digest(path) == r['sha256'], path
+            source(path, '058完整首領構圖，與遊戲接入相同')
+            hd = Image.open(path).convert('RGBA')
+            assert hd.size == (native.width * 3, native.height * 3)
+            assert np.array_equal(np.array(hd.getchannel('A')) != 0, np.repeat(np.repeat(raw != 0, 3, axis=0), 3, axis=1))
+            whole_source = {'file': r['file'], 'sha256': r['sha256'], 'method': '058完整構圖優先'}
         images = []
         for name, picture in (('original', native), ('hd', hd)):
             path = assembled / f'{figure["key"]}-{name}.png'
@@ -169,6 +186,7 @@ def main():
                   'grid_phase': [ox, oy], 'native_color_match': True, 'hd_within_native_silhouette': True,
                   'hd_transparent_subpixels_within_native': uncovered,
                   'hd_base_layer': 'original-nearest-3x', 'final_hd_silhouette_match': True,
+                  'whole_figure_override': whole_source,
                   'alpha_crop': list(bounds), 'parts': proof, 'assembled': images}
         print('ASSEMBLED', figure['key'], 'missing', missing, flush=True)
         return native, hd, record

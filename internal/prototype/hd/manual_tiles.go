@@ -23,6 +23,8 @@ type manualPlacement struct {
 }
 type ManualArtwork struct {
 	complete         *CompleteArtwork
+	coherent         *coherentBosses
+	transition       *caveTransition
 	index            map[[16]byte][]*manualTile
 	zero             map[[64]byte][]*manualTile
 	lastRaw, lastRGB []byte
@@ -71,6 +73,14 @@ func NewManualArtwork(root, dir string) (*ManualArtwork, error) {
 		}
 	}
 	s.complete, err = loadCompleteArtwork(dir)
+	if err != nil {
+		return nil, err
+	}
+	s.coherent, err = loadCoherentBosses(dir)
+	if err != nil {
+		return nil, err
+	}
+	s.transition, err = loadCaveTransition(dir)
 	if err != nil {
 		return nil, err
 	}

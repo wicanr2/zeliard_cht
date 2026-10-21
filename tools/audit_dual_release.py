@@ -3,7 +3,7 @@
 from pathlib import Path
 import argparse,hashlib,json,plistlib,struct,subprocess,tempfile,zipfile
 
-parser=argparse.ArgumentParser();parser.add_argument('--runtime-fix',action='store_true',help='052受傷修正版，不要求重製051影片');args=parser.parse_args()
+parser=argparse.ArgumentParser();mode=parser.add_mutually_exclusive_group();mode.add_argument('--runtime-fix',action='store_true',help='052受傷修正版，不要求重製051影片');mode.add_argument('--transition-fix',action='store_true',help='057／058過場及首領美術修正版，核對新版正常入洞及素材，不要求重製051影片');args=parser.parse_args()
 P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.',''));D=P/'dist-all'/VERSION
 sha=lambda data:hashlib.sha256(data).hexdigest()
 def pe(data):
@@ -58,6 +58,17 @@ for edition in ('CHT','CHT-HD'):
         else:
             assert entries['-manual-hd-art']=='assets/manual-hd' and entries['-world-town-art']=='assets/manual-hd'
             assert sha(read('assets/manual-hd/complete-art.json'))==identity['complete_art_sha256']
+            if args.transition_fix:
+                for name in ('coherent-bosses','cave-transition'):
+                    assert sha(read('assets/manual-hd/'+name+'.json'))==identity[name+'_sha256']
+                bosses=json.loads(read('assets/manual-hd/coherent-bosses.json'))
+                assert {r['key'] for r in bosses['figures']}=={'tako','tori','zela','meda','mao1'}
+                for row in bosses['figures']:assert sha(read('assets/manual-hd/'+row['file']))==row['sha256']
+                transition=json.loads(read('assets/manual-hd/cave-transition.json'))
+                assert transition['width']==224 and transition['height']==144
+                assert sha(read('assets/manual-hd/'+transition['file']))==transition['sha256']
+                assert transition['poses'] and all(r['hd_matched'] for r in transition['poses'])
+                for row in transition['poses']:assert sha(read('assets/manual-hd/'+row['file']))==row['sha256']
         manifest=json.loads(read('bundle-manifest.json'));assert manifest['version']==VERSION and manifest['edition']==edition
         assert names=={r['file'] for r in manifest['files']}|{'bundle-manifest.json'}
         for row in manifest['files']:
@@ -67,14 +78,18 @@ for edition in ('CHT','CHT-HD'):
 
 gui=json.loads((D/'smoke/integration/receipt.json').read_text())
 assert gui['binary_sha256']==sha((W/'linux/zeliard-preview').read_bytes())
-if args.runtime_fix:
+if args.transition_fix:
+    assert gui['status']=='PASS_HD_CAVE_TRANSITION_GUI' and gui['normal_DOS_exit']==0 and gui['save_unchanged']
+    assert gui['transition_hd_verified'] and gui['town_wipe_hd_verified']
+    qa={'seconds':None}
+elif args.runtime_fix:
     assert gui['status']=='PASS_HD_RUNTIME_DAMAGE_GUI' and gui['normal_DOS_exit']==0 and gui['save_unchanged'] and gui['injured_hd_verified']
     qa={'seconds':None}
 else:
     assert gui['status']=='PASS_SCOPED_FIRST_CAVE_INPUT_CHINESE_HD' and gui['boots'][0]['normal_DOS_exit']
     for shot in gui['shots']:assert shot['state']['audio_output']['last_error']==''
     qa=json.loads((D/'promo/quality.json').read_text());assert qa['status']=='PASS_PROMO_TECHNICAL_QA'
-report={'status':'PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE','version':VERSION,'packages':reports,'promo_seconds':qa['seconds'],'runtime_damage_fix':args.runtime_fix,'full_game_or_every_frame_verified':False,'physical_gamepads_tested':False,'windows_hardware_tested':False,'macos_hardware_tested':False,'rights':'full-local only; no remote publication'}
+report={'status':'PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE','version':VERSION,'packages':reports,'promo_seconds':qa['seconds'],'runtime_damage_fix':args.runtime_fix,'transition_art_fix':args.transition_fix,'full_game_or_every_frame_verified':False,'physical_gamepads_tested':False,'windows_hardware_tested':False,'macos_hardware_tested':False,'rights':'full-local only; no remote publication'}
 (D/'smoke/release-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(report['status'],flush=True)
 for temp in temporary:temp.cleanup()

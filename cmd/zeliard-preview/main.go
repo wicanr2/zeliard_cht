@@ -576,6 +576,7 @@ func (g *game) caveDoorState() map[string]any {
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
+	g.manualArtwork.BeginFrame()
 	w, h, rawRGB := g.o.ScreenRGB()
 	raw := g.o.Indexed()
 	rgb, townRaw := rawRGB, raw
@@ -727,8 +728,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.hdMatched = g.hdMatched || g.interiorHDMatch
 	}
 	if g.hdEnabled && g.manualArtwork != nil && w == 320 && h == 200 {
+		g.hdMatched = g.manualArtwork.DrawCaveTransition(g.canvas, raw, rawRGB, image.Pt(0, barHeight)) || g.hdMatched
 		g.manualArtwork.SetResources(townResources, townExtra)
 		g.hdMatched = g.manualArtwork.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight)) || g.hdMatched
+		g.hdMatched = g.manualArtwork.DrawCoherent(g.canvas, townRaw, rgb, image.Pt(0, barHeight)) || g.hdMatched
 	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(raw, rawRGB)
@@ -760,6 +763,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.townDialogue != nil && w == 320 && h == 200 {
 		g.townDialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
+	presented.ApplyErase(g.canvas, image.Pt(0, barHeight))
 	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
 	hdLabel := "hd"
 	if g.hd != nil {
@@ -868,6 +872,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"oracle_memory_sha256":       fmt.Sprintf("%x", sha256.Sum256(g.o.Bytes(oracle.Far(0, 0), 1<<20))),
 			"oracle_indexed_sha256":      fmt.Sprintf("%x", sha256.Sum256(raw)),
 			"oracle_palette_sha256":      fmt.Sprintf("%x", sha256.Sum256(observedPalette)),
+			"cave_transition_hd":         g.manualArtwork.TransitionState(),
+			"coherent_boss_hd":           g.manualArtwork.CoherentState(),
 			"sage_hd_matched":            g.sageHDMatched,
 			"sage_hd_pose":               g.sageHDPose,
 			"sage_frames_hd":             g.sageFramesHD.State(),

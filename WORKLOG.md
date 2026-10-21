@@ -1640,3 +1640,36 @@ tools/readme_creatures.py改以registered/manual-art.json的16×16原生模板�
 重建使用既有eob-audio-capture:20261009-r3，Python3.11／Pillow9.4／NumPy；容器使用UID/GID 1000、2GiB、2CPU、128程序上限、60秒外層逾時及無網路。專案唯讀，僅docs/images及本工作區可寫。命令為容器內`python3 /project/tools/readme_creatures.py --project /project`；缺少固定參考時可在明確開網路的一次性容器加`--fetch-references`，仍須通過固定SHA。逐格來源、原生模板、象限、坐標、輸入／輸出雜湊、工具SHA及透明下層方法在docs/images/creatures-provenance.json；布局位於creatures-layout.json，均已掛入AGENTS及CONTEXT。
 
 本輪只做文件與靜態圖片核對，不執行遊戲或擴大測試範圍，不新增正常玩家路徑、後段首領或完整動畫的完成聲明。正式程式、VERSION、已發布tag及Release不變，六個完整版與推廣影片無須重包。
+
+## 2026-10-21 057／058 入洞過場與五組首領構圖修正
+
+使用者追加回報HD入洞過場會變成原版且色彩異常，並逐圖否決章魚、飛鳥、魔像、獨眼魔及披風魔王。056只把既有元件排回完整位置，沒有消除元件各自生成造成的接縫；魔像還被畫成紅色肉塊。此次沿復古遊戲規格路由與reverse-engineer-retro-game-remake技能，只處理這兩個顯示缺陷，不重開通關與後段驗收。
+
+### 原版來源與擦除
+
+- 固定Go1.24.13、release-v100/dosgolem唯讀副本、EXE SHA `fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341`及存檔SHA `03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c`。以Ada 1.0.1原生鍵緣／RunCycles日誌重播4,476筆，冷啟動RAM、逐筆暫存器及時鐘吻合；一般62張、密集230張來源保存在workplace/hd-cave-transition-v1。
+- 原版就是青藍洞壁和彩色地板，768-byte色盤未換，始終為SHA `6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c`。這是獨立過場，現有正常洞窟完成來源未接到此圖。18張不同步行位置逐像素多數還原固定224×144背景，每點至少16/18相同；色號SHA `054e31ebab40662de49d9023c6d3b3561e5a4dfb88a8ba25481f8cbc56c74329`。
+- 第一次視窗檢查發現用上一個Draw的HD快取作擦除基準會落後。改由TownFrames的原版完成回呼保留最新來源，只有每點保持原值或變成黑色、色盤相同、時間不倒退且擦除量單調增加才呈現，再以當次遮罩擦掉HD。未知寫入與對話仍撤除，不改原版輸入、步行、地圖或存檔。
+- 接續連續片段找到兩筆極短回退，原生日誌定位到01B1:46AA及01B1:46E1，DI所在兩點仍在產圖中。沒有為這兩個位址加正式路徑特例。改用兩側32×8完整背景錨點及每個8×8圖格的全色號／RGB核對，未完成單格保留原版，其餘保持HD。角色僅在整組已觀察圖樣吻合時套既有元件，未知前景維持原版。
+- 初版probe的完整RAM SHA不符，最後證實是WriteFile複製USR未保留來源mtime。正式tools/hd_transition_probe.go加Chtimes後，125427051及125587272兩點1MiB RAM SHA分別為`4415ba5318586be75772c4ce323313f31c1bc8b1b2d95e0333fbf8a66a17ce9f`與`0a302d76004f53101ab47f1d5396d7aa5d93cd2515af82275b218f735fa33896`，均與GUI完全相同。更正見mtime-correction.json；這是probe輸入中繼資料問題，不列產品缺陷，不外推整局parity。
+
+### 完整首領圖與接入
+
+- 使用內建imagegen，依原版完整姿態分別生成章魚、飛鳥、藍白方塊、獨眼魔與披風魔王，不再獨立生成16×16碎片。披風魔王首稿胸肩輪廓偏離原版，v2修正後採用；舊圖保留。過場背景也以同工具按原構圖生成，固定黑色空間與地板高度。
+- 原始生成圖、完整提示詞、引用、SHA與未採用版本在workplace/hd-boss-coherent-v1及hd-cave-transition-v1。選用圖及提示詞索引為前者art-notes.json，不把唯一素材留在Codex快取。只做裁切、目標尺寸取樣、原生透明包絡及原版下層合成。
+- tools/hd_boss_coherent.py先畫完整姿態，再切出8×8元件，更新430個16×16模板。930個未涵蓋的非空象限保留原版，不混回舊錯誤造型。coherent-bosses.json的完整姿態優先於元件，依選出的同一呈現來源匹配，不混用當次CPU與上一畫格。五張圖及README已目視，原生透明範圍及源像素不變；未逐一到達後段或驗完所有首領動畫。
+- tools/hd_cave_transition.py保存兩個背景錨點、原版固定背景、八組已觀察角色與既有FMAN對應。每組角色仍有37至74個原生像素保留原版。原生圖樣及HD圖檔的用途、遮擋與未知來源邊界見057及058，不稱為每個像素均重繪。
+
+### 驗證、重包與停止線
+
+- 三項限定Go檢查通過，包含原城鎮完成／中途隔離、16個未知來源／對話拒絕分支，以及新過場、五張完整首領、區外不寫入及失配拒絕。原版230張取樣有169張符合過場，其餘為城鎮、黑屏與正式洞窟，不刪除失配樣本或當全遊戲通過率。
+- 一次Docker stdin轉寫漏開-i，清理舊函式沒有執行，導致開發編譯缺BeginFrame；補-i後於同容器重跑通過，屬工具腳本問題。原先未發布的1.0.2製作也在發現短暫回退後中止，保留aborted-preparation-identity.json，再清除該次可重建輸出並從乾淨輸入重做；沒有覆寫已發布成品。
+- 正式v.1.0.2兩版六包重新編譯。Linux兩AppImage實際啟動、Windows兩ZIP以Wine輔助啟動、macOS兩ZIP通用架構與.app結構通過；全部逐檔SHA、29份原版資料、模式、字型、音源及新首領／過場清單通過。audit_dual_release.py --transition-fix為PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE，finish產出六份成品SHA。
+- 正式Linux AppImage正常冷F7、入洞及DOS退出0。16筆城鎮擦除、29筆HD過場，中途整幅回退0，USR bytes／mtime不變。連續片10.434秒、960×680／30fps，無音軌，代表畫格已目視；資料在dist-all/v.1.0.2-20261021/smoke/integration，二進位SHA `031cfe6f45e6d3f48f588e1e31b0c09950106ef512dfcfb1bf474a83c1814037`。
+- 本次不重錄Ada推廣片，舊1.0.1兩片維持原身份，README明列版本。新入洞片只作視覺回歸紀錄，不冒稱有音訊或新宣傳片。Windows／macOS真機、實體手把、後段正常首領及全遊戲動畫仍未驗，不重開已結案項目。
+
+製作沿既有Docker image、非root UID/GID 1000、明確唯讀輸入、CPU／記憶體／程序及逾時限制。沒有改共用dosgolem、沒有新增重複工具image，沒有在主機執行遊戲、Python或編譯。正式封包只留full-local，GitHub只推來源、文件與使用者指定的縮圖。清理及發布回讀另追加。
+
+清理完成：先核六個成品SHA，再沿cleanup_dual_release.py預設模式移除本版組裝、解壓、Wine及Go快取，共3,934,896,128配置bytes。另移除過場開發用gui-bundle與zeliard-preview兩項可重建副本301,158,400配置bytes，合計4,236,054,528配置bytes，約3.95GiB。沒有刪除gui-output三次獨立錄影、原版來源、唯一美術、提示詞、固定來源、存檔或舊正式成品。
+
+清理後六包大小與SHA相同，現行遊戲來源與identity.json凍結來源相同；root-owned檔案、誤建.md目錄均零，Go快取為空。收據為workplace/release-v102/hygiene.json及hd-cave-transition-v1/cleanup-local.json，狀態PASS_POST_CLEANUP_ARTIFACTS_AND_HYGIENE。新增文件入口的471個本地連結均存在，git diff --check通過；本專案容器已結束並移除。
