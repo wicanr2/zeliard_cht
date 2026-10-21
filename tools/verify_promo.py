@@ -46,5 +46,5 @@ if 'gameplay_clip' in meta:
     (O/'gameplay-signal-check.log').write_text(glog)
     gm=float(re.search(r'mean_volume: ([\-\d.]+) dB',glog).group(1));gpeak=float(re.search(r'max_volume: ([\-\d.]+) dB',glog).group(1))
     assert -65<gm<0 and 'black_start:' not in glog,(gm,gpeak)
-    gq={'status':'PASS_ADA_CONTINUOUS_GAMEPLAY_AV','seconds':float(gv['duration']),'audio_seconds':float(ga['duration']),'resolution':[960,680],'fps':60,'mean_db':gm,'peak_db':gpeak,'long_black_frames':False,'source_audio':'ada PulseAudio monitor','audio_alignment':item['alignment'],'preserved_native_scene_pauses':'未刪除正常對話、暫停與換場，原始訊號日誌保留靜音及停頓位置','sha256':item['sha256']}
+    gq={'status':'PASS_ADA_CONTINUOUS_GAMEPLAY_AV' if meta['capture_machine']=='ada' else 'PASS_LOCAL_CONTINUOUS_GAMEPLAY_AV','seconds':float(gv['duration']),'audio_seconds':float(ga['duration']),'resolution':[960,680],'fps':60,'mean_db':gm,'peak_db':gpeak,'long_black_frames':False,'source_audio':meta['capture_machine']+' PulseAudio monitor','audio_alignment':item['alignment'],'preserved_native_scene_pauses':'未刪除正常對話、暫停與換場，原始訊號日誌保留靜音及停頓位置','sha256':item['sha256']}
     (O/'gameplay-quality.json').write_text(json.dumps(gq,ensure_ascii=False,indent=2)+'\n');print(gq['status'])

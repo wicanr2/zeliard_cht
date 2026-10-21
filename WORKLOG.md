@@ -1675,3 +1675,23 @@ tools/readme_creatures.py改以registered/manual-art.json的16×16原生模板�
 清理後六包大小與SHA相同，現行遊戲來源與identity.json凍結來源相同；root-owned檔案、誤建.md目錄均零，Go快取為空。收據為workplace/release-v102/hygiene.json及hd-cave-transition-v1/cleanup-local.json，狀態PASS_POST_CLEANUP_ARTIFACTS_AND_HYGIENE。新增文件入口的471個本地連結均存在，git diff --check通過；本專案容器已結束並移除。
 
 057／058發布回讀：來源提交`6f87a98a9b8b33d7dbbeb8e89f64e42543716789`及annotated tag物件`235235fa9fdda225a0cfef8d9e526691749f178b`已原子推送。GitHub Release https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.2-20261021 於2026-10-21T12:58:54Z發布，isDraft=false、isPrerelease=false、assets=[]，儲存庫回讀PRIVATE。原1.0.0與1.0.1 tag物件不變。回讀收據為workplace/release-v102/github-publication.json，正式manifest附來源與清理摘要。此段回讀作後續純文件提交，已發布tag不移動；必要工作完成。
+
+## 2026-10-21 1.0.2推廣片重錄
+
+使用者要求重錄推廣影片。沿已確認的Ada錄影方式，先讀CONTEXT、WORKLIST，路由命中推廣影片／FFmpeg，載入game-promo-video-ffmpeg、dist-all及文件職責，音訊另核原版素材規則93；專案證據沿053，不重開遊戲測試或重新打包。
+
+建立workplace/ada-promo-v102，保存正式HD AppImage與錄影導航來源的input-manifest.json及傳輸tar。AppImage SHA為`7f5403765e69b94fa56468f5226eb0c89165879f3afb06b967f37361cba4be7f`。錄影程式增加入洞開始標記與HD來源觀察；剪輯時間線加入完整入洞片段，保留60秒總長。兩支腳本語法核對通過，遊戲二進位、六包、版本及tag不變。
+
+目前環境阻塞：登入腳本指定的Ada SSH TCP22連線逾時，Docker bridge與host網路結果相同；既有SSH agent可列舉金鑰，尚未進入驗證階段，不宣稱憑證失效。沒有複製金鑰、沒有遠端啟動工作、沒有用舊片冒稱新片。連線狀態保存connection-status.json，等待使用者恢復Ada連線或指定本機錄製。
+
+使用者隨後指定在本機錄製。先沿用既有superfighter-local-capture:noble-egl-20261021-r2，image ID為`sha256:2bdbe127a3c4651c152270ce6091b0d1c91d1f4ebfe4c43866d64453bd79e414`。本機Docker沒有NVIDIA GPU runtime，--gpus all啟動在工作負載開始前被daemon拒絕；檢查既有/dev/dri及render群組後，以--device /dev/dri、group-add 992及44、VirtualGL EGL確認Mesa Intel Graphics MTL硬體renderer，遊戲映射含libvglfaker及libgallium。沿同一image錄製，不另建工具鏈或回到主機執行。環境探查的失敗不列產品缺陷。
+
+record_ada_promo.py新增ZELIARD_CAPTURE_MACHINE=local，使用libx264、veryfast及threads2；預設Ada分支仍保留NVENC。make_ada_promo.py與verify_promo.py依receipt的machine標示來源及檔名。錄影使用本地固定inputs與唯讀正式AppImage解包，四CPU／4GiB／256程序／600秒上限，獨立PulseAudio空裝置及監聽PCM，Xvfb與所有子程序由finally停止。原始錄影、裝置PCM、原版生成WAV、十張視窗與輸入日誌保留received。
+
+新錄影PASS_LOCAL_NEW_GAMEPLAY_CAPTURE。二進位SHA仍為`031cfe6f45e6d3f48f588e1e31b0c09950106ef512dfcfb1bf474a83c1814037`，正常冷F7、城鎮、教堂中文、原貌／HD、入洞、攻擊／跳躍及設定頁，DOS退出0，USR bytes／mtime不變。入洞觀察73筆城鎮擦除與139筆HD過場，中途整幅HD撤除0。過場角色沿057原貌保留範圍，沒有藉錄影宣稱全像素HD或全動畫。
+
+以兩CPU／2GiB及560秒內層逾時合成，連續片61.1秒、960×680／60fps，保留原次序及同期聲，mean -22.1dB、peak -3.5dB；推廣片60秒、1280×720／60fps，原版標題曲SHA與已驗來源相同，mean -18.6dB、peak -4.5dB。分鏡新增六秒入洞過場、版本標題及本次新畫面，不修補、調色、加速或循環實際遊玩畫格。標題卡仍另加深背景。
+
+verify_promo.py得到PASS_PROMO_TECHNICAL_QA及PASS_LOCAL_CONTINUOUS_GAMEPLAY_AV。兩片串流、長度、聲音、黑幀與既有凍結門檻通過；推廣片無兩秒以上靜音。六格圖、標題、30秒過場、鍵盤／手把與57秒結尾已目視，字幕無裁切。連續片保留正常對話、切換與換場停頓，不宣稱每段無靜音或逐取樣同步。README、CONTEXT、WORKLIST、053及驗證矩陣更新本機來源，未改六個完整版、遊戲版號、已發布Release或tag，影片只留本機。
+
+先核六個封包與兩片影片SHA，再移除本輪未使用的遠端傳輸tar、正式包解壓副本及十個可重建剪輯MP4，共496,107,520配置bytes，約473MiB。原始錄影、裝置PCM、原版WAV、固定inputs、提示／字幕、字卡、時間線、所有收據及八個正式成品均保留。清理後八份成品SHA、正式遊戲來源與存檔身份相同，root-owned與誤建.md目錄均零，專案容器為零；收據為workplace/ada-promo-v102/cleanup-local.json及hygiene.json。533個文件本地連結存在，git diff --check通過。正式manifest只追加新片及音畫來源，不改既有封包雜湊；本輪Git提交與遠端同步回讀另存同工作區git-publication.json。

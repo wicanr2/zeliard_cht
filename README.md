@@ -110,15 +110,15 @@ bash tools/play.sh
 
 包內附自建存檔SAVETEST，可按F7讀取後從Muralla鎮向右進入第一洞窟。存檔與操作設定保存在系統使用者設定目錄的 `Zeliard-CHT`：Linux為 `~/.config/Zeliard-CHT/`，Windows為 `%AppData%\Zeliard-CHT\`，macOS為 `~/Library/Application Support/Zeliard-CHT/`。可用 `ZELIARD_USER_DIR` 指定其他目錄。
 
-Ada推廣影片保留v.1.0.1的實錄，以NVIDIA RTX 2000 Ada、VirtualGL及NVENC擷取，包含城鎮、教堂中文對話、原貌／HD切換、第一洞窟與工具列。這兩片尚未收錄1.0.2的過場及首領修正，來源見[規格053](docs/spec/053-ada-gameplay-promo.md)。1.0.2另附正式Linux封包的連續入洞視覺檢查片段，無音軌。
+1.0.2影片已在本機重新錄製，使用正式Linux HD包、Intel MTL硬體繪圖與VirtualGL，包含城鎮、教堂中文對話、原貌／HD切換、修正後入洞過場、第一洞窟與工具列。連續遊玩片段約61秒，保留同期音效；60秒推廣片另以原版標題曲配樂。來源與範圍見[規格053](docs/spec/053-ada-gameplay-promo.md)。
 
 | 影片 | 本機路徑 |
 |---|---|
-| 連續遊玩，保留同期遊戲音效 | `dist-all/v.1.0.1-20261021/promo/Zeliard-v.1.0.1-20261021-ada-gameplay.mp4` |
-| 60秒推廣片，1280×720，原版標題曲配樂 | `dist-all/v.1.0.1-20261021/promo/Zeliard-v.1.0.1-20261021-promo.mp4` |
+| 本機連續遊玩，約61秒，960×680／60fps，保留同期遊戲音效 | `dist-all/v.1.0.2-20261021/promo/Zeliard-v.1.0.2-20261021-local-gameplay.mp4` |
+| 60秒推廣片，1280×720／60fps，原版標題曲配樂 | `dist-all/v.1.0.2-20261021/promo/Zeliard-v.1.0.2-20261021-promo.mp4` |
 | 1.0.2入洞過場檢查，960×680，無音軌 | `dist-all/v.1.0.2-20261021/smoke/integration/transition-playthrough.mp4` |
 
-各版檔案大小與SHA-256見同版`SHA256SUMS.json`，影片檢查在`promo/`，封包檢查在`smoke/`。v.0.4.0影片保留原身份。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
+各版檔案大小與SHA-256見同版`SHA256SUMS.json`，影片檢查在`promo/`，封包檢查在`smoke/`。舊Ada實錄與v.0.4.0影片保留在各自版本目錄，不冒充本機新版。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
 
 洞窟的插畫片段會核對母圖的可見來源，避免小圖樣誤貼到主角或背景。舊封包與影片均保持原身份，未用舊影片冒稱新版實錄。
 

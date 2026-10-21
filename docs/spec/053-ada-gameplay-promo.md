@@ -32,3 +32,13 @@ ada為28核心、約64GB記憶體主機，GPU為NVIDIA RTX 2000 Ada Generation�
 - 正式檔為同版promo內的`Zeliard-v.0.4.1-20261021-ada-gameplay.mp4`與`Zeliard-v.0.4.1-20261021-promo.mp4`。`provenance.json`、`quality.json`、`gameplay-quality.json`與主manifest保存來源及SHA。未上傳含原版素材的影片，不移動已發布tag。
 
 本機清除傳輸tar等重複副本251,035,648配置bytes，ada清除重複AppImage及解包層480,342,016配置bytes。兩端正式影片、原始錄影／音訊、截圖、來源、日誌與失敗身份保留。專案容器均已移除，root-owned檔案及誤建.md目錄均零，詳工作區的兩份cleanup與hygiene收據。
+
+## 1.0.2本機重新錄製
+
+Ada SSH逾時後，使用者明確指定改在本機錄製。沿用本頁正常玩家路徑，使用正式1.0.2 HD AppImage；原六包及已發布tag不變。工作區沿用`workplace/ada-promo-v102/`，新來源一律標為local，未在Ada執行或借用舊片。
+
+- 沿既有`superfighter-local-capture:noble-egl-20261021-r2`，非root Docker、唯讀正式包、獨立存檔與音訊。VirtualGL EGL的renderer為Mesa Intel Graphics MTL，遊戲實際載入libvglfaker與Mesa繪圖函式庫；60fps影片以libx264編碼，不宣稱NVENC。
+- 正常冷F7、城鎮、教堂中文、原貌／HD、入洞、洞窟操作及兩種設定頁完成，正常DOS退出0，USR內容與mtime不變。過場觀察含73筆城鎮擦除及139筆HD洞壁，中途整幅回退0；過場角色仍沿057的局部覆繪與原貌保留範圍。
+- 新連續遊玩61.1秒、960×680／60fps、AAC雙聲道，保留同期PCM，mean -22.1dB、peak -3.5dB。推廣片60秒、1280×720／60fps，原版標題曲mean -18.6dB、peak -4.5dB；入洞過場單獨安排6秒，不加速或修補實際遊戲畫格。
+- 兩片串流、時長、音量、黑幀及既有凍結門檻通過；推廣片無兩秒以上靜音。六格圖、標題、30秒過場、鍵盤／手把及57秒結尾已目視，字幕無裁切。這些只證明錄影品質，不新增完整遊戲或實體手把驗收。
+- 成品為`dist-all/v.1.0.2-20261021/promo/Zeliard-v.1.0.2-20261021-local-gameplay.mp4`與同目錄`Zeliard-v.1.0.2-20261021-promo.mp4`；原始來源在工作區received，來源及品質在promo的provenance.json、quality.json及gameplay-quality.json。影片只留本機，舊影片及正式tag保持原身份。

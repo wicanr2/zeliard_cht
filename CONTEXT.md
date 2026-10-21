@@ -2,6 +2,8 @@
 
 更新日期：2026-10-21，Asia/Taipei。
 
+影片已依使用者指示改在本機重錄。使用正式1.0.2 HD AppImage，沿[053錄影流程](docs/spec/053-ada-gameplay-promo.md)，Intel MTL透過VirtualGL EGL硬體繪圖，錄影採libx264。工作區沿用`workplace/ada-promo-v102/`，來源標為local；舊片與已發布tag保持原身份。
+
 ## 目前狀態表
 
 現行修正版為 **v.1.0.2-20261021**。本次處理入洞過場與五組首領HD造型，並補上README遊戲簡介、手冊故事與完整角色總覽。既有結案範圍維持。
@@ -15,11 +17,13 @@
 | 完整包 | CHT與CHT-HD分開，各有Linux x86_64 AppImage、Windows x86_64 ZIP、macOS Intel／Apple Silicon通用ZIP |
 | 封包驗證 | Linux兩版實際啟動、Windows兩版Wine輔助啟動、macOS兩版架構及.app結構；六包內容、SHA、原版資料、模式、字型、音源及新增素材核對通過 |
 | 正常入洞 | 正式Linux包冷F7、入洞及DOS退出0；16筆擦除、29筆HD過場，中途整幅回退0，USR內容與mtime不變 |
-| 影片 | 本版附10.434秒無音軌入洞檢查片段；Ada推廣片保留1.0.1原身份，本輪未重錄 |
+| 影片 | 新本機連續遊玩約61.1秒，960×680／60fps及同期聲；新推廣片60秒、1280×720／60fps，原版標題曲配樂；含修正後HD過場，兩片音畫檢查通過 |
 
 ## 正式交付與證據入口
 
-- 唯一現行交付為`dist-all/v.1.0.2-20261021/`。六個含遊戲完整版在`full-local/`，驗證與入洞片段在`smoke/`，大小及SHA-256在`SHA256SUMS.json`。完整版只留本機。
+- 唯一現行交付為`dist-all/v.1.0.2-20261021/`。六個含遊戲完整版在`full-local/`，兩片新影片及音畫檢查在`promo/`，封包驗證與無音軌入洞片段在`smoke/`，大小及SHA-256在`SHA256SUMS.json`。完整版與影片只留本機。
+- 本機新片來源為`workplace/ada-promo-v102/received/`，保留原始錄影、PCM／WAV、輸入及十張視窗；`local-input-manifest.json`記錄正式包及固定腳本。139筆HD過場中途整幅回退0，正常DOS退出0，存檔內容與mtime不變；過場角色沿057的局部HD與原貌保留邊界，不宣稱每個像素皆重繪。
+- 本次錄影清理約473MiB重複傳輸、解包及剪輯中間檔，原始錄影與八個正式成品保留。清理後八份SHA及遊戲來源相同，root-owned與誤建.md目錄均零；入口為同工作區`cleanup-local.json`、`hygiene.json`及`git-publication.json`。
 - 固定來源為`workplace/release-v102/identity.json`；六包核對在`dist-all/v.1.0.2-20261021/smoke/release-audit.json`，正常入洞在`smoke/integration/receipt.json`。Linux正式執行檔SHA為`031cfe6f45e6d3f48f588e1e31b0c09950106ef512dfcfb1bf474a83c1814037`。
 - [057過場規格](docs/spec/057-cave-transition-hd.md)與`workplace/hd-cave-transition-v1/`保存原版重生、來源、連續畫面及mtime勘誤。[重生工具](tools/hd_transition_probe.go)保留存檔mtime，兩個具名觀察點完整RAM與GUI相同，不外推整局parity。
 - [058首領規格](docs/spec/058-coherent-boss-hd.md)與`workplace/hd-boss-coherent-v1/`保存完整圖、舊圖、登錄、提示詞及來源。`art-notes.json`是選用美術與提示詞索引。正式圖組在`workplace/full-hd-v1/manual-hd-v1/registered/`。

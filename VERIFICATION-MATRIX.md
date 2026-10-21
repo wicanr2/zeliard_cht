@@ -6,6 +6,7 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 1.0.2本機新遊玩與推廣片 | 限定完成 | 正式Linux HD AppImage在Intel MTL／VirtualGL EGL錄製，libx264編碼；冷F7、中文對話、原貌／HD、入洞及設定頁，DOS退出0，USR內容與mtime不變。73筆擦除、139筆HD過場，中途整幅回退0。連續片61.1秒960×680／60fps及同期聲，mean -22.1／peak -3.5dB；推廣片60秒1280×720／60fps，mean -18.6／peak -4.5dB。訊號檢查與字幕／結尾目視通過，來源為local，不冒稱Ada新片。過場角色沿057局部覆繪限制，沒有新增完整通關或實體手把驗收。入口同版promo及workplace/ada-promo-v102/received |
 | 057入洞過場與058首領美術修正版 | v.1.0.2限定完成 | 正式Linux AppImage正常冷F7、城鎮擦除16筆、過場HD29筆，過場中途整幅回退0，正常DOS退出0，USR bytes／mtime不變。連續視覺片段10.434秒、960×680／30fps，無音軌，代表畫格已目視；入口同版smoke/integration/receipt.json、contact.jpg及transition-playthrough.mp4。背景以兩側完整錨點與逐8×8原生圖格核對，未完成格保留原版。三項限定檢查及原城鎮未知／對話拒絕均通過，不宣稱全遊戲逐幀或完整通關 |
 | 058五組完整首領構圖 | 代表姿態與素材接入完成 | 章魚、飛鳥、藍白魔像、獨眼魔、披風魔王先重繪整體，再依原生模板裁切；430模板及README同圖已更新。五個完整姿態的來源、區外不寫入與失配拒絕通過。未涵蓋象限保留原版，尚未正常到達後段或逐一核對首領全動畫。入口workplace/hd-boss-coherent-v1/registration.json及規格058 |
 | v.1.0.2六個完整版 | PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE | CHT／CHT-HD分開，Linux兩AppImage實際啟動，Windows兩ZIP經Wine輔助啟動，macOS兩ZIP核對Intel／Apple Silicon通用架構及.app結構；六包逐檔SHA、原版29檔、模式、中文字型、音源與新HD清單核對通過。入口同版smoke/release-audit.json及SHA256SUMS.json。沒有新增Windows／macOS真機、實體手把、Ada錄影或全遊戲驗收聲明 |

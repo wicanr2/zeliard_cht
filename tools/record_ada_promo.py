@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""053：ada的VirtualGL EGL硬體繪圖、NVENC錄影與原版音訊擷取。"""
+"""053：Ada或本機的VirtualGL EGL錄影與原版音訊擷取。"""
 import ast
 from pathlib import Path
 import socket
@@ -21,6 +21,8 @@ exec(compile(ast.Module(body=nodes,type_ignores=[]),str(helper),'exec'))
 names.update({0x39:'space',0x50:'Down',0x49:'KP_Prior'})
 env.pop('LIBGL_ALWAYS_SOFTWARE',None)
 C=Path('/recording')
+machine=os.environ.get('ZELIARD_CAPTURE_MACHINE','ada')
+assert machine in ('ada','local')
 original_invoke=invoke
 record_begin=None
 markers=[]
@@ -70,7 +72,8 @@ try:
         assert time.monotonic()<deadline
         time.sleep(.05)
     renderer=invoke(['/opt/VirtualGL/bin/vglrun','-d','egl','/opt/VirtualGL/bin/glxinfo','-B']).stdout.decode()
-    assert 'NVIDIA' in renderer and 'llvmpipe' not in renderer.lower(),renderer
+    assert 'direct rendering: Yes' in renderer and not any(s in renderer.lower() for s in ('llvmpipe','softpipe','swrast')),renderer
+    if machine=='ada':assert 'NVIDIA' in renderer,renderer
     (C/'renderer.txt').write_text(renderer)
     save=B/'original/SAVEM1.USR'
     assert h(save)=='03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c'
@@ -79,11 +82,14 @@ try:
     start()
     invoke(['xdotool','windowmove',window,'0','0'])
     maps=Path('/proc')/str(process.pid)/'maps'
-    loaded=[line for line in maps.read_text().splitlines() if any(s in line.lower() for s in ['nvidia','vglfaker'])]
-    assert any('libvglfaker' in line for line in loaded) and any('nvidia' in line for line in loaded)
+    loaded=[line for line in maps.read_text().splitlines() if any(s in line.lower() for s in ['nvidia','vglfaker','/dri/','libgallium'])]
+    assert any('libvglfaker' in line for line in loaded)
+    assert any(any(s in line.lower() for s in ('nvidia','/dri/','libgallium')) for line in loaded)
     (C/'game-gpu-libraries.txt').write_text('\n'.join(loaded)+'\n')
     record_begin_epoch=time.time()
-    video=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner','-loglevel','info','-f','x11grab','-video_size','960x680','-framerate','60','-draw_mouse','0','-i',':96.0+0,0','-an','-c:v','h264_nvenc','-preset','p4','-cq','20','-b:v','0','-pix_fmt','yuv420p','-movflags','+faststart',str(C/'gameplay-source.mp4')],env=env,stdout=subprocess.DEVNULL,stderr=(C/'ffmpeg.log').open('wb'));children.append(video)
+    encoder='h264_nvenc' if machine=='ada' else 'libx264'
+    encoding=['-c:v','h264_nvenc','-preset','p4','-cq','20','-b:v','0'] if machine=='ada' else ['-c:v','libx264','-preset','veryfast','-crf','19','-threads','2']
+    video=subprocess.Popen(['ffmpeg','-nostdin','-hide_banner','-loglevel','info','-f','x11grab','-video_size','960x680','-framerate','60','-draw_mouse','0','-i',':96.0+0,0','-an',*encoding,'-pix_fmt','yuv420p','-movflags','+faststart',str(C/'gameplay-source.mp4')],env=env,stdout=subprocess.DEVNULL,stderr=(C/'ffmpeg.log').open('wb'));children.append(video)
     record_begin=time.monotonic()
     advance(12000000)
     for _ in range(6):key(0x39,50000);advance(7950000)
@@ -107,8 +113,19 @@ try:
     mark('town-return');shot('town-return-HD');hd(False);shot('town-original')
     mark('original-town-walk');key(0x4d,18000000);hd(True);mark('HD-town-walk');key(0x4d,18000000);advance(500000)
     hd(False);align('cave-for-wound-door',(216,102,240,118),16);hd(True)
-    key(0x48,500000);advance(16000000)
-    wait('第一洞窟HD',lambda s:s['cave_terrain_hd_matched'],30)
+    mark('cave-transition-begin')
+    key(0x48,100000)
+    transition_samples=[]
+    deadline=time.monotonic()+30
+    while time.monotonic()<deadline:
+        observed=state()
+        if observed:
+            transition_samples.append({'wall_seconds':time.monotonic()-record_begin,'steps':observed['steps'],'transition':observed.get('cave_transition_hd'),'town':observed.get('town_frame_presentation'),'cave_hd':observed['cave_terrain_hd_matched']})
+            if observed['cave_terrain_hd_matched']:break
+        time.sleep(.02)
+    else:raise TimeoutError('第一洞窟HD')
+    assert any(s['transition'] and s['transition'].get('cave_matched') for s in transition_samples),'未擷取到新版入洞HD'
+    (C/'transition-samples.json').write_text(json.dumps(transition_samples,ensure_ascii=False,indent=2)+'\n')
     mark('cave-entry');shot('cave-HD');hd(False);shot('cave-original');hd(True)
     mark('cave-action')
     for _ in range(3):
@@ -127,7 +144,7 @@ try:
     assert (user/'SAVETEST.usr').stat().st_mtime_ns==save.stat().st_mtime_ns
     stop(video);stop(monitor)
     assert (C/'gameplay-source.mp4').stat().st_size>100000
-    report={'status':'PASS_ADA_NEW_GAMEPLAY_CAPTURE','version':(B/'VERSION').read_text().strip(),'machine':'ada','container_hostname':socket.gethostname(),'renderer':renderer,'binary_sha256':h(B/'zeliard-preview'),'source_save_sha256':h(save),'script_sha256':h(Path(__file__)),'video_sha256':h(C/'gameplay-source.mp4'),'encoder':'h264_nvenc','recording_fps':60,'record_begin_epoch':record_begin_epoch,'monitor_begin_epoch':monitor_begin_epoch,'game_gpu_libraries':'game-gpu-libraries.txt','boots':boots,'shots':shots,'markers':markers,'normal_DOS_exit':0,'save_unchanged':True,'rights':'private local only','limits':'正常F7副本遊玩；非通關或後段驗收，工具列只展示、不冒稱實體手把驗收'}
+    report={'status':'PASS_ADA_NEW_GAMEPLAY_CAPTURE' if machine=='ada' else 'PASS_LOCAL_NEW_GAMEPLAY_CAPTURE','version':(B/'VERSION').read_text().strip(),'machine':machine,'container_hostname':socket.gethostname(),'renderer':renderer,'binary_sha256':h(B/'zeliard-preview'),'source_save_sha256':h(save),'script_sha256':h(Path(__file__)),'video_sha256':h(C/'gameplay-source.mp4'),'encoder':encoder,'recording_fps':60,'record_begin_epoch':record_begin_epoch,'monitor_begin_epoch':monitor_begin_epoch,'game_gpu_libraries':'game-gpu-libraries.txt','boots':boots,'shots':shots,'markers':markers,'transition_samples':'transition-samples.json','normal_DOS_exit':0,'save_unchanged':True,'rights':'private local only','limits':'正常F7副本遊玩；非通關或後段驗收，工具列只展示、不冒稱實體手把驗收'}
     (C/'receipt.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(report['status'],flush=True)
 except Exception:

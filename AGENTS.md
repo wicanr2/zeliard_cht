@@ -1,8 +1,8 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
-現行錄影任務：[053 ada遊玩實錄與推廣片](docs/spec/053-ada-gameplay-promo.md)。使用者指定在ada錄製，先確認連線與實際顯示工具；本機錄影不能當作ada來源。工作區為workplace/ada-promo-v1，正式影片沿v.0.4.1的promo目錄。
+現行錄影入口：[053遊玩實錄與推廣片](docs/spec/053-ada-gameplay-promo.md)。Ada連線逾時後，使用者已指定1.0.2改在本機錄製；來源必須標為local。本次工作區沿用workplace/ada-promo-v102，正式影片在dist-all/v.1.0.2-20261021/promo。舊Ada影片保留原版號，不以本機來源冒充Ada。
 
-053工具入口：[ada硬體錄影](tools/record_ada_promo.py)、[遊玩片段與推廣片製作](tools/make_ada_promo.py)、[影片訊號檢查](tools/verify_promo.py)。登入資料只由本機受控連線提供，不加入專案或Git。
+053工具入口：[硬體錄影](tools/record_ada_promo.py)以ZELIARD_CAPTURE_MACHINE=local選本機分支，使用VirtualGL EGL及libx264，本次已驗Intel MTL；預設ada分支保留NVENC。[遊玩片段與推廣片製作](tools/make_ada_promo.py)讀取實際machine，ZELIARD_PROMO_WORK指定workplace下的來源根；[影片訊號檢查](tools/verify_promo.py)核對兩片音畫。登入資料不加入專案或Git。
 
 現行修正入口：[052 HD效能與受傷顯示](docs/spec/052-hd-runtime-damage.md)。工作區為workplace/hd-runtime-v1；不改原版速度或規則。怪物與魔王總覽只提供使用者指定的README文件縮圖。
 
