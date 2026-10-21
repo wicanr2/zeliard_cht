@@ -1624,3 +1624,5 @@ make_ada_promo.py以新錄影產出55.48秒960×680／60fps同期聲片段，以
 清理前核八個成品SHA，cleanup_dual_release.py清除3,839,844,352配置bytes的本版組裝／解壓／Wine／Go快取；本次Ada傳輸tar及已合併無聲中間影片另清262,053,888配置bytes，共4,101,898,240配置bytes，約3.82GiB。保留原版、唯一素材、原始錄影／PCM／WAV、提示詞、字型、存檔、來源及收據。Ada另核錄影及AppImage SHA，清重複輸入與解包層，專屬容器為零。清理後再核八個成品、固定來源與目前程式相同，root-owned檔案與.md目錄為零，Go快取為空，收據為release-v101/hygiene.json與ada-promo-v101/兩份cleanup。
 
 只推原始碼、文件及正式修訂tag，完整包及影片仍只留本機。沒有通關或真機手把新增聲明，本輪必要工作已完成；GitHub發布回讀另追加。
+
+055發布回讀：來源提交`3705f3cd9b5ff175771fa8e942e91ab7c062084b`及annotated tag`v.1.0.1-20261021`已原子推送。GitHub Release https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.1-20261021 於2026-10-21T10:00:45Z發布，isDraft=false、isPrerelease=false、assets=[]，儲存庫回讀PRIVATE。新Ada實際擷取的binary SHA與正式Linux程式相同，記在hygiene.json。來源提交／tag與發布身份已附正式manifest及github-publication.json；此段純文件回讀另提交，不移動已發布tag。本機與Ada無殘留專屬容器。

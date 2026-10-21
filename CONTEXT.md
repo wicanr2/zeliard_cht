@@ -26,7 +26,7 @@
 - 新Ada原始錄影：`workplace/ada-promo-v101/received/`，含GPU renderer、原始影片、PulseAudio PCM、原版WAV、輸入與十張代表視窗。新舊實錄是各次正常遊玩，不宣稱整局同狀態；同狀態根因證據另由舊日誌重生。
 - 重建用[雙版本入口](tools/build_dual_release.sh)及[包裝工具](tools/package_dual_release.py)，讀取[VERSION](VERSION)。先建立同版本空workplace/release-v101再由Docker重建，拒絕覆寫既有正式輸出。影片用[錄影工具](tools/record_ada_promo.py)及[剪輯工具](tools/make_ada_promo.py)，剪輯時設`ZELIARD_PROMO_WORK=workplace/ada-promo-v101`。
 - [封包啟動](tools/platform_smoke.py)、[正常受傷HD](tools/hd_runtime_smoke.py)、[六包核對](tools/audit_dual_release.py)、[影片檢查](tools/verify_promo.py)及[清理](tools/cleanup_dual_release.py)保留可重現入口。實際命令及結果見[WORKLOG](WORKLOG.md#2026-10-21-055洞窟誤貼結局圖塊修正)。
-- GitHub維持私人儲存庫`wicanr2/zeliard_cht`，只推來源、文件及原已授權文件縮圖；完整包與影片不上傳。
+- GitHub維持私人儲存庫`wicanr2/zeliard_cht`，[1.0.1正式修正版Release](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.1-20261021)已發布，非草稿／非預發行，tag固定來源提交`3705f3c`。只推來源、文件及原已授權文件縮圖，assets為空；完整包與影片不上傳。
 
 ## 既有實作與驗收邊界
 
