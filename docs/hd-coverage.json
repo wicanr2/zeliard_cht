@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "objective": "完成全遊戲HD",
-  "status": "art_integrated_manual_review_pending",
+  "status": "art_integrated_scoped_release_closed_full_game_review_not_performed",
   "scope_spec": "docs/spec/034-full-game-hd.md",
   "counts": {
     "container_records": 194,
@@ -6533,11 +6533,11 @@
     ]
   },
   "current_release": {
-    "version": "v.0.4.1-20261021",
-    "spec": "docs/spec/052-hd-runtime-damage.md",
-    "status": "PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE",
-    "manifest": "dist-all/v.0.4.1-20261021/SHA256SUMS.json",
-    "scope": "HD搜尋加速、持盾接敵特殊姿態、八組怪物及十組首領README縮圖；非全遊戲逐幀驗收",
+    "version": "v.1.0.0-20261021",
+    "spec": "CONTEXT.md",
+    "status": "FORMAL_1_0_0_CLOSED_WITH_DECLARED_LIMITS",
+    "manifest": "dist-all/v.1.0.0-20261021/SHA256SUMS.json",
+    "scope": "使用者接受的第一洞窟、中文／HD／工具列及音樂範圍已結案；非全遊戲逐幀或通關驗收",
     "editions": [
       "CHT",
       "CHT-HD"
@@ -6547,6 +6547,8 @@
     "previous_promo": "dist-all/v.0.4.0-20261021/promo/Zeliard-v.0.4.0-20261021-promo.mp4",
     "gameplay_seconds": 55.45,
     "promo_capture": "ada RTX 2000 Ada / VirtualGL EGL / NVENC",
-    "promo_manifest": "dist-all/v.0.4.1-20261021/promo/provenance.json"
-  }
+    "promo_manifest": "dist-all/v.1.0.0-20261021/promo/provenance.json",
+    "capture_version": "v.0.4.1-20261021"
+  },
+  "project_status": "FORMAL_RELEASE_CLOSED"
 }

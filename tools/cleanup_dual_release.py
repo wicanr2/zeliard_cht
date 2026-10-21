@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """051交付後只清除明列的重複建置／解壓／Wine及本專案Go快取。"""
 from pathlib import Path
-import hashlib,json,os,shutil
+import argparse,hashlib,json,os,shutil
+
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--closeout',action='store_true',help='正式結案時追加清除舊封包解壓、Wine與可重建剪輯片段；保留來源及存檔')
+args=parser.parse_args()
 
 P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.',''));D=P/'dist-all'/VERSION
 def sha(file):
@@ -28,6 +32,23 @@ if (attempt/'delivery/full-local').exists():
 for name in ('sources','dosgolem','linux','windows','mac-amd64','mac-arm64','macos','data-CHT','data-CHT-HD','AppDir-CHT','AppDir-CHT-HD','Zeliard-CHT-Windows','Zeliard-CHT-HD-Windows','Zeliard-CHT-macOS','Zeliard-CHT-HD-macOS'):
     roots.append(attempt/name)
 roots.append(P/'workplace/gocache')
+if args.closeout:
+    promotion=json.loads((W/'formal-promotion.json').read_text())
+    assert promotion['status']=='PASS_UNCHANGED_RUNTIME_FORMAL_PROMOTION'
+    old=P/'workplace/music-release-v1'
+    # 這兩套資料、來源與平台二進位仍留在各自建置根，僅移除組裝副本。
+    for release in ('release-build','release-build-fixed-clock'):
+        base=old/release
+        for required in ('data','sources','dosgolem','linux','windows','macos'):
+            assert (base/required).is_dir(),base/required
+        roots += [base/'Zeliard-Windows',base/'Zeliard-macOS']
+        if release=='release-build-fixed-clock':roots.append(base/'AppDir')
+    roots += [old/'pre-clock-delivery/smoke/linux-appimage-v1/squashfs-root',
+              old/'pre-clock-delivery/smoke/windows-wine-v1/Zeliard-Windows',
+              old/'pre-clock-delivery/smoke/windows-wine-v1/wine-prefix']
+    # 原始錄影、PCM／WAV、時間線與卡片保留，只刪除已合併的無聲中間影片。
+    edit=P/'workplace/ada-promo-v1/edit'
+    roots += sorted(edit.glob('*.mp4'))
 removed=[]
 for root in roots:
     if not root.exists():continue
@@ -41,6 +62,6 @@ for root in roots:
             else:child.unlink()
     elif root.is_dir():shutil.rmtree(root)
     else:root.unlink()
-report={'version':VERSION,'removed':removed,'allocated_bytes':sum(r['allocated_bytes'] for r in removed),'preserved':'六個正式包、推廣片、錄影原檔、源音訊、截圖、收據、唯一生成圖、提示詞、原版、字型、存檔及固定原始碼均保留。首批失敗日誌、參數與一份CHT AppImage亦保留。'}
+report={'version':VERSION,'closeout':args.closeout,'removed':removed,'allocated_bytes':sum(r['allocated_bytes'] for r in removed),'preserved':'六個正式包、推廣片、錄影原檔、源音訊、截圖、收據、唯一生成圖、提示詞、原版、字型、存檔及固定原始碼均保留。首批失敗日誌、參數與一份CHT AppImage亦保留。'}
 (W/'cleanup.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print('CLEANED_ALLOCATED_BYTES',report['allocated_bytes'],flush=True)

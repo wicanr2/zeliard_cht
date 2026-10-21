@@ -1559,3 +1559,36 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 |---|---:|---|
 | promo/Zeliard-v.0.4.1-20261021-promo.mp4 | 6854635 | `4dd2a729e9dc428b9ea10f700ac3970ae389e09cbf0aea477ff711130ea58369` |
 | promo/Zeliard-v.0.4.1-20261021-ada-gameplay.mp4 | 10170372 | `05f3d35988689079aa1c0454b23d7ea044fb6ccfc740cf5a0bb8f80d2a778af2` |
+
+## 2026-10-21 054正式版1.0.0結案
+
+使用者要求結案為正式版1.0.0，確認是否重新打包並清理workspace。沿既定版號契約採v.1.0.0-20261021，不移動或覆寫0.4.1等已存tag及交付。知識路由命中正式版號與dist-all交付，載入local/retro-remake-release-versioning.md及retro-remake-dist-all-output.md；收尾沿reverse-engineer-retro-game-remake技能的verification-and-handoff.md及文件職責契約。
+
+### 變更及來源
+
+VERSION更新為正式版。程式-version、封包VERSION、bundle-manifest、README.txt與macOS Info.plist都含版號，因此不是改檔名即可完成，已重新編譯三平台、重新組裝CHT及CHT-HD六個含遊戲完整包。雙版本建置、包裝、封包檢查及清理沿既有工具；新增tools/promote_release_media.py並掛進AGENTS及CONTEXT索引，核對除VERSION以外的遊戲來源、dosgolem、原版與圖面來源完全相同，才沿用Ada影片。
+
+55.45秒連續遊玩與60秒推廣片位元組不變，放入新版本promo目錄，provenance明記captured_program_version=v.0.4.1-20261021及來源provenance SHA。影片的SHA與已驗品質收據相同，不宣稱1.0重新錄製。舊版封包、影片、來源及tag保持原身份。
+
+CONTEXT改為唯一精簡現況，WORKLIST改為已結案清單。舊CONTEXT與WORKLIST可回查前次Git提交3af5b79，歷程仍留本檔；不由歷史候選重開通關、後段或逐幀驗收。README保留手冊故事與原版／HD、素材、怪物及首領圖，更新正式版入口及影片來源；VERIFICATION-MATRIX追加新版實際驗證，hd-coverage保留各歷史來源等級並另標正式範圍結案。
+
+### 重建與驗證
+
+所有工作負載在Docker內，UID/GID1000:1000、network none、memory／cpus／pids及外層timeout有界。既有image全部沿用，沒有重建或清理其他專案映像。輸入及工作樹以唯讀掛載，唯有明確輸出或文件編輯掛可寫。
+
+- 建立workplace/release-v100後執行bash tools/build_dual_release.sh all。各平台輸出與凍結來源、29個原版檔案及圖面身份在identity.json，建置日誌留各平台目錄。
+- Docker內執行python3 tools/promote_release_media.py v.0.4.1-20261021，PASS_UNCHANGED_RUNTIME_FORMAL_PROMOTION。來源證明為workplace/release-v100/formal-promotion.json。
+- 新六包分別執行platform_smoke.py linux/windows CHT/CHT-HD。Linux兩包PASS_NATIVE_PACKAGE_LAUNCH；Windows兩包以Wine輔助啟動，同狀態碼不冒稱Windows真機。
+- 新HD AppDir執行hd_runtime_smoke.py，PASS_HD_RUNTIME_DAMAGE_GUI。正常冷F7、進第一洞窟、接敵變色及特殊姿態、六張視窗、原貌／HD／返回HD的原版CPU／RAM／indexed／palette相同，高清切回相同；正常DOS退出0，USR bytes及mtime不變。
+- Docker內執行audit_dual_release.py --runtime-fix，PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE。核六包逐檔SHA、來源、兩版模式、字型／音源、存檔路徑、PE x86_64、macOS雙架構與.app執行權限。macOS未作真機啟動。
+- Xvfb內執行新程式-version並cmp VERSION，相同v.1.0.0-20261021，輸出在program-version.txt。package_dual_release.py finish產生8個成品的SHA256SUMS.json，另附formal_release來源／影片／清理摘要。
+
+### 清理及交付
+
+先核八個正式產物SHA，再執行cleanup_dual_release.py --closeout，移除明列的新舊組裝副本、封包解壓、Wine prefix、Go快取及Ada已合併的無聲影片中間片段。保留data、frozen sources、dosgolem、各平台二進位、唯一原圖與生成圖、提示詞、字型、原始ZIP／RAR、USR、原始錄影／PCM／WAV、卡片、來源／失敗日誌與歷次正式成品。清除5,335,515,136配置bytes，約4.97GiB，逐項在workplace/release-v100/cleanup.json。
+
+清理後重新核八個成品大小與SHA，凍結遊戲來源與目前檔案相同，Go快取為空；find專案root-owned或誤建.md目錄均零，UID/GID1000:1000。結果為workplace/release-v100/hygiene.json，PASS_POST_CLEANUP_ARTIFACTS_AND_HYGIENE。git diff --check通過；本專案容器收尾為零。
+
+唯一現行交付dist-all/v.1.0.0-20261021。full-local共六包，promo共兩片，smoke保留新包收據。Windows／macOS真機、實體手把、完整通關與全遊戲逐幀仍未驗；未知來源維持原貌，不升證據等級。本輪沒有必要工作待續。
+
+主機gh auth status已通過，回讀儲存庫為PRIVATE。只推原始碼、文件、既有已授權文件縮圖與正式tag，GitHub Release只含說明與自動來源快照，不上傳任何完整版或影片。正式來源提交由同名tag固定，發布回讀紀錄另追加。

@@ -75,7 +75,7 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 - 建立私人 GitHub 儲存庫。README 的故事背景以本地中文手冊為來源。
 - 先完成原版可執行、可觀測的垂直切片，再接中文與 HD。不得用猜測填補原版規則。
 
-2026-10-18 使用者已選定直接以 dosgolem 執行原版，另指定參考 `/home/anr2/cht/psychic-war` 的中文與 HD 覆繪方式。後續選定比較圖 B「手繪奇幻」，只決定畫風。不另建玩法重製引擎，不再詢問已定架構或畫風。HD 正式倍率、預設主題、構圖及發行平台仍待確認。
+2026-10-18 使用者已選定直接以 dosgolem 執行原版，另指定參考 `/home/anr2/cht/psychic-war` 的中文與 HD 覆繪方式。後續選定比較圖 B「手繪奇幻」，只決定畫風。不另建玩法重製引擎，不再詢問已定架構或畫風。後續已依使用者授權整合3倍手繪HD，並分開交付CHT／CHT-HD的Linux AppImage、Windows與macOS通用封包。2026-10-21使用者要求結案為1.0.0；現行版本以VERSION及CONTEXT為準，不重開歷史待辦。
 
 2026-10-20 使用者新目標為「完成全遊戲HD」。沿既有3倍畫布、手繪奇幻、dosgolem覆繪及已交付三平台方向擴充。第一洞窟只是前版完成範圍；現行完整覆蓋與抽樣閘門見 [規格034](docs/spec/034-full-game-hd.md)。不重問既定畫風或架構，不把安全退回原貌當成該素材已HD。
 
@@ -523,3 +523,9 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 [049實際視窗](tools/hd_cave_unmatched_smoke.py)由正常冷F7、繩索下降擷取有地形遮罩的物件，核原貌切回、正常退出與存檔不變。
 
 [049收尾稽核](tools/hd_unmatched_audit.py)核17來源、八圖與九遮罩、54項圖面／來源回歸、兩條正常路徑及代表視窗，回填[全量清單](docs/hd-coverage.json)，不把局部零缺圖當全遊戲完成。
+
+## 正式版結案入口
+
+- [影片沿用核對](tools/promote_release_media.py)在Docker內接受原錄製完整版號，核對新舊遊戲來源、dosgolem及素材身份，保留影片錄製版號。
+- [交付清理](tools/cleanup_dual_release.py)先驗正式產物雜湊；正式結案可加`--closeout`，只清除明列組裝、解壓、Wine、Go快取及影片中間片段，保留來源、唯一素材、存檔與收據。
+- 唯一目前狀態及完成邊界見[CONTEXT.md](CONTEXT.md)，結案歷程見[WORKLOG.md](WORKLOG.md)。舊版tag及交付不覆寫。
