@@ -1673,3 +1673,5 @@ tools/readme_creatures.py改以registered/manual-art.json的16×16原生模板�
 清理完成：先核六個成品SHA，再沿cleanup_dual_release.py預設模式移除本版組裝、解壓、Wine及Go快取，共3,934,896,128配置bytes。另移除過場開發用gui-bundle與zeliard-preview兩項可重建副本301,158,400配置bytes，合計4,236,054,528配置bytes，約3.95GiB。沒有刪除gui-output三次獨立錄影、原版來源、唯一美術、提示詞、固定來源、存檔或舊正式成品。
 
 清理後六包大小與SHA相同，現行遊戲來源與identity.json凍結來源相同；root-owned檔案、誤建.md目錄均零，Go快取為空。收據為workplace/release-v102/hygiene.json及hd-cave-transition-v1/cleanup-local.json，狀態PASS_POST_CLEANUP_ARTIFACTS_AND_HYGIENE。新增文件入口的471個本地連結均存在，git diff --check通過；本專案容器已結束並移除。
+
+057／058發布回讀：來源提交`6f87a98a9b8b33d7dbbeb8e89f64e42543716789`及annotated tag物件`235235fa9fdda225a0cfef8d9e526691749f178b`已原子推送。GitHub Release https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.2-20261021 於2026-10-21T12:58:54Z發布，isDraft=false、isPrerelease=false、assets=[]，儲存庫回讀PRIVATE。原1.0.0與1.0.1 tag物件不變。回讀收據為workplace/release-v102/github-publication.json，正式manifest附來源與清理摘要。此段回讀作後續純文件提交，已發布tag不移動；必要工作完成。
