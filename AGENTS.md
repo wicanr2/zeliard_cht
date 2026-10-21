@@ -533,3 +533,5 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 [規格055](docs/spec/055-cave-artifact-context.md)管理無資源綁定插畫片段的母圖上下文守衛，證據與原Ada同狀態重生在workplace/hd-cave-artifact-v1。只修顯示誤匹配，不覆寫已發布1.0.0。
 
 [055回歸檢查](internal/prototype/hd/complete_art_context_test.go)使用固定Ada原生來源拒絕結局片段，保留正確母圖、上下文失配與邊界裁切正反例。[Ada剪輯](tools/make_ada_promo.py)可用ZELIARD_PROMO_WORK指定workplace下的新工作區，避免覆寫歷次錄影。
+
+[角色總覽重組布局](docs/images/creatures-layout.json)保存README代表姿態的來源坐標與固定參考雜湊，由[總覽工具](tools/readme_creatures.py)以本地原版8×8圖格和既有HD元件重組；完整原生覆蓋及透明邊界須吻合後才更新文件縮圖。此入口不改正式遊戲。

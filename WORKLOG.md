@@ -1626,3 +1626,17 @@ make_ada_promo.py以新錄影產出55.48秒960×680／60fps同期聲片段，以
 只推原始碼、文件及正式修訂tag，完整包及影片仍只留本機。沒有通關或真機手把新增聲明，本輪必要工作已完成；GitHub發布回讀另追加。
 
 055發布回讀：來源提交`3705f3cd9b5ff175771fa8e942e91ab7c062084b`及annotated tag`v.1.0.1-20261021`已原子推送。GitHub Release https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.1-20261021 於2026-10-21T10:00:45Z發布，isDraft=false、isPrerelease=false、assets=[]，儲存庫回讀PRIVATE。新Ada實際擷取的binary SHA與正式Linux程式相同，記在hygiene.json。來源提交／tag與發布身份已附正式manifest及github-publication.json；此段純文件回讀另提交，不移動已發布tag。本機與Ada無殘留專屬容器。
+
+## 2026-10-21 056 README簡介、故事與完整角色總覽
+
+本輪命中知識路由的README入口local/retro-remake-readme-standard.md，沿既有文件職責及手冊證據工作。README前段新增遊戲簡介、城鎮補給與洞窟探索的玩法描述，故事改寫自中文手冊第1頁前言，第6頁操作與第7至10頁城鎮／商店介紹。沿用RESEARCH-LOG已逐圖核對的SCAN0357_003、005、006、007及雜湊，不補手冊未證實的角色或王國譯名。
+
+使用者指出怪物總覽仍是零散元件。新增工作區workplace/readme-creatures-v2，保存固定布局參考、組合探索與完整角色PNG；唯一文件輸出維持docs/images。布局參考Kuro-chan的sprite／map整理，由nolanvenhola/zeliard固定提交c23b5f91ad31eb75b2f63a312a42e161e26096d8保存。下載以Git blob及SHA-256核對，原參考PNG只留本機；參考只提供代表姿態的布局，不將其像素貼入輸出。
+
+tools/readme_creatures.py改以registered/manual-art.json的16×16原生模板建立8×8全色圖樣索引。參考中的每格都必須匹配本地同一bank的原始RGB圖樣，再以周圍16×16上下文選取對應的既有48×48 HD象限。不猜缺圖、不產生新美術。MAO參考的藍色與本地來源色表有差異，固定映射僅用於空間比對，輸出保留本地原版及HD來源色；此限制記在布局及來源清單。
+
+最初預覽直接貼HD透明圖，會把既有元件內透明處顯示成缺片；檢查complete_art.go的draw後，改沿正式覆繪方式以原版三倍最近鄰圖作下層，再混合既有HD透明邊。保留來源RGBA、內部既有接縫及原貌下層，沒有用補畫掩飾素材品質。40組原生像素完整匹配，沒有未匹配像素；最終HD輪廓全部吻合原生非透明範圍。30組怪物按八個區域排列，10組首領包含魔王兩種姿態。兩張JPEG均已目視，替換README舊圖並標明靜態重組、代表姿態、外觀名稱與後段尚待人工驗收。
+
+重建使用既有eob-audio-capture:20261009-r3，Python3.11／Pillow9.4／NumPy；容器使用UID/GID 1000、2GiB、2CPU、128程序上限、60秒外層逾時及無網路。專案唯讀，僅docs/images及本工作區可寫。命令為容器內`python3 /project/tools/readme_creatures.py --project /project`；缺少固定參考時可在明確開網路的一次性容器加`--fetch-references`，仍須通過固定SHA。逐格來源、原生模板、象限、坐標、輸入／輸出雜湊、工具SHA及透明下層方法在docs/images/creatures-provenance.json；布局位於creatures-layout.json，均已掛入AGENTS及CONTEXT。
+
+本輪只做文件與靜態圖片核對，不執行遊戲或擴大測試範圍，不新增正常玩家路徑、後段首領或完整動畫的完成聲明。正式程式、VERSION、已發布tag及Release不變，六個完整版與推廣影片無須重包。

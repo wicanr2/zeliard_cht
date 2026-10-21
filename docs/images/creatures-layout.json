@@ -1,0 +1,681 @@
+{
+  "schema": 1,
+  "purpose": "README完整角色素材重組，不接入遊戲；名稱為外觀描述，不宣稱官方譯名",
+  "layout_reference_role": "只提供代表姿態的坐標；所有輸出原生圖格及HD像素都取自本地原版登錄及既有HD素材，原始參考PNG不入Git",
+  "layout_reference_credit": "Kuro-chan sprite/map rips mirrored by nolanvenhola/zeliard at pinned commit c23b5f91ad31eb75b2f63a312a42e161e26096d8",
+  "palette_note": "MAO參考的EGA藍色與本地已登錄色表不同；以逐格相同的空間圖樣確認固定色號對應，只供布局比對，輸出沿本地原版色表與HD原RGBA。非正常出場或色盤對拍。",
+  "references": {
+    "Area1_Enemies.png": {
+      "file": "Area1_Enemies.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Area1_Enemies.png",
+      "sha256": "0058c18f9ead0512a90fda01362896da4ded4494481e5a0849c5599bb4e89eab",
+      "git_blob": "bf66a41f7616fe672d5eee2c4d9145caac5eb52d",
+      "size": [
+        440,
+        472
+      ]
+    },
+    "Area2_Enemies.png": {
+      "file": "Area2_Enemies.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Area2_Enemies.png",
+      "sha256": "efd223469d97766ceb7f2afd06f0e88d826da078ca4ed828fea020bb9371e726",
+      "git_blob": "5f6340455b9bde53addaa9bab89ef5fa8cd6e02b",
+      "size": [
+        440,
+        560
+      ]
+    },
+    "Area3_Enemies.png": {
+      "file": "Area3_Enemies.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Area3_Enemies.png",
+      "sha256": "2d18f92d870de848fbeb5426ff5c4010b70ae46e1e3026333783af1022c6fe16",
+      "git_blob": "9c20cb60e43a9c577030a430ac3cd2083fb94e4d",
+      "size": [
+        584,
+        360
+      ]
+    },
+    "Area4_Enemies.png": {
+      "file": "Area4_Enemies.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Area4_Enemies.png",
+      "sha256": "7ee0d618029725ed94b824c3c6667caff9649d30c069890cd95201422ecfcf91",
+      "git_blob": "a9262e7a7e7aac8f6e7f8d34868f586d70ba61f7",
+      "size": [
+        536,
+        280
+      ]
+    },
+    "Area5_Enemies.png": {
+      "file": "Area5_Enemies.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Area5_Enemies.png",
+      "sha256": "7abc2d083a54180098af584123f9e8c59add129a842eb395e5620fbeb89f74dc",
+      "git_blob": "6daaf44fbe5e88e15b43858eba469f0a421e3a1d",
+      "size": [
+        608,
+        344
+      ]
+    },
+    "Area6_Enemies.png": {
+      "file": "Area6_Enemies.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Area6_Enemies.png",
+      "sha256": "5f461043d9925e11cf208ed73d9e4ff9501af8babc1685c3e3ca05826bbd246c",
+      "git_blob": "7919b2cd2bf659fb6fba216d2500e287c12b0d62",
+      "size": [
+        560,
+        328
+      ]
+    },
+    "Area7_Enemies.png": {
+      "file": "Area7_Enemies.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Area7_Enemies.png",
+      "sha256": "1454ccecab56a58ff6765b748a05c3ddf813ecbb2907a4a0beb1f92cfea41f1d",
+      "git_blob": "15a3cfe84c04105adea630a106851e30b8435910",
+      "size": [
+        448,
+        432
+      ]
+    },
+    "Area8_Enemies.png": {
+      "file": "Area8_Enemies.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Area8_Enemies.png",
+      "sha256": "8069569a6cdb8915c4af8bad6c4f9063966b9ced0e4192b47a675447128b565c",
+      "git_blob": "9aa43658e0dd3d4cd37acc001c6bee0f4a77bc98",
+      "size": [
+        464,
+        368
+      ]
+    },
+    "Boss8B_Archfiend.png": {
+      "file": "Boss8B_Archfiend.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Sprites/Boss8B_Archfiend.png",
+      "sha256": "62f115cc5ca65cadfac09def86d00123fff04c7a3cd1b60b18489146c2f1a3e7",
+      "git_blob": "137c467bbc28d473da0e8cdf93fda3c815768724",
+      "size": [
+        992,
+        984
+      ]
+    },
+    "map-Agar_Boss.png": {
+      "file": "map-Agar_Boss.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Maps/Agar_Boss.png",
+      "sha256": "0697cc680ee7b2c3764d63b51b3f3a56610aaf01ce85c122dd09487dc22b5cfb",
+      "git_blob": "a77891220db8654025ad0e0cfad7c8374857b10f"
+    },
+    "map-Alguien_Boss.png": {
+      "file": "map-Alguien_Boss.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Maps/Alguien_Boss.png",
+      "sha256": "adb0c16debc1fdf1e836fe175ccb6c157a2daeb6bd3290d4e801edbfde295102",
+      "git_blob": "bde6032e18df431bf90c0591173f36ac8691fc72"
+    },
+    "map-Cangreo_Boss.png": {
+      "file": "map-Cangreo_Boss.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Maps/Cangreo_Boss.png",
+      "sha256": "fbe21ae428547e991d4aa00cb51df3da642fe88f163f471617a311dc28472d92",
+      "git_blob": "0e69694f501e132daa8e8e0ea30ef931b672144f"
+    },
+    "map-Dragon_Boss.png": {
+      "file": "map-Dragon_Boss.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Maps/Dragon_Boss.png",
+      "sha256": "23d8e0d8223706c31e4587e4691ff346cae346aa060e7d8151e2b3f0a034cdd3",
+      "git_blob": "a8a6a36673dcd1350790434eb0ed98692c41ae8f"
+    },
+    "map-Pollo_Boss.png": {
+      "file": "map-Pollo_Boss.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Maps/Pollo_Boss.png",
+      "sha256": "3207bdaa5ea53091115b95a2e5a2ef66b1fa231f63e3728222c08542b7dcc4a1",
+      "git_blob": "3717d48ed705a77669914328a01b1d6dcecdef7d"
+    },
+    "map-Pulpo_Boss.png": {
+      "file": "map-Pulpo_Boss.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Maps/Pulpo_Boss.png",
+      "sha256": "313a95135e9e3498f7f642950189b82eafde5d6362b7974dac4c1fd4a7c49ed9",
+      "git_blob": "c4ca4d2d4e0dd7ecd9f445ab6224957b71daaee0"
+    },
+    "map-Tarso_Boss.png": {
+      "file": "map-Tarso_Boss.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Maps/Tarso_Boss.png",
+      "sha256": "d555bc3c2810648b44b333dad77bb2db8541dec1a0c32f5ed2f238dc65babaca",
+      "git_blob": "2c1a438fc469df48dc083e8df63c06013e7ab821"
+    },
+    "map-Vista_Boss.png": {
+      "file": "map-Vista_Boss.png",
+      "url": "https://raw.githubusercontent.com/nolanvenhola/zeliard/c23b5f91ad31eb75b2f63a312a42e161e26096d8/4_Resources/Sprites/SpritersResource/Maps/Vista_Boss.png",
+      "sha256": "e76fe9045046f12d58f8c032a123b26e8f8fcb6a115d0498f6829ac759b75c7e",
+      "git_blob": "44b7731aabef8fbd0d4fe91fdaba824112f32871"
+    }
+  },
+  "figures": [
+    {
+      "key": "enp1-1",
+      "kind": "enemy",
+      "area": 1,
+      "bank": "enp1",
+      "reference": "Area1_Enemies.png",
+      "box": [
+        8,
+        8,
+        40,
+        40
+      ]
+    },
+    {
+      "key": "enp1-2",
+      "kind": "enemy",
+      "area": 1,
+      "bank": "enp1",
+      "reference": "Area1_Enemies.png",
+      "box": [
+        8,
+        104,
+        40,
+        144
+      ]
+    },
+    {
+      "key": "enp1-3",
+      "kind": "enemy",
+      "area": 1,
+      "bank": "enp1",
+      "reference": "Area1_Enemies.png",
+      "box": [
+        8,
+        200,
+        40,
+        232
+      ]
+    },
+    {
+      "key": "enp1-4",
+      "kind": "enemy",
+      "area": 1,
+      "bank": "enp1",
+      "reference": "Area1_Enemies.png",
+      "box": [
+        8,
+        296,
+        40,
+        328
+      ]
+    },
+    {
+      "key": "enp2-1",
+      "kind": "enemy",
+      "area": 2,
+      "bank": "enp2",
+      "reference": "Area2_Enemies.png",
+      "box": [
+        8,
+        8,
+        40,
+        72
+      ]
+    },
+    {
+      "key": "enp2-2",
+      "kind": "enemy",
+      "area": 2,
+      "bank": "enp2",
+      "reference": "Area2_Enemies.png",
+      "box": [
+        8,
+        184,
+        40,
+        200
+      ]
+    },
+    {
+      "key": "enp2-3",
+      "kind": "enemy",
+      "area": 2,
+      "bank": "enp2",
+      "reference": "Area2_Enemies.png",
+      "box": [
+        8,
+        224,
+        40,
+        256
+      ]
+    },
+    {
+      "key": "enp2-4",
+      "kind": "enemy",
+      "area": 2,
+      "bank": "enp2",
+      "reference": "Area2_Enemies.png",
+      "box": [
+        8,
+        320,
+        40,
+        352
+      ]
+    },
+    {
+      "key": "enp2-5",
+      "kind": "enemy",
+      "area": 2,
+      "bank": "enp2",
+      "reference": "Area2_Enemies.png",
+      "box": [
+        8,
+        416,
+        40,
+        448
+      ]
+    },
+    {
+      "key": "enp3-1",
+      "kind": "enemy",
+      "area": 3,
+      "bank": "enp3",
+      "reference": "Area3_Enemies.png",
+      "box": [
+        128,
+        8,
+        160,
+        40
+      ]
+    },
+    {
+      "key": "enp3-2",
+      "kind": "enemy",
+      "area": 3,
+      "bank": "enp3",
+      "reference": "Area3_Enemies.png",
+      "box": [
+        64,
+        64,
+        96,
+        96
+      ]
+    },
+    {
+      "key": "enp3-3",
+      "kind": "enemy",
+      "area": 3,
+      "bank": "enp3",
+      "reference": "Area3_Enemies.png",
+      "box": [
+        224,
+        168,
+        256,
+        216
+      ]
+    },
+    {
+      "key": "enp3-4",
+      "kind": "enemy",
+      "area": 3,
+      "bank": "enp3",
+      "reference": "Area3_Enemies.png",
+      "box": [
+        8,
+        224,
+        40,
+        256
+      ]
+    },
+    {
+      "key": "enp4-1",
+      "kind": "enemy",
+      "area": 4,
+      "bank": "enp4",
+      "reference": "Area4_Enemies.png",
+      "box": [
+        8,
+        8,
+        40,
+        40
+      ]
+    },
+    {
+      "key": "enp4-2",
+      "kind": "enemy",
+      "area": 4,
+      "bank": "enp4",
+      "reference": "Area4_Enemies.png",
+      "box": [
+        8,
+        184,
+        40,
+        216
+      ]
+    },
+    {
+      "key": "enp4-3",
+      "kind": "enemy",
+      "area": 4,
+      "bank": "enp4",
+      "reference": "Area4_Enemies.png",
+      "box": [
+        8,
+        240,
+        40,
+        272
+      ]
+    },
+    {
+      "key": "enp5-1",
+      "kind": "enemy",
+      "area": 5,
+      "bank": "enp5",
+      "reference": "Area5_Enemies.png",
+      "box": [
+        8,
+        64,
+        40,
+        96
+      ]
+    },
+    {
+      "key": "enp5-2",
+      "kind": "enemy",
+      "area": 5,
+      "bank": "enp5",
+      "reference": "Area5_Enemies.png",
+      "box": [
+        184,
+        8,
+        216,
+        40
+      ]
+    },
+    {
+      "key": "enp5-3",
+      "kind": "enemy",
+      "area": 5,
+      "bank": "enp5",
+      "reference": "Area5_Enemies.png",
+      "box": [
+        8,
+        120,
+        40,
+        152
+      ]
+    },
+    {
+      "key": "enp5-4",
+      "kind": "enemy",
+      "area": 5,
+      "bank": "enp5",
+      "reference": "Area5_Enemies.png",
+      "box": [
+        8,
+        176,
+        40,
+        240
+      ]
+    },
+    {
+      "key": "enp6-1",
+      "kind": "enemy",
+      "area": 6,
+      "bank": "enp6",
+      "reference": "Area6_Enemies.png",
+      "box": [
+        216,
+        8,
+        248,
+        72
+      ]
+    },
+    {
+      "key": "enp6-2",
+      "kind": "enemy",
+      "area": 6,
+      "bank": "enp6",
+      "reference": "Area6_Enemies.png",
+      "box": [
+        8,
+        96,
+        40,
+        128
+      ]
+    },
+    {
+      "key": "enp6-3",
+      "kind": "enemy",
+      "area": 6,
+      "bank": "enp6",
+      "reference": "Area6_Enemies.png",
+      "box": [
+        8,
+        192,
+        40,
+        224
+      ]
+    },
+    {
+      "key": "enp7-1",
+      "kind": "enemy",
+      "area": 7,
+      "bank": "enp7",
+      "reference": "Area7_Enemies.png",
+      "box": [
+        8,
+        8,
+        40,
+        40
+      ]
+    },
+    {
+      "key": "enp7-2",
+      "kind": "enemy",
+      "area": 7,
+      "bank": "enp7",
+      "reference": "Area7_Enemies.png",
+      "box": [
+        8,
+        104,
+        40,
+        168
+      ]
+    },
+    {
+      "key": "enp7-3",
+      "kind": "enemy",
+      "area": 7,
+      "bank": "enp7",
+      "reference": "Area7_Enemies.png",
+      "box": [
+        8,
+        280,
+        40,
+        328
+      ]
+    },
+    {
+      "key": "enp8-1",
+      "kind": "enemy",
+      "area": 8,
+      "bank": "enp8",
+      "reference": "Area8_Enemies.png",
+      "box": [
+        8,
+        8,
+        40,
+        72
+      ]
+    },
+    {
+      "key": "enp8-2",
+      "kind": "enemy",
+      "area": 8,
+      "bank": "enp8",
+      "reference": "Area8_Enemies.png",
+      "box": [
+        8,
+        176,
+        40,
+        208
+      ]
+    },
+    {
+      "key": "enp8-3",
+      "kind": "enemy",
+      "area": 8,
+      "bank": "enp8",
+      "reference": "Area8_Enemies.png",
+      "box": [
+        8,
+        272,
+        40,
+        304
+      ]
+    },
+    {
+      "key": "enp8-4",
+      "kind": "enemy",
+      "area": 8,
+      "bank": "enp8",
+      "reference": "Area8_Enemies.png",
+      "box": [
+        8,
+        328,
+        40,
+        360
+      ]
+    },
+    {
+      "key": "crab",
+      "kind": "boss",
+      "title": "巨蟹",
+      "bank": "crab",
+      "reference": "map-Cangreo_Boss.png",
+      "box": [
+        688,
+        192,
+        848,
+        288
+      ]
+    },
+    {
+      "key": "tako",
+      "kind": "boss",
+      "title": "章魚",
+      "bank": "tako",
+      "reference": "map-Pulpo_Boss.png",
+      "box": [
+        576,
+        272,
+        800,
+        352
+      ]
+    },
+    {
+      "key": "tori",
+      "kind": "boss",
+      "title": "飛鳥",
+      "bank": "tori",
+      "reference": "map-Pollo_Boss.png",
+      "box": [
+        752,
+        304,
+        880,
+        400
+      ]
+    },
+    {
+      "key": "zela",
+      "kind": "boss",
+      "title": "魔像",
+      "bank": "zela",
+      "reference": "map-Agar_Boss.png",
+      "box": [
+        768,
+        192,
+        896,
+        288
+      ]
+    },
+    {
+      "key": "meda",
+      "kind": "boss",
+      "title": "獨眼魔",
+      "bank": "meda",
+      "reference": "map-Vista_Boss.png",
+      "box": [
+        752,
+        160,
+        976,
+        368
+      ]
+    },
+    {
+      "key": "lega",
+      "kind": "boss",
+      "title": "長足怪",
+      "bank": "lega",
+      "reference": "map-Tarso_Boss.png",
+      "box": [
+        656,
+        112,
+        720,
+        288
+      ]
+    },
+    {
+      "key": "drgn",
+      "kind": "boss",
+      "title": "巨龍",
+      "bank": "drgn",
+      "reference": "map-Dragon_Boss.png",
+      "box": [
+        512,
+        144,
+        928,
+        288
+      ]
+    },
+    {
+      "key": "akma",
+      "kind": "boss",
+      "title": "翼魔",
+      "bank": "akma",
+      "reference": "map-Alguien_Boss.png",
+      "box": [
+        736,
+        128,
+        912,
+        272
+      ]
+    },
+    {
+      "key": "mao1",
+      "kind": "boss",
+      "title": "魔王・披風姿態",
+      "bank": "mao1",
+      "reference": "Boss8B_Archfiend.png",
+      "box": [
+        456,
+        24,
+        536,
+        168
+      ],
+      "layout_palette_map": {
+        "1": 4,
+        "2": 8,
+        "13": 16,
+        "10": 13
+      }
+    },
+    {
+      "key": "mao2",
+      "kind": "boss",
+      "title": "魔王・戰鬥姿態",
+      "bank": "mao2",
+      "reference": "Boss8B_Archfiend.png",
+      "box": [
+        520,
+        384,
+        600,
+        528
+      ],
+      "layout_palette_map": {
+        "1": 4,
+        "2": 8,
+        "13": 16,
+        "10": 13
+      }
+    }
+  ]
+}
