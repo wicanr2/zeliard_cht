@@ -169,6 +169,7 @@ func TestCaveFramesRecordedGUIReadOnly(t *testing.T) {
 		if e != nil {
 			t.Fatal(e)
 		}
+		loadExtraNormalObjects(t, objects)
 		art.SetObjects(objects)
 	}
 	objectCoverage := newCaveObjectCoverage(objects)
@@ -453,6 +454,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		if e != nil {
 			t.Fatal(e)
 		}
+		loadExtraNormalObjects(t, objects)
 		art.SetObjects(objects)
 	}
 	objectCoverage := newCaveObjectCoverage(objects)

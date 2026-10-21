@@ -18,6 +18,11 @@ func loadCyanNormalArt(t *testing.T, weapon *CaveWeapon) {
 			t.Fatal(err)
 		}
 	}
+	if dir := os.Getenv("ZELIARD_CAVE_WEAPON_EXTRA_ART"); dir != "" {
+		if err := weapon.LoadExtra(dir); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
 
 func cyanWeaponArt(t *testing.T) *CaveWeapon {

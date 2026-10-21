@@ -54,6 +54,10 @@ def start():
                 command.extend(["-cave-weapon-cyan-art", cyan_art])
             if player_extra := os.environ.get("ZELIARD_CAVE_PLAYER_EXTRA_ART", ""):
                 command.extend(["-cave-player-extra-art", player_extra])
+            if weapon_extra := os.environ.get("ZELIARD_CAVE_WEAPON_EXTRA_ART", ""):
+                command.extend(["-cave-weapon-extra-art", weapon_extra])
+            if object_extra := os.environ.get("ZELIARD_CAVE_OBJECT_EXTRA_ART", ""):
+                command.extend(["-cave-object-extra-art", object_extra])
             if player_profiles := os.environ.get("ZELIARD_CAVE_PLAYER_PROFILE_ART", ""):
                 command.extend(["-cave-player-profile-art", player_profiles])
         return original_popen(command, *args, **kwargs)

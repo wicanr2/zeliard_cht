@@ -36,3 +36,7 @@
 [GUI抽樣](../../tools/hd_cave_profile_smoke.py)正常冷F7、走到繩索並向下，已擷取FF39=255、主角新姿態。原貌／HD／切回的CPU、RAM、indexed與palette相同，576000遊戲區像素切回相同，正常DOS退出0、USR不變，根端已目視。其餘四圖只稱保存正常來源驗證。
 
 候選`workplace/full-hd-v1/cave-profile-runtime-v1/zeliard-preview` SHA-256 `458a8149658c958e11cd9ffc0e12c240b2a9c82135c4e5532a5aa1a45c71da4a`。收尾`workplace/full-hd-v1/cave-profile-final-audit-v1.json`由[稽核工具](../../tools/hd_profiles_audit.py)重生至新檔。刀光與物件來源入口為兩個正常收據的weapon_coverage.missing_sources及object_coverage.unknown_sources；不重跑已存來源或重新繪製這五圖。封包、影片與版號未更新，全遊戲目標仍進行中。
+
+## 049接續範圍
+
+[049](049-cave-unmatched-assets.md)已補四張刀光、四張物件及九個非零底圖的精確遮罩對應，原20刀光／29物件不變。選載新增物件組才建立純靜態HD下層，依原四格背景與順序還原；舊合成不改。兩條平台路徑主角／刀光／物件缺圖零，來源拒絕仍0／2。17保存來源、13正常點、舊物件像素回歸及代表遮罩GUI已驗，不外推其他城鎮、首領、後段或全遊戲HD。收尾為`workplace/full-hd-v1/cave-unmatched-final-audit-v1.json`，舊證據保留原身份。

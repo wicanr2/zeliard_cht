@@ -471,6 +471,10 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 
 [組合主角收尾稽核](tools/hd_profiles_audit.py)核來源、圖面、46項回歸、正常配對及代表GUI，另外列出尚未補齊的刀光與動態物件來源，不將解碼通過當全HD。
 
+[規格049](docs/spec/049-cave-unmatched-assets.md)管理048保存的刀光與物件缺圖；[來源研究](internal/prototype/hd/cave_unmatched_assets_study_test.go)核原始SHA與整幅原生重建，匯出未知及既有圖面參考，不先放寬遮擋或別名。
+
+[049原生遮罩與圖面註冊](tools/hd_unmatched_art.py)逐像素核九個背景來源與既有原圖，保留0色寫入語意；八張生成圖直接按原生包絡註冊，生成與來源SHA均核對。
+
 ## GitHub、授權與交付
 
 - 使用者已授權建立私人儲存庫。建立後回讀 `visibility`，確認為 PRIVATE；不得自行轉公開。
@@ -482,3 +486,9 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 - 正式封包只放 `dist-all/<版本>/`。子目錄依 `/home/anr2/.codex/knowledge-base/local/retro-remake-dist-all-output.md`，建立前重讀。
 - 版號固定為 `v.<主版>.<次版>.<修訂版>-YYYYMMDD`。定版前讀 `/home/anr2/.codex/knowledge-base/local/retro-remake-release-versioning.md`；不移動或覆寫已發布 tag。
 - 發行須驗啟動、檔案、平台架構、存檔位置、必要素材與 SHA-256。未驗平台與未做的手把實測如實列出。
+
+[049補圖接入](internal/prototype/hd/cave_extra_assets.go)與[獨立像素測試](internal/prototype/hd/cave_extra_assets_test.go)保存八圖固定載入、九個遮罩對應及物件HD下層還原。
+
+[049實際視窗](tools/hd_cave_unmatched_smoke.py)由正常冷F7、繩索下降擷取有地形遮罩的物件，核原貌切回、正常退出與存檔不變。
+
+[049收尾稽核](tools/hd_unmatched_audit.py)核17來源、八圖與九遮罩、54項圖面／來源回歸、兩條正常路徑及代表視窗，回填[全量清單](docs/hd-coverage.json)，不把局部零缺圖當全遊戲完成。

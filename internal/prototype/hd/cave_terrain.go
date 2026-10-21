@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"image/draw"
 	"image/png"
 	"path/filepath"
 )
@@ -420,11 +421,25 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 			s.weaponState["pose"] = pose.number
 		}
 	}
-	if playerPose != nil || weaponPose != nil {
+	background := d.Background
+	if s.objects.maskedEnabled() {
+		// 所有來源驗證完成後，先重建不含動態物件的504格；失敗仍不可寫入畫布。
+		background = cloneTownBytes(d.Background)
+		for _, cell := range d.Cells {
+			pixels, err := caveStatic(r, cell.ID)
+			if err != nil {
+				return false
+			}
+			for y := 0; y < 8; y++ {
+				copy(background[(cell.Y+y)*320+cell.X:(cell.Y+y)*320+cell.X+8], pixels[y*8:y*8+8])
+			}
+		}
+	}
+	if playerPose != nil || weaponPose != nil || s.objects.maskedEnabled() {
 		// 移除原版角色及武器，還原當次下層。原貌角色與配色也由後續原圖層重畫。
 		for y := 14; y < 158; y++ {
 			for x := 48; x < 272; x++ {
-				v := int(d.Background[y*320+x]) * 3
+				v := int(background[y*320+x]) * 3
 				c := color.RGBA{f.Palette[v], f.Palette[v+1], f.Palette[v+2], 255}
 				for dy := 0; dy < 3; dy++ {
 					for dx := 0; dx < 3; dx++ {
@@ -496,7 +511,12 @@ func (s *CaveTerrain) Draw(dst *image.RGBA, f *CavePresentation, origin image.Po
 	if s.objects == nil {
 		paintNative(d.Dynamic)
 	} else {
-		s.objectState = s.objects.draw(dst, d, f.Palette, origin)
+		var underlay *image.RGBA
+		if s.objects.maskedEnabled() {
+			underlay = image.NewRGBA(box)
+			draw.Draw(underlay, box, dst, box.Min, draw.Src)
+		}
+		s.objectState = s.objects.drawWithTerrain(dst, d, f.Palette, origin, underlay)
 		s.objectState["source_steps"] = f.Steps
 		s.objectState["body_steps"] = f.BodySteps
 	}

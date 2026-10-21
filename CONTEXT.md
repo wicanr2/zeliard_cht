@@ -6,19 +6,22 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，FF39持盾／FF41出招與五個主角圖面接入；全遊戲HD仍進行中 |
-| 目前候選 | `workplace/full-hd-v1/cave-profile-runtime-v1/zeliard-preview`，SHA-256 `458a8149658c958e11cd9ffc0e12c240b2a9c82135c4e5532a5aa1a45c71da4a` |
-| 來源與圖面 | 46份未改來源完整原生重建，六鍵去重含一個既有圖及五個補圖；含背向與黃藍紫變體，原67圖保留 |
-| 最近測試 | 46項圖面／來源及三項正常／來源檢查無skip／fail；原生1483776、註冊RGBA25920、混色8057像素相同，13點完整原版狀態、vet及build通過 |
-| 實際視窗 | 正常冷F7、繩索向下的新背向姿態，原貌切回576000像素相同、DOS退出0、USR不變，根端已目視；其他四圖只驗保存來源 |
-| 收尾證據 | `workplace/full-hd-v1/cave-profile-final-audit-v1.json`，由[組合主角稽核](tools/hd_profiles_audit.py)重生至新檔 |
-| 本輪接入 | [048](docs/spec/048-cave-combined-profiles.md)限定CONFORMED；新增可選cave-player-profile-art，不修改原版規則、位置、動畫節點或存檔 |
-| 待補 | 兩路主角缺圖為零、來源拒絕0／2；四個刀光及跨兩路13個物件來源鍵仍缺HD。魔法石未支援記錄、八城鎮候選及後段仍待補 |
+| 更新 | 2026-10-21，049八張補圖與九個物件遮罩來源已接入；全遊戲HD仍進行中 |
+| 目前候選 | `workplace/full-hd-v1/cave-unmatched-runtime-v1/zeliard-preview`，SHA-256 `e8fcc66f664a322197b7092a03483a8e8fa93dbd0a18d02a6c7badeaa5aea623` |
+| 來源與圖面 | 17份未改來源548352原生像素零差；四刀光、四物件及九個精確遮罩對應，原20／29圖保留 |
+| 最近測試 | 54項圖面／來源及三項正常／來源檢查通過；46080註冊RGBA、2066刀光與26692物件獨立混色像素相同，vet與build通過 |
+| 正常路徑 | 兩路完成來源253／564、拒絕0／2；主角、刀光及物件缺圖均零。13點完整原版狀態與USR bytes／mtime相同 |
+| 實際視窗 | GUI v2正常冷F7、繩索下降的遮罩物件HD與地形下層、原貌切回576000像素相同，DOS退出0、USR不變，根端已目視 |
+| 收尾證據 | `workplace/full-hd-v1/cave-unmatched-final-audit-v1.json`，由[049稽核](tools/hd_unmatched_audit.py)重生至新檔 |
+| 本輪接入 | [049](docs/spec/049-cave-unmatched-assets.md)限定CONFORMED；新增可選cave-weapon-extra-art／cave-object-extra-art，依原順序還原物件下方HD地形 |
+| 待補 | 魔法石兩次來源拒絕尚未修正；八城鎮候選、後段正常來源、共用圖格、首領、片頭／結局與介面仍待完成 |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
 
-最新正式入口為 `workplace/full-hd-v1/cave-profile-final-audit-v1.json`。以 `-cave-player-profile-art workplace/full-hd-v1/cave-combined-profile-complete-v1`搭配原主角及extra圖組，完整GUI命令在 `cave-profile-gui-v1/receipt.json`。原拒絕來源為 `cave-profile-source-v1/`、`cave-profile-magia-source-v1/`，研究編譯與46份重建為 `cave-combined-profile-study-v1/`，IDA分級為 `cave-profile-ida-v1/`。六次內建imagegen請求、提示詞、引用SHA與原cache在 `cave-combined-profile-art-v1/generation.json`；盾牌錯側初版保留，只選修正v2。
+最新正式入口為`workplace/full-hd-v1/cave-unmatched-final-audit-v1.json`。新圖組目錄`cave-unmatched-complete-v1/`同時供兩個新增CLI旗標使用，搭配原武器／物件圖組；完整GUI命令在`cave-unmatched-gui-v2/receipt.json`。八次內建生成的提示詞、引用及cache在`cave-unmatched-art-v1/generation.json`，九個遮罩來源的2304原生像素證據與八圖註冊在manifest。來源研究為`cave-unmatched-assets-source-v1/`。首份回歸日誌53項通過、一項舊物件像素skip；該項已在`legacy-tests.jsonl`以所需輸出目錄單獨補跑通過，不把skip算完成。
 
-下一步直接重解 `cave-profile-normal-pair-v2/`兩收據的weapon_coverage.missing_sources與object_coverage.unknown_sources，四個刀光及13個不同物件來源已保存，不重新蒐集。魔法石另有一次magia unobserved record、後接一次缺主體拒絕，需窄範圍保存該來源，不先放行。兩路完成／拒絕為253／0及564／2；主角均無缺圖，武器缺圖4／0，物件未知實例20／22。其他城鎮與後段仍屬完整目標。
+下一步查兩次魔法石拒絕。未改既有探針正常重播`cave-platform-magia.commands`，已捕捉`cave-magia-unobserved-source-v2/receipt.json`的三份觀察，均指向同一個137515854步的拒絕來源；兩原版狀態與存檔不變。這只是原始來源，尚未解語意或放行。v1因日誌先建在須空的輸出目錄而在遊戲啟動前停止，已保留。重用v2來源，不重跑已驗的049補圖與GUI。
+
+前輪048的46份組合來源、五主角圖及代表背向GUI仍沿`cave-profile-final-audit-v1.json`與原候選身份；049正常回歸已保留其結果。原67圖與新增五圖不變，048保存的四刀光與13物件缺圖由049接續完成，只限已選定兩條路徑。
 
 前輪047入口 `cave-ff41-final-audit-v1.json`及原候選維持原身份；其未出招FF41修正已回歸，出招來源另沿048。當輪2590筆原GUI日誌、RAM與畫面重生仍保留，不重做。012／027／028／047已追加048回填，台帳由本輪稽核核對。
 

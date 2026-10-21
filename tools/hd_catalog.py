@@ -86,12 +86,15 @@ def main():
     profiles = p/"workplace/full-hd-v1/cave-profile-final-audit-v1.json"
     profiles_report = json.loads(profiles.read_text())
     assert profiles_report["status"] == "PASS_COMBINED_PROFILE_SOURCE_ART_NORMAL_GUI_SCOPED"
+    unmatched = p/"workplace/full-hd-v1/cave-unmatched-final-audit-v1.json"
+    unmatched_report = json.loads(unmatched.read_text())
+    assert unmatched_report["status"] == "PASS_UNMATCHED_ASSETS_SOURCE_ART_NORMAL_GUI_SCOPED"
     assert sage_report["status"] == "PASS_SAGE_SOURCE_ART_NORMAL_GUI"
     assert back_report["status"] == "SOURCE_ART_NORMAL_PASSED_GUI_PENDING"
     assert interior_report["status"] == "PASS_INTERIOR_SOURCES_ART_AND_NORMAL_HUT_GUI"
     # 舊收據保留原程式身份。來源後續有修訂時，必須由具名新稽核銜接，不能把舊GUI換稱新程式。
     latest_sources, replacement_evidence, source_revisions = {}, {}, []
-    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report), (merchant, merchant_report), (towns, towns_report), (platform, platform_report), (magia, magia_report), (magia_runtime, magia_runtime_report), (doors, doors_report), (cyan, cyan_report), (player_extra, player_extra_report), (ff41, ff41_report), (profiles, profiles_report)):
+    for audit_path, audit in ((back, back_report), (interior, interior_report), (sage, sage_report), (merchant, merchant_report), (towns, towns_report), (platform, platform_report), (magia, magia_report), (magia_runtime, magia_runtime_report), (doors, doors_report), (cyan, cyan_report), (player_extra, player_extra_report), (ff41, ff41_report), (profiles, profiles_report), (unmatched, unmatched_report)):
         for row in audit["source_files"]:
             latest_sources[row["path"]] = row["sha256"]
             replacement_evidence[row["path"]] = str(audit_path.relative_to(p))
@@ -119,6 +122,7 @@ def main():
     validate_audit(player_extra, player_extra_report)
     validate_audit(ff41, ff41_report)
     validate_audit(profiles, profiles_report)
+    validate_audit(unmatched, unmatched_report)
     town_sources_path = p/"workplace/full-hd-v1/town-resources-source-v1/receipt.json"
     town_sources = {row["record"]:row for row in json.loads(town_sources_path.read_text())["maps"]}
     interior_path = p/"workplace/full-hd-v1/interior-layout-v2/receipt.json"
@@ -288,7 +292,7 @@ def main():
                                   "status":"not_connected_normal_path_and_calibration_pending","spec":"docs/spec/042-all-town-resources.md",
                                   "evidence":str(towns.relative_to(p)),"unresolved_tile_ids":row["unresolved_tile_ids"]}
                                  for record,row in town_sources.items() if record>=38],
-              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage, merchant, towns, town_sources_path, platform, magia, magia_runtime, doors, cyan, player_extra, ff41, profiles)],
+              "proofs": [{"path": str(f.relative_to(p)), "sha256": sha(f.read_bytes())} for f in (resident, decoded, oracle, planar, grp, castle, cave, runtime_catalog, back, interior, interior_path, sage, merchant, towns, town_sources_path, platform, magia, magia_runtime, doors, cyan, player_extra, ff41, profiles, unmatched)],
               "source_revisions":source_revisions,
               "archives": [{"name": n, "sha256": EXPECTED[n][1]} for n in originals], "records": catalog}
     for family,count,visible,record in (("MPP8",43,40,81),("MPP9",38,38,82),("MPPA",20,19,83),("MPPB",5,5,84)):
@@ -326,12 +330,18 @@ def main():
         "key":"cave.player.saved_extra", "status":"scoped_normal_path_and_gui_verified",
         "spec":"docs/spec/046-cave-saved-gear-hd.md", "evidence":str(player_extra.relative_to(p)),
         "registered_source_keys":12, "palette_variants":6, "existing_poses_preserved":55,
-        "limits":"本組12鍵沿046。048擴充來源後主角無缺圖，刀光及動態物件仍有缺圖；來源拒絕0／2，不當每畫格或全遊戲完成。"})
+        "limits":"本組12鍵沿046。049補圖後兩路主角、刀光及動態物件缺圖為零；來源拒絕0／2，不當每畫格或全遊戲完成。"})
     report["runtime_components"].insert(-1, {
         "key":"cave.player.combined_profiles", "status":"scoped_normal_path_and_gui_verified",
         "spec":"docs/spec/048-cave-combined-profiles.md", "evidence":str(profiles.relative_to(p)),
         "registered_source_keys":5, "existing_poses_preserved":67,
-        "limits":"46保存來源原生重建零差，五圖及代表背向GUI已驗；兩路主角缺圖為零、來源拒絕0／2。其他刀光、動態物件、城鎮及後段仍待補。"})
+        "limits":"46保存來源原生重建零差，五圖及代表背向GUI已驗；兩路主角缺圖為零、來源拒絕0／2。049已補兩路刀光與物件缺圖；其他城鎮及後段仍待補。"})
+    report["runtime_components"].insert(-1, {
+        "key":"cave.saved_paths.extra_weapons_and_masked_objects", "status":"scoped_normal_path_and_gui_verified",
+        "spec":"docs/spec/049-cave-unmatched-assets.md", "evidence":str(unmatched.relative_to(p)),
+        "new_weapon_images":4, "new_object_images":4, "masked_source_keys":9,
+        "existing_weapon_images_preserved":20, "existing_object_images_preserved":29,
+        "limits":"17保存來源原生重建、八圖及九個精確遮罩對應已驗；兩路主角／武器／物件缺圖均零、來源拒絕0／2。代表遮罩GUI通過，其他城鎮及後段仍待補。"})
     next(row for row in report["art_candidates"] if row["key"]=="ESMP")["correction"] = towns_report["art_corrections"][0]
     report["runtime_components"].insert(-1, {
         "key":"cave.terrain.MPP1","status":"connected_structural_verified_normal_path_scoped",

@@ -66,7 +66,10 @@ type caveObjectPose struct {
 	bounds image.Rectangle
 	pixels []color.NRGBA
 }
-type CaveObjects struct{ poses map[string]*caveObjectPose }
+type CaveObjects struct {
+	poses  map[string]*caveObjectPose
+	masked map[string]caveMaskedObject
+}
 
 func NewCaveObjects(dir string) (*CaveObjects, error) {
 	atlases := make([]image.Image, len(caveObjectAtlases))
@@ -110,10 +113,18 @@ func NewCaveObjects(dir string) (*CaveObjects, error) {
 }
 func (s *CaveObjects) selectPose(object caveObject) (string, *caveObjectPose) {
 	key := townBackgroundHash(object.Raster[:])
-	if s == nil || object.Backgrounds != [4]byte{} {
+	if s == nil {
 		return key, nil
 	}
-	pose := s.poses[key]
+	target := key
+	if object.Backgrounds != [4]byte{} {
+		r, ok := s.masked[key]
+		if !ok || r.backgrounds != object.Backgrounds || r.tiles != object.Tiles {
+			return key, nil
+		}
+		target = r.target
+	}
+	pose := s.poses[target]
 	if pose == nil || len(pose.pixels) != 48*48 || pose.bounds.Empty() || !pose.bounds.In(image.Rect(0, 0, 48, 48)) {
 		return key, nil
 	}
@@ -157,24 +168,5 @@ func (p *caveObjectPose) draw(dst *image.RGBA, object caveObject, origin image.P
 	}
 }
 func (s *CaveObjects) draw(dst *image.RGBA, d *caveDecoded, palette []byte, origin image.Point) map[string]any {
-	known, unknown, clipped := 0, 0, 0
-	keys := make([]string, 0, len(d.Objects))
-	unknownKeys := []string{}
-	for _, object := range d.Objects {
-		key, pose := s.selectPose(object)
-		keys = append(keys, key)
-		if !image.Rect(object.X, object.Y, object.X+16, object.Y+16).In(image.Rect(48, 14, 272, 158)) {
-			clipped++
-		}
-		if pose == nil {
-			unknown++
-			unknownKeys = append(unknownKeys, key)
-			caveObjectNative(dst, object, palette, origin, false)
-		} else {
-			known++
-			caveObjectNative(dst, object, palette, origin, true)
-			pose.draw(dst, object, origin)
-		}
-	}
-	return map[string]any{"loaded": true, "matched": known > 0, "known": known, "unknown": unknown, "empty": len(d.Objects) == 0, "clipped": clipped, "source_keys": keys, "unknown_keys": unknownKeys}
+	return s.drawWithTerrain(dst, d, palette, origin, nil)
 }

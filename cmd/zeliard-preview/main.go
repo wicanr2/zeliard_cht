@@ -1085,6 +1085,8 @@ func main() {
 	cavePlayerProfileArt := flag.String("cave-player-profile-art", "", "可選：五個已驗組合姿態，須同時指定cave-player-art-dir")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
 	caveCyanWeaponArt := flag.String("cave-weapon-cyan-art", "", "可選：青藍刀光十姿態，須同時指定cave-weapon-art-dir")
+	caveWeaponExtraArt := flag.String("cave-weapon-extra-art", "", "可選：四個已存刀光補圖，須同時指定cave-weapon-art-dir")
+	caveObjectExtraArt := flag.String("cave-object-extra-art", "", "可選：四個物件補圖及九個遮罩對應，須同時指定cave-object-art-dir")
 	caveObjectArt := flag.String("cave-object-art-dir", "", "可選：洞窟動態物件手繪圖集目錄，搭配洞窟地形HD")
 	cavePortalArt := flag.String("cave-portal-art", "", "可選：Muralla洞窟入口手繪圖，搭配洞窟地形HD")
 	townSignsText := flag.String("town-signs-text", "", "可選：Muralla招牌中文TSV，搭配前景HD")
@@ -1279,6 +1281,11 @@ func main() {
 				if e != nil {
 					log.Printf("洞窟物件HD未載入，保留物件原貌：%v", e)
 				} else {
+					if *caveObjectExtraArt != "" {
+						if err := objects.LoadExtra(*caveObjectExtraArt); err != nil {
+							log.Printf("物件補圖未載入，保留原有圖組：%v", err)
+						}
+					}
 					g.caveTerrainHD.SetObjects(objects)
 				}
 			}
@@ -1290,6 +1297,11 @@ func main() {
 					if *caveCyanWeaponArt != "" {
 						if err := weapon.LoadCyan(*caveCyanWeaponArt); err != nil {
 							log.Printf("青藍刀光未載入，保留原有武器圖組：%v", err)
+						}
+					}
+					if *caveWeaponExtraArt != "" {
+						if err := weapon.LoadExtra(*caveWeaponExtraArt); err != nil {
+							log.Printf("刀光補圖未載入，保留原有圖組：%v", err)
 						}
 					}
 					g.caveTerrainHD.SetWeapon(weapon)
