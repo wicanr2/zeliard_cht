@@ -1260,3 +1260,21 @@ READY後接入固定來源鍵、PNG雜湊及原生包絡，新增12個登錄，�
 兩正常路徑的已選完成來源，主角匹配156／419畫格、主角及武器缺圖為零；13點完整原版狀態及USR bytes／mtime相同。42／92次來源拒絕不列通過。GUI v3有新主角55、短按青藍刀光及門框／平台七組原貌切回，4032000像素相同、正常DOS退出0、存檔不變，根端已目視；六色彩變體不冒稱逐一GUI出現。
 
 新未完成分支：GUI v2長按攻擊測試途中，完成候選01B1:FF41=1，守衛回報unobserved actor profile並退回。候選steps 202440421、body_steps 202428860，RAM SHA-256 c43f08361e64e6abaa0b9f0f1818d42305556a89c5652937e28e60cbc7b52a6c、主體SHA-256 0fa4da56ec7b063d0185e449410f04a562d224283e3a29ba5f4aa2856472dffc；這是dosgolem實模式位址，不是EXE檔案偏移。日誌在 `cave-saved-player-gui-v2/boot1/inputs.jsonl`，下一步由同一日誌重生被拒來源。旗標意義仍未知，不因畫面像某種效果就命名或放行。
+
+## 2026-10-21：FF41非零但未被繪製分支使用
+
+本節追加訂正上節的未完成來源，範圍只限FF41=1且FF40=0。入口為[規格047](docs/spec/047-cave-ff41-source.md)及[分級位址索引](docs/cave-ff41-source-index.json)。原始EXE SHA-256沿046固定版本，IDA固定primary.segment SHA-256為5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b。
+
+| 證據 | 結論與等級 |
+|---|---|
+| `cave-ff41-source-v1/receipt.json` | 已證實：Go1.24.13／dosgolem按原GUI日誌重播2590筆，原觀察RAM、202440421步完成候選及202428860步主體、畫面與色盤SHA相同，USR bytes及mtime不變 |
+| `cave-ff41-ida-v5/evidence.json` | IDA9.4輸出460條原樣指令，自動合併11筆已證實索引；其餘語意附未知警示。IDA base0對應01B1段內偏移，不是EXE檔案偏移 |
+| `01B1:3ACF..3AD4`、`3C36..3C3B` | 已證實：FF40=0分別跳至3B18、3C7F，略過FF41讀取；不因FF41殘值拒絕此原版圖面 |
+| `01B1:3B00..3B11`、`3C67..3C78` | 已證實：非零FF40分支中，FF41的1及2選擇不同手部模板位移；此輪沒有擴充該分支 |
+| `01B1:7094`、`70A8`、`70C5` | 已證實：分別清FF40、由FF45複製至FF41、將FF41寫成1；不推定玩家術語 |
+| `cave-ff41-decode-study-v1/receipt.json` | 研究隔離：只複製解碼輸入並改FF41為0，原版機器不變；原生32256像素零差，主角鍵已有圖面 |
+| `cave-ff41-runtime-v3/focused-tests.jsonl` | 正式使用未改動保存來源，原生遊戲區零差；FF40=0的0／1對照有相同圖層及576000個HD畫布像素，原始RAM不變。未知值、非零FF40、未知裝備及組合仍拒絕 |
+| `cave-ff41-accepted-source-v1/receipt.json` | 已證實：同一原GUI日誌、觀察RAM與候選SHA重生，新解碼可選取原被拒來源；不把此重播冒稱新GUI |
+| `cave-ff41-normal-pair-v2/` | 兩條正常路徑13點完整原版狀態與存檔相同；完成／拒絕為213／40及474／92，已選來源主角／武器無缺圖 |
+
+研究產物均位於本機`workplace/full-hd-v1/`，不納入Git。上述像素比較只證明所列來源與邊界，不外推其他FF41模式或全遊戲HD。

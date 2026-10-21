@@ -441,6 +441,20 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 
 新增研究文件須同輪掛進本索引或 CONTEXT 的證據入口。不得將暫存、舊待辦或綠色單元測試當作原版一致證據。
 
+本地失敗畫格研究入口：[tools/hd_gui_rejected_probe.go](tools/hd_gui_rejected_probe.go)依保存的GUI按鍵與RunCycles日誌重生被拒來源，核對觀察RAM及候選雜湊。輸出僅供來源研究，不當成HD通過。
+
+[規格047](docs/spec/047-cave-ff41-source.md)管理FF41非零來源的證據與實作閘門；[IDA匯出](tools/ida_cave_ff41.py)保存原始指令與xref，未分級語意維持未知。
+
+[FF41來源研究](internal/prototype/hd/cave_ff41_study_test.go)僅以複製的解碼輸入隔離守衛，驗證原生畫面差異；不改原版機器，不當正常HD驗收。
+
+[FF41正式檢查](internal/prototype/hd/cave_ff41_test.go)使用未修改的真實保存來源，驗證原生整幅、既有HD、唯讀及未知分支拒絕；正常來源與邊界合成分開記錄。
+
+[FF41視窗抽樣](tools/hd_cave_ff41_smoke.py)在Docker／Xvfb正常冷F7、步行與出劍，依完成主體欄位確認FF41=1且FF40=0，再驗原貌／HD切回與正常退出。
+
+[FF41分級索引](docs/cave-ff41-source-index.json)保存兩個繪製consumer及寫入端的原始位址、bytes與證據等級，由IDA匯出自動合併；未列指令維持未知警示。
+
+[FF41收尾稽核](tools/hd_ff41_audit.py)核對被拒／修正後來源、IDA分級、正常配對、GUI原貌切回與來源修訂鏈，只支援047限定範圍。
+
 ## GitHub、授權與交付
 
 - 使用者已授權建立私人儲存庫。建立後回讀 `visibility`，確認為 PRIVATE；不得自行轉公開。

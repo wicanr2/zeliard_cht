@@ -447,10 +447,11 @@ func TestCaveSourcesRejectUnknownOrCorrupt(t *testing.T) {
 	source, body := caveFixture(t, root, points[20])
 	for name, change := range map[string]func(*caveFrameInput, *caveFrameInput){
 		"unknown-equipment": func(in, b *caveFrameInput) { b.memory[0x1b10+0x93] = 1 },
-		"unknown-magic":     func(in, b *caveFrameInput) { b.memory[0x1b10+0xff41] = 1 },
-		"map-bounds":        func(in, b *caveFrameInput) { in.memory[0x1b10+0xff31] = 0; in.memory[0x1b10+0xff32] = 0 },
-		"body-outside":      func(in, b *caveFrameInput) { b.memory[0x1b10+0x4fed] = 0; b.memory[0x1b10+0x4fee] = 0 },
-		"pixel-mismatch":    func(in, b *caveFrameInput) { in.indexed[100*320+100] ^= 1 },
+		// 047已核FF41=1且FF40=0；值2仍未納入正式來源。
+		"unknown-ff41":   func(in, b *caveFrameInput) { b.memory[0x1b10+0xff41] = 2 },
+		"map-bounds":     func(in, b *caveFrameInput) { in.memory[0x1b10+0xff31] = 0; in.memory[0x1b10+0xff32] = 0 },
+		"body-outside":   func(in, b *caveFrameInput) { b.memory[0x1b10+0x4fed] = 0; b.memory[0x1b10+0x4fee] = 0 },
+		"pixel-mismatch": func(in, b *caveFrameInput) { in.indexed[100*320+100] ^= 1 },
 	} {
 		t.Run(name, func(t *testing.T) {
 			in, b := cloneCaveInput(source), cloneCaveInput(body)

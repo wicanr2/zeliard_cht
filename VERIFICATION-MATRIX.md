@@ -585,3 +585,16 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 檢查及限制 | 42項圖面／來源及三項正常／來源測試無skip／fail，vet及build通過。六變色只驗保存正常來源，未逐一GUI；42／92次來源拒絕仍在 |
 
 候選 `workplace/full-hd-v1/cave-saved-player-runtime-v1/zeliard-preview` SHA-256 `473dddb1c21b057d345db531c4a822000bf26cc7e488a1324980e1b6e83be0d4`，收尾 `workplace/full-hd-v1/cave-saved-player-final-audit-v1.json`。046僅列明來源CONFORMED，其他分支、美術與後段仍待補，封包及影片未更新。
+
+## FF41未使用非零值的洞窟呈現
+
+| 範圍 | 實際結果 |
+|---|---|
+| 原GUI日誌來源 | 2590筆正常輸入與RunCycles重生，觀察RAM及完成／主體／畫面／色盤SHA全部相同；修正後同來源可選取，USR不變 |
+| 原生來源／HD | 未改動的FF41=1／FF40=0來源32256原生像素零差；0／1邊界圖層與576000個高清畫布像素相同，主角及兩物件均有既有圖面 |
+| 未知分支 | 非零FF40、其他FF41值、未知裝備與組合維持拒絕；原子來源守衛不變 |
+| 正常路徑 | 兩路13點完整原版狀態與USR bytes／mtime相同，完成／拒絕213／40及474／92；已選來源主角／武器無缺圖 |
+| 實際GUI | v3冷F7、步行及出劍放開後的FF41=1／FF40=0，原貌切回576000像素相同；CPU／RAM／indexed／palette相同，DOS退出0，存檔不變，根端已目視 |
+| 檢查與限制 | 44項圖面／來源、四項focused及三項正常／來源檢查無skip／fail，vet及相同binary重建通過；其他FF41、剩餘拒絕及全遊戲美術未完成 |
+
+候選 `workplace/full-hd-v1/cave-ff41-runtime-v3/zeliard-preview` SHA-256 `6383ec84d59bcd1da1694ecc29d165dd6e976fd1d545f8d2b386ebb8090a3e15`，收尾 `workplace/full-hd-v1/cave-ff41-final-audit-v1.json`。047限定CONFORMED，GUI v1／v2失敗保留原身份，封包與影片未更新。

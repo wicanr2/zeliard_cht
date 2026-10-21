@@ -315,6 +315,8 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 	f.state["rect"] = cavePresentationBox
 	f.state["source_memory_sha256"] = townBackgroundHash(last.Memory)
 	f.state["body_memory_sha256"] = townBackgroundHash(last.BodyMemory)
+	f.state["source_primary_fields"] = caveDiagnosticFields(last.Memory)
+	f.state["body_primary_fields"] = caveDiagnosticFields(last.BodyMemory)
 	f.state["source_indexed_sha256"] = townBackgroundHash(last.SourceIndexed)
 	f.state["presented_indexed_sha256"] = townBackgroundHash(raw)
 	f.state["objects"] = len(last.Decoded.Objects)

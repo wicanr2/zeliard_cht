@@ -204,6 +204,17 @@
       "limits": "已存十來源及兩條正常平台路徑武器缺圖為零，實際GUI出劍與切回通過；主角保存來源另由046擴充，其他武器與後段仍待補。"
     },
     {
+      "key": "cave.source.inactive_ff41",
+      "status": "scoped_normal_source_and_gui_verified",
+      "spec": "docs/spec/047-cave-ff41-source.md",
+      "evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
+      "accepted_body_fields": {
+        "01B1:FF41": 1,
+        "01B1:FF40": 0
+      },
+      "limits": "只修原版未使用FF41的已存非零值來源，沿用既有圖面；其他FF41、40／92次來源拒絕及全遊戲素材仍待補。"
+    },
+    {
       "key": "cave.player.saved_extra",
       "status": "scoped_normal_path_and_gui_verified",
       "spec": "docs/spec/046-cave-saved-gear-hd.md",
@@ -211,7 +222,7 @@
       "registered_source_keys": 12,
       "palette_variants": 6,
       "existing_poses_preserved": 55,
-      "limits": "兩條路徑的已選完成來源無主角／武器缺圖；42／92次來源拒絕及其他場景仍待補，不當每畫格或全遊戲完成。"
+      "limits": "兩條路徑的已選完成來源無主角／武器缺圖；047後40／92次來源拒絕及其他場景仍待補，不當每畫格或全遊戲完成。"
     },
     {
       "key": "cave.terrain.MPP1",
@@ -436,6 +447,10 @@
     {
       "path": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
       "sha256": "2b485bfbe78ddccc09129ad3cf40cefdd9547d371485bc9650f53a9600fad7c5"
+    },
+    {
+      "path": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
+      "sha256": "ef64d72f77dcae2d86a8c9595b9a915f09f6a050aa6fbe0bb753470991b6bcef"
     }
   ],
   "source_revisions": [
@@ -467,8 +482,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/interior-final-audit-v2.json",
       "historical_sha256": "7aa6fe044bcca04e00935b32a2a5a8b90dd86454a03c1473002bd8d584ac252e",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -483,8 +498,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/sage-frames-final-audit-v1.json",
       "historical_sha256": "44e76dee7ff991f28b7bccc7c9f9165b2019dfb78855c5f37edcc56f5a3adbb9",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -499,8 +514,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/merchant-frames-final-audit-v1.json",
       "historical_sha256": "d6b9c8ee99331606a8a6643c54cac6db665ec16c00d15a75383391107bc893e4",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -515,8 +530,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/town-resources-stage-audit-v4.json",
       "historical_sha256": "194b1bb9f39da40d5ff2c76891addf5c04a253a5982cb76cd6a65c98ad1e3e9b",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -587,16 +602,16 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-platform-final-audit-v1.json",
       "historical_sha256": "15b87dda1f52e44812b46c2a45a31ef20e6ae81c520f7911974d9acdba199f1b",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-magia-stage-audit-v1.json",
       "historical_sha256": "4fd0aba26859586584a2efed07b27202b58aea4b1167e737564891ced340f184",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -605,6 +620,22 @@
       "historical_sha256": "1315d169047d99c7874f64ee49a4cb4b51a8bc52f7fcbfc4c436543820b8bd7f",
       "current_sha256": "a0b6812309ebc66295171e02e10c6f8dbd159eb7cd06bd3f998eedd4e41723ab",
       "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "internal/prototype/hd/cave_sources.go",
+      "historical_audit": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
+      "historical_sha256": "f4ddb2269c91377b8a48811bc20d39976d9fb5f199ae095230e365a1a6bb40a1",
+      "current_sha256": "a6427371fbfa087270df1d2501a8b547b40fc5bafdb9dec0ea7414351866e00d",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "internal/prototype/hd/cave_frames.go",
+      "historical_audit": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
+      "historical_sha256": "6d5cf99e4c5ec29ba612668ef8c9581ded65a06fef536d500aea71c51f515210",
+      "current_sha256": "178f1fe7ae15f9b83e7b9cb83b93691f313990497531141c289338aa94beffb4",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -651,8 +682,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
       "historical_sha256": "4af7d1fabdc2f8bab40dff1fd82c8640f6f4f598928aa2c6b5d8d27934ec7b8a",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -683,8 +714,8 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-door-final-audit-v1.json",
       "historical_sha256": "b0f3e4406742dba17e7b2d5308e81fb8d8a92785ef06de12d5247863c5deeb0a",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -723,8 +754,16 @@
       "path": "tools/hd_catalog.py",
       "historical_audit": "workplace/full-hd-v1/cave-cyan-weapon-final-audit-v1.json",
       "historical_sha256": "4006b6786f8fc7f67a2763be9fb44da165795e53c9465b84d6ef725a731d3ea8",
-      "current_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
-      "replacement_evidence": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
+      "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
+    },
+    {
+      "path": "tools/hd_catalog.py",
+      "historical_audit": "workplace/full-hd-v1/cave-saved-player-final-audit-v1.json",
+      "historical_sha256": "548d9dbd624199e8b76e80395d285e43d6056d9916c8e4a84db43106333df0c1",
+      "current_sha256": "8a291291432256692b6edb8a7b23d7b33e822ef5ddb725aba16ccafe79cbd4fc",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {
@@ -739,8 +778,8 @@
       "path": "internal/prototype/hd/cave_frames.go",
       "historical_audit": "workplace/full-hd-v1/cave-mpp1-final-audit-v1.json",
       "historical_sha256": "c4e35f557fbdf7c21860bf256121d47cc56e45eb844346ef7ad5714f99ddeb11",
-      "current_sha256": "6d5cf99e4c5ec29ba612668ef8c9581ded65a06fef536d500aea71c51f515210",
-      "replacement_evidence": "workplace/full-hd-v1/cave-magia-final-audit-v2.json",
+      "current_sha256": "178f1fe7ae15f9b83e7b9cb83b93691f313990497531141c289338aa94beffb4",
+      "replacement_evidence": "workplace/full-hd-v1/cave-ff41-final-audit-v1.json",
       "limits": "原收據仍屬原程式；只將已核修訂與現行來源銜接，不升舊GUI身份。"
     },
     {

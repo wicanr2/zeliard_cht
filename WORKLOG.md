@@ -1429,3 +1429,14 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 - v3冷F7正常新主角、短按刀光、物品後門框、平台升降及離開，七組原貌切回4032000像素相同、正常DOS退出0、USR bytes／mtime不變，根端已目視。finally回收遊戲與Xvfb。六個變色只稱保存來源通過，不當逐一GUI。稽核初稿誤讀診斷primary_fields所在層，改核同steps的last_refusal與主體欄位後乾淨重跑，非產品缺陷。
 - 候選 `cave-saved-player-runtime-v1/zeliard-preview` SHA-256 473dddb1c21b057d345db531c4a822000bf26cc7e488a1324980e1b6e83be0d4，收尾 `cave-saved-player-final-audit-v1.json`。覆蓋清單銜接新來源，046僅所列12主角鍵及十青藍武器限定CONFORMED。FF41=1、原42／92次來源拒絕及其他場景／美術仍未完成，封包、影片及版號未更新。下一步先由v2日誌重生被拒來源，不猜旗標、不放寬守衛。
 - 收尾核全部當前來源及收尾證據SHA、Python語法、新檔入口與相對連結；root-owned檔案與md目錄皆零，無本專案容器殘留，遠端仍PRIVATE。提交／推送回讀結果另存 `cave-saved-player-runtime-v1/repository-sync.json`。
+
+## 2026-10-21：重生FF41被拒來源及限定修正
+
+- 前一狀態回覆只有現況核對，屬無進度。本輪依CONTEXT與WORKLIST推進FF41來源，命中原版證據、規格閘門與文件職責路由，載入remake技能及最小證據／驗證reference；IDA另沿既有技能與工具鏈。
+- 新增原GUI被拒來源重播工具，2590筆真實按鍵／RunCycles後，原觀察RAM及完成／主體／indexed／palette SHA全部相同，原存檔未寫入。輸出 `cave-ff41-source-v1/`，沒有注入座標、旗標或存檔。
+- IDA沿py312-v1已驗image與UID1000，一次性複製common.i64。v1因未指定UTF-8而輸出空JSON；v2輸出成功但原DB尚未分析主角區；v3起點誤落3A85三byte跳躍的最後byte。核原始bytes後由正確3A88補指令，v4成功。v5再合併11筆分級索引，460條原樣指令、固定輸入bytes與SHA均相同。失敗副本保留，正式DB未改。
+- 研究先隔離解碼守衛，證實FF40=0略過FF41 consumer，原生32256像素零差。047升READY後，只允許FF41=1且FF40=0，其他值與組合維持拒絕；完成來源診斷新增唯讀主體／完成欄位，供GUI核對。未新增圖面或改原版規則。
+- 44項圖面／來源頂層檢查通過；第一次正常／focused回歸發現舊unknown-magic向量仍把已證實的值1當未知。依047改為未支援值2並保留新測試對非零FF40及未知裝備的拒絕，不修改呈現器來配合舊斷言。乾淨normal-pair-v2與focused四項通過；13點完整原版狀態、USR bytes及mtime不變，完成／拒絕213／40及474／92。新binary重建bytes相同、vet通過。
+- 所有分析、研究、建置與測試均在有界Docker內，專案及原始資料唯讀，只有具名輸出與gocache可寫，UID1000、網路關閉。GUI採fd2-promo、Xvfb與finally回收子程序。GUI v1等候20秒只走至193M步，尚未涵蓋舊失敗202M步；v2在無關的額外主角姿態暫停時已跨過完成來源，未到達目標。兩者driver、失敗圖、狀態及日誌保留。v3只測047目標，依原日誌放開攻擊後再等FF40=0，結果另補於下。
+- GUI v3成功觀察FF41=1／FF40=0；關鍵是先放開攻擊，再捕捉未使用值的完成畫格。原貌切回576000像素相同、正常DOS退出0、USR不變，根端已目視中文、地形、主角與動態圖面。收尾稽核 `cave-ff41-final-audit-v1.json` 已通過，047限定CONFORMED，來源修訂鏈及全量覆蓋表同步；全遊戲目標仍進行中。
+- 收尾核新檔入口與正對照、文件相對連結、Python語法及全部來源／證據SHA。105470個檔案／目錄抽查遍歷未見root-owned或md目錄，無本輪容器殘留，遠端仍PRIVATE。提交及推送回讀另存 `cave-ff41-runtime-v3/repository-sync.json`。封包、影片、版號及README縮圖未更新。

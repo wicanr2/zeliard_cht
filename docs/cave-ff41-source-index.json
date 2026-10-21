@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "input_name": "primary.segment",
+  "input_sha256": "5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b",
+  "address_space": "IDA base0，對應dosgolem 01B1段內偏移；不是EXE檔案偏移",
+  "entries": [
+    {
+      "address": "0x3acf",
+      "bytes": "f60640ffff",
+      "level": "已證實",
+      "semantic": "測FF40；零值由3AD4跳至3B18，略過第一個FF41 consumer",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3b00",
+      "bytes": "8a1641ff",
+      "level": "已證實",
+      "semantic": "第一個FF41讀取；僅FF40非零且前方朝向分支通過時執行",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3b08",
+      "bytes": "052400",
+      "level": "已證實",
+      "semantic": "FF41等於1時增加模板位移24h",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3b11",
+      "bytes": "b86300",
+      "level": "已證實",
+      "semantic": "FF41等於2時改模板位移為63h",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3c36",
+      "bytes": "f60640ffff",
+      "level": "已證實",
+      "semantic": "測FF40；零值由3C3B跳至3C7F，略過第二個FF41 consumer",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3c67",
+      "bytes": "8a1641ff",
+      "level": "已證實",
+      "semantic": "第二個FF41讀取；僅FF40非零且前方朝向分支通過時執行",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3c6f",
+      "bytes": "052400",
+      "level": "已證實",
+      "semantic": "FF41等於1時增加模板位移24h",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3c78",
+      "bytes": "b86300",
+      "level": "已證實",
+      "semantic": "FF41等於2時改模板位移為63h",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x7094",
+      "bytes": "c60640ff00",
+      "level": "已證實",
+      "semantic": "清FF40；此指令不寫FF41",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x70a8",
+      "bytes": "a241ff",
+      "level": "已證實",
+      "semantic": "將前一指令取自FF45的AL寫入FF41",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x70c5",
+      "bytes": "c60641ff01",
+      "level": "已證實",
+      "semantic": "將FF41寫成1",
+      "evidence": [
+        "docs/spec/047-cave-ff41-source.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v4/evidence.json",
+        "workplace/full-hd-v1/cave-ff41-source-v1/receipt.json"
+      ]
+    }
+  ]
+}

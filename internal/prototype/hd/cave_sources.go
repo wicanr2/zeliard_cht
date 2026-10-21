@@ -264,7 +264,9 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 		}
 	}
 	// 主角僅接受已觀測之裝備／姿態分支，未知來源安全拒絕。
-	if (bp[0x93] != 0 && bp[0x93] != 2) || bp[0xff41] != 0 {
+	// 047：FF40=0跳過兩個FF41 consumer；只擴充正常來源已驗的值1。
+	inactiveFF41 := bp[0xff41] == 1 && bp[0xff40] == 0
+	if (bp[0x93] != 0 && bp[0x93] != 2) || (bp[0xff41] != 0 && !inactiveFF41) {
 		return nil, fmt.Errorf("unobserved actor profile")
 	}
 	profiles := 0
