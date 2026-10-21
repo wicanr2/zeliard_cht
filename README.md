@@ -98,7 +98,14 @@ bash tools/play.sh
 
 包內附自建存檔SAVETEST，可按F7讀取後從Muralla鎮向右進入第一洞窟。存檔與操作設定保存在系統使用者設定目錄的 `Zeliard-CHT`：Linux為 `~/.config/Zeliard-CHT/`，Windows為 `%AppData%\Zeliard-CHT\`，macOS為 `~/Library/Application Support/Zeliard-CHT/`。可用 `ZELIARD_USER_DIR` 指定其他目錄。
 
-60秒推廣片示範v.0.4.0，在`dist-all/v.0.4.0-20261021/promo/Zeliard-v.0.4.0-20261021-promo.mp4`，使用實際遊戲錄影、雙版本對照與原版標題曲。各版檔案大小與SHA-256見同版`SHA256SUMS.json`，封包檢查見`smoke/`。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
+新版影片使用v.0.4.1在ada的NVIDIA RTX 2000 Ada實際錄製，以VirtualGL硬體繪圖及NVENC擷取。包含城鎮、教堂中文對話、原貌／HD切換與第一洞窟操作，另展示工具列設定。詳細來源見[規格053](docs/spec/053-ada-gameplay-promo.md)。
+
+| 影片 | 本機路徑 |
+|---|---|
+| 55秒連續遊玩，保留同期遊戲音效 | `dist-all/v.0.4.1-20261021/promo/Zeliard-v.0.4.1-20261021-ada-gameplay.mp4` |
+| 60秒推廣片，1280×720，原版標題曲配樂 | `dist-all/v.0.4.1-20261021/promo/Zeliard-v.0.4.1-20261021-promo.mp4` |
+
+各版檔案大小與SHA-256見同版`SHA256SUMS.json`，影片檢查在`promo/`，封包檢查在`smoke/`。v.0.4.0影片保留原身份。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
 
 三平台雙版本建置入口為[tools/build_dual_release.sh](tools/build_dual_release.sh)，使用Docker與固定的本地原版、字型及HD圖組，拒絕覆寫既有輸出。錄影、影片與六包核對入口見[規格051](docs/spec/051-dual-edition-release.md)。版號由[VERSION](VERSION)指定；目前狀態見[CONTEXT.md](CONTEXT.md)。
 

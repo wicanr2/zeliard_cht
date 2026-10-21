@@ -1541,3 +1541,21 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 | full-local/Zeliard-v.0.4.1-20261021-CHT-HD-Windows-x86_64.zip | 200597784 | `dd63f3cd53ae03b72ad19b2a2770b80a9ec15008db0dcb6444c19f3e46efaab1` |
 | full-local/Zeliard-v.0.4.1-20261021-CHT-HD-macOS-universal.zip | 209145874 | `7687c065faf42db320380cb45a3bc280a75bfdfe25c8548f81a7e11c3137e8ca` |
 | full-local/Zeliard-v.0.4.1-20261021-CHT-Linux-x86_64.AppImage | 14871032 | `122119579910a92d6396f8cd8dc01b84c36b9acdc5aae3e38687ee8a7b491f60` |
+
+## 2026-10-21 053：ada硬體遊玩實錄與新版推廣片
+
+使用者指定在ada錄製遊玩片段，再重製推廣片。本輪路由讀推廣片流水線、原版音訊來源、dist-all及文件職責。沿[053](docs/spec/053-ada-gameplay-promo.md)，不改遊戲程式、不重建六包、不移動已發布tag。最初ada別名無法解析；使用者指定既有登入腳本後，以既有SSH agent連線，沒有將登入資料放進專案。遠端Docker socket拒絕普通user，不是憑證或daemon失效；改以sudo -n控制Docker，工作仍在UID/GID1000的有界容器內執行，未更動群組、socket或daemon權限。
+
+- ada為28核心、約64GB，NVIDIA RTX 2000 Ada Generation／driver595.91.07。沿既有kdzz-gpu-verify:20261021-r1，VirtualGL EGL硬體renderer與NVENC測試通過，不另建重複映像。實際遊戲的84行GPU函式庫映射保留，含libvglfaker與NVIDIA。Xvfb只供隔離2D顯示；沒有強制LIBGL_ALWAYS_SOFTWARE。工具映像ID及遠端主機身份保存在workplace/ada-promo-v1/ada-cleanup.json。
+- 固定v.0.4.1 CHT-HD AppImage SHA-256 `94512c3fec4080655275281be3986e36b4aa12655298c85cd32577bec7eadbb5`、導航來源及錄影工具先核雜湊才傳輸。遊戲與輸入唯讀，錄影、存檔各自可寫。正常F7讀SAVEM1的未改副本，原USR身份沿052。完成城鎮、教堂中文、原貌／HD切換、第一洞窟揮劍／跳躍及鍵盤／手把選單；正常DOS退出0，USR內容及mtime不變。原始影片、PulseAudio監聽PCM、原版生成WAV、10張實際視窗與輸入日誌皆保留於received。
+- 首份錄影在HD畫面以原貌入口圖樣定位，查無匹配而停止。修正為定位時正常切回原貌，完成後切回HD；只改錄影工具，不改遊戲或放寬來源。首份原始檔及輸入在ada的attempt-1，失敗日誌保存在本機；相同GPU工具鏈的新一份錄影完整通過。NVENC原始錄影名義60fps，啟動期少量補幀／丟幀原始日誌保留，不宣稱每個輸出幀皆為不同遊戲動畫。
+- [剪輯](tools/make_ada_promo.py)輸出55.45秒960×680／60fps的連續遊玩片，保留原次序及同期聲，沒有加速或循環。以同主機X11原始擷取epoch與parec啟動epoch對齊；程序啟動有小幅誤差，不宣稱逐取樣同步。mean -21.5dB、peak -3.6dB，視訊／音訊時長相符、非靜音且無長黑幀；正常對話、暫停與換場不刪除。
+- 新推廣片60秒1280×720，名義60fps，平均59.983fps，32秒取自新錄遊玩影片，其餘為同次實際視窗及字卡。深綠／銅金、短開場與動態主線取代前版安排。原貌／HD依實際切換展示，不稱同狀態對拍。遊玩保留原色，只有標題底圖加深。配樂沿已追溯的原版標題曲MSCADLIB／Nuked-OPL3錄音，與同期聲分開，不另作曲或冒稱新錄原版音樂。
+- [訊號檢查](tools/verify_promo.py)核兩片串流及時長。推廣片mean -18.6dB、peak -4.5dB，沒有兩秒以上靜音、長黑幀或未分類凍結；字卡靜止另分類。抽幀改按時間取樣，避免60fps仍沿用舊25fps幀號。六格抽幀與57秒結尾卡已目視，字幕無裁切。技術音訊檢查不冒稱喇叭實聽。
+- README已更新新版實錄與推廣片入口。主manifest逐包重核原六包雜湊後加入兩片，provenance及品質收據保存來源SHA與時間線。影片只留本機，程式與文件推送私人儲存庫，v.0.4.0影片保留原身份。原程式仍是c4254d2／v.0.4.1，這次影片工具提交另記，不移tag。
+- 清理只刪本輪重複傳輸包、ada重複AppImage與解包層。本機251,035,648配置bytes，ada480,342,016配置bytes；來源、原始影／音、截圖、日誌、失敗身份與正式成品保留。兩端專案容器已結束並移除，root-owned與誤建.md目錄均零，沒有清其他專案的容器或映像。
+
+| 影片 | bytes | SHA-256 |
+|---|---:|---|
+| promo/Zeliard-v.0.4.1-20261021-promo.mp4 | 6854635 | `4dd2a729e9dc428b9ea10f700ac3970ae389e09cbf0aea477ff711130ea58369` |
+| promo/Zeliard-v.0.4.1-20261021-ada-gameplay.mp4 | 10170372 | `05f3d35988689079aa1c0454b23d7ea044fb6ccfc740cf5a0bb8f80d2a778af2` |

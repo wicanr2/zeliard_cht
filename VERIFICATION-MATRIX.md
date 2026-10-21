@@ -6,6 +6,7 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 053 ada遊玩實錄與新片 | 限定完成 | v.0.4.1原包在ada的RTX 2000 Ada上，以VirtualGL EGL及NVENC新錄；renderer及實際遊戲GPU函式庫、原始影片與二進位SHA保留。正常F7、城鎮、教堂中文、原貌／HD、洞窟操作及設定頁，DOS退出0、USR bytes／mtime不變。連續片55.45秒960×680／60fps含同期聲，mean -21.5／peak -3.6dB；推廣片60秒1280×720，mean -18.6／peak -4.5dB。訊號檢查及字幕／結尾目視通過，32秒新錄遊玩影片，其餘為同次實際截圖與字卡。不冒稱通關、全遊戲每幀、實體手把或逐取樣音畫同步。入口同版promo/provenance.json、quality.json及gameplay-quality.json |
 | 052 HD效能與受傷 | 限定CONFORMED | v.0.4.1-20261021。兩份真實移動畫面44.319ms→6.624ms，完整RGBA相同；五份正常接敵特殊姿態原版重建零差、HD元件組裝通過，三組未知反例仍拒絕。正常冷F7接敵變色與E8特殊姿態，兩組原貌／HD／HD返回共六張視窗，CPU／RAM／indexed／palette不變、HD返回576000像素相同，DOS退出0、USR bytes／mtime不變，根端已目視。兩版六包逐檔核對、Linux啟動、Windows Wine輔助啟動、macOS架構／結構通過。八組怪物與十組首領縮圖見README。未做真機手把、Windows／macOS真機或完整通關；補圖層速度不當整遊戲FPS保證 |
 | 051雙版本三平台與新版推廣片 | PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE | v.0.4.0-20261021，六包各含29份相同原版資料，CHT無HD圖庫且原貌啟動，CHT-HD完整補圖且HD啟動。Linux兩AppImage實際啟動、Windows兩ZIP以Wine輔助啟動；macOS兩ZIP核Intel／Apple Silicon與.app權限／結構。新版正常第一洞窟、教堂中文、原貌／HD切換與操作頁錄影，12張實際視窗、正常DOS退出0。新片60秒1280×720，音量-18.6／-4.5dB，無長黑幀／靜音，既定字卡及2.56秒遊戲停頓已分類，字幕與結尾目視。入口dist-all同版smoke/release-audit.json、promo/quality.json及SHA256SUMS.json。Windows／macOS真機、實體手把及全遊戲未驗 |
 | 050全圖補繪整合 | ART_INTEGRATED_MANUAL_REVIEW_PENDING | 30張生成圖、43組來源、8,392個完整／局部圖樣及1,221個主角／刀光組裝鍵已接入。Go前端編譯成功，正式載入器一次載入全部圖格、城鎮及1,631個物件來源，核圖檔尺寸與SHA-256。沒有啟動遊戲、GUI、對拍或抽樣試玩；接縫、遮擋、動畫、未知來源及實際可達由整體人工驗收。`workplace/full-hd-v1/manual-hd-v1/integration-result.json`保存輸入與輸出身份。v.0.3.1包不包含本批補圖 |

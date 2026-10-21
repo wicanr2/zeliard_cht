@@ -6543,7 +6543,10 @@
       "CHT-HD"
     ],
     "packages": 6,
-    "promo_seconds": null,
-    "previous_promo": "dist-all/v.0.4.0-20261021/promo/Zeliard-v.0.4.0-20261021-promo.mp4"
+    "promo_seconds": 60,
+    "previous_promo": "dist-all/v.0.4.0-20261021/promo/Zeliard-v.0.4.0-20261021-promo.mp4",
+    "gameplay_seconds": 55.45,
+    "promo_capture": "ada RTX 2000 Ada / VirtualGL EGL / NVENC",
+    "promo_manifest": "dist-all/v.0.4.1-20261021/promo/provenance.json"
   }
 }

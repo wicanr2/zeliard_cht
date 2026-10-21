@@ -2,6 +2,14 @@
 
 更新日期：2026-10-21，Asia/Taipei。
 
+## 現行錄影任務053
+
+使用者要求在ada錄製遊玩片段，重新製作推廣片。已由ada的NVIDIA RTX 2000 Ada以VirtualGL EGL硬體繪圖及NVENC重新擷取v.0.4.1，保留實際遊戲載入的GPU函式庫與renderer證據。入口為[053](docs/spec/053-ada-gameplay-promo.md)，工作區workplace/ada-promo-v1。
+
+正式成品位於dist-all/v.0.4.1-20261021/promo：連續遊玩55.45秒、960×680、60fps，保留PulseAudio監聽同期聲；推廣片60秒、1280×720，使用新錄畫面與既有可追溯原版標題曲。兩片AV與訊號檢查通過，推廣片字幕及結尾目視通過。來源、時間線與雜湊見provenance.json、quality.json及gameplay-quality.json。
+
+起初ada別名無法解析；使用者指定既有登入腳本後已連線，不再等待連線資訊。憑證未搬入專案。正常遊玩及DOS退出0，USR內容與mtime不變。現行六包、下方052驗收與v.0.4.0影片維持原身份。
+
 ## 目前狀態表
 
 使用者回報HD移動較慢及受傷退回原貌，另要求怪物、魔王總覽加入GitHub README。本輪入口為[052](docs/spec/052-hd-runtime-damage.md)，工作區workplace/hd-runtime-v1，修正版v.0.4.1-20261021。051及其影片保留原身份。
