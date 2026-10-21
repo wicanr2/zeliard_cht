@@ -26,7 +26,7 @@
 - [雙版本建置](tools/build_dual_release.sh)讀取[VERSION](VERSION)，以Docker執行prepare、compile及package；先建立同版本的workplace/release-v100空目錄，再呼叫`bash tools/build_dual_release.sh all`。既有版本輸出拒絕覆寫，重現已發布版本請使用隔離工作樹及空輸出根。
 - [影片沿用核對](tools/promote_release_media.py)在Docker內接受來源版號`v.0.4.1-20261021`；只在遊戲、dosgolem、原版與圖面來源相同時複製，保留原錄製身份及SHA。
 - [封包啟動](tools/platform_smoke.py)、[正常受傷HD](tools/hd_runtime_smoke.py)、[六包內容核對](tools/audit_dual_release.py)與[清理](tools/cleanup_dual_release.py)保存在專案，命令與結果見[WORKLOG](WORKLOG.md#2026-10-21-054正式版100結案)。
-- GitHub維持私人儲存庫`wicanr2/zeliard_cht`，來源發行使用同名正式tag。含原版資料與衍生美術的六包及影片只留本機。
+- GitHub維持私人儲存庫`wicanr2/zeliard_cht`，[正式來源Release](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.0-20261021)已發布，非草稿、非預發行；同名tag固定來源提交`556a113`，未上傳任何封包附件。含原版資料與衍生美術的六包及影片只留本機。
 
 ## 驗收邊界
 

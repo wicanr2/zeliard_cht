@@ -1592,3 +1592,5 @@ CONTEXT改為唯一精簡現況，WORKLIST改為已結案清單。舊CONTEXT與W
 唯一現行交付dist-all/v.1.0.0-20261021。full-local共六包，promo共兩片，smoke保留新包收據。Windows／macOS真機、實體手把、完整通關與全遊戲逐幀仍未驗；未知來源維持原貌，不升證據等級。本輪沒有必要工作待續。
 
 主機gh auth status已通過，回讀儲存庫為PRIVATE。只推原始碼、文件、既有已授權文件縮圖與正式tag，GitHub Release只含說明與自動來源快照，不上傳任何完整版或影片。正式來源提交由同名tag固定，發布回讀紀錄另追加。
+
+054發布回讀：正式來源提交`556a113bf890936588ff9d29ee0095b06527a471`，annotated tag物件`81682b7341537d825ea6bc7ad68625eca6b2fba2`，main與新tag已原子推送。GitHub Release https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.0-20261021 已建立，2026-10-21T09:35:02Z發布，isDraft=false、isPrerelease=false、assets=[]，儲存庫回讀PRIVATE。回讀證明為workplace/release-v100/github-publication.json，正式manifest亦附來源commit及tag。此段發布回讀與README連結作後續純文件提交；已發布tag不移動。結案無待續工作。
