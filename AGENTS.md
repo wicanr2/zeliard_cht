@@ -1,5 +1,9 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+現行修正入口：[052 HD效能與受傷顯示](docs/spec/052-hd-runtime-damage.md)。工作區為workplace/hd-runtime-v1；不改原版速度或規則。怪物與魔王總覽只提供使用者指定的README文件縮圖。
+
+052工具入口：[效能與受傷來源檢查](internal/prototype/hd/runtime_art_test.go)、[正常受傷操作](tools/hd_runtime_smoke.py)、[圖庫總覽製圖](tools/readme_creatures.py)及[縮圖來源清單](docs/images/creatures-provenance.json)。原圖與完整素材不加入Git。
+
 ## 2026-10-21最新使用者指示
 
 使用者已接續授權完成串接、新推廣片與兩種版本各三平台完整版，依[051雙版本交付](docs/spec/051-dual-edition-release.md)。取代先前暫不打包的階段安排。入口為[build_dual_release.sh](tools/build_dual_release.sh)與[package_dual_release.py](tools/package_dual_release.py)，中間產物只放workplace/release-v040/。允許本次封包啟動及錄影所需整合檢查，不重開完整對拍或通關。正式產物只放dist-all/v.0.4.0-20261021/，完整素材與影片留本機。

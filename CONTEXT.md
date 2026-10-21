@@ -2,13 +2,29 @@
 
 更新日期：2026-10-21，Asia/Taipei。
 
-## 最新指示與正在製作
+## 目前狀態表
+
+使用者回報HD移動較慢及受傷退回原貌，另要求怪物、魔王總覽加入GitHub README。本輪入口為[052](docs/spec/052-hd-runtime-damage.md)，工作區workplace/hd-runtime-v1，修正版v.0.4.1-20261021。051及其影片保留原身份。
+
+| 工作 | 現況 |
+|---|---|
+| HD搜尋成本 | 兩份真實移動畫面由44.32ms降至6.62ms，約6.7倍；完整RGBA與修改前相同。這是補圖層基準，非整個遊戲FPS保證 |
+| 受傷來源 | 五份正常接敵特殊姿態因持盾＋E8被拒；最小守衛擴充後，完整原版重建零差，既有fman-all可組成HD姿態；未知組合仍拒絕 |
+| 原版變色 | 正常路徑另捕FF36=255；原版色盤未變，來源仍可呈現，不以全域放寬色盤處理 |
+| README圖庫總覽 | 已製作八組怪物與十組首領原版／HD文件縮圖，來源及雜湊見docs/images/creatures-provenance.json |
+| 正常GUI與交付 | 完成；正常F7接敵變色及E8特殊姿態、六張視窗、原貌／HD同狀態切換、正常DOS退出0及USR不變。兩版本六包內容與啟動／架構檢查通過，完整包只留本機 |
+
+效能與來源檢查為[本輪測試](internal/prototype/hd/runtime_art_test.go)，實際視窗入口為[受傷操作檢查](tools/hd_runtime_smoke.py)，圖庫縮圖由[製圖工具](tools/readme_creatures.py)重建。原始來源、舊RGBA與CPU profile保留於baseline；五份來源及正常鍵序在probe，完整事件分類在events。
+
+現行完整版位於dist-all/v.0.4.1-20261021/full-local；CHT與CHT-HD各有Linux AppImage、Windows ZIP及macOS通用ZIP。版本清單為同版SHA256SUMS.json，核對收據為smoke/release-audit.json。本輪未重錄影片；v.0.4.0影片維持原身份。Windows／macOS真機、實體手把及全遊戲動畫仍未驗。
+
+## 051交付歷史
 
 已完成[051雙版本三平台交付](docs/spec/051-dual-edition-release.md)：顯示串接、新版60秒推廣片、CHT及CHT-HD各三平台完整包。版本v.0.4.0-20261021，正式輸出dist-all同版，工作區workplace/release-v040。CHT不附HD圖庫，CHT-HD預設HD並包含完整補圖；兩版共用相同程式與相容存檔。
 
 先補圖再一次整合的製作階段已結束。本次依接續授權完成封包啟動、第一洞窟錄影與影片檢查，不重跑完整原版對拍或通關。v.0.3.1保留前次候選身份。
 
-## 目前狀態表
+## 051交付狀態表
 
 | 項目 | 2026-10-21現況 |
 |---|---|

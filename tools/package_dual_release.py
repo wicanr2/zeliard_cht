@@ -10,9 +10,10 @@ import re
 import shutil
 import zipfile
 
-P=Path('/project');W=P/'workplace/release-v040'
+P=Path('/project')
 VERSION=(P/'VERSION').read_text().strip()
 if not re.fullmatch(r'v\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]{8}',VERSION):raise ValueError('版號格式不符')
+W=Path(os.environ.get('ZELIARD_RELEASE_WORK',str(P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.','')))))
 D=P/'dist-all'/VERSION
 OLD=P/'workplace/music-release-v1/release-build'
 FONT=P/'workplace/full-hd-v1/manual-hd-v1/rounded-font'

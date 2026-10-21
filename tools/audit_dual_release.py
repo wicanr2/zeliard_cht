@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """051：核對六個完整包的來源、模式、平台、內容、啟動與新版影片。"""
 from pathlib import Path
-import hashlib,json,plistlib,struct,subprocess,tempfile,zipfile
+import argparse,hashlib,json,plistlib,struct,subprocess,tempfile,zipfile
 
-P=Path('/project');W=P/'workplace/release-v040';VERSION=(P/'VERSION').read_text().strip();D=P/'dist-all'/VERSION
+parser=argparse.ArgumentParser();parser.add_argument('--runtime-fix',action='store_true',help='052受傷修正版，不要求重製051影片');args=parser.parse_args()
+P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.',''));D=P/'dist-all'/VERSION
 sha=lambda data:hashlib.sha256(data).hexdigest()
 def pe(data):
     assert data[:2]==b'MZ';at=struct.unpack_from('<I',data,0x3c)[0];assert data[at:at+4]==b'PE\0\0';assert struct.unpack_from('<H',data,at+4)[0]==0x8664
@@ -64,11 +65,16 @@ for edition in ('CHT','CHT-HD'):
         reports.append({'edition':edition,'platform':platform,'files':len(names),'original_files':len(original),'mode_correct':True,'contents_and_hashes':'PASS','launch':'PASS_NATIVE' if platform=='Linux' else 'PASS_WINE_AUXILIARY' if platform=='Windows' else 'STRUCTURE_ONLY_NOT_MAC_HARDWARE'})
         if platform!='Linux':z.close()
 
-gui=json.loads((D/'smoke/integration/receipt.json').read_text());assert gui['status']=='PASS_SCOPED_FIRST_CAVE_INPUT_CHINESE_HD'
-assert gui['binary_sha256']==sha((W/'linux/zeliard-preview').read_bytes()) and gui['boots'][0]['normal_DOS_exit']
-for shot in gui['shots']:assert shot['state']['audio_output']['last_error']==''
-qa=json.loads((D/'promo/quality.json').read_text());assert qa['status']=='PASS_PROMO_TECHNICAL_QA'
-report={'status':'PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE','version':VERSION,'packages':reports,'promo_seconds':qa['seconds'],'full_game_or_every_frame_verified':False,'physical_gamepads_tested':False,'windows_hardware_tested':False,'macos_hardware_tested':False,'rights':'full-local only; no remote publication'}
+gui=json.loads((D/'smoke/integration/receipt.json').read_text())
+assert gui['binary_sha256']==sha((W/'linux/zeliard-preview').read_bytes())
+if args.runtime_fix:
+    assert gui['status']=='PASS_HD_RUNTIME_DAMAGE_GUI' and gui['normal_DOS_exit']==0 and gui['save_unchanged'] and gui['injured_hd_verified']
+    qa={'seconds':None}
+else:
+    assert gui['status']=='PASS_SCOPED_FIRST_CAVE_INPUT_CHINESE_HD' and gui['boots'][0]['normal_DOS_exit']
+    for shot in gui['shots']:assert shot['state']['audio_output']['last_error']==''
+    qa=json.loads((D/'promo/quality.json').read_text());assert qa['status']=='PASS_PROMO_TECHNICAL_QA'
+report={'status':'PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE','version':VERSION,'packages':reports,'promo_seconds':qa['seconds'],'runtime_damage_fix':args.runtime_fix,'full_game_or_every_frame_verified':False,'physical_gamepads_tested':False,'windows_hardware_tested':False,'macos_hardware_tested':False,'rights':'full-local only; no remote publication'}
 (D/'smoke/release-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(report['status'],flush=True)
 for temp in temporary:temp.cleanup()

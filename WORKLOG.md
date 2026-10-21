@@ -1521,3 +1521,23 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 | full-local/Zeliard-v.0.4.0-20261021-CHT-Linux-x86_64.AppImage | 14866936 | `eb3f3ea9b42aad3ca650753008b13307151b0ede875c728bfa108f6bd300666b` |
 | full-local/Zeliard-v.0.4.0-20261021-CHT-HD-Windows-x86_64.zip | 200593291 | `da7c2d6a128e84ccb60da62f2c96123ddb6890b41903362787c6ca697b6c0dca` |
 | promo/Zeliard-v.0.4.0-20261021-promo.mp4 | 5039155 | `bca18fc19f4f375f8f385f795cce0a764aeb9978f385536f5f7ecc5cb3577b7b` |
+
+## 2026-10-21 052：HD加速、受擊特殊姿態與怪物／魔王總覽
+
+使用者回報HD移動慢、受傷退回原貌，要求加速、補受傷HD及在GitHub README顯示怪物與魔王總覽。路由命中復古重製技能、README標準、文件職責，另於製作修正包前重讀版號與dist-all契約。現況以CONTEXT首表與[052](docs/spec/052-hd-runtime-damage.md)為準，沒有重新開啟通關或整個原版反編譯。
+
+- 修改前以兩份既有正常洞窟來源交替繪製，保留原程式、兩份完整RGBA、Go測試binary與CPU profile。補圖層連原版三倍底圖44.319ms／畫格。熱點為每像素四次完整圖樣雜湊查詢及繪製時色彩轉換；改為當前資源索引、兩byte前綴及整數錨點，載入時解色彩。完整錨點、圖樣、透明、繪製順序及來源守衛不變。同容器兩核心基準6.624ms，約6.7倍；兩份960×600完整輸出與修改前相同，不外推整遊戲FPS。
+- 沿正常冷F7、繩索接敵保存五份E8特殊姿態。原0093=2、E8=255組合被守衛拒絕，並非整幅HD圖庫未載入。依048已存IDA consumer證據，以診斷overlay僅加單一持盾資格，五份完整原版重建零差，既有fman-all能組成高清；未生成替代規則或新碰撞。完成READY後正式接入，三組合成未知反例仍拒絕。來源與基準在workplace/hd-runtime-v1，詳RESEARCH-LOG。
+- 額外正常事件分類確認FF36=255變色仍使用相同原版色盤，不放寬色盤守衛。[正常GUI](tools/hd_runtime_smoke.py)抽測變色及E8特殊姿態，各拍原貌／HD／HD返回共六張實際視窗；步數、cycles、RAM、indexed及palette不變，HD返回576000像素相同，地形／主角HD均匹配，DOS退出0、USR bytes／mtime不變，根端已目視。首份導航腳本的RGB緩衝變數與既有迴圈變數重名造成IndexError；只修腳本，在相同容器乾淨重跑通過，失敗身份保留於smoke/integration-attempt-1。
+- [製圖工具](tools/readme_creatures.py)用既有選定圖面製作八組怪物及十組首領的原版／HD對照JPG，兩圖已目視並以相對連結加入README。docs/images/creatures-provenance.json記錄選定版本、來源、尺寸及SHA。這次沒有呼叫imagegen；完整圖庫不入Git，只加入使用者指定的文件縮圖。
+- 修正版v.0.4.1-20261021由乾淨輸入重建CHT及CHT-HD各三平台。六包內容、SHA、同29份原版、模式、圓體字型及音源核對通過；Linux兩AppImage實際啟動、Windows兩ZIP以Wine輔助啟動，macOS兩ZIP核通用架構及.app權限／結構。Windows／macOS真機、實體手把及全遊戲未驗。本次未重錄推廣片，v.0.4.0影片及tag保留原身份，不建立含原版的遠端Release。
+- 封包工具依VERSION選獨立工作區，不再固定release-v040；新輸出為dist-all/v.0.4.1-20261021，固定程式／dosgolem在workplace/release-v041。193份來源與凍結輸入相同。清理前逐一核正式包SHA，清除重複建置、解壓、Wine及專案Go快取3,860,123,648配置bytes，約3.60GiB。正式包、原版、唯一素材、來源、截圖、存檔、基準與收據保留。root-owned與誤建.md目錄均零，專案容器均已結束並移除。
+
+| 正式包 | bytes | SHA-256 |
+|---|---:|---|
+| full-local/Zeliard-v.0.4.1-20261021-CHT-HD-Linux-x86_64.AppImage | 197863928 | `94512c3fec4080655275281be3986e36b4aa12655298c85cd32577bec7eadbb5` |
+| full-local/Zeliard-v.0.4.1-20261021-CHT-Windows-x86_64.zip | 12910964 | `92c577911a2c6c9cfd47f72c2403f333094d6a0f71e916cfc166d893e5464cf3` |
+| full-local/Zeliard-v.0.4.1-20261021-CHT-macOS-universal.zip | 20026689 | `b66be852cb60f12382a470bc73fd62eff730ab2c69da27c3608dccfc407a4898` |
+| full-local/Zeliard-v.0.4.1-20261021-CHT-HD-Windows-x86_64.zip | 200597784 | `dd63f3cd53ae03b72ad19b2a2770b80a9ec15008db0dcb6444c19f3e46efaab1` |
+| full-local/Zeliard-v.0.4.1-20261021-CHT-HD-macOS-universal.zip | 209145874 | `7687c065faf42db320380cb45a3bc280a75bfdfe25c8548f81a7e11c3137e8ca` |
+| full-local/Zeliard-v.0.4.1-20261021-CHT-Linux-x86_64.AppImage | 14871032 | `122119579910a92d6396f8cd8dc01b84c36b9acdc5aae3e38687ee8a7b491f60` |

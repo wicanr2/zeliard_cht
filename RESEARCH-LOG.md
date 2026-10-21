@@ -1,5 +1,13 @@
 # 原版與手冊證據
 
+## 2026-10-21：052受擊變色及持盾特殊姿態
+
+- 固定原版EXE SHA-256 `fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341`，SAVEM1.USR SHA-256 `03df9abcf62b1712d6b46dd1fc5b23335a4b8711b3dc84875a1498260d37735c`。Go1.24.13與既有專案dosgolem副本，唯讀原版，正常F7使用可寫USR副本。來源與工具雜湊在workplace/hd-runtime-v1/probe/receipt.json，原始鍵序為同工作區hurt.commands。
+- 已證實：原呈現器在0093=2、00E8=255、FF38=0、FF40=0且無其他特殊profile時，以unobserved combined shield profile撤除洞窟HD。五份原版完成來源保留完整／主體RAM、indexed、palette與原始定位；沒有注入狀態。完成回呼內只記錄後者機器，雙原版完整狀態及存檔核對限具名觀察點與結束，不冒稱每個回呼均同步雙機。
+- 已證實的繪製語意沿048 IDA9.4證據：01B1段內3AAE..3ABB跳過後手，3B94..3BAB與3BE7..3BF0選E8主體，3BFD..3C26跳過前手。位址為段內偏移，不是EXE檔案偏移。診斷編譯只增單一組合資格，五份224×144原版重建均零差，高清fman-all皆可組成。未推導受傷數值、無敵時間或正式玩法規則。
+- 已證實：正常接敵變色時FF36=255，768byte palette仍為SHA-256 `6dc0b8c0cf558eb91b0582a80b6d5970b701b235b9964adbff3d2dedfad3d08c`。events/events.json保留正常、變色及E8特殊姿態分類與來源；不以放寬整體色盤守衛處理。
+- 正式GUI由本輪六包的相同Linux二進位執行，正常接敵變色及E8特殊姿態均有角色／地形HD；兩組切換不改CPU、RAM、indexed或palette，高清返回像素相同。收據在dist-all/v.0.4.1-20261021/smoke/integration/receipt.json。其他受傷裝備組合、後段動畫與全遊戲仍未驗，完整規格及限制見[052](docs/spec/052-hd-runtime-damage.md)。
+
 ## 2026-10-18：輸入盤點與中文手冊初讀
 
 - 原始輸入雜湊見 [CONTEXT.md](CONTEXT.md) 的「原始輸入」。本節未引用程式位址，只引用壓縮檔成員與手冊印刷頁碼。

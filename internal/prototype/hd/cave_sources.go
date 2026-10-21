@@ -285,7 +285,9 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 	shield := bp[0x93] == 2
 	// 028／048：FF3A離洞及FF39分支共用7E前手，其餘組合仍拒絕。
 	shieldTransition := shield && (bp[0xff3a] == 255 || bp[0xff39] == 255) && bp[0xe8] == 0 && bp[0xff38] == 0 && bp[0xff40] == 0
-	if shield && profiles != 0 && !shieldTransition {
+	// 052：持盾受傷沿既有E8主體分支，無前／後手；五份正常來源完整重建零差。
+	shieldHurt := shield && bp[0xe8] == 255 && profiles == 1 && bp[0xff38] == 0 && bp[0xff40] == 0
+	if shield && profiles != 0 && !shieldTransition && !shieldHurt {
 		return nil, fmt.Errorf("unobserved combined shield profile")
 	}
 	if bp[0xff40] != 0 && bp[0xff40] != 255 {

@@ -1,0 +1,158 @@
+{
+  "scope": "使用者指定加入私人GitHub README的圖庫文件縮圖；原版與衍生美術不適用自有程式授權",
+  "pillow": "9.4.0",
+  "tool_sha256": "efeb4ccdc27ca64f5fb26d2399fb3d505a2989b4afdda34e116d6b2e3b2e6520",
+  "font_sha256": "9d5bf4932d31fe94c18cd8cfddc98bc1b14ce10f4e354c682179db290a99c825",
+  "plan_sha256": "0beb04f6d94ac422eae761bd228fcbcf85be18190786426da03129bc6ccefa2b",
+  "selected_sha256": "00afaaefc4fd6e67427d14b3ba5a5ee896c448f70ed79b9364f70f4aea3a93db",
+  "sources": {
+    "workplace/full-hd-v1/manual-hd-v1/references/enp1-own-frames-v3.png": {
+      "sha256": "cded2777ccedce4c7adf0063eea4913ea1c6d833efe74cda93008ac5df31b026"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/enp1-generated-v1.png": {
+      "sha256": "eb3fc2dd27b64674fe3c67860ee1756f2d375ad6766930cee07927b86646d087"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/enp2-own-frames-v3.png": {
+      "sha256": "8920f524891d114016e7c7b9d845e7f628879fd1ed87db46bfa42d6146441258"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/enp2-generated-v2.png": {
+      "sha256": "e94cb126fa90fce116d4647b430dca70f33fb875f066609d1e28e6134852255d"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/enp3-own-frames-v3.png": {
+      "sha256": "d2c563cf9e3902a3e08c29baadf2b7e772b19f587b7e2686152c5fe65c8f9920"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/enp3-generated-v2.png": {
+      "sha256": "77cb531a9700828da666358589fe520a273c70a778c7595c4f564264ef6f49b7"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/enp4-own-frames-v3.png": {
+      "sha256": "1a67dab5f1198e402f152bbca00284934d5c2d136ae8d38ffaca47b1f9296260"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/enp4-generated-v2.png": {
+      "sha256": "c1089536f76b4311c9e2ceeb122961d8ba376be1fad49c5d88e55b2b73936e16"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/enp5-own-frames-v3.png": {
+      "sha256": "6d0f5a3278ba4374b918915488856b946557d88c1f84d0885c4f68886acc4aac"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/enp5-generated-v3.png": {
+      "sha256": "f7a0fddebbe78640058fa548ac9fe5b5931b650753bb991f695a78969a9031ae"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/enp6-own-frames-v3.png": {
+      "sha256": "8c043f10e6724c1038608662dce35d8ce3bd0a6eb686ee86750af176446404b6"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/enp6-generated-v3.png": {
+      "sha256": "9f6186d030fdf4ec4fd003160e2818ec21fdf69452b88a57cd7a3986e2be9923"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/enp7-own-frames-v3.png": {
+      "sha256": "8041dc23110541e862756052da1bddc0ef16de2fd01aed421083012fba0199cf"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/enp7-generated-v2.png": {
+      "sha256": "d686be004c0b31c755dd9a9460ca0b25edc10a656cdaef7695dedc1979b2fcf1"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/enp8-own-frames-v3.png": {
+      "sha256": "692ba49163f9c03f9641c1540dcc1f72fef6810aa13d86d6b68169770eb5e234"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/enp8-generated-v3.png": {
+      "sha256": "1e036f0238aab3440f72991435c2a77fa6fc212512590534e485c083aeb76a1a"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/crab-own-components-v5.png": {
+      "sha256": "c7acb5603d41af8fd48cd7c48311d4c7debd1c9e807ed9890b098fecd19a0cbd"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/crab-generated-v1.png": {
+      "sha256": "7df5587b6a256efc47a600709ed0975bb29b87dcfd4f63b5f3efccc5e382e4d0"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/tako-own-components-v5.png": {
+      "sha256": "a09c7a9582077c831067c05c48f73d41c7a76186bf3e65125e9b532136a775ee"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/tako-generated-v1.png": {
+      "sha256": "f165f33d15e0b12780359d3e2c4dd160712dc9f02ff9a15b98988552442041e9"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/tori-own-components-v5.png": {
+      "sha256": "6bf08da4b73d42f9df95f5607fcfde22744a9b728d2a4078419cb79f372e9fd7"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/tori-generated-v1.png": {
+      "sha256": "1bf91da4059f206d8e2941d649fbd8f167247b68c4ec6f4e7877f2dea191e751"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/zela-own-components-v5.png": {
+      "sha256": "a6b4312a51347fb624a6b4339fc126c1f7e1404f336a4b0dd8f93d8431378adc"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/zela-generated-v1.png": {
+      "sha256": "e59e5388d3d5f8f7dfd7de85caee39fa9562ce83a91991fc883c4ae362461a76"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/meda-own-components-v5.png": {
+      "sha256": "a5d27c992d2f21d512b26118384bd406e10b9771fdf938d084a95d4c2c8abbfb"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/meda-generated-v2.png": {
+      "sha256": "c8951b46fc4899a256c4c51c74fe56be604e50abd17755940b5453889489841e"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/lega-own-components-v5.png": {
+      "sha256": "b1fdc9df7b14f8f762acd63bef2538581f7a9075fee084baaf8ff1bb4aba7b1e"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/lega-generated-v2.png": {
+      "sha256": "e96f8d872cf01070f0e1eb1922d2ffd7039cb53ba934e3460c912340fb8c6228"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/drgn-own-components-v5.png": {
+      "sha256": "c03e99c91d0062c207723ffa184f788472c320b25988a14575c063c63e96fb12"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/drgn-generated-v2.png": {
+      "sha256": "7706b917c1b86380876a8c440255154f9a0e8a57a0b6e90627fee1bfbf8eaddb"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/akma-own-components-v5.png": {
+      "sha256": "58342a2d951611564c2a0d3db49423450808b75f284546f12c038f84d84e9318"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/akma-generated-v2.png": {
+      "sha256": "78b519f88ef2663b5800103deb2c05a22f029f0318d6db20fc349dbd6de0f2a8"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/mao1-own-components-v5.png": {
+      "sha256": "a344495ec945cb82924d70ac3970d4d0230e3e291adee89be28d4cc797884e7a"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/mao1-generated-v2.png": {
+      "sha256": "15e4970596250aa631d9d060c062dfa9dfec1a5d914bd335e4c23d223f50474b"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/references/mao2-own-components-v5.png": {
+      "sha256": "d548630119629b40b4cf396964b3eee94b7a327fec9afd9a2dd7e77969b457ec"
+    },
+    "workplace/full-hd-v1/manual-hd-v1/generated/mao2-generated-v2.png": {
+      "sha256": "f073a7cde76de9fa6a268a1870806bae8867f0a85047cea7bc81457b37036de1"
+    }
+  },
+  "outputs": {
+    "enemies-overview.jpg": {
+      "sha256": "c02202e81973ab6eaf66a42b87dbe7d7c1da78f042535025a84643045b09c6cc",
+      "bytes": 780935,
+      "size": [
+        1600,
+        1990
+      ],
+      "families": [
+        "enp1",
+        "enp2",
+        "enp3",
+        "enp4",
+        "enp5",
+        "enp6",
+        "enp7",
+        "enp8"
+      ]
+    },
+    "bosses-overview.jpg": {
+      "sha256": "ffb1d44cc731d60ebf084dd65cc0cc39eb79df245a8ab004d9a56c427e5a60ab",
+      "bytes": 948918,
+      "size": [
+        1600,
+        2430
+      ],
+      "families": [
+        "crab",
+        "tako",
+        "tori",
+        "zela",
+        "meda",
+        "lega",
+        "drgn",
+        "akma",
+        "mao1",
+        "mao2"
+      ]
+    }
+  }
+}

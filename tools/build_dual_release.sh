@@ -3,12 +3,14 @@ set -euo pipefail
 project=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 IFS= read -r version < "$project/VERSION"
 [[ $version =~ ^v\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]{8}$ ]]
-work="$project/workplace/release-v040"
+version_core=${version#v.}
+version_core=${version_core%%-*}
+work="$project/workplace/release-v${version_core//./}"
 [[ -d "$work" && -d "$project/dist-all" && -d "$project/workplace/gocache" && -d /home/anr2/cht/dosgolem/workplace/gomodcache ]]
 common=(--rm --label project=zeliard --network none --user "$(id -u):$(id -g)" --memory 3g --cpus 2 --pids-limit 256)
 phase=${1:-all}
 if [[ $phase == all || $phase == prepare ]]; then
-  timeout 180 docker run "${common[@]}" -v "$project:/project:ro" -v "$work:/project/workplace/release-v040:rw" -v "$project/dist-all:/project/dist-all:rw" eob-audio-capture:20261009-r3 python3 /project/tools/package_dual_release.py prepare
+  timeout 180 docker run "${common[@]}" -v "$project:/project:ro" -v "$work:$work:rw" -v "$project/dist-all:/project/dist-all:rw" -e "ZELIARD_RELEASE_WORK=$work" eob-audio-capture:20261009-r3 python3 /project/tools/package_dual_release.py prepare
 fi
 mounts=(-v "$work:/build:rw" -v /home/anr2/cht/dosgolem/workplace/gomodcache:/gomodcache:ro -v "$project/workplace/gocache:/gocache:rw")
 envs=(-e GOWORK=/build/build.work -e GOCACHE=/gocache -e GOMODCACHE=/gomodcache -e GOPROXY=off -e GOSUMDB=off -e GOTOOLCHAIN=local -e GOMAXPROCS=2 -e "BUILD_VERSION=$version")
@@ -34,7 +36,7 @@ if [[ $phase == all || $phase == compile ]]; then
     lipo -create /build/mac-amd64/libzopl.dylib /build/mac-arm64/libzopl.dylib -output /build/macos/libzopl.dylib'
 fi
 if [[ $phase == all || $phase == package ]]; then
-  timeout 300 docker run "${common[@]}" -v "$project:/project:ro" -v "$work:/project/workplace/release-v040:rw" -v "$project/dist-all:/project/dist-all:rw" eob-audio-capture:20261009-r3 python3 /project/tools/package_dual_release.py assemble
+  timeout 300 docker run "${common[@]}" -v "$project:/project:ro" -v "$work:$work:rw" -v "$project/dist-all:/project/dist-all:rw" -e "ZELIARD_RELEASE_WORK=$work" eob-audio-capture:20261009-r3 python3 /project/tools/package_dual_release.py assemble
   [[ -d "$project/dist-all/$version/full-local" ]]
   for edition in CHT CHT-HD; do
     timeout 180 docker run "${common[@]}" -e ARCH=x86_64 -e "BUILD_VERSION=$version" -e "BUILD_EDITION=$edition" -v "$work:/build:ro" -v "$project/dist-all/$version/full-local:/delivery:rw" fd2-build-appimage:latest sh -c '

@@ -6533,15 +6533,17 @@
     ]
   },
   "current_release": {
-    "version": "v.0.4.0-20261021",
+    "version": "v.0.4.1-20261021",
+    "spec": "docs/spec/052-hd-runtime-damage.md",
     "status": "PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE",
+    "manifest": "dist-all/v.0.4.1-20261021/SHA256SUMS.json",
+    "scope": "HD搜尋加速、持盾接敵特殊姿態、八組怪物及十組首領README縮圖；非全遊戲逐幀驗收",
     "editions": [
       "CHT",
       "CHT-HD"
     ],
     "packages": 6,
-    "promo_seconds": 60,
-    "manifest": "dist-all/v.0.4.0-20261021/SHA256SUMS.json",
-    "scope": "Linux啟動、Windows Wine輔助啟動、macOS通用架構與結構；正常第一洞窟錄影。全遊戲、真機與實體手把未驗。"
+    "promo_seconds": null,
+    "previous_promo": "dist-all/v.0.4.0-20261021/promo/Zeliard-v.0.4.0-20261021-promo.mp4"
   }
 }

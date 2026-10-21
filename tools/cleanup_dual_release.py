@@ -3,7 +3,7 @@
 from pathlib import Path
 import hashlib,json,os,shutil
 
-P=Path('/project');W=P/'workplace/release-v040';VERSION=(P/'VERSION').read_text().strip();D=P/'dist-all'/VERSION
+P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.',''));D=P/'dist-all'/VERSION
 def sha(file):
     h=hashlib.sha256()
     with file.open('rb') as stream:

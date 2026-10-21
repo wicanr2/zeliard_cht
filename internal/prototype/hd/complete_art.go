@@ -3,6 +3,7 @@ package hd
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"image"
@@ -27,6 +28,7 @@ type completeEntry struct {
 	Hash                 string `json:"sha256"`
 	Raster, Mask, Colors []byte
 	art                  image.Image
+	pixels               []color.NRGBA
 	ax, ay, anchorLen    int
 	baseline             byte
 }
@@ -34,15 +36,13 @@ type completePlacement struct {
 	entry *completeEntry
 	x, y  int
 }
-type completeSignature struct {
-	length byte
-	value  [8]byte
-}
 type CompleteArtwork struct {
 	groups             []completeGroup
 	entries            []*completeEntry
 	components         map[string]map[string]image.Image
-	index              map[completeSignature][]*completeEntry
+	index              [4]map[uint64][]*completeEntry
+	prefix             [65536]uint8
+	singles            [256][]*completeEntry
 	active, lastActive []bool
 	lastRaw            []byte
 	placements         []completePlacement
@@ -67,7 +67,7 @@ func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
 	if m.Schema != 1 || m.Scale != 3 || len(m.Entries) == 0 || len(m.Entries) > 16384 || len(m.Groups) > 128 {
 		return nil, fmt.Errorf("全圖補繪清單不符")
 	}
-	s := &CompleteArtwork{groups: m.Groups, index: map[completeSignature][]*completeEntry{}, components: map[string]map[string]image.Image{}, active: make([]bool, len(m.Groups))}
+	s := &CompleteArtwork{groups: m.Groups, components: map[string]map[string]image.Image{}, active: make([]bool, len(m.Groups))}
 	for _, g := range m.Groups {
 		for _, b := range g.Bindings {
 			if (b.Segment != "r" && b.Segment != "e") || b.Offset < 0 || len(b.Data) == 0 || b.Offset+len(b.Data) > 65536 {
@@ -85,6 +85,12 @@ func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
 			return nil, err
 		}
 		e.art = im
+		e.pixels = make([]color.NRGBA, e.Width*e.Height*9)
+		for y := 0; y < e.Height*3; y++ {
+			for x := 0; x < e.Width*3; x++ {
+				e.pixels[y*e.Width*3+x] = color.NRGBAModel.Convert(im.At(x, y)).(color.NRGBA)
+			}
+		}
 		for j, v := range e.Raster {
 			if len(e.Mask) != 0 && e.Mask[j] == 0 {
 				continue
@@ -129,11 +135,6 @@ func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
 		if best < 2 {
 			continue
 		}
-		var signature completeSignature
-		signature.length = byte(e.anchorLen)
-		at := e.ay*e.Width + e.ax
-		copy(signature.value[:], e.Raster[at:at+e.anchorLen])
-		s.index[signature] = append(s.index[signature], e)
 		s.entries = append(s.entries, e)
 	}
 	for _, e := range m.Components {
@@ -159,6 +160,7 @@ func (s *CompleteArtwork) resources(r, e []byte) {
 	if s == nil {
 		return
 	}
+	changed := false
 	for n, g := range s.groups {
 		active := true
 		for _, b := range g.Bindings {
@@ -171,8 +173,54 @@ func (s *CompleteArtwork) resources(r, e []byte) {
 				break
 			}
 		}
+		changed = changed || s.active[n] != active
 		s.active[n] = active
 	}
+	if changed {
+		s.reindex()
+	}
+}
+
+// 索引只含當前資源；兩byte前綴先排除無候選位置，避免每像素四次大型雜湊查詢。
+// 完整錨點、遮罩、整幅來源及原繪製順序仍逐項核對。
+func (s *CompleteArtwork) reindex() {
+	s.prefix = [65536]uint8{}
+	s.singles = [256][]*completeEntry{}
+	for i := range s.index {
+		s.index[i] = make(map[uint64][]*completeEntry)
+	}
+	for _, e := range s.entries {
+		if !s.active[e.Group] {
+			continue
+		}
+		at := e.ay*e.Width + e.ax
+		anchor := e.Raster[at : at+e.anchorLen]
+		if e.anchorLen == 1 {
+			s.singles[anchor[0]] = append(s.singles[anchor[0]], e)
+			continue
+		}
+		level := 1
+		if e.anchorLen == 4 {
+			level = 2
+		} else if e.anchorLen == 8 {
+			level = 3
+		}
+		key := completeAnchor(anchor)
+		s.index[level][key] = append(s.index[level][key], e)
+		s.prefix[binary.LittleEndian.Uint16(anchor)] |= 1 << uint(level)
+	}
+}
+
+func completeAnchor(b []byte) uint64 {
+	switch len(b) {
+	case 8:
+		return binary.LittleEndian.Uint64(b)
+	case 4:
+		return uint64(binary.LittleEndian.Uint32(b))
+	case 2:
+		return uint64(binary.LittleEndian.Uint16(b))
+	}
+	return uint64(b[0])
 }
 
 func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Point) bool {
@@ -192,16 +240,25 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 		s.placements = s.placements[:0]
 		for y := 0; y < 200; y++ {
 			for x := 0; x < 320; x++ {
-				for _, n := range []int{8, 4, 2, 1} {
+				var bits uint8
+				if x+2 <= 320 {
+					bits = s.prefix[binary.LittleEndian.Uint16(raw[y*320+x:y*320+x+2])]
+				}
+				for level := 3; level >= 0; level-- {
+					n := 1 << uint(level)
 					if x+n > 320 {
 						continue
 					}
-					signature := completeSignature{length: byte(n)}
-					copy(signature.value[:], raw[y*320+x:y*320+x+n])
-					for _, e := range s.index[signature] {
-						if !s.active[e.Group] {
+					var candidates []*completeEntry
+					if level == 0 {
+						candidates = s.singles[raw[y*320+x]]
+					} else {
+						if bits&(1<<uint(level)) == 0 {
 							continue
 						}
+						candidates = s.index[level][completeAnchor(raw[y*320+x:y*320+x+n])]
+					}
+					for _, e := range candidates {
 						px, py := x-e.ax, y-e.ay
 						if px < 0 || py < 0 || px+e.Width > 320 || py+e.Height > 200 {
 							continue
@@ -273,7 +330,7 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 				}
 				for dy := 0; dy < 3; dy++ {
 					for dx := 0; dx < 3; dx++ {
-						c := color.NRGBAModel.Convert(e.art.At(x*3+dx, y*3+dy)).(color.NRGBA)
+						c := e.pixels[(y*3+dy)*e.Width*3+x*3+dx]
 						if e.baseline > 0 && brightness < e.baseline {
 							c.R = uint8(uint32(c.R) * uint32(brightness) / uint32(e.baseline))
 							c.G = uint8(uint32(c.G) * uint32(brightness) / uint32(e.baseline))

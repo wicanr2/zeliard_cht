@@ -4,6 +4,8 @@
 
 提供「原版＋中文（CHT）」及「原版＋中文＋HD（CHT-HD）」兩套三平台完整包。CHT保留原版美術，不附HD圖庫；CHT-HD預設開啟手繪HD，可從工具列切回原貌。兩版都包含原版遊戲、圓體中文、配樂音色改善及鍵盤／手把設定，存檔相容。交付方式見[規格051](docs/spec/051-dual-edition-release.md)。
 
+HD 圖樣搜尋已加速，並補上持盾受擊後特殊姿態的高清接入。正常接敵變色與後續姿態均保留 HD 背景和角色，原版移動速度與規則不變。修正與驗證範圍見[規格052](docs/spec/052-hd-runtime-damage.md)。
+
 | 範圍 | 目前狀態 |
 |---|---|
 | 城鎮與室內 | 沿用既有場景，補齊八種室內圖庫、居民、城鎮地形及交談後景；接縫、遮擋與正常到達待人工驗收 |
@@ -51,9 +53,17 @@ HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝
 
 圖面來源、裁切範圍與 SHA-256 保存於 [圖片來源清單](docs/images/provenance.json)，由 [製圖工具](tools/readme_images.py) 從本機素材重建。本頁圖片是依使用者要求加入的文件預覽；原版與衍生美術不適用自有程式的授權，完整解析度素材仍留在本機。
 
+### 怪物與魔王總覽
+
+![八組怪物圖庫的原版與手繪HD總覽](docs/images/enemies-overview.jpg)
+
+![十組魔王與首領圖庫的原版與手繪HD總覽](docs/images/bosses-overview.jpg)
+
+每格左側為原版來源，右側為已接入的手繪 HD 圖庫縮圖。八組怪物與十組首領圖庫包含動畫姿態、局部元件及效果，數量不等於敵人種類。後段正常出場與完整動畫仍待人工檢視。來源與雜湊見[總覽來源清單](docs/images/creatures-provenance.json)，可用[製圖工具](tools/readme_creatures.py)重建。
+
 ## 開始遊玩
 
-本機完整版放在 `dist-all/v.0.4.0-20261021/full-local/`，包含遊戲資料，未上傳GitHub。檔名以`Zeliard-v.0.4.0-20261021-`開頭：
+本機完整版放在 `dist-all/v.0.4.1-20261021/full-local/`，包含遊戲資料，未上傳GitHub。檔名以`Zeliard-v.0.4.1-20261021-`開頭：
 
 | 平台 | 原版＋中文 | 原版＋中文＋HD |
 |---|---|---|
@@ -88,7 +98,7 @@ bash tools/play.sh
 
 包內附自建存檔SAVETEST，可按F7讀取後從Muralla鎮向右進入第一洞窟。存檔與操作設定保存在系統使用者設定目錄的 `Zeliard-CHT`：Linux為 `~/.config/Zeliard-CHT/`，Windows為 `%AppData%\Zeliard-CHT\`，macOS為 `~/Library/Application Support/Zeliard-CHT/`。可用 `ZELIARD_USER_DIR` 指定其他目錄。
 
-新版60秒推廣片在`dist-all/v.0.4.0-20261021/promo/Zeliard-v.0.4.0-20261021-promo.mp4`，使用這次實際遊戲錄影、雙版本對照與原版標題曲。檔案大小與SHA-256見同版`SHA256SUMS.json`，封包檢查見`smoke/`。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
+60秒推廣片示範v.0.4.0，在`dist-all/v.0.4.0-20261021/promo/Zeliard-v.0.4.0-20261021-promo.mp4`，使用實際遊戲錄影、雙版本對照與原版標題曲。各版檔案大小與SHA-256見同版`SHA256SUMS.json`，封包檢查見`smoke/`。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
 
 三平台雙版本建置入口為[tools/build_dual_release.sh](tools/build_dual_release.sh)，使用Docker與固定的本地原版、字型及HD圖組，拒絕覆寫既有輸出。錄影、影片與六包核對入口見[規格051](docs/spec/051-dual-edition-release.md)。版號由[VERSION](VERSION)指定；目前狀態見[CONTEXT.md](CONTEXT.md)。
 
