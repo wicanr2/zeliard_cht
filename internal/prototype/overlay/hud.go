@@ -297,19 +297,10 @@ func (h *HUD) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin image.
 		}
 		x := box.Min.X
 		for _, ch := range s.text {
-			g := h.font[ch]
-			w := len(g) / 16 * 8
+			w := len(h.font[ch]) / 16 * 8
 			dw := w * 3 / 2
-			for yy := 0; yy < 24; yy++ {
-				for xx := 0; xx < dw; xx++ {
-					sx, sy := xx*2/3, yy*2/3
-					if g[sy*(w/8)+sx/8]&(0x80>>uint(sx%8)) == 0 {
-						continue
-					}
-					dst.SetRGBA(x+xx+3, box.Min.Y+yy, color.RGBA{shadow[0], shadow[1], shadow[2], 255})
-					dst.SetRGBA(x+xx, box.Min.Y+yy, color.RGBA{fg[0], fg[1], fg[2], 255})
-				}
-			}
+			h.font.DrawGlyph(dst, image.Pt(x+3, box.Min.Y), ch, 24, color.RGBA{shadow[0], shadow[1], shadow[2], 255}, nil)
+			h.font.DrawGlyph(dst, image.Pt(x, box.Min.Y), ch, 24, color.RGBA{fg[0], fg[1], fg[2], 255}, nil)
 			x += dw
 		}
 		h.visible = append(h.visible, s.key)

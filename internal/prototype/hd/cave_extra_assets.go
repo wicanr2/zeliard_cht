@@ -79,7 +79,7 @@ func (s *CaveObjects) LoadExtra(dir string) error {
 }
 
 func (s *CaveObjects) maskedEnabled() bool {
-	return s != nil && len(s.masked) == len(caveMaskedObjects)
+	return s != nil && (len(s.masked) == len(caveMaskedObjects) || len(s.manual) != 0)
 }
 
 // 每格先恢復原版列舉端的背景。0仍是黑色，非零取沒有物件的HD下層。

@@ -2,19 +2,21 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-全遊戲 HD 仍在進行，尚未覆蓋所有素材。完整範圍見 [規格034](docs/spec/034-full-game-hd.md)，逐項狀態見 [覆蓋清單](docs/hd-coverage.json)。以下封包與截圖仍代表已交付的第一洞窟試玩範圍。
+Linux 新版收錄敵人、首領、後續城鎮與主要插畫的 HD 候選，依使用者指定交人工驗證。全遊戲 HD 尚未覆蓋所有畫面，部分片頭、結局動畫部件、交談背景、介面及未匹配來源仍保留原貌。完整範圍見 [規格034](docs/spec/034-full-game-hd.md)，本次交付方式見 [規格050](docs/spec/050-manual-hd-delivery.md)。
 
 | 範圍 | 目前狀態 |
 |---|---|
-| 城鎮與室內 | Muralla居民、城堡前景與旗幟、小屋石像、長老八手勢與武器店已知八姿態已驗；後續八城鎮已有前景美術候選，正常來源、校準與接入待驗，交談背景待補 |
+| 城鎮與室內 | 沿用 Muralla、城堡與既有室內成果；後續八城鎮前景及 CMAN 五類居民共40姿態已接候選，接縫、遮擋及正常到達待人工檢視 |
 | 洞窟地形 | 11組地形圖集具備，第一洞窟、綠色平台、魔法石及紅色標記開門的代表路徑已驗；十種共用門框圖面已接，其餘變體、物件與後段正常路徑待補 |
 | 洞窟武器 | 既有十種銀白刀光與新增十種青藍刀光已接入，兩條平台路徑已選來源的武器缺圖為零；其他武器來源仍待補 |
 | 洞窟主角 | 原55個登錄及新增12來源鍵已接入，含六個色彩變體；兩條路徑已選來源無缺圖，FF41等未支援分支仍會退回原貌 |
-| 人物、敵人與首領 | 已有主角、武器及部分動態物件，完整姿態與其餘敵人、首領待補 |
-| 旅館、片頭與介面 | 旅館圖面已接但正常到達待驗；標題、故事圖、結局及部分圖形介面待補 |
-| 三平台封包 | 仍為第一洞窟試玩版，尚未收錄後續全部HD增量 |
+| 人物、敵人與首領 | 八組敵人與十組首領圖集已接候選，註冊1,562個原生圖樣；這是來源圖樣數，不是敵人種類數，動畫與後段畫面待人工檢視 |
+| 旅館、片頭與介面 | 沿用旅館圖面，新增17幅主要插畫、人物肖像、標題、結局捲動人像與邊框候選；其餘拆分動畫、結局與部分圖形介面仍待補 |
+| 平台封包 | Linux 新版收錄本輪增量並包含原版遊戲資料，未執行啟動驗證；Windows、macOS 保留前版 |
 
-已提供 Windows x86_64、macOS Intel／Apple Silicon 通用版與 Linux x86_64 AppImage。完整資料包包含原版遊戲及目前完成的繁體中文、手繪 HD 素材。驗收依使用者指定，以第一洞窟可玩及代表性對話、HD、工具列操作抽測為準，不宣稱全遊戲翻譯或美術完成。
+完整資料包包含原版遊戲及目前的繁體中文、手繪 HD 素材。本輪只製圖、接入、編譯與打包，不執行自動測試、對拍或遊戲啟動。先前第一洞窟試玩的結果保留前版身份，不當作新版通過證據。
+
+中文採用較圓潤的[jf open 粉圓2.1](https://github.com/justfont/open-huninn-font/releases/tag/v2.1)，在工具列、對話、選單與狀態列依顯示尺寸合成柔邊，保留原字距及文字區域。字型採OFL-1.1，授權全文隨本機包附上。製作方式見[字型工具](tools/prepare_rounded_font.py)。
 
 配樂改用原版 AdLib 驅動與可替換的 Nuked-OPL3 音源，保留原曲。封包採實際時間推進，卡頓時最多追趕100毫秒，暫停及失焦不追趕。實體USB／藍牙手把、Windows與macOS真機尚未驗收；Windows已通過Wine輔助啟動，macOS已驗通用架構及封包結構。詳見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
@@ -34,7 +36,7 @@
 
 ![目前封包的城鎮與第一洞窟 HD 實際畫面](docs/images/gameplay-hd.jpg)
 
-目前封包的 Muralla 城鎮與 Malicia 第一洞窟實際截圖，保留工具列與狀態列。可從工具列切換原貌／HD、選擇手把及設定鍵盤。
+前版封包的 Muralla 城鎮與 Malicia 第一洞窟實際截圖，保留工具列與狀態列。可從工具列切換原貌／HD、選擇手把及設定鍵盤。本輪未重拍畫面。
 
 ## 素材總覽
 
@@ -52,13 +54,13 @@
 
 ## 開始遊玩
 
-本機封包放在 `dist-all/v.0.2.0-20261020/full-local/`，尚未上傳GitHub：
+Linux 人工驗證候選放在 `dist-all/v.0.3.1-20261021/full-local/`，包含遊戲資料，未上傳 GitHub：
 
 | 平台 | 檔案 |
 |---|---|
-| Linux x86_64 | `Zeliard-v.0.2.0-20261020-Linux-x86_64.AppImage` |
-| Windows x86_64 | `Zeliard-v.0.2.0-20261020-Windows-x86_64.zip` |
-| macOS 通用版 | `Zeliard-v.0.2.0-20261020-macOS-universal.zip` |
+| Linux x86_64 | `Zeliard-v.0.3.1-20261021-Linux-x86_64.AppImage` |
+
+Windows 與 macOS 前版仍在 `dist-all/v.0.2.0-20261020/full-local/`，分別為 `Zeliard-v.0.2.0-20261020-Windows-x86_64.zip` 及 `Zeliard-v.0.2.0-20261020-macOS-universal.zip`。本頁截圖與60秒推廣片維持前版身份。
 
 Windows解壓縮後開啟 `Zeliard.exe`，macOS解壓縮後開啟 `Zeliard.app`。Linux可直接執行AppImage，也可在專案目錄執行：
 
@@ -66,7 +68,7 @@ Windows解壓縮後開啟 `Zeliard.exe`，macOS解壓縮後開啟 `Zeliard.app`�
 bash tools/play.sh
 ```
 
-原生封包不需要Docker。若Linux缺少FUSE，可在新目錄以AppImage的 `--appimage-extract` 解開後執行 `squashfs-root/AppRun`，這條啟動路徑已抽測。
+原生封包不需要Docker。若Linux缺少FUSE，可在新目錄以AppImage的 `--appimage-extract` 解開後執行 `squashfs-root/AppRun`。此方式曾在前版抽測，新版未重跑。
 
 工具列可切換原貌／HD，並開啟「搖桿／手把」及「鍵盤設定」。藍牙先在系統配對，USB手把先插入，再選裝置及綁定。鍵盤可重綁、解除、還原預設，兩種設定都會保存。
 
@@ -85,7 +87,7 @@ bash tools/play.sh
 
 60秒推廣影片在 `dist-all/v.0.2.0-20261020/promo/`。檔案大小與SHA-256見同版 `SHA256SUMS.json`，抽測見 `smoke/`。封包與影片包含原版資料、音樂、字型及研究圖面，只供本機使用，不得上傳或散布。
 
-建置入口為 [tools/build-release.sh](tools/build-release.sh)，使用Docker與已固定的本機原版、字型及HD素材，拒絕覆寫既有輸出。版號由 [VERSION](VERSION) 指定；目前狀態見 [CONTEXT.md](CONTEXT.md)。
+本次 Linux 建置入口為 [tools/build_linux_manual.sh](tools/build_linux_manual.sh)，使用 Docker 與固定的本地原版、字型及 HD 圖組，只編譯及打包，拒絕覆寫既有輸出。新版沒有啟動或試玩收據。前版三平台流程保留於 [tools/build-release.sh](tools/build-release.sh)。版號由 [VERSION](VERSION) 指定；目前狀態見 [CONTEXT.md](CONTEXT.md)。
 
 ## 開發方向
 

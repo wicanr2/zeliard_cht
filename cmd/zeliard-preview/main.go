@@ -82,6 +82,8 @@ type game struct {
 	townBackgroundHD     *hd.TownBackground
 	townBackgroundMatch  bool
 	townSceneryHD        *hd.TownScenery
+	manualArtwork        *hd.ManualArtwork
+	worldTowns           *hd.WorldTowns
 	townSceneryMatch     bool
 	townFrames           *hd.TownFrames
 	caveFrames           *hd.CaveFrames
@@ -609,7 +611,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	g.townBackgroundMatch = false
 	var townPrimary, townResources, townExtra, townPalette []byte
-	if g.townBackgroundHD != nil || g.townSceneryHD != nil {
+	if g.townBackgroundHD != nil || g.townSceneryHD != nil || g.worldTowns != nil {
 		townPrimary = g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
 		townResources = g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
 		townExtra = g.o.Bytes(oracle.Far(0x21b1, 0), 65536)
@@ -631,6 +633,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.hdMatched = g.hdMatched || g.townBackgroundMatch
 	}
 	g.townSceneryMatch = false
+	if g.hdEnabled && g.worldTowns != nil && w == 320 && h == 200 {
+		g.hdMatched = g.worldTowns.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townRaw, rgb, image.Pt(0, barHeight)) || g.hdMatched
+	}
 	if g.hdEnabled && g.townSceneryHD != nil && w == 320 && h == 200 {
 		g.townSceneryMatch = g.townSceneryHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, image.Pt(0, barHeight), true)
 		g.hdMatched = g.hdMatched || g.townSceneryMatch
@@ -720,6 +725,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 		}
 		g.interiorHDMatch = g.interiorHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0), 65536), g.o.Bytes(oracle.Far(0x11b1, 0), 65536), raw, rawRGB, palette, image.Pt(0, barHeight))
 		g.hdMatched = g.hdMatched || g.interiorHDMatch
+	}
+	if g.hdEnabled && g.manualArtwork != nil && w == 320 && h == 200 {
+		g.hdMatched = g.manualArtwork.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight)) || g.hdMatched
 	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(raw, rawRGB)
@@ -1024,7 +1032,7 @@ func main() {
 	}
 	showVersion := flag.Bool("version", false, "顯示版本")
 	orig := flag.String("orig", "", "合法原版資料目錄，須含 ZELIARD.EXE")
-	fontPath := flag.String("font", "", "使用者提供的 Unifont HEX.gz")
+	fontPath := flag.String("font", "", "固定字距HEX.gz字型，可附圓體灰階遮罩")
 	textPath := flag.String("text", "text/host.json", "前端中文資料")
 	userDir := flag.String("user-dir", "", "原版存檔與前端設定的可寫目錄")
 	cycles := flag.Uint64("cycles", 3000, "雛形 DOSBox 相容 cycles；尚非實機速度驗收值")
@@ -1087,6 +1095,8 @@ func main() {
 	caveCyanWeaponArt := flag.String("cave-weapon-cyan-art", "", "可選：青藍刀光十姿態，須同時指定cave-weapon-art-dir")
 	caveWeaponExtraArt := flag.String("cave-weapon-extra-art", "", "可選：四個已存刀光補圖，須同時指定cave-weapon-art-dir")
 	caveObjectExtraArt := flag.String("cave-object-extra-art", "", "可選：四個物件補圖及九個遮罩對應，須同時指定cave-object-art-dir")
+	manualArt := flag.String("manual-hd-art", "", "可選：050全圖像人工驗證候選圖組")
+	worldTownArt := flag.String("world-town-art", "", "可選：050後續城鎮人工驗證候選圖組")
 	caveObjectArt := flag.String("cave-object-art-dir", "", "可選：洞窟動態物件手繪圖集目錄，搭配洞窟地形HD")
 	cavePortalArt := flag.String("cave-portal-art", "", "可選：Muralla洞窟入口手繪圖，搭配洞窟地形HD")
 	townSignsText := flag.String("town-signs-text", "", "可選：Muralla招牌中文TSV，搭配前景HD")
@@ -1200,6 +1210,18 @@ func main() {
 	}
 	o.SetDOSBoxCycles(*cycles)
 	g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, cycles: *cycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), texture: ebiten.NewImage(width, height)}
+	if *manualArt != "" {
+		g.manualArtwork, err = hd.NewManualArtwork(root, *manualArt)
+		if err != nil {
+			log.Printf("人工候選圖格未載入，保留原貌：%v", err)
+		}
+	}
+	if *worldTownArt != "" {
+		g.worldTowns, err = hd.NewWorldTowns(root, *worldTownArt)
+		if err != nil {
+			log.Printf("後續城鎮候選未載入，保留原貌：%v", err)
+		}
+	}
 	if *fmLibrary != "" {
 		synth, e := fm.Open(*fmLibrary, 44100)
 		if e != nil {
@@ -1284,6 +1306,11 @@ func main() {
 					if *caveObjectExtraArt != "" {
 						if err := objects.LoadExtra(*caveObjectExtraArt); err != nil {
 							log.Printf("物件補圖未載入，保留原有圖組：%v", err)
+						}
+					}
+					if *manualArt != "" {
+						if e := objects.LoadManual(*manualArt); e != nil {
+							log.Printf("敵人與首領候選未載入：%v", e)
 						}
 					}
 					g.caveTerrainHD.SetObjects(objects)

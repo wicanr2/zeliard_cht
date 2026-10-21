@@ -491,31 +491,18 @@ func (l *Labels) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin ima
 				rowIndex++
 				continue
 			}
-			g := l.font[ch]
-			w := len(g) / 16 * 8
+			w := len(l.font[ch]) / 16 * 8
 			dw := w * size / 16
-			for yy := 0; yy < size; yy++ {
-				for xx := 0; xx < dw; xx++ {
-					sx, sy := xx*16/size, yy*16/size
-					if g[sy*(w/8)+sx/8]&(0x80>>uint(sx%8)) != 0 {
-						if s.shadow != 0 {
-							offset := image.Pt(3, 3)
-							if s.shadowOffset != nil {
-								offset = s.shadowOffset.Mul(3)
-							}
-							p := image.Pt(x+xx+offset.X, y+yy+offset.Y)
-							if p.In(rows[rowIndex]) && p.In(dst.Bounds()) && visiblePixel(p, origin, masks) {
-								c := pal[s.shadow]
-								dst.SetRGBA(p.X, p.Y, color.RGBA{c[0], c[1], c[2], 255})
-							}
-						}
-						p := image.Pt(x+xx, y+yy)
-						if p.In(rows[rowIndex]) && p.In(dst.Bounds()) && visiblePixel(p, origin, masks) {
-							dst.SetRGBA(p.X, p.Y, color.RGBA{fg[0], fg[1], fg[2], 255})
-						}
-					}
+			visible := func(p image.Point) bool { return p.In(rows[rowIndex]) && visiblePixel(p, origin, masks) }
+			if s.shadow != 0 {
+				offset := image.Pt(3, 3)
+				if s.shadowOffset != nil {
+					offset = s.shadowOffset.Mul(3)
 				}
+				c := pal[s.shadow]
+				l.font.DrawGlyph(dst, image.Pt(x, y).Add(offset), ch, size, color.RGBA{c[0], c[1], c[2], 255}, visible)
 			}
+			l.font.DrawGlyph(dst, image.Pt(x, y), ch, size, color.RGBA{fg[0], fg[1], fg[2], 255}, visible)
 			x += dw
 		}
 	}

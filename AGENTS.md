@@ -1,5 +1,9 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+## 2026-10-21最新使用者指示
+
+本次改走[050全圖像HD與人工驗證交付](docs/spec/050-manual-hd-delivery.md)。使用者已明確取消接下來的自動測試、對拍與GUI驗證，直接製作及接入HD全圖像，剩下交人工驗證，再打包含遊戲的Linux AppImage並清理workspace。不要重複詢問或重新開啟舊驗證閘門；編譯與封包照常進行，未人工確認的結果如實標示。原版規則與存檔不改，未知來源保持原貌，不稱全覆蓋已驗。此最新指示優先於下方歷史測試要求。
+
 GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保存日誌的每筆暫存器／步數與目標RAM及完成來源雜湊，不以來源重播代替GUI驗收。
 無招牌共用門框：[規格045](docs/spec/045-cave-untitled-doors.md)及[來源盤點](tools/hd_cave_door_sources.py)，不把新變體套成Muralla入口。
 門框圖面註冊：[十變體註冊工具](tools/hd_cave_doors_art.py)，內建生成基底及標記直接取樣120×96，保留原始輪廓。
@@ -142,6 +146,12 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 
 ## 文件索引與權責
 
+050人工候選流程另見[圖面來源整理](tools/hd_manual_sources.py)、[拆分圖候選與居民](tools/hd_manual_tail.py)、[圖面註冊](tools/hd_manual_art.py)、[洞窟物件候選](internal/prototype/hd/manual_art.go)、[完整圖樣覆繪](internal/prototype/hd/manual_tiles.go)與[後續八城鎮](internal/prototype/hd/world_towns.go)。這些入口不執行測試或遊戲，執行時仍檢查來源並保留未知畫面的原貌。tail.json中的fragment_candidate未選用，不生成或接入錯位的研究圖。
+
+[Linux人工驗證封包](tools/package_linux_manual.py)在Docker內準備AppDir及產物雜湊；不呼叫舊三平台腳本中的test、vet或smoke。編譯與AppImage命令記錄在050與WORKLOG，交付只留`dist-all/<版本>/full-local/`。
+
+[Linux編譯與封包入口](tools/build_linux_manual.sh)串接上述準備、Go編譯及既有AppImage工具鏈；只供050人工驗證候選，不包含自動試玩。
+
 - [武器店動畫規格041](docs/spec/041-merchant-frames-hd.md)：武器店完整圖塊、動畫及正常路徑的增量契約。
 - [武器店動畫來源索引](docs/merchant-frame-source-index.json)：原始位址、圖塊表與證據分級。
 - [室內模組IDA匯出](tools/ida_room_frames.py)：依固定來源索引匯出原始函式、bytes、交叉參照及分級語意。
@@ -219,6 +229,7 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 
 | 文件 | 唯一職責 |
 |---|---|
+| [tools/prepare_rounded_font.py](tools/prepare_rounded_font.py)、[中文顯示](internal/prototype/bitmap/font.go) | 固定來源粉圓2.1的16／18／24／32像素柔邊字模與固定字距合成；來源、OFL及轉製紀錄留在050工作區rounded-font |
 | [tools/bank-persistence.commands](tools/bank-persistence.commands)、[internal/prototype/overlay/bank_persistence_test.go](internal/prototype/overlay/bank_persistence_test.go) | 銀行交易、長老另存、正常退出與冷讀後查詢的正常鍵序與原版／中文配對；只含輸入及自有測試 |
 | [tools/residents-muralla.commands](tools/residents-muralla.commands)、[internal/prototype/overlay/town_residents_test.go](internal/prototype/overlay/town_residents_test.go) | 七筆Muralla居民來源的正常冷讀、移動、交談與關閉，以及19點原版只讀配對；不含原版資料 |
 | [docs/spec/032-presentation-clock.md](docs/spec/032-presentation-clock.md) | 顯示更新與原版執行時鐘的可撤回比較，未定正式追趕與節奏 |

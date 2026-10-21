@@ -321,20 +321,7 @@ func (q *Quotation) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin 
 			}
 			continue
 		}
-		g := q.font[token.ch]
-		w := len(g) / 16 * 8
-		for y := 0; y < 16; y++ {
-			for x := 0; x < w; x++ {
-				if g[y*(w/8)+x/8]&(0x80>>uint(x%8)) == 0 {
-					continue
-				}
-				for yy := 0; yy < 2; yy++ {
-					for xx := 0; xx < 2; xx++ {
-						put(at.Add(image.Pt(x*2+xx, y*2+yy)), fg)
-					}
-				}
-			}
-		}
+		q.font.DrawGlyph(dst, at, token.ch, 32, color.RGBA{fg[0], fg[1], fg[2], 255}, func(p image.Point) bool { return visiblePixel(p, origin, masks) })
 	}
 	return true
 }

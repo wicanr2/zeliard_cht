@@ -247,17 +247,9 @@ func (s *IntroThreat) Draw(dst *image.RGBA, raw []byte, palette [256][3]uint8, o
 			c := palette[ink.value]
 			xx := x
 			for _, ch := range text {
-				g := s.font[ch]
-				gw := len(g) / 16 * 8
+				gw := len(s.font[ch]) / 16 * 8
 				dw := gw * 3 / 2
-				for gy := 0; gy < 24; gy++ {
-					for gx := 0; gx < dw; gx++ {
-						sx, sy := gx*2/3, gy*2/3
-						if g[sy*(gw/8)+sx/8]&(0x80>>uint(sx%8)) != 0 {
-							dst.SetRGBA(xx+gx+ink.dx, y+gy+ink.dy, color.RGBA{c[0], c[1], c[2], 255})
-						}
-					}
-				}
+				s.font.DrawGlyph(dst, image.Pt(xx+ink.dx, y+ink.dy), ch, 24, color.RGBA{c[0], c[1], c[2], 255}, nil)
 				xx += dw
 			}
 		}

@@ -2,7 +2,23 @@
 
 更新日期：2026-10-21，Asia/Taipei。
 
-## 目前狀態表
+## 最新指示與正在製作
+
+使用者已取消接下來的自動測試、對拍與GUI驗證，要求直接完成全圖像HD、交人工驗證，接著打包含遊戲資料的Linux AppImage，最後清理workspace。流程見[050](docs/spec/050-manual-hd-delivery.md)。下表為前輪已驗候選，保留原身份，不作本次新圖通過證據。
+
+本次工作區為`workplace/full-hd-v1/manual-hd-v1/`。八組敵人與十組首領已生成，按各自EAI／首領程式的A030模板與4F8C色表註冊1,562個原生圖樣。另接八城鎮前景、CMAN五類40姿態、16幅主插畫、一幅96×265結局捲動人像與199個共用圖格候選。`registered/manual-tiles.json`共6,726個圖格，未知來源保留原貌，不代表全圖覆蓋。所有新內容未測試、未對拍、未啟動遊戲。
+
+本輪中文改用jf open 粉圓2.1，1,246個字形直接按16／18／24／32像素繪製灰階柔邊，沿用原字距、安全區與遮擋。字型、OFL全文、來源雜湊與轉製紀錄保存在`rounded-font/`，由[字型工具](tools/prepare_rounded_font.py)重建。Linux完整資料包版號為`v.0.3.1-20261021`，已產出`dist-all/v.0.3.1-20261021/full-local/Zeliard-v.0.3.1-20261021-Linux-x86_64.AppImage`，173,705,720 bytes，SHA-256 `524367bef009657dda2d6bfb6888853f22b471c04be72ab4674ce552c2eb3826`，只留本機。準備及封包由[Linux入口](tools/build_linux_manual.sh)與[封包工具](tools/package_linux_manual.py)重建，不呼叫test、vet或smoke。
+
+**全圖HD尚未完成。** 尚未整理出可靠構圖的片頭／結局拆分動畫、交談背景、部分介面與未匹配畫面仍為原版。`tail.json`的3,908個fragment_candidate只作研究候選，因尚無可靠組裝而未生成、未接入，不用隨機色塊冒充完整美術。Pureza第316欄191仍保留原貌。八城鎮接縫、居民遮擋、敵人／首領動畫與後段正常到達交人工檢視，不能拿人工待驗標籤掩蓋尚未製作的圖面。
+
+`generated/*-request.json`保存內建imagegen完整請求、引用SHA及專案內生成圖。`format-reference/source.json`釘選公開格式參考`nolanvenhola/zeliard`的`c23b5f91ad31eb75b2f63a312a42e161e26096d8`；只參考資料格式，未改用其引擎，下載的程式留本機，不納入Git或封包。八城鎮沿`town-world-art-v1/`既有圖面，來源沿`town-resources-source-v1/`。原版、生成圖、提示詞、存檔與歷史收據保留；交付後已清編譯快取與本輪重複AppDir。兩批清理共刪除2,552,184,832配置bytes，約2.38GiB；明細在cleanup-v030.json及cleanup.json。目前沒有本專案殘留容器，主機擁有權與.md目錄檢查沒有異常。
+
+首份v.0.3.0候選因六組首領程式索引錯置已停用，AppImage原檔保留，manifest標為WITHDRAWN_MANUAL_CANDIDATE。更正依同版本檔名描述索引查找各自BIN，六組改用v5參考及v2生成圖；映射仍標強推論，未作遊戲驗證。舊註冊與舊清理紀錄分別保存在`registered-v030-retired/`及`cleanup-v030.json`。
+
+下方狀態表及「下一步」均為049與更早候選的歷史身份，不是050的待執行驗收，也不授權重跑測試。
+
+## 前輪已驗狀態表
 
 | 項目 | 目前結果 |
 |---|---|

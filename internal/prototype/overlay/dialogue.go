@@ -400,23 +400,8 @@ func (d *Dialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, 
 		if i >= len(d.lead)+d.visible {
 			break
 		}
-		g := d.font[ch]
-		w := len(g) / 16 * 8
 		at := positions[i].Add(box.Min)
-		for y := 0; y < 16; y++ {
-			for x := 0; x < w; x++ {
-				if g[y*(w/8)+x/8]&(0x80>>uint(x%8)) != 0 {
-					for yy := 0; yy < 2; yy++ {
-						for xx := 0; xx < 2; xx++ {
-							point := image.Pt(at.X+x*2+xx, at.Y+y*2+yy)
-							if point.In(dst.Bounds()) && visiblePixel(point, origin, masks) {
-								dst.SetRGBA(point.X, point.Y, color.RGBA{fg[0], fg[1], fg[2], 255})
-							}
-						}
-					}
-				}
-			}
-		}
+		d.font.DrawGlyph(dst, at, ch, 32, color.RGBA{fg[0], fg[1], fg[2], 255}, func(p image.Point) bool { return visiblePixel(p, origin, masks) })
 	}
 	return true
 }

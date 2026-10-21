@@ -347,18 +347,9 @@ func (s *Scroll) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, or
 		x := origin.X + (960-textWidth(s.font, line.text))/2
 		y := origin.Y + line.y*3 + 3
 		for _, ch := range line.text {
-			glyph := s.font[ch]
-			gw := len(glyph) / 16 * 8
+			gw := len(s.font[ch]) / 16 * 8
 			dw := gw * 3 / 2
-			for gy := 0; gy < 24; gy++ {
-				for gx := 0; gx < dw; gx++ {
-					sx, sy := gx*2/3, gy*2/3
-					at := image.Pt(x+gx, y+gy)
-					if at.In(box) && glyph[sy*(gw/8)+sx/8]&(128>>uint(sx%8)) != 0 {
-						dst.SetRGBA(at.X, at.Y, color.RGBA{ink[0], ink[1], ink[2], 255})
-					}
-				}
-			}
+			s.font.DrawGlyph(dst, image.Pt(x, y), ch, 24, color.RGBA{ink[0], ink[1], ink[2], 255}, func(p image.Point) bool { return p.In(box) })
 			x += dw
 		}
 	}

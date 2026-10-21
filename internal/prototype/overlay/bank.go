@@ -359,19 +359,8 @@ func (b *bankDialogue) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, orig
 			}
 			continue
 		}
-		g := b.font[t.ch]
-		w := len(g) / 16 * 8
-		for y := 0; y < 16; y++ {
-			for x := 0; x < w; x++ {
-				if g[y*(w/8)+x/8]&(0x80>>uint(x%8)) != 0 {
-					for yy := 0; yy < 2; yy++ {
-						for xx := 0; xx < 2; xx++ {
-							put(at.Add(image.Pt(x*2+xx, y*2+yy)), pal[9])
-						}
-					}
-				}
-			}
-		}
+		c := pal[9]
+		b.font.DrawGlyph(dst, at, t.ch, 32, color.RGBA{c[0], c[1], c[2], 255}, func(p image.Point) bool { return (!b.prompt || !p.In(prompt)) && visiblePixel(p, origin, masks) })
 	}
 	return true
 }

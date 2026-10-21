@@ -328,17 +328,7 @@ func (s *IntroStory) Draw(dst *image.RGBA, raw []byte, palette [256][3]uint8, or
 				if p.ordinal >= n {
 					continue
 				}
-				glyph := s.font[p.character]
-				gw := len(glyph) / 16 * 8
-				for y := 0; y < 24; y++ {
-					for x := 0; x < gw*3/2; x++ {
-						sx, sy := x*2/3, y*2/3
-						if glyph[sy*(gw/8)+sx/8]&(128>>uint(sx%8)) != 0 {
-							at := p.at.Add(origin).Add(image.Pt(x+ink.dx, y+ink.dy))
-							dst.SetRGBA(at.X, at.Y, color.RGBA{c[0], c[1], c[2], 255})
-						}
-					}
-				}
+				s.font.DrawGlyph(dst, p.at.Add(origin).Add(image.Pt(ink.dx, ink.dy)), p.character, 24, color.RGBA{c[0], c[1], c[2], 255}, nil)
 			}
 		}
 	}

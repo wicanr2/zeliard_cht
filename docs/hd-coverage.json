@@ -6468,5 +6468,44 @@
       "hd_coverage": "not_assessed",
       "normal_path": "not_assessed"
     }
-  ]
+  ],
+  "current_manual_delivery": {
+    "version": "v.0.3.1-20261021",
+    "status": "MANUAL_REVIEW_PENDING",
+    "spec": "docs/spec/050-manual-hd-delivery.md",
+    "workplace": "workplace/full-hd-v1/manual-hd-v1",
+    "objects": 1562,
+    "tiles": 6726,
+    "enemy_atlases": 8,
+    "boss_atlases": 10,
+    "world_towns": 8,
+    "cman_poses": 40,
+    "pictures": 17,
+    "rounded_font": {
+      "name": "jf open 粉圓2.1",
+      "glyphs": 1246,
+      "sizes": [
+        16,
+        18,
+        24,
+        32
+      ],
+      "source": "workplace/full-hd-v1/manual-hd-v1/rounded-font/manifest.json"
+    },
+    "automatic_tests": false,
+    "launch_check": false,
+    "full_hd_complete": false,
+    "limits": [
+      "片頭與結局拆分動畫、交談背景、部分介面及未匹配來源仍原貌。",
+      "未組裝的3908個fragment_candidate未生成或接入。",
+      "首份v.0.3.0因六組首領映射錯誤停用，保留原產物及紀錄。"
+    ],
+    "package": {
+      "file": "full-local/Zeliard-v.0.3.1-20261021-Linux-x86_64.AppImage",
+      "bytes": 173705720,
+      "sha256": "524367bef009657dda2d6bfb6888853f22b471c04be72ab4674ce552c2eb3826"
+    },
+    "cleanup_allocated_bytes": 348053504,
+    "containers_remaining": 0
+  }
 }

@@ -69,6 +69,7 @@ type caveObjectPose struct {
 type CaveObjects struct {
 	poses  map[string]*caveObjectPose
 	masked map[string]caveMaskedObject
+	manual map[string]*caveObjectPose
 }
 
 func NewCaveObjects(dir string) (*CaveObjects, error) {
@@ -120,11 +121,14 @@ func (s *CaveObjects) selectPose(object caveObject) (string, *caveObjectPose) {
 	if object.Backgrounds != [4]byte{} {
 		r, ok := s.masked[key]
 		if !ok || r.backgrounds != object.Backgrounds || r.tiles != object.Tiles {
-			return key, nil
+			return key, s.manualPose(object)
 		}
 		target = r.target
 	}
 	pose := s.poses[target]
+	if pose == nil {
+		pose = s.manualPose(object)
+	}
 	if pose == nil || len(pose.pixels) != 48*48 || pose.bounds.Empty() || !pose.bounds.In(image.Rect(0, 0, 48, 48)) {
 		return key, nil
 	}

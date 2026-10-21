@@ -368,19 +368,8 @@ func (d *TownDialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uin
 		if i >= d.visible {
 			break
 		}
-		glyph := d.font[ch]
-		w := len(glyph) / 16 * 8
 		at := box.Min.Add(d.positions[i])
-		// 16→24 最近鄰取樣，直接畫到目標解析度，不經原生低解析度畫布。
-		for y := 0; y < 24; y++ {
-			for x := 0; x < w*3/2; x++ {
-				sx, sy := x*2/3, y*2/3
-				p := at.Add(image.Pt(x, y))
-				if (!d.prompt || !p.In(marker)) && glyph[sy*(w/8)+sx/8]&(0x80>>uint(sx%8)) != 0 {
-					dst.SetRGBA(p.X, p.Y, color.RGBA{fg[0], fg[1], fg[2], 255})
-				}
-			}
-		}
+		d.font.DrawGlyph(dst, at, ch, 24, color.RGBA{fg[0], fg[1], fg[2], 255}, func(p image.Point) bool { return !d.prompt || !p.In(marker) })
 	}
 	return true
 }
