@@ -1082,6 +1082,7 @@ func main() {
 	caveMPPBArt := flag.String("cave-mppb-art", "", "可選：MPPB的5格手繪圖集，需同時指定cave-art-dir")
 	cavePlayerArt := flag.String("cave-player-art-dir", "", "可選：洞窟主角手繪透明圖集目錄，搭配洞窟地形HD")
 	cavePlayerExtraArt := flag.String("cave-player-extra-art", "", "可選：十二個已存主角姿態及色彩變體，須同時指定cave-player-art-dir")
+	cavePlayerProfileArt := flag.String("cave-player-profile-art", "", "可選：五個已驗組合姿態，須同時指定cave-player-art-dir")
 	caveWeaponArt := flag.String("cave-weapon-art-dir", "", "可選：洞窟武器手繪圖集目錄，搭配洞窟地形HD")
 	caveCyanWeaponArt := flag.String("cave-weapon-cyan-art", "", "可選：青藍刀光十姿態，須同時指定cave-weapon-art-dir")
 	caveObjectArt := flag.String("cave-object-art-dir", "", "可選：洞窟動態物件手繪圖集目錄，搭配洞窟地形HD")
@@ -1302,6 +1303,11 @@ func main() {
 					if *cavePlayerExtraArt != "" {
 						if err := player.LoadExtra(*cavePlayerExtraArt); err != nil {
 							log.Printf("主角擴充圖未載入，保留原有姿態：%v", err)
+						}
+					}
+					if *cavePlayerProfileArt != "" {
+						if err := player.LoadProfiles(*cavePlayerProfileArt); err != nil {
+							log.Printf("主角組合圖未載入，保留原有姿態：%v", err)
 						}
 					}
 					g.caveTerrainHD.SetPlayer(player)

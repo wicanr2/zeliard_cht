@@ -264,9 +264,9 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 		}
 	}
 	// 主角僅接受已觀測之裝備／姿態分支，未知來源安全拒絕。
-	// 047：FF40=0跳過兩個FF41 consumer；只擴充正常來源已驗的值1。
-	inactiveFF41 := bp[0xff41] == 1 && bp[0xff40] == 0
-	if (bp[0x93] != 0 && bp[0x93] != 2) || (bp[0xff41] != 0 && !inactiveFF41) {
+	// 047／048：值1已驗未出招及FF40=255的模板；其餘值仍拒絕。
+	knownFF41 := bp[0xff41] == 1 && (bp[0xff40] == 0 || bp[0xff40] == 255)
+	if (bp[0x93] != 0 && bp[0x93] != 2) || (bp[0xff41] != 0 && !knownFF41) {
 		return nil, fmt.Errorf("unobserved actor profile")
 	}
 	profiles := 0
@@ -282,8 +282,8 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 	}
 	// 027一般持盾、028正常離洞；未列組合維持拒絕。
 	shield := bp[0x93] == 2
-	// 規格028：正常離洞的背面持盾；其他特殊組合仍拒絕。
-	shieldTransition := shield && bp[0xff3a] == 255 && bp[0xe8] == 0 && bp[0xff39] == 0 && bp[0xff38] == 0 && bp[0xff40] == 0
+	// 028／048：FF3A離洞及FF39分支共用7E前手，其餘組合仍拒絕。
+	shieldTransition := shield && (bp[0xff3a] == 255 || bp[0xff39] == 255) && bp[0xe8] == 0 && bp[0xff38] == 0 && bp[0xff40] == 0
 	if shield && profiles != 0 && !shieldTransition {
 		return nil, fmt.Errorf("unobserved combined shield profile")
 	}
@@ -330,6 +330,9 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 		offset := int(bp[0xff3f]>>1) * 9
 		if bp[0xc2]&1 != 0 {
 			back = 0x61b9 + 0x24 + offset
+			if bp[0xff41] == 1 {
+				back += 0x24
+			}
 			front = 0x625b + offset
 			if shield {
 				front += 0x24
@@ -340,6 +343,9 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 				back += 0x24
 			}
 			front = 0x6117 + 0x24 + offset
+			if bp[0xff41] == 1 {
+				front += 0x24
+			}
 		}
 	} else {
 		if bp[0xff38] == 0 && bp[0xe7] != 128 {

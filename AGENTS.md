@@ -455,6 +455,22 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 
 [FF41收尾稽核](tools/hd_ff41_audit.py)核對被拒／修正後來源、IDA分級、正常配對、GUI原貌切回與來源修訂鏈，只支援047限定範圍。
 
+[規格048](docs/spec/048-cave-combined-profiles.md)管理剩餘主角組合的來源與閘門；[拒絕來源探針](tools/hd_cave_rejected_probe.go)以可選profile-frames收13欄位去重來源，正式解碼不受研究旗標影響。
+
+[主角組合研究編譯](tools/hd_profile_study.py)只產生Go編譯覆蓋，不改正式來源；[研究測試](internal/prototype/hd/cave_profile_study_test.go)以未改動的被拒來源核完整原生畫面，另列既有HD的缺圖，不當GUI驗收。
+
+[組合姿態圖面註冊](tools/hd_profile_art.py)核對五個原生來源、六次生成記錄與參考雜湊，直接依原生包絡註冊72×72圖；原RGBA不重畫，原圖與產物留本機。
+
+[主角組合分級索引](docs/cave-profile-source-index.json)保存048的原始位址、bytes及證據；[IDA匯出](tools/ida_cave_profiles.py)對一次性資料庫自動合併索引，未列語意附未知警示。
+
+[五姿態載入](internal/prototype/hd/cave_player_profiles.go)依來源鍵、固定PNG雜湊與包絡原子交換，保留原圖組；可選前端旗標為cave-player-profile-art。
+
+[五姿態驗證](internal/prototype/hd/cave_player_profiles_test.go)核46份未改動正常來源、五張直接高清像素與混色、原67圖保留、未知鍵及原子拒絕。
+
+[組合主角視窗抽樣](tools/hd_cave_profile_smoke.py)沿既有冷F7與正常繩索鍵序，核048代表背向姿態、原貌切回及正常退出；其他姿態只列保存來源驗證。
+
+[組合主角收尾稽核](tools/hd_profiles_audit.py)核來源、圖面、46項回歸、正常配對及代表GUI，另外列出尚未補齊的刀光與動態物件來源，不將解碼通過當全HD。
+
 ## GitHub、授權與交付
 
 - 使用者已授權建立私人儲存庫。建立後回讀 `visibility`，確認為 PRIVATE；不得自行轉公開。

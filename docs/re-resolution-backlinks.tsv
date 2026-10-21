@@ -1,3 +1,7 @@
 platform_module	address	semantic	evidence_spec	older_spec	required_correction
 DOS-Zeliard-primary-sha256-12d91918212c4688a575bc31d395c133c7232f99ead769c7cfbc680333545c93-IDA-base0-runtime01B1	0x3c27	0093=2且FF3A=255的前手7E偏移與雙朝向相同圖像	docs/spec/028-cave-shield-transition-hd.md	docs/spec/027-cave-shield-profile-hd.md	028持盾離洞分支已解出
 DOS-Zeliard-primary-sha256-12d91918212c4688a575bc31d395c133c7232f99ead769c7cfbc680333545c93-IDA-base0-runtime01B1	0x3b80	FF3A固定610E本體；持盾分支沿028，原無盾分支不受影響	docs/spec/028-cave-shield-transition-hd.md	docs/spec/012-cave-frame-sources.md	028持盾離洞分支已解出
+DOS-Zeliard-primary-sha256-5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b-IDA-base0-runtime01B1	0x3b8a	FF39持盾主體與特殊前手沿048閉合	docs/spec/048-cave-combined-profiles.md	docs/spec/012-cave-frame-sources.md	048主角組合已解出
+DOS-Zeliard-primary-sha256-5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b-IDA-base0-runtime01B1	0x3c27	0093=2且FF39=255沿7E前手	docs/spec/048-cave-combined-profiles.md	docs/spec/027-cave-shield-profile-hd.md	048主角組合已解出
+DOS-Zeliard-primary-sha256-5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b-IDA-base0-runtime01B1	0x3c27	FF39與既有FF3A共用分類1的7E前手	docs/spec/048-cave-combined-profiles.md	docs/spec/028-cave-shield-transition-hd.md	048主角組合已解出
+DOS-Zeliard-primary-sha256-5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b-IDA-base0-runtime01B1	0x3b08	FF41=1且FF40=255的額外24h手部模板	docs/spec/048-cave-combined-profiles.md	docs/spec/047-cave-ff41-source.md	048主角組合已解出

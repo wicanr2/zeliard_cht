@@ -598,3 +598,16 @@ CPU剖析及所有原始失敗入口見CONTEXT與[031](docs/spec/031-audio-strea
 | 檢查與限制 | 44項圖面／來源、四項focused及三項正常／來源檢查無skip／fail，vet及相同binary重建通過；其他FF41、剩餘拒絕及全遊戲美術未完成 |
 
 候選 `workplace/full-hd-v1/cave-ff41-runtime-v3/zeliard-preview` SHA-256 `6383ec84d59bcd1da1694ecc29d165dd6e976fd1d545f8d2b386ebb8090a3e15`，收尾 `workplace/full-hd-v1/cave-ff41-final-audit-v1.json`。047限定CONFORMED，GUI v1／v2失敗保留原身份，封包與影片未更新。
+
+## 持盾FF39與FF41出招五主角圖
+
+| 範圍 | 實際結果 |
+|---|---|
+| 正常原版來源 | 15／31欄位組合，13觀察點與047原版RAM／畫面／時鐘相同，雙原版狀態及USR不變；回呼來源不冒稱逐筆雙機配對 |
+| 原生重建及圖面 | 正式46來源1483776原生像素零差；五圖25920註冊RGBA、8057混色像素相同，原67圖保留，未知鍵與載入原子性通過 |
+| 正常配對 | 兩路主角缺圖零、完成／拒絕253／0及564／2，13點原版完整狀態相同。兩次拒絕為未驗魔法石記錄及缺主體，仍未完成 |
+| 代表GUI | 冷F7、正常繩索向下的新背向姿態、576000像素切回相同；正常DOS退出0，USR不變，根端已目視 |
+| 未驗與缺圖 | 其他四圖不稱逐一GUI；普通路徑刀光缺四來源鍵，兩路物件共13不同來源鍵未補；城鎮及後段仍待完成 |
+| 檢查 | 46項圖面／來源及三項正常／來源檢查無skip／fail，vet及build通過；012／027／028／047的048回填台帳檢查通過 |
+
+候選 `workplace/full-hd-v1/cave-profile-runtime-v1/zeliard-preview` SHA-256 `458a8149658c958e11cd9ffc0e12c240b2a9c82135c4e5532a5aa1a45c71da4a`，收尾 `workplace/full-hd-v1/cave-profile-final-audit-v1.json`。048限定CONFORMED，封包、版號、影片及README縮圖未更新。

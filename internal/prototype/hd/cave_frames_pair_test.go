@@ -356,6 +356,14 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		t.Fatal(e)
 	}
 	frames := NewCaveFrames(b)
+	refusalReasons := map[string]int{}
+	for _, hook := range []uint16{0x7114, 0x714c} {
+		b.OnCall(oracle.Far(0x1b1, hook), func(q *oracle.Oracle) {
+			if frames.lastRefusal != nil && frames.lastRefusal["steps"] == q.Steps() {
+				refusalReasons[frames.lastRefusal["reason"].(string)]++
+			}
+		})
+	}
 	var art *CaveTerrain
 	if dir := os.Getenv("ZELIARD_CAVE_ART"); dir != "" {
 		art, e = NewCaveTerrain(dir)
@@ -693,7 +701,7 @@ func runCaveFramesPair(t *testing.T, path, out string) {
 		}
 	}
 	playerCoverage := map[string]any{"source_frames": len(seenPlayerFrames), "known_frames": playerKnown, "fully_occluded_frames": playerHidden, "missing_visible_frames": playerMissing, "keys": seenPlayerKeys, "missing_sources": missingPlayerSources, "scope": "正常完成來源盤點；缺素材保留原貌，未稱全動畫HD"}
-	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "weapon_coverage": weaponCoverage.summary(), "object_coverage": objectCoverage.summary(), "save_unchanged": true, "source_save_sha256": saveHash, "max_steps": maxSteps, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角／武器HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
+	data, e := json.MarshalIndent(map[string]any{"points": observations, "hd_draws": hdDraws, "player_coverage": playerCoverage, "weapon_coverage": weaponCoverage.summary(), "object_coverage": objectCoverage.summary(), "save_unchanged": true, "source_save_sha256": saveHash, "max_steps": maxSteps, "commands_sha256": townBackgroundHash(commands), "captured": frames.captured, "refused": frames.refused, "refusal_reasons": refusalReasons, "draws": draws, "used": used, "held": held, "cleared_samples": cleared, "state_equal": true, "final": frames.State(), "fileops": b.FileOps(), "keyreads": b.KeyReads(), "wrote": b.Wrote(), "held_keys": b.HeldKeys(), "unimplemented": b.Unimplemented(), "limits": "正常原版與適配層配對；可掛本地地形／主角／武器HD及既有中文；非GUI。沒有注入狀態或固定未定位之亂數種子，不作隨機規則對拍"}, "", "  ")
 	if e != nil {
 		t.Fatal(e)
 	}

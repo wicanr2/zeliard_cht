@@ -6,19 +6,21 @@
 
 | 項目 | 目前結果 |
 |---|---|
-| 更新 | 2026-10-21，FF41=1且FF40=0的原貌退回已修正；完整全遊戲HD目標仍進行中 |
-| 目前候選 | `workplace/full-hd-v1/cave-ff41-runtime-v3/zeliard-preview`，SHA-256 `6383ec84d59bcd1da1694ecc29d165dd6e976fd1d545f8d2b386ebb8090a3e15` |
-| 來源與圖面 | 原GUI日誌2590筆重生同一被拒來源；IDA證實FF40=0跳過FF41 consumer，沿用既有圖面，沒有新增或替換素材 |
-| 最近測試 | 44項圖面／來源、四項focused與三項正常／來源檢查無skip／fail；13點完整原版狀態、原生32256像素零差、vet及相同binary重建通過 |
-| 實際視窗 | v3正常冷F7、步行與出劍放開後擷取FF41=1／FF40=0，原貌切回576000像素相同，DOS退出0、USR bytes／mtime不變，根端已目視 |
-| 收尾證據 | `workplace/full-hd-v1/cave-ff41-final-audit-v1.json`，由[FF41稽核](tools/hd_ff41_audit.py)重生至新檔 |
-| 本輪接入 | [047](docs/spec/047-cave-ff41-source.md)限定CONFORMED；非零FF40及其他FF41值保持拒絕，不修改原版規則、動作或存檔 |
-| 待補 | 兩條抽測路徑仍有40／92次來源拒絕，其他共用物件／敵人／首領、八城鎮候選接入及後段仍待補；不重做已驗FF41來源或12主角圖 |
+| 更新 | 2026-10-21，FF39持盾／FF41出招與五個主角圖面接入；全遊戲HD仍進行中 |
+| 目前候選 | `workplace/full-hd-v1/cave-profile-runtime-v1/zeliard-preview`，SHA-256 `458a8149658c958e11cd9ffc0e12c240b2a9c82135c4e5532a5aa1a45c71da4a` |
+| 來源與圖面 | 46份未改來源完整原生重建，六鍵去重含一個既有圖及五個補圖；含背向與黃藍紫變體，原67圖保留 |
+| 最近測試 | 46項圖面／來源及三項正常／來源檢查無skip／fail；原生1483776、註冊RGBA25920、混色8057像素相同，13點完整原版狀態、vet及build通過 |
+| 實際視窗 | 正常冷F7、繩索向下的新背向姿態，原貌切回576000像素相同、DOS退出0、USR不變，根端已目視；其他四圖只驗保存來源 |
+| 收尾證據 | `workplace/full-hd-v1/cave-profile-final-audit-v1.json`，由[組合主角稽核](tools/hd_profiles_audit.py)重生至新檔 |
+| 本輪接入 | [048](docs/spec/048-cave-combined-profiles.md)限定CONFORMED；新增可選cave-player-profile-art，不修改原版規則、位置、動畫節點或存檔 |
+| 待補 | 兩路主角缺圖為零、來源拒絕0／2；四個刀光及跨兩路13個物件來源鍵仍缺HD。魔法石未支援記錄、八城鎮候選及後段仍待補 |
 | 交付 | 尚未更新封包、影片及README縮圖；舊版維持v.0.2.0-20261020身份 |
 
-最新正式入口為 `workplace/full-hd-v1/cave-ff41-final-audit-v1.json`。本輪不加CLI或美術，完整GUI命令在 `cave-ff41-gui-v3/receipt.json`。原失敗來源重生於 `cave-ff41-source-v1/`，修正後相同日誌及RAM／畫面SHA在 `cave-ff41-accepted-source-v1/`，IDA分級輸出在 `cave-ff41-ida-v5/`。兩正常路徑完成／拒絕為213／40及474／92；已選完成來源主角／武器缺圖為零，不把其餘來源拒絕當HD。
+最新正式入口為 `workplace/full-hd-v1/cave-profile-final-audit-v1.json`。以 `-cave-player-profile-art workplace/full-hd-v1/cave-combined-profile-complete-v1`搭配原主角及extra圖組，完整GUI命令在 `cave-profile-gui-v1/receipt.json`。原拒絕來源為 `cave-profile-source-v1/`、`cave-profile-magia-source-v1/`，研究編譯與46份重建為 `cave-combined-profile-study-v1/`，IDA分級為 `cave-profile-ida-v1/`。六次內建imagegen請求、提示詞、引用SHA與原cache在 `cave-combined-profile-art-v1/generation.json`；盾牌錯側初版保留，只選修正v2。
 
-下一步從剩餘來源拒絕取可重播的組合主體，不以FF41值推定動作或裝備術語；並繼續八城鎮候選的正常來源、校準與接入。此FF41缺口已有原日誌、未改動來源、HD與新GUI，不重跑或重畫。GUI v1／v2抽樣失敗及前輪原日誌均保留。其他城鎮與後段仍屬完整目標。
+下一步直接重解 `cave-profile-normal-pair-v2/`兩收據的weapon_coverage.missing_sources與object_coverage.unknown_sources，四個刀光及13個不同物件來源已保存，不重新蒐集。魔法石另有一次magia unobserved record、後接一次缺主體拒絕，需窄範圍保存該來源，不先放行。兩路完成／拒絕為253／0及564／2；主角均無缺圖，武器缺圖4／0，物件未知實例20／22。其他城鎮與後段仍屬完整目標。
+
+前輪047入口 `cave-ff41-final-audit-v1.json`及原候選維持原身份；其未出招FF41修正已回歸，出招來源另沿048。當輪2590筆原GUI日誌、RAM與畫面重生仍保留，不重做。012／027／028／047已追加048回填，台帳由本輪稽核核對。
 
 前輪12主角鍵、六變色與青藍刀光仍沿046及 `cave-saved-player-final-audit-v1.json`，保留原候選與七組GUI身份。既有imagegen提示詞、來源及cache仍在 `cave-saved-player-art-v1/generation.json`，本輪沒有生成新圖。
 
@@ -30,7 +32,7 @@
 
 GUI v1的物品使用後站位有完成來源及102圖樣，整幅地形HD仍拒絕；當時腳本在此等候而逾時，原圖、狀態與 `boot1/inputs.jsonl` 保留。v2先沿正常鍵盤走到既有跳躍／平台觀察點，四組切回與離開截圖均有地形及魔法石HD，正常DOS退出0。稽核v1曾把離開也列成未匹配，v2依實際截圖狀態更正，舊檔保留。該站位已由045重生並確認為另一種門框，現在已補圖及接入；舊收據保留失敗身份。
 
-前輪魔法石／普通路徑的100／18個主角缺圖畫格已由046的12個來源鍵補齊，原先十個武器來源鍵亦已補。該輪已選來源分別156／419個主角畫格匹配、缺圖為零；舊收據保持原身份，不相加畫格數當素材總數。原42／92拒絕中兩個由047補上，其餘40／92仍未完成。本輪音訊關閉，未重建封包或影片。
+前輪魔法石／普通路徑的100／18個主角缺圖畫格已由046的12個來源鍵補齊，原先十個武器來源鍵亦已補。該輪已選來源分別156／419個主角畫格匹配、缺圖為零；舊收據保持原身份，不相加畫格數當素材總數。047後40／92拒絕已由048大部分補上，現行0／2與新可見來源的刀光／物件缺圖以上表為準。本輪音訊關閉，未重建封包或影片。
 
 前輪READY研究入口為 `workplace/full-hd-v1/cave-magia-stage-audit-v1.json`，由[研究稽核](tools/hd_cave_magia_audit.py)重生至新檔。正常拒絕來源、候選分類、IDA9.4分級證據分別為 `cave-magia-source-v3/`、`cave-magia-diff-v5/`、`cave-magia-ida-v9/`。27來源包含24個回呼抽樣及三個命令觀察點，只有後三點在該觀察邊界做雙原版完整狀態配對，不冒稱27點機器配對。初次只照保存位置重畫有三張各多46像素；分類可見／已清除後全部零差。
 

@@ -36,3 +36,7 @@
 [視窗抽樣](../../tools/hd_cave_ff41_smoke.py)的v3正常冷F7、步行與出劍後放開，擷取FF41=1且FF40=0來源。原貌／HD／切回的CPU、RAM、indexed與palette相同，576000遊戲區像素切回相同，正常DOS退出0、存檔不變，根端已目視。v1抽樣時段不足、v2無關姿態暫停錯過來源，失敗driver與日誌保留，不冒稱通過。
 
 候選`workplace/full-hd-v1/cave-ff41-runtime-v3/zeliard-preview` SHA-256為`6383ec84d59bcd1da1694ecc29d165dd6e976fd1d545f8d2b386ebb8090a3e15`，vet通過且乾淨重建binary相同。收尾入口`workplace/full-hd-v1/cave-ff41-final-audit-v1.json`由[稽核工具](../../tools/hd_ff41_audit.py)重生至新檔。封包、版號、影片及README縮圖未更新。下一步轉向仍被拒的組合來源及未接城鎮，不重做此來源或既有圖面。
+
+## 048回填
+
+048主角組合已解出：固定primary.segment SHA-256 `5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b`、01B1:3B08及3C6F的FF41=1／FF40=255模板位移已另驗，見[048](048-cave-combined-profiles.md)。047的未出招來源與收據保持原身份；上列「非零FF40仍拒絕」是當時範圍，048所列分支已接入，其餘值仍未擴充。

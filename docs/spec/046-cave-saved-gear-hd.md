@@ -46,3 +46,7 @@
 GUI v3從冷F7正常擷取主角55、短按青藍刀光、物品後門框及平台升降，七組原貌切回4032000像素相同，正常DOS退出0、存檔不變，根端已目視。六個變色全有已存正常來源驗證，沒有逐一GUI捕捉。v1的平台站位偏到46，v3以正常方向鍵站穩已驗44；v2長按途中出現FF41=1的未支援來源，仍退回原貌，不把這個缺口列通過，也不推定旗標含義。
 
 目前候選 `workplace/full-hd-v1/cave-saved-player-runtime-v1/zeliard-preview` SHA-256 `473dddb1c21b057d345db531c4a822000bf26cc7e488a1324980e1b6e83be0d4`。收尾 `workplace/full-hd-v1/cave-saved-player-final-audit-v1.json`由[主角稽核](../../tools/hd_saved_player_runtime_audit.py)重生至新檔，完整命令為同根 `cave-saved-player-gui-v3/receipt.json`。下一步沿v2保留日誌重生FF41被拒候選，另核來源；其他美術及後段仍待補，封包與影片未更新。
+
+## 047／048後續來源
+
+046所列FF41被拒來源已由[047](047-cave-ff41-source.md)重生並補未出招情況；FF39持盾組合及FF41=1出招模板與五個主角補圖見[048](048-cave-combined-profiles.md)。本規格保留原12鍵與舊GUI身份，後續完成度依目前CONTEXT，不重開已閉合來源。

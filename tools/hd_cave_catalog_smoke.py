@@ -54,6 +54,8 @@ def start():
                 command.extend(["-cave-weapon-cyan-art", cyan_art])
             if player_extra := os.environ.get("ZELIARD_CAVE_PLAYER_EXTRA_ART", ""):
                 command.extend(["-cave-player-extra-art", player_extra])
+            if player_profiles := os.environ.get("ZELIARD_CAVE_PLAYER_PROFILE_ART", ""):
+                command.extend(["-cave-player-profile-art", player_profiles])
         return original_popen(command, *args, **kwargs)
     subprocess.Popen = launch
     try:

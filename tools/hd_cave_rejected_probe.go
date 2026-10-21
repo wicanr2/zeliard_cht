@@ -23,6 +23,7 @@ func main() {
 	output := flag.String("output", "", "既有空輸出")
 	commands := flag.String("commands", "", "正常鍵序")
 	studyFrames := flag.Int("study-frames", 0, "另收最多64個不同護身記錄的拒絕來源；只作研究")
+	profileFrames := flag.Int("profile-frames", 0, "另收最多128個不同主角欄位組合的拒絕來源；只作研究")
 	flag.Parse()
 	need := func(err error) {
 		if err != nil {
@@ -101,6 +102,7 @@ func main() {
 	}
 	num := func(s string) uint64 { n, e := strconv.ParseUint(s, 0, 64); need(e); return n }
 	var points []map[string]any
+	var observations []map[string]any
 	dump := func(label string, r *hd.CaveRejected, checked bool) {
 		name := fmt.Sprintf("point-%03d", len(points))
 		for suffix, data := range map[string][]byte{"memory": r.Memory, "body.memory": r.BodyMemory, "indexed": r.Indexed, "palette": r.Palette} {
@@ -112,6 +114,34 @@ func main() {
 	}
 	if *studyFrames < 0 || *studyFrames > 64 {
 		panic("study frame bound")
+	}
+	if *profileFrames < 0 || *profileFrames > 128 {
+		panic("profile frame bound")
+	}
+	profileEvents := map[string]int{}
+	seenProfiles := map[string]bool{}
+	if *profileFrames > 0 {
+		for _, hook := range []uint16{0x7114, 0x714c} {
+			b.OnCall(oracle.Far(0x1b1, hook), func(q *oracle.Oracle) {
+				r := frames.RejectedSource()
+				if r == nil || r.Steps != q.Steps() || !strings.HasPrefix(r.Reason, "unobserved") {
+					return
+				}
+				profileEvents[r.Reason]++
+				bp := r.BodyMemory[0x1b10:0x11b10]
+				var signature []byte
+				for _, off := range []int{0x93, 0xc2, 0xe7, 0xe8, 0xff36, 0xff38, 0xff39, 0xff3a, 0xff3d, 0xff3f, 0xff40, 0xff41, 0xff42} {
+					signature = append(signature, bp[off])
+				}
+				key := sha(signature)
+				if seenProfiles[key] || len(seenProfiles) >= *profileFrames {
+					return
+				}
+				seenProfiles[key] = true
+				dump(fmt.Sprintf("profile-%02d", len(seenProfiles)-1), r, false)
+				points[len(points)-1]["profile_signature"] = fmt.Sprintf("%x", signature)
+			})
+		}
 	}
 	seenRecords := map[string]bool{}
 	if *studyFrames > 0 {
@@ -176,8 +206,12 @@ func main() {
 			}
 		case "shot":
 			equal()
+			observations = append(observations, map[string]any{"name": f[1], "steps": b.Steps(), "cycles": b.Cycles(), "memory_sha256": sha(b.Bytes(oracle.Far(0, 0), 1<<20)), "indexed_sha256": sha(b.Indexed()), "state_equal": true})
 			r := frames.RejectedSource()
 			if r == nil {
+				if *profileFrames > 0 {
+					continue
+				}
 				panic("missing rejected source")
 			}
 			dump(f[1], r, true)
@@ -196,6 +230,10 @@ func main() {
 	}
 	write("probe-source.go", read(filepath.Join(*project, "tools/hd_cave_rejected_probe.go")))
 	report := map[string]any{"schema": 1, "status": "OBSERVED_REJECTED_CAVE_SOURCES", "go": runtime.Version(), "script_sha256": sha(read(filepath.Join(*output, "probe-source.go"))), "commands_sha256": sha(input), "source_save_sha256": sha(save), "save_unchanged": true, "state_equal": true, "state_injection": false, "points": points, "limits": "被拒絕候選，不是已呈現畫格或HD完成證據。"}
+	report["profile_events"] = profileEvents
+	report["profile_signatures"] = len(seenProfiles)
+	report["profile_fields"] = []string{"0093", "00C2", "00E7", "00E8", "FF36", "FF38", "FF39", "FF3A", "FF3D", "FF3F", "FF40", "FF41", "FF42"}
+	report["observations"] = observations
 	data, e := json.MarshalIndent(report, "", "  ")
 	need(e)
 	write("receipt.json", append(data, 10))

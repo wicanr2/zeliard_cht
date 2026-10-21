@@ -63,3 +63,7 @@ READY-v2採以下最小契約：
 - 所有原始來源、圖像與收據留本機；無快照還原、記憶體注入、重擲、Release或正式平台完成聲明。
 
 012／027的舊範圍保持原身份，回填依docs/re-resolution-backlinks.tsv並以失敗即停止的腳本核對。尚未驗的E8／FF39及其他裝備組合維持原貌。
+
+## 048回填
+
+048主角組合已解出：固定primary.segment SHA-256 `5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b`的01B1:3C27已核FF39=255且0093=2時同樣採7E前手，具體FF38／FF40限制與正常來源見[048](048-cave-combined-profiles.md)。028的FF3A分支與歷史收據不改，不再將048已列FF39組合稱為未驗。

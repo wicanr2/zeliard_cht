@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "input_name": "primary.segment",
+  "input_sha256": "5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b",
+  "address_space": "IDA base0，對應dosgolem 01B1段內偏移；不是EXE檔案偏移",
+  "entries": [
+    {
+      "address": "0x3aae",
+      "bytes": "a0e800",
+      "level": "已證實",
+      "semantic": "讀E8，後續OR FF39及FF3A；任一非零跳過後手",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3b8a",
+      "bytes": "beea60",
+      "level": "已證實",
+      "semantic": "FF39分支的九格模板基址60EAh",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3b8d",
+      "bytes": "f60639ffff",
+      "level": "已證實",
+      "semantic": "測FF39，非零由3B92跳至3BE7按E7低兩位乘9選模板",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3be7",
+      "bytes": "a0e700",
+      "level": "已證實",
+      "semantic": "E7低兩位乘9，3BF0加至主體模板",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3c16",
+      "bytes": "a039ff",
+      "level": "已證實",
+      "semantic": "讀FF39，3C19與FF3A合併；非零進裝備分類與特殊前手",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3c27",
+      "bytes": "fec8",
+      "level": "已證實",
+      "semantic": "分類結果減1，3C29至3C2F轉成7Eh或99h模板位移；裝備0093=2時結果7Eh",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3d22",
+      "bytes": "a09300",
+      "level": "已證實",
+      "semantic": "讀0093；0回0，1至3回1，4以上回2；此次正式來源只支援0及2",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3b08",
+      "bytes": "052400",
+      "level": "已證實",
+      "semantic": "FF41=1的第一個手部consumer：模板額外加24h",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    },
+    {
+      "address": "0x3c6f",
+      "bytes": "052400",
+      "level": "已證實",
+      "semantic": "FF41=1的第二個手部consumer：模板額外加24h",
+      "evidence": [
+        "docs/spec/048-cave-combined-profiles.md",
+        "workplace/full-hd-v1/cave-ff41-ida-v5/evidence.json",
+        "workplace/full-hd-v1/cave-combined-profile-study-v1/receipt.json"
+      ]
+    }
+  ]
+}

@@ -1278,3 +1278,22 @@ READY後接入固定來源鍵、PNG雜湊及原生包絡，新增12個登錄，�
 | `cave-ff41-normal-pair-v2/` | 兩條正常路徑13點完整原版狀態與存檔相同；完成／拒絕為213／40及474／92，已選來源主角／武器無缺圖 |
 
 研究產物均位於本機`workplace/full-hd-v1/`，不納入Git。上述像素比較只證明所列來源與邊界，不外推其他FF41模式或全遊戲HD。
+
+## 2026-10-21：持盾FF39與出招FF41組合
+
+入口為[規格048](docs/spec/048-cave-combined-profiles.md)、[九筆分級索引](docs/cave-profile-source-index.json)與`workplace/full-hd-v1/cave-profile-final-audit-v1.json`。原EXE及USR雜湊沿048固定版本；IDA primary.segment SHA-256為5e7f76080cc542eb06ca90ec349ad2ec0c5ab374c32acf59bc4c4307899a0a5b，IDA base0對應01B1段內偏移，不是EXE檔案偏移。
+
+| 證據 | 結論與等級 |
+|---|---|
+| `cave-profile-source-v1/`、`cave-profile-magia-source-v1/` | 已證實：兩個獨立原版機器正常F7及鍵序，15／31個主角欄位組合保存；13觀察點RAM、畫面、steps及cycles與047收據相同，原版狀態與存檔未變 |
+| `cave-profile-ida-v1/evidence.json` | IDA9.4，262條原樣指令、九筆已證實索引，其餘語意維持未知警示 |
+| `01B1:3B8A..3B92`、`3BE7..3BF0`、`3C27` | 已證實：FF39主體60EA加E7低兩位乘9，0093=2的特殊前手為7E；後手由3AAE..3ABB略過 |
+| `01B1:3B08`、`3C6F` | 已證實：FF41=1且FF40非零時，按朝向對其中一手額外加24h；另一手仍沿原裝備分類 |
+| `cave-combined-profile-study-v1/` | DRAFT研究編譯覆蓋，正式檔案與原版機器不變；46份來源完整重建零差，六個ActorRaster鍵中一個已有HD、五個缺圖。原研究來源與改動版本均保存SHA |
+| `cave-combined-profile-art-v1/generation.json` | 六次內建imagegen完整提示詞、引用及cache保存；初版側向盾牌錯側，修正v2後選用；藍黃紫變體另生成，不自行改色 |
+| `cave-combined-profile-complete-v1/manifest.json` | 五張72×72直接高清取樣，沿原生包絡，RGBA不重畫；圖面及完整接入GUI已目視 |
+| `cave-profile-runtime-v1/tests.jsonl` | 正式46份未改來源1483776原生像素零差、五圖25920註冊RGBA及8057混色像素相同、原67圖保留及原子拒絕通過 |
+| `cave-profile-normal-pair-v2/` | 13點完整原版狀態與USR bytes／mtime相同，主角缺圖均零；完成／拒絕253／0與564／2。後者為一次magia unobserved record、一次source or missing body，未放寬守衛 |
+| `cave-profile-gui-v1/` | 正常冷F7、走到繩索、向下背向姿態與576000像素原貌切回，CPU與原版來源不變，正常DOS退出0、存檔不變，根端已目視 |
+
+兩路仍有四個刀光來源鍵及跨兩路13個不同動態物件來源鍵未匹配，原RAM／主體／畫面／色盤及paint紀錄已在正常配對目錄保存。這些鍵不等於四種武器或13種敵人，須再核幾何、配色與遮罩。其他四張新主角圖只驗保存正常來源，不稱逐一GUI。012／027／028／047已回填048，台帳由本輪稽核核對。

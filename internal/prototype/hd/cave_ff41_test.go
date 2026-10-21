@@ -84,7 +84,7 @@ func TestCaveFF41InactiveNormalSourceAndHD(t *testing.T) {
 func TestCaveFF41UnsupportedProfilesRemainRejected(t *testing.T) {
 	f := ff41NormalFrame(t)
 	for _, test := range []struct{ ff41, ff40, shield, e8 byte }{
-		{2, 0, 2, 0}, {255, 0, 2, 0}, {1, 255, 2, 0}, {1, 1, 2, 0},
+		{2, 0, 2, 0}, {255, 0, 2, 0}, {2, 255, 2, 0}, {1, 1, 2, 0},
 		{1, 0, 4, 0}, {1, 0, 2, 255},
 	} {
 		body := cloneTownBytes(f.BodyMemory)

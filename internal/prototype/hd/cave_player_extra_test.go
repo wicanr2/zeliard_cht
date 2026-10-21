@@ -18,6 +18,11 @@ func loadExtraPlayerNormalArt(t *testing.T, player *CavePlayer) {
 			t.Fatal(err)
 		}
 	}
+	if dir := os.Getenv("ZELIARD_CAVE_PLAYER_PROFILE_ART"); dir != "" {
+		if err := player.LoadProfiles(dir); err != nil {
+			t.Fatal(err)
+		}
+	}
 }
 
 func savedPlayerArt(t *testing.T) *CavePlayer {
