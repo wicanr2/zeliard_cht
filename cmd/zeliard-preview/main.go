@@ -611,7 +611,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	g.townBackgroundMatch = false
 	var townPrimary, townResources, townExtra, townPalette []byte
-	if g.townBackgroundHD != nil || g.townSceneryHD != nil || g.worldTowns != nil {
+	if g.townBackgroundHD != nil || g.townSceneryHD != nil || g.worldTowns != nil || g.manualArtwork != nil {
 		townPrimary = g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
 		townResources = g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
 		townExtra = g.o.Bytes(oracle.Far(0x21b1, 0), 65536)
@@ -727,6 +727,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.hdMatched = g.hdMatched || g.interiorHDMatch
 	}
 	if g.hdEnabled && g.manualArtwork != nil && w == 320 && h == 200 {
+		g.manualArtwork.SetResources(townResources, townExtra)
 		g.hdMatched = g.manualArtwork.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight)) || g.hdMatched
 	}
 	if g.intro != nil && w == 320 && h == 200 {
@@ -1331,6 +1332,7 @@ func main() {
 							log.Printf("刀光補圖未載入，保留原有圖組：%v", err)
 						}
 					}
+					weapon.SetCompleteArtwork(g.manualArtwork)
 					g.caveTerrainHD.SetWeapon(weapon)
 				}
 			}
@@ -1349,6 +1351,7 @@ func main() {
 							log.Printf("主角組合圖未載入，保留原有姿態：%v", err)
 						}
 					}
+					player.SetCompleteArtwork(g.manualArtwork)
 					g.caveTerrainHD.SetPlayer(player)
 				}
 			}

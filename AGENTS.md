@@ -2,6 +2,10 @@
 
 ## 2026-10-21最新使用者指示
 
+使用者接續要求先補齊全圖HD並全部整合，之後才一次驗收。期間不抽驗、不試玩、不提前另包候選；不得以部分補圖當本輪完成。沿用050及[全量來源整理](tools/hd_complete_sources.py)，製作台帳在既有工作區的completion-sources.json，完整請求及生成圖沿generated/，不另建工作根。
+
+全圖補繪登錄：[hd_complete_register.py](tools/hd_complete_register.py)。43組來源、30張內建生成圖與8,392個完整／局部來源已接入[全圖覆繪層](internal/prototype/hd/complete_art.go)，清單在同工作區的registered/complete-art.json。只用原版資源段、原生圖樣及透明遮罩選圖；主角與武器沿原版8×8元件組裝。整合版尚未入AppImage，不用舊v.0.3.1宣稱包含本批素材。實際畫面及未知來源由整體人工驗收處理。
+
 本次改走[050全圖像HD與人工驗證交付](docs/spec/050-manual-hd-delivery.md)。使用者已明確取消接下來的自動測試、對拍與GUI驗證，直接製作及接入HD全圖像，剩下交人工驗證，再打包含遊戲的Linux AppImage並清理workspace。不要重複詢問或重新開啟舊驗證閘門；編譯與封包照常進行，未人工確認的結果如實標示。原版規則與存檔不改，未知來源保持原貌，不稱全覆蓋已驗。此最新指示優先於下方歷史測試要求。
 
 GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保存日誌的每筆暫存器／步數與目標RAM及完成來源雜湊，不以來源重播代替GUI驗收。

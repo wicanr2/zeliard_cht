@@ -1480,3 +1480,19 @@ ae87b6b7與101來源固定後驗實際GUI，五個五欄文字區均通過並逐
 本次修正版收尾刪除348053504配置bytes，連先前候選清理共2552184832 bytes，約2.38GiB；生成圖及歷史候選保留。專案Docker容器為零，root-owned檔案與誤建.md目錄為零；未清除其他專案資源。
 
 程式與文件已提交`79729c8`並推送私人儲存庫`origin/main`。未上傳原版資料、字型、生成圖、工作區或AppImage。
+
+## 2026-10-21 全圖補繪完成後整批接入
+
+使用者改定順序：先把全圖HD補齊及全部整合，之後一次驗收，再談後續。期間沒有抽驗、試玩或另包部分候選。路由命中復古生命週期與文件職責，讀end-to-end-playbook及project-document-responsibilities；更新README現況時另讀retro-remake-readme-standard。套用內建imagegen及既有逆向技能的來源／顯示分層契約。
+
+[來源工具](tools/hd_complete_sources.py)整理43組剩餘來源。補繪30張生成原圖，包含八室內完整圖庫、FMAN230、MMAN152、CMAN164、TMAN46、CPAT157、MPAT242、DPAT191、三組刀光301、37裝備物品圖示、28法術畫格、32個ENCNT片段、交談後景、ZEL2第二階段、片頭／結局、四套36個頭像表情與五個幻影階段。生成請求、引用與輸出SHA及原圖都複製保存於既有工作區；沒有重畫生成PNG。
+
+[登錄工具](tools/hd_complete_register.py)裁切至三倍目標尺寸並套原遮罩。完整圖面再依正確幾何切出局部來源，供原版擦入、捲動及說話時使用，合計8,392筆；不是8,392種獨立素材。主角四色表與武器有1,221個組裝鍵，完整物件由1,562增加69個ZEL2來源至1,631。舊3,908個任意48-byte切片不再作製作清單，沒有把錯位片段塞進正式層。
+
+[覆繪層](internal/prototype/hd/complete_art.go)沿manual-hd-art接入。完整來源逐像素匹配，已知資源段另作整庫守衛；原專用HD先畫，新圖只填仍為原貌的像素。主角與武器沿原九／十六圖格組裝，保留原版透明、座標及遮擋。未放寬未知裝備分支或Pureza191，不改dosgolem、規則、輸入、計時或存檔。
+
+製作中先修正FIN的稀疏OR／AND遮罩，不使用一般圖片的累積XOR；NE81、OUP、TTL2及YUU3／4按各自消費端重組。首次登錄把嵌入程式的YMPD誤當獨立decoded檔讀取，當場停止；修成只對真正圖庫讀decoded來源後完成。這些是製作格式與工具準備修正，沒有以遊戲測試過關作證。
+
+所有圖面接入後，Docker內Go1.24.13編譯前端成功，另以正式載入器一次載入全部清單圖檔、尺寸與雜湊，輸出ALL_MANIFEST_ASSETS_LOADED。沒有test、vet、原版對拍、GUI或遊戲啟動。binary為hd-integration-unreleased；實際畫面、接縫與動畫待一次整體人工驗收。不產新AppImage，不改v.0.3.1或前版影片。結果與所有輸入／輸出身份保存在integration-result.json，詳[CONTEXT](CONTEXT.md#目前狀態表)。
+
+收尾清除本輪可重建Go快取195,510,272配置bytes，約186MiB；保留整合binary、全部生成圖、提示詞、原始輸入與正式舊包。root-owned檔案與誤建.md目錄均零，專案Docker容器為零，沒有全域清理其他專案資源。README現況路由另命中retro-remake-readme-standard並已載入。程式與文件推送私人origin/main，原版資料、生成素材及工作區不入Git。

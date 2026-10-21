@@ -32,7 +32,16 @@ type caveWeaponPose struct {
 	bounds image.Rectangle
 	pixels []color.NRGBA
 }
-type CaveWeapon struct{ poses map[string]*caveWeaponPose }
+type CaveWeapon struct {
+	poses    map[string]*caveWeaponPose
+	complete *CompleteArtwork
+}
+
+func (w *CaveWeapon) SetCompleteArtwork(s *ManualArtwork) {
+	if w != nil && s != nil {
+		w.complete = s.complete
+	}
+}
 
 func NewCaveWeapon(dir string) (*CaveWeapon, error) {
 	atlas, e := caveArtwork(filepath.Join(dir, "weapon-atlas-handpaint-v1.png"), "8ea1753a36e44f51dd9ba4732613095479a4ceabddd96c43a9336b1bc7b68e66")
@@ -73,6 +82,31 @@ func (w *CaveWeapon) selectPose(d *caveDecoded) (string, *caveWeaponPose, bool) 
 		return key, nil, true
 	}
 	p := w.poses[key]
+	if p == nil && w.complete != nil {
+		if d.WeaponColors[0] == d.WeaponColors[1] {
+			return key, nil, false
+		}
+		raster := d.WeaponRaster
+		for i, v := range raster {
+			if v == 255 {
+				continue
+			}
+			if v == d.WeaponColors[0] {
+				raster[i] = 45
+			} else if v == d.WeaponColors[1] {
+				raster[i] = 63
+			} else {
+				return key, nil, false
+			}
+		}
+		pixels, bounds := w.complete.compose("weapon-glyphs", raster[:], 32)
+		if pixels != nil && !bounds.Empty() {
+			p = &caveWeaponPose{number: 20000, bounds: bounds, pixels: pixels}
+			if len(w.poses) < 8192 {
+				w.poses[key] = p
+			}
+		}
+	}
 	if p == nil || len(p.pixels) != 96*96 || p.bounds.Empty() || !p.bounds.In(image.Rect(0, 0, 96, 96)) || !p.bounds.Add(image.Pt(d.WeaponX*3, d.WeaponY*3)).In(image.Rect(144, 42, 816, 474)) {
 		return key, nil, false
 	}

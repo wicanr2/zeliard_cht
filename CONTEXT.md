@@ -4,6 +4,24 @@
 
 ## 最新指示與正在製作
 
+使用者最新指示：先補齊全圖HD並全部整合，之後才一次驗收。期間不抽驗、不啟動遊戲、不提前打新包。前版v.0.3.1只代表先前候選，不能用作本批完成證據。
+
+## 目前狀態表
+
+| 項目 | 2026-10-21現況 |
+|---|---|
+| 美術製作 | 已盤點來源的補繪完成；43組來源、30張新增生成原圖，沿用先前場景及敵人圖面 |
+| 原版接入 | registered/complete-art.json共8,392筆完整／局部來源及1,221個主角／刀光組裝鍵；完整物件來源由1,562增至1,631 |
+| 範圍 | 八室內完整圖庫、所有已列人物／城鎮圖塊、裝備物品、法術、交談後景、ZEL2、片頭／結局與四套表情動畫均有圖面及接入 |
+| 整合檢查 | Docker內Go編譯成功，正式載入器一次載入全部圖格、物件及城鎮清單；沒有遊戲、GUI或原版對拍 |
+| 本地程式 | workplace/full-hd-v1/manual-hd-v1/zeliard-preview-complete；未發行，標記hd-integration-unreleased |
+| 人工驗收 | 待一次整體檢視；未知來源、未知裝備組合及Pureza191安全保留原貌，不能由美術數量推導全遊戲每幀覆蓋率 |
+| 封包 | 不提前打包；v.0.3.1仍是前次範圍，不包含本批補圖 |
+
+製作入口為[來源整理](tools/hd_complete_sources.py)、[登錄](tools/hd_complete_register.py)與[覆繪層](internal/prototype/hd/complete_art.go)。來源、生成請求、引用及輸出雜湊留在既有工作區；registered/complete-art.json包含輸入檔與工具雜湊。整合日誌為compile-complete.log及load-complete.log，收尾記錄在integration-result.json。舊tail.json的3,908個任意切片已由正確構圖取代製作用途，不再逐格生成錯位圖案。完整原圖、提示詞及來源保留。
+
+## 前次候選與封包範圍
+
 使用者已取消接下來的自動測試、對拍與GUI驗證，要求直接完成全圖像HD、交人工驗證，接著打包含遊戲資料的Linux AppImage，最後清理workspace。流程見[050](docs/spec/050-manual-hd-delivery.md)。下表為前輪已驗候選，保留原身份，不作本次新圖通過證據。
 
 本次工作區為`workplace/full-hd-v1/manual-hd-v1/`。八組敵人與十組首領已生成，按各自EAI／首領程式的A030模板與4F8C色表註冊1,562個原生圖樣。另接八城鎮前景、CMAN五類40姿態、16幅主插畫、一幅96×265結局捲動人像與199個共用圖格候選。`registered/manual-tiles.json`共6,726個圖格，未知來源保留原貌，不代表全圖覆蓋。所有新內容未測試、未對拍、未啟動遊戲。

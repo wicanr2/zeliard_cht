@@ -73,6 +73,7 @@ type caveDecoded struct {
 	ActorRaster            [576]byte
 	ActorX, ActorY         int
 	WeaponRaster           [1024]byte
+	WeaponColors           [2]byte
 	WeaponX, WeaponY       int
 	Cells                  []caveCell
 	Objects                []caveObject
@@ -163,7 +164,7 @@ func decodeCaveFrameWithPaints(memory, bodyMemory, original []byte, paints []Cav
 	if origin < 0xe000 || origin >= 0xe900 {
 		return nil, fmt.Errorf("map origin")
 	}
-	out := &caveDecoded{Background: append([]byte(nil), original...)}
+	out := &caveDecoded{Background: append([]byte(nil), original...), WeaponColors: [2]byte{p[0x4ff5], p[0x4ff6]}}
 	mapAddress := func(x, y int) int {
 		n := (origin - 0xe000 + y*36 + 4 + x) % 0x900
 		if n < 0 {

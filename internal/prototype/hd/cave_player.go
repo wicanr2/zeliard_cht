@@ -79,7 +79,17 @@ type cavePlayerPose struct {
 	bounds image.Rectangle
 	pixels []color.NRGBA
 }
-type CavePlayer struct{ poses map[string]*cavePlayerPose }
+type CavePlayer struct {
+	poses    map[string]*cavePlayerPose
+	complete *CompleteArtwork
+}
+
+func (p *CavePlayer) SetCompleteArtwork(s *ManualArtwork) {
+	if p != nil && s != nil {
+		p.complete = s.complete
+	}
+}
+
 type cavePlayerCrop struct {
 	image.Image
 	box image.Rectangle
@@ -186,6 +196,15 @@ func (p *CavePlayer) selectPose(d *caveDecoded) (string, *cavePlayerPose, bool) 
 		return key, nil, true
 	}
 	pose := p.poses[key]
+	if pose == nil && p.complete != nil {
+		pixels, bounds := p.complete.compose("fman-all", d.ActorRaster[:], 24)
+		if pixels != nil && !bounds.Empty() {
+			pose = &cavePlayerPose{number: 20000, bounds: bounds, pixels: pixels}
+			if len(p.poses) < 8192 {
+				p.poses[key] = pose
+			}
+		}
+	}
 	if pose == nil || len(pose.pixels) != 72*72 || pose.bounds.Empty() || !pose.bounds.In(image.Rect(0, 0, 72, 72)) {
 		return key, nil, false
 	}

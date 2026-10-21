@@ -22,6 +22,7 @@ type manualPlacement struct {
 	x, y int
 }
 type ManualArtwork struct {
+	complete         *CompleteArtwork
 	index            map[[16]byte][]*manualTile
 	zero             map[[64]byte][]*manualTile
 	lastRaw, lastRGB []byte
@@ -69,13 +70,24 @@ func NewManualArtwork(root, dir string) (*ManualArtwork, error) {
 			s.index[signature] = append(s.index[signature], t)
 		}
 	}
+	s.complete, err = loadCompleteArtwork(dir)
+	if err != nil {
+		return nil, err
+	}
 	return s, nil
+}
+
+func (s *ManualArtwork) SetResources(r, e []byte) {
+	if s != nil {
+		s.complete.resources(r, e)
+	}
 }
 
 func (s *ManualArtwork) Draw(dst *image.RGBA, raw, rgb []byte, origin image.Point) bool {
 	if s == nil || len(raw) != 64000 || len(rgb) != 192000 {
 		return false
 	}
+	completeMatched := s.complete.draw(dst, raw, rgb, origin)
 	if !bytes.Equal(raw, s.lastRaw) || !bytes.Equal(rgb, s.lastRGB) {
 		s.placements = s.placements[:0]
 		var used [64000]bool
@@ -137,5 +149,5 @@ func (s *ManualArtwork) Draw(dst *image.RGBA, raw, rgb []byte, origin image.Poin
 			draw.Draw(dst, image.Rect(p.x*3, p.y*3, p.x*3+24, p.y*3+24).Add(origin), p.tile.art, image.Point{}, draw.Over)
 		}
 	}
-	return len(s.placements) > 0
+	return completeMatched || len(s.placements) > 0
 }

@@ -1305,3 +1305,17 @@ READY後接入固定來源鍵、PNG雜湊及原生包絡，新增12個登錄，�
 - READY後才接純靜態504格下層與HD，背景0清原0色，非零背景取該HD下層。不是把含動態物件的Background當乾淨地形，也不讓前一物件透過下一物件遮罩。九個對應要求完整Raster鍵、四底圖及四圖格，同時符合才共用既有pose。
 - 八次內建imagegen全文提示詞、引用SHA、cache及未改RGBA留`cave-unmatched-art-v1/generation.json`；原生包絡直接乘三註冊。17來源548352原生像素、八圖46080RGBA、2066刀光與26692物件獨立混色、2304遮罩點通過。正常13點完整原版與USR相同，GUI原貌切回及目視通過；詳049與收尾稽核，不外推完整遊戲。
 - 尚未證實：魔法石137515854步的未觀察記錄。既有探針以未改正常魔法石鍵序另捕`cave-magia-unobserved-source-v2/receipt.json`，三個觀察都保存同一拒絕來源，兩原版狀態／USR不變。資料已具備，不再重蒐集；後續須先重建來源及核已見四筆記錄契約，不能直接放寬守衛。
+
+## 2026-10-21：050全圖剩餘來源與動畫構圖
+
+本批只做素材格式強推論及顯示整合，沒有新跑遊戲、IDA或正常路徑。固定原版、84份decoded輸入、原始RAM、兩份色盤與轉製工具的檔名及SHA-256保存在`workplace/full-hd-v1/manual-hd-v1/registered/complete-art.json`的inputs。原始RAM沿既有保存來源，未注入或改寫；工具映像為eob-audio-capture:20261009-r3。來源由[hd_complete_sources.py](tools/hd_complete_sources.py)重建，30份完整生成請求、引用與原圖SHA另存generated/。
+
+格式參考為[nolanvenhola/zeliard固定版本](https://github.com/nolanvenhola/zeliard/tree/c23b5f91ad31eb75b2f63a312a42e161e26096d8)，本地format-reference/保留全文與source.json。只參考消費端與格式，自行實作，不使用外部引擎。該專案符號不是本專案IDA已證實語意；本批顯示契約標為強推論。
+
+- 位址基準：decoded buffer從0起算；YMPD／CKPD程式以3300為載入基底，OPDMO表以6000回推原模組偏移。FMAN6333與D000遮罩是dosgolem資源段11B1的段內偏移，4F8C色表指標為01B1段內偏移。不與檔案偏移或IDA線性位址混用。
+- 裝備物品依GMMCGA字組順序重建六個20×18及31個16×16圖示；法術依原共享根指標得到28個畫格；SWORD三組各依自己的根指標解出301個2-bit字模。這些是來源畫格數，不是物品種類數。
+- NE81為72×81、OUP為96×88；TTL2按34×25的4×8圖塊表重排；YUU3先合併平面，再套YUU4遮罩。END7第三平面取EN72；FIN只做稀疏解開與OR／AND遮罩，不走一般圖片的累積2-bit XOR。舊錯位預覽保留，不當成已確認圖面。
+- 四套96×88頭像依OPDMO portrait_lg／sm及ENDMO portrait80／90／B0的原矩形回貼36個嘴形／眼形畫格。幻影沿五個CC0-byte來源及原平面轉換組圖，不新增動畫節點。
+- ZEL2使用自己record15的A030／A070模板，與ZELA共用record67圖塊，新增69個16×16來源。Pureza191仍未知，不替原資料補造圖塊。
+
+舊tail.json的3,908個任意48-byte切片不作現行素材分母；涉及的影像已按正確構圖與既有共用圖庫製作。全清單載入只證明圖檔、尺寸與雜湊能被前端接受，不能證明正常可達、每幀原版一致或接縫通過。

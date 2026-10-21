@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "objective": "完成全遊戲HD",
-  "status": "in_progress",
+  "status": "art_integrated_manual_review_pending",
   "scope_spec": "docs/spec/034-full-game-hd.md",
   "counts": {
     "container_records": 194,
@@ -6507,5 +6507,29 @@
     },
     "cleanup_allocated_bytes": 348053504,
     "containers_remaining": 0
+  },
+  "current_complete_integration": {
+    "date": "2026-10-21",
+    "status": "ART_INTEGRATED_MANUAL_REVIEW_PENDING",
+    "source_groups": 43,
+    "generated_sheets": 30,
+    "entries": 8392,
+    "actor_weapon_components": 1221,
+    "objects": 1631,
+    "manifest": "workplace/full-hd-v1/manual-hd-v1/registered/complete-art.json",
+    "manifest_sha256": "5aa16ac9a8d3d12b19eb778a3f5983fd7b96e83c278b88a4e9af0a9be351758d",
+    "compile": "PASS",
+    "all_manifest_assets_load": "PASS",
+    "automatic_tests": false,
+    "game_launched": false,
+    "gui_checked": false,
+    "oracle_checked": false,
+    "package_updated": false,
+    "human_review": "PENDING",
+    "limits": [
+      "未匹配來源與未知裝備組合仍保留原貌。",
+      "Pureza第316欄ID191來源仍未知，不補造圖塊。",
+      "未宣稱全遊戲每幀、正常到達與原版一致性已驗。"
+    ]
   }
 }
