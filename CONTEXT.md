@@ -2,6 +2,8 @@
 
 更新日期：2026-10-21，Asia/Taipei。
 
+使用者已確認結案。現行版本為`v.1.0.2-20261021`，六個完整版與兩支本機新影片已交付，沒有必要工作待續。下列人工驗收邊界保留為限制，不自動重新開工。
+
 影片已依使用者指示改在本機重錄。使用正式1.0.2 HD AppImage，沿[053錄影流程](docs/spec/053-ada-gameplay-promo.md)，Intel MTL透過VirtualGL EGL硬體繪圖，錄影採libx264。工作區沿用`workplace/ada-promo-v102/`，來源標為local；舊片與已發布tag保持原身份。
 
 ## 目前狀態表

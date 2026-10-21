@@ -1695,3 +1695,9 @@ record_ada_promo.py新增ZELIARD_CAPTURE_MACHINE=local，使用libx264、veryfas
 verify_promo.py得到PASS_PROMO_TECHNICAL_QA及PASS_LOCAL_CONTINUOUS_GAMEPLAY_AV。兩片串流、長度、聲音、黑幀與既有凍結門檻通過；推廣片無兩秒以上靜音。六格圖、標題、30秒過場、鍵盤／手把與57秒結尾已目視，字幕無裁切。連續片保留正常對話、切換與換場停頓，不宣稱每段無靜音或逐取樣同步。README、CONTEXT、WORKLIST、053及驗證矩陣更新本機來源，未改六個完整版、遊戲版號、已發布Release或tag，影片只留本機。
 
 先核六個封包與兩片影片SHA，再移除本輪未使用的遠端傳輸tar、正式包解壓副本及十個可重建剪輯MP4，共496,107,520配置bytes，約473MiB。原始錄影、裝置PCM、原版WAV、固定inputs、提示／字幕、字卡、時間線、所有收據及八個正式成品均保留。清理後八份成品SHA、正式遊戲來源與存檔身份相同，root-owned與誤建.md目錄均零，專案容器為零；收據為workplace/ada-promo-v102/cleanup-local.json及hygiene.json。533個文件本地連結存在，git diff --check通過。正式manifest只追加新片及音畫來源，不改既有封包雜湊；本輪Git提交與遠端同步回讀另存同工作區git-publication.json。
+
+## 2026-10-21 使用者確認結案
+
+使用者明確要求結案。以目前v.1.0.2-20261021、六個完整版及兩支本機新影片完成交付，CONTEXT與WORKLIST標記無必要工作待續。沿文件與交接路由載入文件職責規則，只核對八個成品存在及大小與既有manifest一致，沿用前輪音畫及SHA收據，不重跑遊戲、測試、打包或錄影，不改版號、已發布tag或Release。
+
+專案容器為零。新增的未追蹤文字檔保持原位，不修改、不刪除、不納入結案提交；原始資料、存檔、素材、影片及收據均保留。後段正常首領、完整動畫與實體裝置等未驗限制維持，不自行重開。本輪只同步三份結案文件。
