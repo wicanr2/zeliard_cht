@@ -100,6 +100,11 @@ func main() {
 			panic(fmt.Sprintf("before %d", n))
 		}
 		switch r.Kind {
+		case "cpu_speed":
+			audio.Render()
+			o.SetDOSBoxCycles(r.CyclesPerMS)
+		case "audio":
+			audio.Render()
 		case "key":
 			if r.Pressed {
 				o.KeyDown(r.Scan)

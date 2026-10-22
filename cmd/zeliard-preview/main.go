@@ -38,6 +38,14 @@ type device struct {
 	key, name string
 }
 type game struct {
+	cpuFrameUsed, lastDrawCost, sliceElapsed time.Duration
+	sliceRan                                 uint64
+	lastRateChange                           time.Time
+	baseCycles                               uint64
+	speedPanel                               bool
+	speedFocus                               int
+	perf                                     performance
+
 	realtime             bool
 	clock                sound.Clock
 	o                    *oracle.Oracle
@@ -260,6 +268,8 @@ func (g *game) captureBinding(buttons []bool, axes []float64) {
 }
 
 func (g *game) Update() error {
+	begin := time.Now()
+	defer func() { g.perf.update(begin) }()
 	defer func() {
 		if g.realtime && (g.captured || g.panel || g.paused || g.releaseGate || !ebiten.IsFocused()) {
 			g.clock.Reset()
@@ -292,35 +302,44 @@ func (g *game) Update() error {
 	if !g.panel && (just("toolbar") || g.keyboardToolbarPressed()) {
 		g.panel = true
 		g.keyboardPanel = g.keyboardToolbarPressed()
+		g.speedPanel = false
 		g.releaseGate = true
 		g.edges.Sync(g, nil)
 	}
 	x, y := ebiten.CursorPosition()
 	point := image.Pt(x, y)
 	click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft)
-	if click && point.In(image.Rect(8, 8, 150, 40)) {
+	if click && point.In(toolbarOriginal) {
 		g.hdEnabled = false
 	}
-	if click && point.In(image.Rect(158, 8, 340, 40)) && g.hasHDArtwork() {
+	if click && point.In(toolbarHD) && g.hasHDArtwork() {
 		g.hdEnabled = !g.hdEnabled
 	}
-	if click && image.Pt(x, y).In(image.Rect(348, 8, 540, 40)) {
-		g.panel = !g.panel || g.keyboardPanel
+	if click && image.Pt(x, y).In(toolbarController) {
+		g.panel = !g.panel || g.keyboardPanel || g.speedPanel
 		g.keyboardPanel = false
+		g.speedPanel = false
 		g.listening = ""
 		g.releaseGate = true
 		g.edges.Sync(g, nil)
 	}
-	if click && point.In(image.Rect(748, 8, 952, 40)) {
+	if click && point.In(toolbarKeyboard) {
 		g.panel = !g.panel || !g.keyboardPanel
 		g.keyboardPanel = true
+		g.speedPanel = false
 		g.listening = ""
 		g.releaseGate = true
 		g.edges.Sync(g, nil)
 	}
-	if click && point.In(image.Rect(548, 8, 740, 40)) {
+	if click && point.In(toolbarPause) {
 		g.paused = !g.paused
 		g.edges.Sync(g, nil)
+	}
+	if click && point.In(toolbarSpeed) {
+		g.openSpeedPanel()
+	}
+	if g.panel && g.speedPanel {
+		return g.updateSpeedPanel(point, click, just)
 	}
 	if g.panel {
 		g.edges.Sync(g, nil)
@@ -425,7 +444,6 @@ func (g *game) Update() error {
 		}
 	}
 	g.edges.Sync(g, desired)
-	beforeSteps, beforeCycles := g.o.Steps(), g.o.Cycles()
 	budget := g.cycles * 1000 / 60
 	if g.realtime {
 		budget = g.clock.Budget(time.Now(), g.o.Cycles(), g.cycles)
@@ -433,8 +451,7 @@ func (g *game) Update() error {
 			return nil
 		}
 	}
-	if err := g.o.RunCycles(budget); err != nil {
-		g.traceRun(beforeSteps, beforeCycles, budget, false, err)
+	if err := g.runCPUSlice(budget); err != nil {
 		var exited *oracle.ExitError
 		if errors.As(err, &exited) {
 			return ebiten.Termination
@@ -443,16 +460,22 @@ func (g *game) Update() error {
 	}
 	// 原版取樣只在更新執行緒取得；播放端不持有原版執行器。
 	pcm := g.audio.Render()
-	g.traceRun(beforeSteps, beforeCycles, budget, true, nil)
+	g.trace(map[string]any{"kind": "audio"})
 	if err := g.output.submit(pcm); err != nil {
 		return err
 	}
+	g.adaptCPU()
 	return nil
 }
 
 func (g *game) trace(event map[string]any) {
 	if g.inputTrace == "" {
 		return
+	}
+	if event["kind"] == "cpu_speed" || event["kind"] == "audio" {
+		event["before_steps"], event["after_steps"] = g.o.Steps(), g.o.Steps()
+		event["before_cycles"], event["after_cycles"] = g.o.Cycles(), g.o.Cycles()
+		event["after_regs"] = g.o.Regs()
 	}
 	data, err := json.Marshal(event)
 	if err == nil {
@@ -576,6 +599,8 @@ func (g *game) caveDoorState() map[string]any {
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
+	begin := time.Now()
+	defer func() { g.lastDrawCost = time.Since(begin); g.cpuFrameUsed = 0; g.perf.draw(begin) }()
 	g.manualArtwork.BeginFrame()
 	w, h, rawRGB := g.o.ScreenRGB()
 	raw := g.o.Indexed()
@@ -764,7 +789,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.townDialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
 	}
 	presented.ApplyErase(g.canvas, image.Pt(0, barHeight))
-	g.button(image.Rect(8, 8, 150, 40), g.label("original"), !g.hdEnabled)
+	g.button(toolbarOriginal, g.label("original"), !g.hdEnabled)
 	hdLabel := "hd"
 	if g.hd != nil {
 		hdLabel = "hd_ready"
@@ -772,19 +797,20 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hasHDArtwork() {
 		hdLabel = "hd_art_ready"
 	}
-	g.button(image.Rect(158, 8, 340, 40), g.label(hdLabel), g.hdEnabled)
-	g.button(image.Rect(348, 8, 540, 40), g.label("controller"), g.panel && !g.keyboardPanel)
-	g.button(image.Rect(748, 8, 952, 40), g.label("keyboard_settings"), g.panel && g.keyboardPanel)
+	g.button(toolbarHD, g.label(hdLabel), g.hdEnabled)
+	g.button(toolbarSpeed, fmt.Sprintf("%s %dx", g.label("cpu_speed"), g.settings.CPUSpeed), g.speedPanel)
+	g.button(toolbarController, g.label("controller"), g.panel && !g.keyboardPanel && !g.speedPanel)
+	g.button(toolbarKeyboard, g.label("keyboard_settings"), g.panel && g.keyboardPanel)
 	pause := "pause"
 	if g.paused {
 		pause = "resume"
 	}
-	g.button(image.Rect(548, 8, 740, 40), g.label(pause), g.paused)
-	g.text(image.Rect(12, 650, 948, 678), g.label("prototype"))
+	g.button(toolbarPause, g.label(pause), g.paused)
+	g.text(image.Rect(12, 650, 740, 678), g.label("prototype"))
 	if g.hdEnabled && !g.hdMatched {
-		g.text(image.Rect(12, 650, 948, 678), g.label("hd_fallback")+"　"+g.label("prototype"))
+		g.text(image.Rect(12, 650, 740, 678), g.label("hd_fallback")+"　"+g.label("prototype"))
 	}
-	if g.panel {
+	if g.panel && !g.speedPanel {
 		draw.Draw(g.canvas, image.Rect(40, 80, 920, 630), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
 		g.text(image.Rect(60, 90, 900, 120), g.label("panel_title"))
 		g.button(image.Rect(720, 90, 900, 122), g.label("keyboard_settings"), false)
@@ -825,6 +851,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 			g.drawKeyboardPanel()
 		}
 	}
+	if g.speedPanel {
+		g.drawSpeedPanel()
+	}
+	g.text(image.Rect(752, 650, 948, 678), fmt.Sprintf("%.2fx %.1f fps", float64(g.cycles)/float64(g.baseCycles), g.perf.FPS))
 	// 診斷快照在本次合成後寫入，避免短暫姿態混到上一張HD狀態。
 	if g.observePath != "" {
 		churchMatched, churchFrame := false, -1
@@ -880,25 +910,28 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"merchant_frames_hd":         g.merchantFramesHD.State(),
 			"input_trace_error":          g.inputTraceError,
 			"audio_output":               g.output.state(),
-			"town_ground_hd_matched":     g.townGroundMatch,
-			"town_player_hd_matched":     g.townPlayerMatch,
-			"town_residents_hd_matched":  g.townActorsMatch,
-			"town_residents_hd":          g.townActorsHD.State(),
-			"town_background_cache":      g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
-			"town_background_module":     g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
-			"native_primary_0083":        g.o.Byte(oracle.Far(0x1b1, 0x0083)),
-			"native_primary_0080":        g.o.Word(oracle.Far(0x1b1, 0x0080)),
-			"church_hd_matched":          churchMatched,
-			"church_hd_frame":            churchFrame,
-			"interior_hd_matched":        g.interiorHDMatch,
-			"interior_hd":                g.interiorHD.State(),
-			"native_primary_0082":        g.o.Byte(oracle.Far(0x1b1, 0x0082)),
-			"native_primary_0084":        g.o.Byte(oracle.Far(0x1b1, 0x0084)),
-			"native_primary_0090":        g.o.Word(oracle.Far(0x1b1, 0x0090)),
-			"native_primary_00b2":        g.o.Word(oracle.Far(0x1b1, 0x00b2)),
-			"native_primary_4fed":        g.o.Word(oracle.Far(0x1b1, 0x4fed)),
-			"text_cursor":                g.o.Word(oracle.Far(0x01b1, 0xff4c)),
-			"advance_input_flags":        int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
+			"cpu_effective_multiplier":   float64(g.cycles) / float64(g.baseCycles),
+			"cpu_multiplier":             g.settings.CPUSpeed, "cycles_per_ms": g.cycles, "speed_panel": g.speedPanel,
+			"performance":               map[string]any{"fps": g.perf.FPS, "draw_ms": g.perf.DrawMS, "update_ms": g.perf.UpdateMS},
+			"town_ground_hd_matched":    g.townGroundMatch,
+			"town_player_hd_matched":    g.townPlayerMatch,
+			"town_residents_hd_matched": g.townActorsMatch,
+			"town_residents_hd":         g.townActorsHD.State(),
+			"town_background_cache":     g.o.Bytes(oracle.Far(0x1b1, 0xe000), 224),
+			"town_background_module":    g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64),
+			"native_primary_0083":       g.o.Byte(oracle.Far(0x1b1, 0x0083)),
+			"native_primary_0080":       g.o.Word(oracle.Far(0x1b1, 0x0080)),
+			"church_hd_matched":         churchMatched,
+			"church_hd_frame":           churchFrame,
+			"interior_hd_matched":       g.interiorHDMatch,
+			"interior_hd":               g.interiorHD.State(),
+			"native_primary_0082":       g.o.Byte(oracle.Far(0x1b1, 0x0082)),
+			"native_primary_0084":       g.o.Byte(oracle.Far(0x1b1, 0x0084)),
+			"native_primary_0090":       g.o.Word(oracle.Far(0x1b1, 0x0090)),
+			"native_primary_00b2":       g.o.Word(oracle.Far(0x1b1, 0x00b2)),
+			"native_primary_4fed":       g.o.Word(oracle.Far(0x1b1, 0x4fed)),
+			"text_cursor":               g.o.Word(oracle.Far(0x01b1, 0xff4c)),
+			"advance_input_flags":       int(g.o.Byte(oracle.Far(0x01b1, 0xff1d))) | int(g.o.Byte(oracle.Far(0x01b1, 0xff1e)))<<8})
 		// Draw 可能跨過多個 Update，不能用幀數整除判斷心跳。
 		// 先寫同目錄暫存檔再換名，觀察者只會讀到完整快照。
 		if err := os.WriteFile(g.observePath+".tmp", append(data, '\n'), 0644); err == nil {
@@ -1046,6 +1079,7 @@ func main() {
 	fontPath := flag.String("font", "", "固定字距HEX.gz字型，可附圓體灰階遮罩")
 	textPath := flag.String("text", "text/host.json", "前端中文資料")
 	userDir := flag.String("user-dir", "", "原版存檔與前端設定的可寫目錄")
+	cpuSpeed := flag.Int("cpu-speed", 0, "CPU倍率1/2/4/8/16/32；0沿用保存設定")
 	cycles := flag.Uint64("cycles", 3000, "雛形 DOSBox 相容 cycles；尚非實機速度驗收值")
 	capture := flag.String("capture", "", "GUI 測試擷取路徑，完成後結束")
 	captureRequest := flag.String("capture-request", "", "GUI 測試：等待指定訊號檔存在再擷取，取代更新次數條件")
@@ -1220,8 +1254,15 @@ func main() {
 		}
 		o.SetAdLib(true)
 	}
-	o.SetDOSBoxCycles(*cycles)
-	g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, cycles: *cycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), texture: ebiten.NewImage(width, height)}
+	if *cpuSpeed != 0 {
+		if !controls.ValidCPUSpeed(*cpuSpeed) {
+			log.Fatal("-cpu-speed只接受1/2/4/8/16/32")
+		}
+		settings.CPUSpeed = *cpuSpeed
+	}
+	effectiveCycles := *cycles
+	o.SetDOSBoxCycles(effectiveCycles)
+	g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, baseCycles: *cycles, cycles: effectiveCycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), texture: ebiten.NewImage(width, height)}
 	if *manualArt != "" {
 		g.manualArtwork, err = hd.NewManualArtwork(root, *manualArt)
 		if err != nil {
@@ -1253,7 +1294,7 @@ func main() {
 			log.Fatal(err)
 		}
 		g.inputTrace = *inputTrace
-		g.trace(map[string]any{"kind": "header", "cycles_per_ms": *cycles, "audio_sample_rate": 44100, "initial_memory_sha256": fmt.Sprintf("%x", sha256.Sum256(o.Bytes(oracle.Far(0, 0), 1<<20))), "initial_regs": o.Regs(), "source_kind": "native key edges and RunCycles journal; no state injection"})
+		g.trace(map[string]any{"kind": "header", "cycles_per_ms": effectiveCycles, "audio_sample_rate": 44100, "initial_memory_sha256": fmt.Sprintf("%x", sha256.Sum256(o.Bytes(oracle.Far(0, 0), 1<<20))), "initial_regs": o.Regs(), "source_kind": "native key edges and RunCycles journal; no state injection"})
 	}
 	if *caveArt != "" {
 		g.caveTerrainHD, err = hd.NewCaveTerrain(*caveArt)

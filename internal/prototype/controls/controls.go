@@ -35,6 +35,7 @@ func (b Binding) Active(buttons []bool, axes []float64, deadzone float64) bool {
 }
 
 type Settings struct {
+	CPUSpeed int                           `json:"cpu_speed,omitempty"`
 	Version  int                           `json:"version"`
 	Selected string                        `json:"selected"`
 	Deadzone float64                       `json:"deadzone"`
@@ -43,7 +44,7 @@ type Settings struct {
 }
 
 func Default() Settings {
-	return Settings{Version: 1, Deadzone: .25, Profiles: map[string]map[string]Binding{}, Keyboard: DefaultKeyboard()}
+	return Settings{Version: 1, CPUSpeed: 1, Deadzone: .25, Profiles: map[string]map[string]Binding{}, Keyboard: DefaultKeyboard()}
 }
 
 func Load(path string) (Settings, error) {
@@ -57,6 +58,9 @@ func Load(path string) (Settings, error) {
 	}
 	if err = json.Unmarshal(b, &s); err != nil {
 		return s, err
+	}
+	if !ValidCPUSpeed(s.CPUSpeed) {
+		s.CPUSpeed = 1
 	}
 	if s.Version != 1 || math.IsNaN(s.Deadzone) || s.Deadzone < .05 || s.Deadzone > .9 || s.Profiles == nil {
 		return s, fmt.Errorf("手把設定格式或死區無效")

@@ -1,5 +1,11 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+CPU速度新增入口：[059規格](docs/spec/059-cpu-speed-toolbar.md)、[工具列與效能計數](cmd/zeliard-preview/speed.go)及[倍率驗證](internal/prototype/controls/speed.go)。本輪工作區workplace/cpu-speed-v1，CPU倍率與HD實際幀率分開記錄，不以設定值或錄影幀率宣稱達標。
+
+2026-10-22使用者選擇HD 30fps優先，CPU選擇值作上限，負載高時自動降速並顯示實際倍率。使用者隨後指出CPU負載過重，停止遊戲壓測與完整驗收；僅完成串接、低成本邊界核對及必要編譯，30fps仍待低載實測。候選啟動入口為[play-cpu-preview.sh](tools/play-cpu-preview.sh)，不覆寫1.0.2正式包。[時鐘分段核對](internal/prototype/sound/clock_rate_test.go)避免調速重算舊時間；[設定及降速邊界](internal/prototype/controls/speed_test.go)保留上限與相容性。
+
+唯讀記憶體加速保存在[通用執行器差異](tools/dosgolem-bulk-read.patch)，基準為本專案既有正式執行器副本，套用於新獨立副本。只在普通線性RAM走批次複製；VGA平面讀取、監看、A20／HMA及跨界仍保留Read8語意。內附測試比對資料、監看順序及VGA狀態，不修改共用dosgolem或已發布來源。
+
 現行錄影入口：[053遊玩實錄與推廣片](docs/spec/053-ada-gameplay-promo.md)。Ada連線逾時後，使用者已指定1.0.2改在本機錄製；來源必須標為local。本次工作區沿用workplace/ada-promo-v102，正式影片在dist-all/v.1.0.2-20261021/promo。舊Ada影片保留原版號，不以本機來源冒充Ada。
 
 053工具入口：[硬體錄影](tools/record_ada_promo.py)以ZELIARD_CAPTURE_MACHINE=local選本機分支，使用VirtualGL EGL及libx264，本次已驗Intel MTL；預設ada分支保留NVENC。[遊玩片段與推廣片製作](tools/make_ada_promo.py)讀取實際machine，ZELIARD_PROMO_WORK指定workplace下的來源根；[影片訊號檢查](tools/verify_promo.py)核對兩片音畫。登入資料不加入專案或Git。

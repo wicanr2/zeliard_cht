@@ -8,10 +8,22 @@ type Clock struct {
 	anchor  time.Time
 	base    uint64
 	skipped time.Duration
+	elapsed time.Duration
 	Dropped time.Duration
 }
 
-func (c *Clock) Reset() { c.anchor = time.Time{}; c.skipped = 0 }
+func (c *Clock) Reset() { c.anchor = time.Time{}; c.skipped = 0; c.elapsed = 0 }
+
+// RateChanged closes the old-rate segment without discarding virtual elapsed time.
+func (c *Clock) RateChanged(cycles, previousPerMS uint64) {
+	if c.anchor.IsZero() || cycles < c.base || previousPerMS == 0 {
+		c.Reset()
+		return
+	}
+	delta := cycles - c.base
+	c.elapsed += time.Duration(delta/previousPerMS)*time.Millisecond + time.Duration(delta%previousPerMS)*time.Millisecond/time.Duration(previousPerMS)
+	c.base = cycles
+}
 
 func (c *Clock) Budget(now time.Time, cycles, perMS uint64) uint64 {
 	if perMS == 0 {
@@ -21,9 +33,10 @@ func (c *Clock) Budget(now time.Time, cycles, perMS uint64) uint64 {
 		c.anchor = now.Add(-time.Second / 60)
 		c.base = cycles
 		c.skipped = 0
+		c.elapsed = 0
 	}
 	delta := cycles - c.base
-	machine := time.Duration(delta/perMS)*time.Millisecond + time.Duration(delta%perMS)*time.Millisecond/time.Duration(perMS)
+	machine := c.elapsed + time.Duration(delta/perMS)*time.Millisecond + time.Duration(delta%perMS)*time.Millisecond/time.Duration(perMS)
 	lag := now.Sub(c.anchor) - c.skipped - machine
 	if lag <= 0 {
 		return 0

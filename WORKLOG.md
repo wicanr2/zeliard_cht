@@ -1701,3 +1701,24 @@ verify_promo.py得到PASS_PROMO_TECHNICAL_QA及PASS_LOCAL_CONTINUOUS_GAMEPLAY_AV
 使用者明確要求結案。以目前v.1.0.2-20261021、六個完整版及兩支本機新影片完成交付，CONTEXT與WORKLIST標記無必要工作待續。沿文件與交接路由載入文件職責規則，只核對八個成品存在及大小與既有manifest一致，沿用前輪音畫及SHA收據，不重跑遊戲、測試、打包或錄影，不改版號、已發布tag或Release。
 
 專案容器為零。新增的未追蹤文字檔保持原位，不修改、不刪除、不納入結案提交；原始資料、存檔、素材、影片及收據均保留。後段正常首領、完整動畫與實體裝置等未驗限制維持，不自行重開。本輪只同步三份結案文件。
+
+## 2026-10-22 CPU速度與HD 30fps
+
+使用者新增要求工具列提供2x、4x、8x、16x、32x CPU倍率並達HD 30fps。沿規格路由載入spec-gated-workflow、文件職責與驗收reference，先核目前程式與frozen dosgolem的SetDOSBoxCycles／RunCycles／Audio.Render。建立workplace/cpu-speed-v1，只存本次可撤回量測、來源及候選；原1.0.2封包、影片、tag與原版資料不變。先以正常冷F7及第一洞窟量測Update、Draw及CPU profile，不把CPU倍率直接當幀率。
+
+
+### CPU上限及驗收方式定案
+
+本輪第一次固定倍率候選已能由工具列選取六檔，前端設定及原版USR分離。當時主機高載，洞窟32x約1至2fps，不能將此當成正常負載硬體上限。使用者選擇「優先HD 30fps，所選倍率作上限；負載高時自動降速並顯示實際倍率」，之後明確告知CPU負載重、無法完整測試。本次停止遊戲壓測，不在最終候選補跑GUI或宣稱30fps已達成。
+
+CPU選單、設定保存及-cpu-speed啟動上限接入main／speed.go。每個Draw之間共用1至12ms CPU額度，以2048 cycles小段呼叫RunCycles，避免多個補追Update連續卡住呈現。每200ms依實際完成cycles與耗時調整生效速率，向上約12.5%、向下依負載，始終不超過所選上限。右下角分別顯示實際倍率及完成合成fps；CPU不足時可低於1x。單條指令、DOS服務或完成回呼仍可能超過額度，不宣稱硬即時。
+
+手動切換前Render舊音訊並釋放按鍵，選單期間暫停且恢復不追趕；自動換速則Render舊區段後，以Clock.RateChanged保存舊速率累積時間，不清空播放佇列。原生日誌逐段記實際RunCycles，另記audio及cpu_speed事件，hd_transition_probe同步識別新事件。這些是明示的前端速度差異，不改遊戲記憶體、素材、座標、規則或USR格式。
+
+CPU profile顯示逐byte完整記憶體讀取是大項。以release-v102的執行器來源建立本輪獨立副本，新增作品中立ReadBytes：普通RAM以區塊複製；平面VGA、讀取監看、監看回呼變更區間、A20／HMA及跨界保留Read8次序與副作用。早期遇監看即整段回退的版本效果有限，改按目前監看／VGA界線分段，不能略過監看。共用dosgolem、既有凍結來源均未修改。可重生差異為tools/dosgolem-bulk-read.patch，後續打包在新工作副本以git apply先check再套用，並確認產物不是被Git子目錄路由忽略。
+
+最後僅用單CPU、GOMAXPROCS=1、2GiB及低CPU shares編譯與執行低成本純邊界核對。controls保存／舊格式／無效倍率及降速上限通過，sound舊時鐘與換速保留時間通過，machine批次讀取資料、VGA、跨界、可修改後續RAM或搬移監看範圍的副作用通過。差異套用到正式基準後的三份檔案與工作副本相同。紀錄在cpu-speed-v1/build.log、executor-source.json及build-receipt.json。沒有再啟動最終自動版遊戲、沒有重新錄影或打包三平台。
+
+候選執行檔SHA為c0fbc4faea1ba1d1badcf4f6541131605d40774cf9c68252310bf9a7273d95ba，位於workplace/cpu-speed-v1/preview/zeliard-preview。bash tools/play-cpu-preview.sh提供本機入口，沿用保留的1.0.2圖庫連結；這是development候選，不是新的正式發行。原六包、兩片影片、VERSION、已發布tag及Release不變。059維持READY，最終GUI、操作、聲音與30fps待低載環境驗收。
+
+文件及來源連結均存在，root-owned檔案及誤建.md目錄為零，原新增未追蹤文字檔未修改或納入提交。保留候選、獨立執行器及診斷來源供後續低載檢查，不清除候選依賴的圖庫或固定輸入。來源同步回讀另存同工作區git-publication.json。

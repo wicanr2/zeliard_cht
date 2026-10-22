@@ -69,5 +69,13 @@
   "key_Numpad6": "數字鍵盤 6",
   "key_Numpad7": "數字鍵盤 7",
   "key_Numpad8": "數字鍵盤 8",
-  "key_Numpad9": "數字鍵盤 9"
+  "key_Numpad9": "數字鍵盤 9",
+  "cpu_speed": "速度",
+  "cpu_title": "CPU速度設定",
+  "cpu_base": "原速基準",
+  "cpu_original": "原速上限",
+  "cpu_current": "目前上限",
+  "cpu_help": "方向鍵選擇，Enter確認；Esc取消。設定自動保存。",
+  "cpu_scope": "優先HD 30fps；忙碌時自動降速，右下角顯示實際倍率與幀率。",
+  "cpu_effective": "實際CPU"
 }

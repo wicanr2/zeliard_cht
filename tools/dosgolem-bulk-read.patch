@@ -1,0 +1,142 @@
+--- a/oracle/oracle.go
++++ b/oracle/oracle.go
+@@ -354,11 +354,7 @@
+ 
+ // Bytes 讀一段。
+ func (o *Oracle) Bytes(a Addr, n int) []byte {
+-	out := make([]byte, n)
+-	for i := range out {
+-		out[i] = o.m.Read8(a.Linear() + uint32(i))
+-	}
+-	return out
++	return o.m.ReadBytes(a.Linear(), n)
+ }
+ 
+ // ---- 佈局 ----------------------------------------------------------------
+--- /dev/null
++++ b/internal/machine/read_bytes.go
+@@ -0,0 +1,42 @@
++package machine
++
++// ReadBytes returns an independent snapshot in Read8 order. Ordinary spans use
++// bulk copies. Recompute watched/planar boundaries after each side-effecting read
++// because a read callback may change watches, VGA mode or later RAM.
++func (m *Machine) ReadBytes(a uint32, n int) []byte {
++	out := make([]byte, n)
++	end := uint64(a) + uint64(n)
++	if end > 1<<20 {
++		for i := range out {
++			out[i] = m.Read8(a + uint32(i))
++		}
++		return out
++	}
++	for at := uint64(a); at < end; {
++		next := end
++		read := false
++		if m.onRead != nil && m.rWatchLo <= m.rWatchHi {
++			lo, hi := uint64(m.rWatchLo), uint64(m.rWatchHi)+1
++			if at >= lo && at < hi {
++				read = true
++			} else if at < lo && lo < next {
++				next = lo
++			}
++		}
++		if m.planarOn {
++			if at >= uint64(vgaLo) && at < uint64(vgaHi) {
++				read = true
++			} else if at < uint64(vgaLo) && uint64(vgaLo) < next {
++				next = uint64(vgaLo)
++			}
++		}
++		if read {
++			out[at-uint64(a)] = m.Read8(uint32(at))
++			at++
++		} else {
++			copy(out[at-uint64(a):next-uint64(a)], m.Mem[at:next])
++			at = next
++		}
++	}
++	return out
++}
+--- /dev/null
++++ b/internal/machine/read_bytes_test.go
+@@ -0,0 +1,79 @@
++package machine
++
++import (
++	"reflect"
++	"testing"
++)
++
++func TestReadBytesMatchesRead8AndSideEffects(t *testing.T) {
++	for _, planar := range []bool{false, true} {
++		for _, span := range []struct {
++			a uint32
++			n int
++		}{{0, 1 << 20}, {0x1b10, 65536}, {vgaLo - 8, 32}, {vgaHi - 8, 32}, {0xffff0, 64}, {0x100010, 32}, {0, 0}} {
++			for _, watched := range []bool{false, true} {
++				a, b := New(), New()
++				a.planarOn = planar
++				b.planarOn = planar
++				for i := range a.Mem {
++					a.Mem[i] = byte(i*37 + i/256)
++					b.Mem[i] = a.Mem[i]
++				}
++				var wa, wb []uint32
++				if watched {
++					a.WatchReads(0x1000, 0x2000, func(at uint32, v uint8) { wa = append(wa, at) })
++					b.WatchReads(0x1000, 0x2000, func(at uint32, v uint8) { wb = append(wb, at) })
++				}
++				got := a.ReadBytes(span.a, span.n)
++				want := make([]byte, span.n)
++				for i := range want {
++					want[i] = b.Read8(span.a + uint32(i))
++				}
++				if !reflect.DeepEqual(got, want) || !reflect.DeepEqual(wa, wb) || !reflect.DeepEqual(a.VGA, b.VGA) {
++					t.Fatalf("planar=%v watched=%v addr=%x n=%d", planar, watched, span.a, span.n)
++				}
++				if len(got) > 0 {
++					got[0] ^= 255
++					if a.Read8(span.a) != b.Read8(span.a) {
++						t.Fatal("snapshot aliases machine memory")
++					}
++				}
++			}
++		}
++	}
++}
++
++func TestReadBytesReadWatchMutatesLaterRAM(t *testing.T) {
++	a, b := New(), New()
++	a.WatchReads(0x1800, 0x1800, func(at uint32, v uint8) { a.Mem[0x4000] = 99 })
++	b.WatchReads(0x1800, 0x1800, func(at uint32, v uint8) { b.Mem[0x4000] = 99 })
++	got := a.ReadBytes(0, 0x5000)
++	want := make([]byte, 0x5000)
++	for i := range want {
++		want[i] = b.Read8(uint32(i))
++	}
++	if !reflect.DeepEqual(got, want) || got[0x4000] != 99 {
++		t.Fatal("watch side effects must precede later bulk copies")
++	}
++}
++
++func TestReadBytesWatchCanMoveDuringRead(t *testing.T) {
++	a, b := New(), New()
++	var wa, wb []uint32
++	a.WatchReads(0x1800, 0x1800, func(at uint32, v uint8) {
++		wa = append(wa, at)
++		a.WatchReads(0x3000, 0x3000, func(at uint32, v uint8) { wa = append(wa, at) })
++	})
++	b.WatchReads(0x1800, 0x1800, func(at uint32, v uint8) {
++		wb = append(wb, at)
++		b.WatchReads(0x3000, 0x3000, func(at uint32, v uint8) { wb = append(wb, at) })
++	})
++	got := a.ReadBytes(0, 0x5000)
++	want := make([]byte, 0x5000)
++	for i := range want {
++		want[i] = b.Read8(uint32(i))
++	}
++	if !reflect.DeepEqual(got, want) || !reflect.DeepEqual(wa, wb) || len(wa) != 2 {
++		t.Fatal("watch boundary change was lost", wa, wb)
++	}
++}

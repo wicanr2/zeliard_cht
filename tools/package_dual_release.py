@@ -8,6 +8,7 @@ from pathlib import Path
 import plistlib
 import re
 import shutil
+import subprocess
 import zipfile
 
 P=Path('/project')
@@ -37,6 +38,13 @@ def prepare():
     for name in ('cmd','internal','text','third_party'):shutil.copytree(P/name,W/'sources'/name)
     for name in ('go.mod','go.sum','VERSION','LICENSE'):shutil.copy2(P/name,W/'sources'/name)
     shutil.copytree(OLD/'dosgolem',W/'dosgolem')
+    # Isolate git discovery from the parent project; apply only to this new copy.
+    patch=P/'tools/dosgolem-bulk-read.patch'
+    patch_env={**os.environ,'GIT_CEILING_DIRECTORIES':str(W)}
+    subprocess.run(['git','apply','--check',str(patch)],cwd=W/'dosgolem',env=patch_env,check=True)
+    subprocess.run(['git','apply',str(patch)],cwd=W/'dosgolem',env=patch_env,check=True)
+    assert 'return o.m.ReadBytes' in (W/'dosgolem/oracle/oracle.go').read_text()
+    assert (W/'dosgolem/internal/machine/read_bytes.go').is_file()
     (W/'build.work').write_text('go 1.24.0\nuse (\n /build/sources\n /build/dosgolem\n)\n')
     for name in ('linux','windows','mac-amd64','mac-arm64','macos'):(W/name).mkdir()
     for name in ('full-local','smoke','promo'):(D/name).mkdir(parents=True,exist_ok=False)
