@@ -53,6 +53,10 @@ type CompleteArtwork struct {
 }
 
 func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
+	return loadCompleteArtworkMode(dir, false)
+}
+
+func loadCompleteArtworkMode(dir string, lazy bool) (*CompleteArtwork, error) {
 	data, err := os.ReadFile(filepath.Join(dir, "complete-art.json"))
 	if os.IsNotExist(err) {
 		return nil, nil
@@ -84,16 +88,13 @@ func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
 		if e.Group < 0 || e.Group >= len(s.groups) || e.Width < 1 || e.Height < 1 || e.Width > 320 || e.Height > 200 || len(e.Raster) != e.Width*e.Height || (len(e.Mask) != 0 && len(e.Mask) != len(e.Raster)) || len(e.Colors) != 768 || filepath.Base(e.File) != e.File {
 			return nil, fmt.Errorf("全圖來源幾何不符")
 		}
-		im, err := checkedTerrainImage(filepath.Join(dir, e.File), e.Hash, e.Width*3, e.Height*3)
+		im, err := deferredTerrainImage(filepath.Join(dir, e.File), e.Hash, e.Width*3, e.Height*3, lazy)
 		if err != nil {
 			return nil, err
 		}
 		e.art = im
-		e.pixels = make([]color.NRGBA, e.Width*e.Height*9)
-		for y := 0; y < e.Height*3; y++ {
-			for x := 0; x < e.Width*3; x++ {
-				e.pixels[y*e.Width*3+x] = color.NRGBAModel.Convert(im.At(x, y)).(color.NRGBA)
-			}
+		if !lazy {
+			e.ensurePixels()
 		}
 		for j, v := range e.Raster {
 			if len(e.Mask) != 0 && e.Mask[j] == 0 {
@@ -175,7 +176,7 @@ func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
 		if e.Width != 8 || e.Height != 8 || len(e.Raster) != 64 || filepath.Base(e.File) != e.File {
 			return nil, fmt.Errorf("人物補繪元件不符")
 		}
-		im, err := checkedTerrainImage(filepath.Join(dir, e.File), e.Hash, 24, 24)
+		im, err := deferredTerrainImage(filepath.Join(dir, e.File), e.Hash, 24, 24, lazy)
 		if err != nil {
 			return nil, err
 		}
@@ -188,6 +189,23 @@ func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
 		}
 	}
 	return s, nil
+}
+
+func (e *completeEntry) ensurePixels() bool {
+	if len(e.pixels) != 0 {
+		return true
+	}
+	im := resolvedImage(e.art)
+	if im == nil {
+		return false
+	}
+	e.pixels = make([]color.NRGBA, e.Width*e.Height*9)
+	for y := 0; y < e.Height*3; y++ {
+		for x := 0; x < e.Width*3; x++ {
+			e.pixels[y*e.Width*3+x] = color.NRGBAModel.Convert(im.At(x, y)).(color.NRGBA)
+		}
+	}
+	return true
 }
 
 func (s *CompleteArtwork) resources(r, e []byte) {
@@ -352,6 +370,9 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 	painted := false
 	for _, p := range s.placements {
 		e := p.entry
+		if !e.ensurePixels() {
+			continue
+		}
 		brightness := byte(0)
 		for y := 0; y < e.Height; y++ {
 			for x := 0; x < e.Width; x++ {
@@ -432,7 +453,7 @@ func (s *CompleteArtwork) compose(source string, raster []byte, width int) ([]co
 			if empty {
 				continue
 			}
-			im := parts[townBackgroundHash(tile[:])]
+			im := resolvedImage(parts[townBackgroundHash(tile[:])])
 			if im == nil {
 				return nil, image.Rectangle{}
 			}

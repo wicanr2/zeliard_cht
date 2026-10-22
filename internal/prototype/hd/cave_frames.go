@@ -37,6 +37,7 @@ type CaveRejected struct {
 
 // CaveFrames只觀察原版，不執行指令或改寫記憶體。
 type CaveFrames struct {
+	holdFreshBody      bool
 	original           *oracle.Oracle
 	complete           *CavePresentation
 	body               *caveFrameInput
@@ -46,6 +47,13 @@ type CaveFrames struct {
 	state, lastRefusal map[string]any
 	rejected           *CaveRejected
 	rejectedState      map[string]any
+}
+
+// HoldFreshBody是062的明示呈現選項；既有原版來源重現仍沿預設契約。
+func (f *CaveFrames) HoldFreshBody(enabled bool) {
+	if f != nil {
+		f.holdFreshBody = enabled
+	}
 }
 
 func NewCaveFrames(o *oracle.Oracle) *CaveFrames {
@@ -292,12 +300,15 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 		// 028：4129新主體可早於批次開始。撤除舊呈現，保留當次可信主體；
 		// 未完成圖面仍不呈現，後續finish須重新核整個原版畫格。
 		fresh := f.body != nil && f.body.steps > last.Steps && f.body.cycles >= last.Cycles && f.body.steps <= in.steps && f.body.cycles <= in.cycles && caveFrameSource(*f.body)
-		if fresh {
+		if fresh && f.holdFreshBody && !caveCatalogMapsDiffer(f.body.memory, last.Memory) {
+			f.state["pending_body"] = true
+		} else if fresh {
 			f.complete = nil
+			return nil
 		} else {
 			f.clear()
+			return nil
 		}
-		return nil
 	}
 	raw, rgb := cloneTownBytes(in.indexed), cloneTownBytes(in.rgb)
 	for y := 14; y < 158; y++ {

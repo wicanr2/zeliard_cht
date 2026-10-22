@@ -27,6 +27,7 @@ type TownPresentation struct {
 	Steps, Cycles                                                   uint64
 	Wiping                                                          bool
 	EraseMask                                                       []byte
+	DialogueBox                                                     image.Rectangle
 }
 
 var townPresentationBox = image.Rect(48, 24, 272, 158)
@@ -139,6 +140,74 @@ func townFrameEqual(a, b []byte) bool {
 // Present不執行原版；未通過守衛時立即撤除，原貌與HD共用選出的基底。
 func (t *TownFrames) Present(raw, rgb []byte, blocked bool) *TownPresentation {
 	return t.selectFrame(t.read(raw, rgb), blocked)
+}
+
+// PresentDialogue只保留對話框之外完全相同的已驗城鎮；對話框由前端最後放回。
+func (t *TownFrames) PresentDialogue(raw, rgb []byte, box image.Rectangle) *TownPresentation {
+	if t == nil {
+		return nil
+	}
+	return t.selectDialogueFrame(t.read(raw, rgb), box)
+}
+
+func (t *TownFrames) selectDialogueFrame(in townFrameInput, box image.Rectangle) *TownPresentation {
+	t.state = map[string]any{"used": false, "dialogue_backdrop": false, "captured": t.captured, "refused": t.refused, "scope": "居民對話框外的已驗完成背景"}
+	f := t.complete
+	if f == nil {
+		// 正常居民進字仍會經過68BA；被文字覆蓋的候選不能取代已驗背景。
+		f = t.wipeSource
+	}
+	if f == nil {
+		t.state["reason"] = "missing completed backdrop"
+		return nil
+	}
+	if len(in.indexed) != 64000 || len(in.rgb) != 192000 || !t.scene.frameSource(in) || in.steps < f.Steps || in.cycles < f.Cycles || townSceneWord(in.primary, 0x80) != townSceneWord(f.Primary, 0x80) || t.scene.sourceProfile(in) != t.scene.sourceProfile(townFrameInput{mode: in.mode, primary: f.Primary, resources: f.Resources, extra: f.Extra, palette: f.Palette}) {
+		t.clear()
+		t.wipeSource = nil
+		t.state["reason"] = "dialogue source, camera or timeline"
+		return nil
+	}
+	if box.Empty() {
+		t.state["reason"] = "dialogue box pending"
+		return nil
+	} // 框尚未建立，保留快照但不畫未知遮擋。
+	if box.Dx() != 176 || box.Dy() < 16 || box.Dy() > 86 || (box.Dy()-6)%10 != 0 || (box.Min.X != 56 && box.Min.X != 88) || !box.In(image.Rect(48, 24, 272, 148)) {
+		t.clear()
+		t.wipeSource = nil
+		t.state["reason"] = "dialogue geometry"
+		return nil
+	}
+	for y := townPresentationBox.Min.Y; y < townPresentationBox.Max.Y; y++ {
+		for x := townPresentationBox.Min.X; x < townPresentationBox.Max.X; x++ {
+			if image.Pt(x, y).In(box) {
+				continue
+			}
+			i := y*320 + x
+			if in.indexed[i] != f.SourceIndexed[i] || !bytes.Equal(in.rgb[i*3:i*3+3], f.RGB[i*3:i*3+3]) {
+				t.clear()
+				t.wipeSource = nil
+				t.state["reason"] = "outside dialogue changed"
+				t.state["outside_pixel"] = image.Pt(x, y)
+				return nil
+			}
+		}
+	}
+	masked := in
+	masked.indexed = cloneTownBytes(in.indexed)
+	masked.rgb = cloneTownBytes(in.rgb)
+	for y := box.Min.Y; y < box.Max.Y; y++ {
+		a, b := y*320+box.Min.X, y*320+box.Max.X
+		copy(masked.indexed[a:b], f.SourceIndexed[a:b])
+		copy(masked.rgb[a*3:b*3], f.RGB[a*3:b*3])
+	}
+	t.complete = f
+	got := t.selectFrame(masked, false)
+	if got != nil {
+		got.DialogueBox = box
+		t.state["dialogue_backdrop"] = true
+		t.state["dialogue_box"] = box
+	}
+	return got
 }
 func (t *TownFrames) selectFrame(in townFrameInput, blocked bool) *TownPresentation {
 	t.state = map[string]any{"used": false, "drawing": t.drawing, "captured": t.captured, "refused": t.refused, "scope": "完成時刻的城鎮畫帶；畫帶外為當次原版"}

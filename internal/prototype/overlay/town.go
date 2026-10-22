@@ -342,6 +342,18 @@ func (d *TownDialogue) State() map[string]any {
 	return map[string]any{"key": key, "visible": d.visible, "pending": d.pending, "prompt": d.prompt, "box": d.box, "glyphs": d.Glyphs, "messages": d.Messages, "rejected": d.Rejected, "last_rejection": d.LastRejection}
 }
 
+// BackdropBox只提供已核對原版來源的實際框；不假定文字或框已完成繪製。
+func (d *TownDialogue) BackdropBox() image.Rectangle {
+	if d == nil || d.original == nil || d.current == nil || !townDisplayCode(d.original) || !d.current.valid(d.original) {
+		return image.Rectangle{}
+	}
+	box, ok := townBox(d.original)
+	if !ok {
+		return image.Rectangle{}
+	}
+	return box
+}
+
 func (d *TownDialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, origin image.Point) bool {
 	if d.current == nil || d.pending || len(d.completed) == 0 {
 		return false

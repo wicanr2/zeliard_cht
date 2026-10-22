@@ -27,7 +27,11 @@ type WorldTowns struct {
 	figureResource, figurePalette []byte
 }
 
-func NewWorldTowns(root, dir string) (*WorldTowns, error) {
+func NewWorldTowns(root, dir string) (*WorldTowns, error) { return newWorldTowns(root, dir, false) }
+
+func NewWorldTownsLazy(root, dir string) (*WorldTowns, error) { return newWorldTowns(root, dir, true) }
+
+func newWorldTowns(root, dir string, lazy bool) (*WorldTowns, error) {
 	if _, err := checked(filepath.Join(root, "ZELRES2.SAR"), "bf7c792a58d04d241bde1545bf04d22b3a9386471b22b6c9e501bfecb23f14c1", 1<<20); err != nil {
 		return nil, err
 	}
@@ -57,11 +61,11 @@ func NewWorldTowns(root, dir string) (*WorldTowns, error) {
 		if r.Width < 32 || r.Width > 1024 || len(r.Columns) != r.Width*8 || len(r.Terrain)%48 != 0 || len(r.Terrain) == 0 || len(r.Terrain) > 65536-0x8100 || filepath.Base(r.File) != r.File || filepath.Base(r.NativeFile) != r.NativeFile {
 			return nil, fmt.Errorf("城鎮來源不符")
 		}
-		art, e := checkedTerrainImage(filepath.Join(dir, r.File), r.Hash, r.Width*24, 192)
+		art, e := deferredTerrainImage(filepath.Join(dir, r.File), r.Hash, r.Width*24, 192, lazy)
 		if e != nil {
 			return nil, e
 		}
-		native, e := checkedTerrainImage(filepath.Join(dir, r.NativeFile), r.NativeHash, r.Width*8, 64)
+		native, e := deferredTerrainImage(filepath.Join(dir, r.NativeFile), r.NativeHash, r.Width*8, 64, lazy)
 		if e != nil {
 			return nil, e
 		}
@@ -91,7 +95,7 @@ func NewWorldTowns(root, dir string) (*WorldTowns, error) {
 		if f.Group < 0 || f.Group >= 5 || f.Phase < 0 || f.Phase >= 8 || len(f.Raster) != 384 || len(f.Mask) != 384 || filepath.Base(f.File) != f.File {
 			return nil, fmt.Errorf("居民姿態不符")
 		}
-		im, e := checkedTerrainImage(filepath.Join(dir, f.File), f.Hash, 48, 72)
+		im, e := deferredTerrainImage(filepath.Join(dir, f.File), f.Hash, 48, 72, lazy)
 		if e != nil {
 			return nil, e
 		}
@@ -127,6 +131,10 @@ func (s *WorldTowns) Draw(dst *image.RGBA, mode uint8, p, r, raw, rgb []byte, or
 		}
 	}
 	if town == nil {
+		return false
+	}
+	town.art, town.native = resolvedImage(town.art), resolvedImage(town.native)
+	if town.art == nil || town.native == nil {
 		return false
 	}
 	for y := 0; y < 64; y++ {
@@ -187,7 +195,11 @@ func (s *WorldTowns) Draw(dst *image.RGBA, mode uint8, p, r, raw, rgb []byte, or
 				}
 			}
 			if match {
-				draw.Draw(dst, image.Rect(x*3, 354, x*3+48, 426).Add(origin), f.art, image.Point{}, draw.Over)
+				art := resolvedImage(f.art)
+				if art == nil {
+					continue
+				}
+				draw.Draw(dst, image.Rect(x*3, 354, x*3+48, 426).Add(origin), art, image.Point{}, draw.Over)
 			}
 		}
 	}

@@ -35,12 +35,13 @@ func (b Binding) Active(buttons []bool, axes []float64, deadzone float64) bool {
 }
 
 type Settings struct {
-	CPUSpeed int                           `json:"cpu_speed,omitempty"`
-	Version  int                           `json:"version"`
-	Selected string                        `json:"selected"`
-	Deadzone float64                       `json:"deadzone"`
-	Profiles map[string]map[string]Binding `json:"profiles"`
-	Keyboard map[string]string             `json:"keyboard,omitempty"`
+	DisableStandingRegen bool                          `json:"disable_standing_regen,omitempty"`
+	CPUSpeed             int                           `json:"cpu_speed,omitempty"`
+	Version              int                           `json:"version"`
+	Selected             string                        `json:"selected"`
+	Deadzone             float64                       `json:"deadzone"`
+	Profiles             map[string]map[string]Binding `json:"profiles"`
+	Keyboard             map[string]string             `json:"keyboard,omitempty"`
 }
 
 func Default() Settings {

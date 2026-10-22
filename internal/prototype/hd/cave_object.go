@@ -62,6 +62,7 @@ var caveObjectRegistrations = []caveObjectRegistration{
 }
 
 type caveObjectPose struct {
+	art    image.Image
 	number int
 	bounds image.Rectangle
 	pixels []color.NRGBA

@@ -6,7 +6,7 @@ import argparse,hashlib,json,os,shutil
 parser=argparse.ArgumentParser(description=__doc__)
 mode=parser.add_mutually_exclusive_group()
 mode.add_argument('--closeout',action='store_true',help='正式結案時追加清除舊封包解壓、Wine與可重建剪輯片段；保留來源及存檔')
-mode.add_argument('--cpu-speed-repack',action='store_true',help='059六包內容已核對、執行驗收待低載；只移除本版重複組裝層，保留Go快取')
+mode.add_argument('--cpu-speed-repack','--contents-only',dest='cpu_speed_repack',action='store_true',help='059六包內容已核對、執行驗收待低載；只移除本版重複組裝層，保留Go快取')
 args=parser.parse_args()
 
 P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.',''));D=P/'dist-all'/VERSION

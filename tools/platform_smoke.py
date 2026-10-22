@@ -7,7 +7,7 @@ edition=sys.argv[2] if len(sys.argv)>2 else None
 assert not any(O.iterdir()) and O.stat().st_uid==os.getuid()
 h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 children=[]
-env={**os.environ,'DISPLAY':':93','LIBGL_ALWAYS_SOFTWARE':'1','LP_NUM_THREADS':'2','GOMAXPROCS':'2'}
+env={**os.environ,'DISPLAY':':93','LIBGL_ALWAYS_SOFTWARE':'1','LP_NUM_THREADS':'1','GOMAXPROCS':'1'}
 def stop(p):
     if p.poll() is None:
         p.terminate()
@@ -23,7 +23,7 @@ try:
         package=next(D.glob('*-'+edition+'-Linux-x86_64.AppImage' if edition else '*.AppImage'))
         subprocess.run([str(package),'--appimage-extract'],cwd=O,stdout=(O/'extract.log').open('wb'),stderr=subprocess.STDOUT,check=True,timeout=40)
         root=O/'squashfs-root';binary=root/'zeliard-preview'
-        command=[str(root/'AppRun'),'-audio','off','-show-controller','-capture',str(O/'capture.png'),'-capture-frames','90']
+        command=[str(root/'AppRun'),'-audio','off','-show-controller','-observe',str(O/'observe.json'),'-capture',str(O/'capture.png'),'-capture-frames','30']
         env['ZELIARD_USER_DIR']=str(O/'user')
     elif mode=='windows':
         package=next(D.glob('*-'+edition+'-Windows-x86_64.zip' if edition else '*Windows*.zip'))
@@ -34,7 +34,7 @@ try:
         root=O/('Zeliard-'+edition+'-Windows' if edition else 'Zeliard-Windows');binary=root/'Zeliard.exe'
         wine='/usr/lib/wine/wine64' if Path('/usr/lib/wine/wine64').exists() else 'wine'
         env.update({'WINEPREFIX':str(O/'wine-prefix'),'WINEDEBUG':'-all','WINEDLLOVERRIDES':'mscoree,mshtml=' ,'ZELIARD_USER_DIR':'Z:\\output\\user'})
-        command=[wine,str(binary),'-audio','off','-show-controller','-capture','Z:\\output\\capture.png','-capture-frames','90']
+        command=[wine,str(binary),'-audio','off','-show-controller','-observe','Z:\\output\\observe.json','-capture','Z:\\output\\capture.png','-capture-frames','30']
     else:raise ValueError(mode)
     log=(O/'game.log').open('wb');p=subprocess.Popen(command,cwd=O,env=env,stdout=log,stderr=log);children.append(p)
     p.wait(timeout=100)
@@ -48,7 +48,10 @@ try:
         assert (root/'assets').exists()==(edition=='CHT-HD')
     assert (O/'user/game/SAVETEST.usr').is_file() and (O/'user/game/RESOURCE.CFG').is_file()
     assert b'MSCADLIB.DRV' in (O/'user/game/RESOURCE.CFG').read_bytes()
-    report={'status':'PASS_NATIVE_PACKAGE_LAUNCH','platform':mode,'method':'AppImage extraction-mode native AppRun' if mode=='linux' else 'Wine auxiliary startup; Windows hardware not tested','package_sha256':h(package),'binary_sha256':h(binary),'exit_code':0,'all_requested_assets_loaded':True,'standalone_asset_resolution':True,'separate_user_storage':True,'startup_audio':'off for transport smoke; full native audio GUI recorded separately','command':command}
+    observed=json.loads((O/'observe.json').read_text())
+    assert observed['steps']==0 and observed['cycles']==0
+    assert not observed['cheats']['lock_hp'] and not observed['cheats']['lock_mp'] and observed['cheats']['standing_regeneration']
+    report={'status':'PASS_NATIVE_PACKAGE_LAUNCH','platform':mode,'method':'AppImage extraction-mode native AppRun' if mode=='linux' else 'Wine auxiliary startup; Windows hardware not tested','package_sha256':h(package),'binary_sha256':h(binary),'exit_code':0,'startup_assets_ready':True,'unused_hd_assets_deferred':True,'deferred_images':observed['hd_deferred_images'],'original_not_advanced':True,'standalone_asset_resolution':True,'separate_user_storage':True,'startup_audio':'off; not audio acceptance','startup_log':(O/'user/startup.log').read_text(),'command':command}
     report['edition']=edition or 'legacy'
     (O/'receipt.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(mode,report['status'],flush=True)

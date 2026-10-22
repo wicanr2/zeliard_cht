@@ -10,7 +10,11 @@ import (
 	"path/filepath"
 )
 
-func (s *CaveObjects) LoadManual(dir string) error {
+func (s *CaveObjects) LoadManual(dir string) error { return s.loadManual(dir, false) }
+
+func (s *CaveObjects) LoadManualLazy(dir string) error { return s.loadManual(dir, true) }
+
+func (s *CaveObjects) loadManual(dir string, lazy bool) error {
 	if s == nil {
 		return fmt.Errorf("須先載入洞窟物件圖組")
 	}
@@ -36,15 +40,13 @@ func (s *CaveObjects) LoadManual(dir string) error {
 		if len(r.Raster) != 256 || townBackgroundHash(r.Raster) != r.Key || filepath.Base(r.File) != r.File {
 			return fmt.Errorf("人工圖組來源不符")
 		}
-		im, err := checkedTerrainImage(filepath.Join(dir, r.File), r.Hash, 48, 48)
+		im, err := deferredTerrainImage(filepath.Join(dir, r.File), r.Hash, 48, 48, lazy)
 		if err != nil {
 			return err
 		}
-		pose := &caveObjectPose{number: 1000 + n, bounds: image.Rect(0, 0, 48, 48), pixels: make([]color.NRGBA, 48*48)}
-		for y := 0; y < 48; y++ {
-			for x := 0; x < 48; x++ {
-				pose.pixels[y*48+x] = color.NRGBAModel.Convert(im.At(x, y)).(color.NRGBA)
-			}
+		pose := &caveObjectPose{number: 1000 + n, bounds: image.Rect(0, 0, 48, 48), art: im}
+		if !lazy {
+			pose.ensurePixels()
 		}
 		poses[r.Key] = pose
 	}
@@ -62,5 +64,26 @@ func (s *CaveObjects) manualPose(object caveObject) *caveObjectPose {
 			raw[i] = 0
 		}
 	}
-	return s.manual[townBackgroundHash(raw[:])]
+	pose := s.manual[townBackgroundHash(raw[:])]
+	if pose == nil || !pose.ensurePixels() {
+		return nil
+	}
+	return pose
+}
+
+func (p *caveObjectPose) ensurePixels() bool {
+	if len(p.pixels) != 0 {
+		return true
+	}
+	im := resolvedImage(p.art)
+	if im == nil {
+		return false
+	}
+	p.pixels = make([]color.NRGBA, 48*48)
+	for y := 0; y < 48; y++ {
+		for x := 0; x < 48; x++ {
+			p.pixels[y*48+x] = color.NRGBAModel.Convert(im.At(x, y)).(color.NRGBA)
+		}
+	}
+	return true
 }

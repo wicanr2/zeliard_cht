@@ -125,7 +125,7 @@ func (a *audioOutput) close() error {
 }
 
 func (g *game) audioLifecycle() {
-	if g.output != nil && (g.captured || g.panel || g.paused || !ebiten.IsFocused()) {
+	if g.output != nil && (g.captured || g.panel || g.paused || g.hdLoading != nil || !ebiten.IsFocused()) {
 		if err := g.output.suspend(); err != nil {
 			g.output.lastError = err.Error()
 		}

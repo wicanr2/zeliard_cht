@@ -77,5 +77,15 @@
   "cpu_current": "目前上限",
   "cpu_help": "方向鍵選擇，Enter確認；Esc取消。設定自動保存。",
   "cpu_scope": "優先HD 30fps；忙碌時自動降速，右下角顯示實際倍率與幀率。",
-  "cpu_effective": "實際CPU"
+  "cpu_effective": "實際CPU",
+  "cheat_toolbar": "作弊",
+  "cheat_title": "作弊與難度設定",
+  "cheat_scope": "鎖血與鎖MP每次啟動預設關閉；站立回血沿DOS原版。",
+  "cheat_hp": "鎖定血量，維持滿血",
+  "cheat_mp": "鎖定MP，維持滿次數",
+  "cheat_regen": "站立自動回血",
+  "cheat_on": "開",
+  "cheat_off": "關",
+  "cheat_mp_help": "MP為原版各法術剩餘次數；不改法術選擇與學習。",
+  "cheat_help": "方向鍵選擇，Enter切換；Esc返回。關回血仍可使用補給。"
 }

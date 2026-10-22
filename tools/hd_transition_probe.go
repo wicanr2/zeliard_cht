@@ -61,6 +61,11 @@ func main() {
 		Scan          byte
 		Pressed       bool
 		Error         string
+		Cheats        *struct {
+			LockHP               bool  `json:"lock_hp"`
+			LockMP               bool  `json:"lock_mp"`
+			StandingRegeneration *bool `json:"standing_regeneration"`
+		} `json:"cheats"`
 	}
 	sc := bufio.NewScanner(bytes.NewReader(journal))
 	if !sc.Scan() {
@@ -68,6 +73,9 @@ func main() {
 	}
 	var header record
 	must(json.Unmarshal(sc.Bytes(), &header))
+	if c := header.Cheats; c != nil && (c.LockHP || c.LockMP || c.StandingRegeneration != nil && !*c.StandingRegeneration) {
+		panic("active cheats are not original oracle evidence")
+	}
 	orig := root + "/workplace/music-release-v1/release-build/AppDir/original"
 	o, e := oracle.Load(orig+"/ZELIARD.EXE", orig)
 	must(e)
@@ -100,6 +108,8 @@ func main() {
 			panic(fmt.Sprintf("before %d", n))
 		}
 		switch r.Kind {
+		case "cheat_settings":
+			panic("cheat journal is not original oracle evidence")
 		case "cpu_speed":
 			audio.Render()
 			o.SetDOSBoxCycles(r.CyclesPerMS)

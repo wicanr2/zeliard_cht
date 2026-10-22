@@ -5,6 +5,7 @@ import base64
 import gzip
 import hashlib
 import json
+import shutil
 import urllib.request
 from pathlib import Path
 
@@ -19,10 +20,15 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--project', type=Path, required=True)
     ap.add_argument('--download', action='store_true')
+    ap.add_argument('--output', type=Path, help='另存字型，不覆寫既有交付來源')
     args = ap.parse_args()
     p = args.project
-    out = p / 'workplace/full-hd-v1/manual-hd-v1/rounded-font'
-    out.mkdir(exist_ok=True)
+    source = p / 'workplace/full-hd-v1/manual-hd-v1/rounded-font'
+    out = args.output or source
+    out.mkdir(parents=True, exist_ok=True)
+    if out != source and not args.download:
+        for name in ('jf-openhuninn-2.1.ttf', 'OFL.txt', 'source.json'):
+            shutil.copy2(source / name, out / name)
     if args.download:
         commit = '98d53b3dac1730889edf548359c326c53624fa80'
         urls = {

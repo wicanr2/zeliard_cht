@@ -11,6 +11,7 @@ import (
 	"image/color"
 	"image/draw"
 	"image/png"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -22,6 +23,7 @@ import (
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/dosgolem/xlate"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/cheats"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/controls"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/fm"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/hd"
@@ -38,6 +40,19 @@ type device struct {
 	key, name string
 }
 type game struct {
+	hdJobs                      []*hdLoadJob
+	hdLoading                   *hdLoadJob
+	hdFamilySignature, hdFamily string
+
+	lastRenderedAt     time.Time
+	lastRenderedUpdate int
+
+	cheats               *cheats.Controller
+	cheatPanel           bool
+	cheatFocus           int
+	closeResources       func()
+	audioMode, audioPath string
+
 	cpuFrameUsed, lastDrawCost, sliceElapsed time.Duration
 	sliceRan                                 uint64
 	lastRateChange                           time.Time
@@ -271,7 +286,7 @@ func (g *game) Update() error {
 	begin := time.Now()
 	defer func() { g.perf.update(begin) }()
 	defer func() {
-		if g.realtime && (g.captured || g.panel || g.paused || g.releaseGate || !ebiten.IsFocused()) {
+		if g.realtime && (g.captured || g.panel || g.paused || g.hdLoading != nil || g.releaseGate || !ebiten.IsFocused()) {
 			g.clock.Reset()
 		}
 	}()
@@ -284,6 +299,9 @@ func (g *game) Update() error {
 		return nil
 	}
 	g.frames++
+	if g.updateHDLoading() {
+		return nil
+	}
 	g.scanDevices()
 	buttons, axes := g.samples()
 	actions := map[string]bool{}
@@ -316,8 +334,9 @@ func (g *game) Update() error {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(toolbarController) {
-		g.panel = !g.panel || g.keyboardPanel || g.speedPanel
+		g.panel = !g.panel || g.keyboardPanel || g.speedPanel || g.cheatPanel
 		g.keyboardPanel = false
+		g.cheatPanel = false
 		g.speedPanel = false
 		g.listening = ""
 		g.releaseGate = true
@@ -326,6 +345,7 @@ func (g *game) Update() error {
 	if click && point.In(toolbarKeyboard) {
 		g.panel = !g.panel || !g.keyboardPanel
 		g.keyboardPanel = true
+		g.cheatPanel = false
 		g.speedPanel = false
 		g.listening = ""
 		g.releaseGate = true
@@ -337,6 +357,12 @@ func (g *game) Update() error {
 	}
 	if click && point.In(toolbarSpeed) {
 		g.openSpeedPanel()
+	}
+	if click && point.In(toolbarCheats) {
+		g.openCheatPanel()
+	}
+	if g.panel && g.cheatPanel {
+		return g.updateCheatPanel(point, click, just)
 	}
 	if g.panel && g.speedPanel {
 		return g.updateSpeedPanel(point, click, just)
@@ -451,6 +477,7 @@ func (g *game) Update() error {
 			return nil
 		}
 	}
+	g.cheats.Apply()
 	if err := g.runCPUSlice(budget); err != nil {
 		var exited *oracle.ExitError
 		if errors.As(err, &exited) {
@@ -472,7 +499,7 @@ func (g *game) trace(event map[string]any) {
 	if g.inputTrace == "" {
 		return
 	}
-	if event["kind"] == "cpu_speed" || event["kind"] == "audio" {
+	if event["kind"] == "cpu_speed" || event["kind"] == "audio" || event["kind"] == "cheat_settings" {
 		event["before_steps"], event["after_steps"] = g.o.Steps(), g.o.Steps()
 		event["before_cycles"], event["after_cycles"] = g.o.Cycles(), g.o.Cycles()
 		event["after_regs"] = g.o.Regs()
@@ -599,6 +626,16 @@ func (g *game) caveDoorState() map[string]any {
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
+	if g.hdLoading != nil {
+		g.drawHDLoading(screen)
+		return
+	}
+	if !g.lastRenderedAt.IsZero() && g.frames-g.lastRenderedUpdate < 2 && time.Since(g.lastRenderedAt) < time.Second/30 {
+		screen.DrawImage(g.texture, nil)
+		return
+	}
+	g.lastRenderedAt = time.Now()
+	g.lastRenderedUpdate = g.frames
 	begin := time.Now()
 	defer func() { g.lastDrawCost = time.Since(begin); g.cpuFrameUsed = 0; g.perf.draw(begin) }()
 	g.manualArtwork.BeginFrame()
@@ -608,7 +645,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 	var presented *hd.TownPresentation
 	if g.townFrames != nil {
 		blocked := g.townDialogue != nil && g.townDialogue.State()["key"] != ""
-		presented = g.townFrames.Present(raw, rawRGB, blocked)
+		if blocked {
+			presented = g.townFrames.PresentDialogue(raw, rawRGB, g.townDialogue.BackdropBox())
+		} else {
+			presented = g.townFrames.Present(raw, rawRGB, false)
+		}
 		if presented != nil {
 			rgb, townRaw = presented.RGB, presented.Indexed
 		}
@@ -643,6 +684,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 		townExtra = g.o.Bytes(oracle.Far(0x21b1, 0), 65536)
 		if presented != nil {
 			townPrimary, townResources, townExtra = presented.Primary, presented.Resources, presented.Extra
+		}
+		if cavePresented != nil && presented == nil {
+			townPrimary = cavePresented.Memory[0x1b10:0x11b10]
+			townResources = cavePresented.Memory[0x11b10:0x21b10]
+			townExtra = cavePresented.Memory[0x21b10:0x31b10]
 		}
 	}
 	if g.townGroundHD != nil || g.townPlayerHD != nil {
@@ -755,8 +801,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hdEnabled && g.manualArtwork != nil && w == 320 && h == 200 {
 		g.hdMatched = g.manualArtwork.DrawCaveTransition(g.canvas, raw, rawRGB, image.Pt(0, barHeight)) || g.hdMatched
 		g.manualArtwork.SetResources(townResources, townExtra)
-		g.hdMatched = g.manualArtwork.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight)) || g.hdMatched
+		g.hdMatched = g.manualArtwork.Draw(g.canvas, townRaw, rgb, image.Pt(0, barHeight)) || g.hdMatched
 		g.hdMatched = g.manualArtwork.DrawCoherent(g.canvas, townRaw, rgb, image.Pt(0, barHeight)) || g.hdMatched
+	}
+	if presented != nil && !presented.DialogueBox.Empty() {
+		restoreNativeBox(g.canvas, rawRGB, presented.DialogueBox)
 	}
 	if g.intro != nil && w == 320 && h == 200 {
 		g.intro.Frame(raw, rawRGB)
@@ -799,7 +848,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	g.button(toolbarHD, g.label(hdLabel), g.hdEnabled)
 	g.button(toolbarSpeed, fmt.Sprintf("%s %dx", g.label("cpu_speed"), g.settings.CPUSpeed), g.speedPanel)
-	g.button(toolbarController, g.label("controller"), g.panel && !g.keyboardPanel && !g.speedPanel)
+	g.button(toolbarController, g.label("controller"), g.panel && !g.keyboardPanel && !g.speedPanel && !g.cheatPanel)
+	g.button(toolbarCheats, g.label("cheat_toolbar"), g.cheatPanel || g.cheats != nil && (g.cheats.LockHP || g.cheats.LockMP || g.cheats.DisableRegeneration))
 	g.button(toolbarKeyboard, g.label("keyboard_settings"), g.panel && g.keyboardPanel)
 	pause := "pause"
 	if g.paused {
@@ -810,7 +860,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if g.hdEnabled && !g.hdMatched {
 		g.text(image.Rect(12, 650, 740, 678), g.label("hd_fallback")+"　"+g.label("prototype"))
 	}
-	if g.panel && !g.speedPanel {
+	if g.panel && !g.speedPanel && !g.cheatPanel {
 		draw.Draw(g.canvas, image.Rect(40, 80, 920, 630), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
 		g.text(image.Rect(60, 90, 900, 120), g.label("panel_title"))
 		g.button(image.Rect(720, 90, 900, 122), g.label("keyboard_settings"), false)
@@ -853,6 +903,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	if g.speedPanel {
 		g.drawSpeedPanel()
+	}
+	if g.cheatPanel {
+		g.drawCheatPanel()
 	}
 	g.text(image.Rect(752, 650, 948, 678), fmt.Sprintf("%.2fx %.1f fps", float64(g.cycles)/float64(g.baseCycles), g.perf.FPS))
 	// 診斷快照在本次合成後寫入，避免短暫姿態混到上一張HD狀態。
@@ -911,7 +964,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"input_trace_error":          g.inputTraceError,
 			"audio_output":               g.output.state(),
 			"cpu_effective_multiplier":   float64(g.cycles) / float64(g.baseCycles),
-			"cpu_multiplier":             g.settings.CPUSpeed, "cycles_per_ms": g.cycles, "speed_panel": g.speedPanel,
+			"cpu_multiplier":             g.settings.CPUSpeed, "cycles_per_ms": g.cycles, "speed_panel": g.speedPanel, "cheat_panel": g.cheatPanel, "cheats": g.cheats.State(), "hd_deferred_images": hd.DeferredImageStats(),
 			"performance":               map[string]any{"fps": g.perf.FPS, "draw_ms": g.perf.DrawMS, "update_ms": g.perf.UpdateMS},
 			"town_ground_hd_matched":    g.townGroundMatch,
 			"town_player_hd_matched":    g.townPlayerMatch,
@@ -1067,12 +1120,13 @@ func savePNG(path string, img image.Image) error {
 func (g *game) Layout(int, int) (int, int) { return width, height }
 
 func (g *game) hasHDArtwork() bool {
-	return g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.merchantFramesHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil || g.manualArtwork != nil || g.worldTowns != nil
+	return len(g.hdJobs) > 0 || g.hd != nil || g.townSkyHD != nil || g.townBackgroundHD != nil || g.townSceneryHD != nil || g.caveTerrainHD != nil || g.kingHD != nil || g.sageHD != nil || g.sageFramesHD != nil || g.merchantHD != nil || g.merchantFramesHD != nil || g.bankHD != nil || g.itemShopHD != nil || g.churchHD != nil || g.interiorHD != nil || g.manualArtwork != nil || g.worldTowns != nil
 }
 
 func main() {
 	if err := bundleArguments(); err != nil {
-		log.Fatal(err)
+		showStartupError(fmt.Errorf("%v", err))
+		return
 	}
 	showVersion := flag.Bool("version", false, "顯示版本")
 	orig := flag.String("orig", "", "合法原版資料目錄，須含 ZELIARD.EXE")
@@ -1184,425 +1238,532 @@ func main() {
 		return
 	}
 	if *audioMode != "off" && *audioMode != "ebiten" {
-		log.Fatal("-audio 須為 off 或 ebiten")
+		showStartupError(fmt.Errorf("%v", "-audio 須為 off 或 ebiten"))
+		return
 	}
 	if *orig == "" || *fontPath == "" || *userDir == "" || *cycles < 60 || *cycles > 10000 || *frames < 1 {
-		log.Fatal("須指定 -orig、-font、-user-dir；cycles 範圍 60–10000")
+		showStartupError(fmt.Errorf("%v", "須指定 -orig、-font、-user-dir；cycles 範圍 60–10000"))
+		return
 	}
 	root, err := filepath.Abs(*orig)
 	if err != nil {
-		log.Fatal(err)
+		showStartupError(fmt.Errorf("%v", err))
+		return
 	}
 	userRoot, err := filepath.Abs(*userDir)
 	if err != nil {
-		log.Fatal(err)
+		showStartupError(fmt.Errorf("%v", err))
+		return
 	}
 	rel, err := filepath.Rel(root, userRoot)
 	if err != nil || !(rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator))) {
-		log.Fatal("使用者目錄不可位於原版資料目錄內")
+		showStartupError(fmt.Errorf("%v", "使用者目錄不可位於原版資料目錄內"))
+		return
 	}
 	if *audioWAV != "" {
 		path, e := filepath.Abs(*audioWAV)
 		if e != nil {
-			log.Fatal(e)
+			showStartupError(fmt.Errorf("%v", e))
+			return
 		}
 		relative, e := filepath.Rel(root, path)
 		if e != nil || !(relative == ".." || strings.HasPrefix(relative, ".."+string(filepath.Separator))) {
-			log.Fatal("原版音訊記錄不可位於原版資料目錄內")
+			showStartupError(fmt.Errorf("%v", "原版音訊記錄不可位於原版資料目錄內"))
+			return
 		}
 	}
 	if err := os.MkdirAll(filepath.Join(userRoot, "game"), 0700); err != nil {
-		log.Fatal(err)
+		showStartupError(fmt.Errorf("%v", err))
+		return
 	}
-	settings, err := controls.Load(filepath.Join(userRoot, "controller.json"))
-	if err != nil {
-		log.Fatal(err)
+
+	logPath := filepath.Join(userRoot, "startup.log")
+	logFile, logErr := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
+	if logErr == nil {
+		defer logFile.Close()
+		log.SetOutput(io.MultiWriter(os.Stderr, logFile))
 	}
-	font, err := bitmap.Load(*fontPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	data, err := os.ReadFile(*textPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	labels := map[string]string{}
-	if err = json.Unmarshal(data, &labels); err != nil {
-		log.Fatal(err)
-	}
-	for _, s := range labels {
-		for _, r := range s {
-			if font[r] == nil {
-				log.Fatalf("字型缺字 U+%04X", r)
-			}
-		}
-	}
-	o, err := oracle.Load(filepath.Join(root, "ZELIARD.EXE"), root)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer o.Close()
-	o.SetScratch(filepath.Join(userRoot, "game"))
-	if *adlib {
-		config, e := os.ReadFile(filepath.Join(root, "RESOURCE.CFG"))
-		if e != nil {
-			log.Fatal(e)
-		}
-		config = []byte(strings.ReplaceAll(string(config), "MSCSTD.DRV", "MSCADLIB.DRV"))
-		if e = os.WriteFile(filepath.Join(userRoot, "game/RESOURCE.CFG"), config, 0600); e != nil {
-			log.Fatal(e)
-		}
-		o.SetAdLib(true)
-	}
-	if *cpuSpeed != 0 {
-		if !controls.ValidCPUSpeed(*cpuSpeed) {
-			log.Fatal("-cpu-speed只接受1/2/4/8/16/32")
-		}
-		settings.CPUSpeed = *cpuSpeed
-	}
-	effectiveCycles := *cycles
-	o.SetDOSBoxCycles(effectiveCycles)
-	g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, baseCycles: *cycles, cycles: effectiveCycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), texture: ebiten.NewImage(width, height)}
-	if *manualArt != "" {
-		g.manualArtwork, err = hd.NewManualArtwork(root, *manualArt)
-		if err != nil {
-			log.Printf("人工候選圖格未載入，保留原貌：%v", err)
-		}
-	}
-	if *worldTownArt != "" {
-		g.worldTowns, err = hd.NewWorldTowns(root, *worldTownArt)
-		if err != nil {
-			log.Printf("後續城鎮候選未載入，保留原貌：%v", err)
-		}
-	}
-	if *fmLibrary != "" {
-		synth, e := fm.Open(*fmLibrary, 44100)
-		if e != nil {
-			log.Fatal(e)
-		}
-		defer synth.Close()
-		g.audio.SetFMSynth(synth)
-	}
-	g.observePath = *observePath
-	g.realtime = *realtime
-	if *inputTrace != "" {
-		trace, err := os.OpenFile(*inputTrace, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err = trace.Close(); err != nil {
-			log.Fatal(err)
-		}
-		g.inputTrace = *inputTrace
-		g.trace(map[string]any{"kind": "header", "cycles_per_ms": effectiveCycles, "audio_sample_rate": 44100, "initial_memory_sha256": fmt.Sprintf("%x", sha256.Sum256(o.Bytes(oracle.Far(0, 0), 1<<20))), "initial_regs": o.Regs(), "source_kind": "native key edges and RunCycles journal; no state injection"})
-	}
-	if *caveArt != "" {
-		g.caveTerrainHD, err = hd.NewCaveTerrain(*caveArt)
-		if err != nil {
-			log.Printf("洞窟地形HD未載入，保留原貌：%v", err)
-		} else {
-			g.caveFrames = hd.NewCaveFrames(g.o)
-			if *caveIceArt != "" {
-				if e := g.caveTerrainHD.LoadIce(*caveIceArt); e != nil {
-					log.Printf("冰窟地形HD未載入，保留冰窟原貌：%v", e)
-				}
-			}
-			if *cavePeligroArt != "" {
-				if e := g.caveTerrainHD.LoadPeligro(*cavePeligroArt); e != nil {
-					log.Printf("MPP2地形HD未載入，保留該家族原貌：%v", e)
-				}
-			}
-			if *caveMPP3Art != "" {
-				if e := g.caveTerrainHD.LoadMPP3(*caveMPP3Art); e != nil {
-					log.Printf("MPP3地形HD未載入，保留該家族原貌：%v", e)
-				}
-			}
-			if *caveMPP5Art != "" {
-				if e := g.caveTerrainHD.LoadMPP5(*caveMPP5Art); e != nil {
-					log.Printf("MPP5地形HD未載入，保留該家族原貌：%v", e)
-				}
-			}
-			if *caveMPP6Art != "" {
-				if e := g.caveTerrainHD.LoadMPP6(*caveMPP6Art); e != nil {
-					log.Printf("MPP6地形HD未載入，保留該家族原貌：%v", e)
-				}
-			}
-			if *caveMPP7Art != "" {
-				if e := g.caveTerrainHD.LoadMPP7(*caveMPP7Art); e != nil {
-					log.Printf("MPP7地形HD未載入，保留該家族原貌：%v", e)
-				}
-			}
-			for _, extra := range []struct {
-				name, dir string
-				load      func(string) error
-			}{
-				{"MPP1", *caveMPP1Art, g.caveTerrainHD.LoadMPP1},
-				{"共用平台", *caveCommonArt, g.caveTerrainHD.LoadCommon},
-				{"魔法石", *caveMagiaArt, g.caveTerrainHD.LoadMagia},
-				{"共用門框", *caveDoorArt, g.caveTerrainHD.LoadDoors},
-				{"MPP8", *caveMPP8Art, g.caveTerrainHD.LoadMPP8},
-				{"MPP9", *caveMPP9Art, g.caveTerrainHD.LoadMPP9},
-				{"MPPA", *caveMPPAArt, g.caveTerrainHD.LoadMPPA},
-				{"MPPB", *caveMPPBArt, g.caveTerrainHD.LoadMPPB},
-			} {
-				if extra.dir != "" {
-					if e := extra.load(extra.dir); e != nil {
-						log.Printf("%s地形HD未載入，保留該家族原貌：%v", extra.name, e)
-					}
-				}
-			}
-			if *caveObjectArt != "" {
-				objects, e := hd.NewCaveObjects(*caveObjectArt)
-				if e != nil {
-					log.Printf("洞窟物件HD未載入，保留物件原貌：%v", e)
-				} else {
-					if *caveObjectExtraArt != "" {
-						if err := objects.LoadExtra(*caveObjectExtraArt); err != nil {
-							log.Printf("物件補圖未載入，保留原有圖組：%v", err)
-						}
-					}
-					if *manualArt != "" {
-						if e := objects.LoadManual(*manualArt); e != nil {
-							log.Printf("敵人與首領候選未載入：%v", e)
-						}
-					}
-					g.caveTerrainHD.SetObjects(objects)
-				}
-			}
-			if *caveWeaponArt != "" {
-				weapon, e := hd.NewCaveWeapon(*caveWeaponArt)
-				if e != nil {
-					log.Printf("洞窟武器HD未載入，保留武器原貌：%v", e)
-				} else {
-					if *caveCyanWeaponArt != "" {
-						if err := weapon.LoadCyan(*caveCyanWeaponArt); err != nil {
-							log.Printf("青藍刀光未載入，保留原有武器圖組：%v", err)
-						}
-					}
-					if *caveWeaponExtraArt != "" {
-						if err := weapon.LoadExtra(*caveWeaponExtraArt); err != nil {
-							log.Printf("刀光補圖未載入，保留原有圖組：%v", err)
-						}
-					}
-					weapon.SetCompleteArtwork(g.manualArtwork)
-					g.caveTerrainHD.SetWeapon(weapon)
-				}
-			}
-			if *cavePlayerArt != "" {
-				player, e := hd.NewCavePlayer(*cavePlayerArt)
-				if e != nil {
-					log.Printf("洞窟主角HD未載入，保留角色原貌：%v", e)
-				} else {
-					if *cavePlayerExtraArt != "" {
-						if err := player.LoadExtra(*cavePlayerExtraArt); err != nil {
-							log.Printf("主角擴充圖未載入，保留原有姿態：%v", err)
-						}
-					}
-					if *cavePlayerProfileArt != "" {
-						if err := player.LoadProfiles(*cavePlayerProfileArt); err != nil {
-							log.Printf("主角組合圖未載入，保留原有姿態：%v", err)
-						}
-					}
-					player.SetCompleteArtwork(g.manualArtwork)
-					g.caveTerrainHD.SetPlayer(player)
-				}
-			}
-		}
-	}
-	if *hdRef != "" || *hdArt != "" {
-		g.hd, err = hd.NewFrame(*hdRef, filepath.Join(filepath.Dir(*hdRef), "palette.bin"), *hdArt)
-		if err != nil {
-			log.Printf("HD 試作未載入，保留原貌：%v", err)
-		}
-	}
-	if *townBackgroundMemory != "" || *townBackgroundArt != "" {
-		g.townBackgroundHD, err = hd.NewTownBackground(root, *townSkyRef, *townSkyPalette, *townBackgroundMemory, *townBackgroundArt)
-		if err != nil {
-			log.Printf("完整遠山HD未載入，保留原貌：%v", err)
-		}
-	} else if *townSkyRef != "" || *townSkyPalette != "" || *townSkyArt != "" {
-		g.townSkyHD, err = hd.NewTownSky(root, *townSkyRef, *townSkyPalette, *townSkyArt)
-		if err != nil {
-			log.Printf("城鎮遠山HD未載入，保留原貌：%v", err)
-		}
-	}
-	if *townSceneryArt != "" || *townSignsText != "" {
-		g.townSceneryHD, err = hd.NewTownScenery(root, *townBackgroundMemory, *townSkyPalette, *townSceneryArt, *townSignsText, font)
-		if err != nil {
-			log.Printf("城鎮前景HD未載入，保留原貌：%v", err)
-		}
-		g.townFrames = hd.NewTownFrames(g.o, g.townSceneryHD)
-	}
-	if *castleMemory != "" || *castleArt != "" {
-		var castle *hd.TownScenery
-		castle, err = hd.NewCastleScenery(root, *castleMemory, *castleArt, g.townBackgroundHD)
-		if err == nil {
-			if g.townSceneryHD == nil {
-				g.townSceneryHD = castle
-				g.townFrames = hd.NewTownFrames(g.o, castle)
-			} else {
-				err = g.townSceneryHD.AttachCastle(castle)
-			}
-		}
-		if err != nil {
-			log.Printf("城堡HD未載入，保留既有圖面：%v", err)
-		}
-	}
-	if *townGroundArt != "" {
-		g.townGroundHD, err = hd.NewTownGround(g.townSceneryHD, *townSkyRef, *townGroundArt)
-		if err != nil {
-			log.Printf("城鎮地面HD未載入，保留原貌：%v", err)
-		}
-	}
-	if *townPlayerArt != "" {
-		g.townPlayerHD, err = hd.NewTownPlayer(g.townSceneryHD, *townPlayerArt)
-		if err != nil {
-			log.Printf("城鎮主角HD未載入，保留原貌：%v", err)
-		}
-	}
-	if *townPlayerBackArt != "" {
-		if err = g.townPlayerHD.LoadBackPose(*townPlayerBackArt); err != nil {
-			log.Printf("城鎮背向HD未載入，保留既有圖面：%v", err)
-		}
-	}
-	if *townResidentsArt != "" {
-		g.townActorsHD, err = hd.NewTownActors(g.townPlayerHD, *townResidentsArt)
-		if err != nil {
-			log.Printf("城鎮居民HD未載入，保留既有圖面：%v", err)
-		}
-	}
-	if *interiorArt != "" {
-		g.interiorHD, err = hd.NewInteriors(root, *interiorArt)
-		if err != nil {
-			log.Printf("小屋與旅館HD未載入，保留原貌：%v", err)
-		}
-	}
-	if *kingRefA != "" || *kingRefB != "" || *kingArt != "" || *kingSpeakingArt != "" {
-		g.kingHD, err = hd.NewKing(*kingRefA, *kingRefB, filepath.Join(filepath.Dir(*kingRefA), "palette.bin"), *kingArt, *kingSpeakingArt)
-		if err != nil {
-			log.Printf("國王 HD 圖組未載入，保留原貌：%v", err)
-		}
-	}
-	if *sageFramesArt != "" {
-		g.sageFramesHD, err = hd.NewSageFrames(root, *sageFramesArt)
-		if err != nil {
-			log.Printf("長老完整手勢圖組未載入，保留原貌：%v", err)
-		}
-	} else if *sageRefA != "" || *sageRefB != "" || *sagePalette != "" || *sageArt != "" {
-		g.sageHD, err = hd.NewSage(*sageRefA, *sageRefB, *sagePalette, *sageArt)
-		if err != nil {
-			log.Printf("長老 HD 圖面未載入，保留原貌：%v", err)
-		}
-	}
-	if *merchantFramesArt != "" {
-		g.merchantFramesHD, err = hd.NewMerchantFrames(root, *merchantFramesArt)
-		if err != nil {
-			log.Printf("武器店完整圖組未載入，保留原貌：%v", err)
-		}
-	} else if *merchantRefA != "" || *merchantRefB != "" || *merchantRefC != "" || *merchantPalette != "" || *merchantArtA != "" || *merchantArtB != "" || *merchantArtC != "" {
-		g.merchantHD, err = hd.NewMerchant(*merchantRefA, *merchantRefB, *merchantRefC, *merchantPalette, *merchantArtA, *merchantArtB, *merchantArtC)
-		if err != nil {
-			log.Printf("武器商人 HD 圖組未載入，保留原貌：%v", err)
-		}
-	}
-	if *bankRefA != "" || *bankRefB != "" || *bankRefC != "" || *bankPalette != "" || *bankArtA != "" || *bankArtB != "" || *bankArtC != "" {
-		g.bankHD, err = hd.NewBank(*bankRefA, *bankRefB, *bankRefC, *bankPalette, *bankArtA, *bankArtB, *bankArtC)
-		if err != nil {
-			log.Printf("銀行 HD 圖組未載入，保留原貌：%v", err)
-		}
-	}
-	if *churchReferences != "" || *churchArtwork != "" {
-		g.churchHD, err = hd.NewChurch(*churchReferences, *churchArtwork)
-		if err != nil {
-			log.Printf("教堂HD圖組未載入，保留原貌：%v", err)
-		}
-	}
-	var itemReferencePaths, itemArtworkPaths [4]string
-	itemRequested := *itemPalette != ""
-	for i := range itemRefs {
-		itemReferencePaths[i], itemArtworkPaths[i] = *itemRefs[i], *itemArts[i]
-		itemRequested = itemRequested || *itemRefs[i] != "" || *itemArts[i] != ""
-	}
-	if itemRequested {
-		g.itemShopHD, err = hd.NewItemShop(itemReferencePaths, *itemPalette, itemArtworkPaths)
-		if err != nil {
-			log.Printf("道具店 HD 圖組未載入，保留原貌：%v", err)
-		}
-	}
-	if *introStory != "" {
-		g.introStory, err = overlay.NewIntroStory(o, filepath.Join(root, "ZELRES1.SAR"), *introStory, font)
-		if err != nil {
-			log.Printf("故事中文未載入，保留原文：%v", err)
-		}
-	}
-	if *introThreat != "" {
-		g.introThreat, err = overlay.NewIntroThreat(o, filepath.Join(root, "ZELRES1.SAR"), *introThreat, font)
-		if err != nil {
-			log.Printf("魔王宣言中文未載入，保留原文：%v", err)
-		}
-	}
-	if *introScroll != "" || *introCredits != "" || *introOutro != "" {
-		g.scroll, err = overlay.NewScrollBlocks(o, filepath.Join(root, "ZELRES1.SAR"), overlay.ScrollCatalogs{First: *introScroll, Credits: *introCredits, Outro: *introOutro}, font)
-		if err != nil {
-			log.Printf("片頭捲動中文未載入，保留原文：%v", err)
-		}
-	} else if *introRef != "" {
-		g.intro, err = overlay.NewIntro(*introRef, *introText, font)
-		if err != nil {
-			log.Fatal(err)
-		}
-		g.overlayPixels = make([]byte, width*600*4)
-	}
-	if *dialogueText != "" {
-		g.dialogue, err = overlay.NewDialogue(o, filepath.Join(root, "ZELRES2.SAR"), *dialogueText, font)
-		if err != nil {
-			log.Printf("對話試譯未載入，保留原文：%v", err)
-		}
-	}
-	if *labelsText != "" {
-		g.menuLabels, err = overlay.NewLabels(o, filepath.Join(root, "ZELRES2.SAR"), *labelsText, font)
-		if err != nil {
-			log.Printf("選單試譯未載入，保留原文：%v", err)
-		}
-	}
-	if g.dialogue != nil {
-		g.dialogue.UseLabels(g.menuLabels)
-	}
-	if *hudText != "" {
-		g.hud, err = overlay.NewHUD(o, root, *hudText, font)
-		if err != nil {
-			log.Printf("狀態列試譯未載入，保留原文：%v", err)
-		}
-	}
-	if *cavePortalArt != "" && g.caveTerrainHD != nil {
-		title := "MURALLA"
-		if translated, ok := g.hud.Translation("zelres2.file.0399b8"); ok {
-			title = translated
-		}
-		portal, e := hd.NewCavePortal(*cavePortalArt, font, title)
-		if e != nil {
-			log.Printf("入口HD未載入，保留原圖：%v", e)
-		} else {
-			g.caveTerrainHD.SetPortal(portal)
-		}
-	}
+	log.Printf("啟動 %s", version)
 	ebiten.SetWindowSize(width, height)
-	if *townText != "" {
-		g.townDialogue, err = overlay.NewTownDialogue(o, filepath.Join(root, "ZELRES2.SAR"), *townText, font)
+	ebiten.SetWindowTitle("神劍封魔：啟動中")
+	boot := newStartup(logPath, func(report func(string, bitmap.Font)) (*game, error) {
+		var closers []func()
+		ready := false
+		defer func() {
+			if !ready {
+				for i := len(closers) - 1; i >= 0; i-- {
+					closers[i]()
+				}
+			}
+		}()
+		report("操作設定", nil)
+		settings, err := controls.Load(filepath.Join(userRoot, "controller.json"))
 		if err != nil {
-			log.Printf("居民對話試譯未載入，保留原文：%v", err)
+			return nil, err
 		}
-	}
-	g.hdEnabled = *startHD && g.hasHDArtwork()
-	ebiten.SetWindowTitle(g.label("title"))
-	g.output, err = newAudioOutput(*audioMode, *audioWAV)
-	if err != nil {
-		log.Fatal(err)
-	}
+		report("字型與介面", nil)
+		font, err := bitmap.Load(*fontPath)
+		if err != nil {
+			return nil, err
+		}
+		report("字型已載入", font)
+		data, err := os.ReadFile(*textPath)
+		if err != nil {
+			return nil, err
+		}
+		labels := map[string]string{}
+		if err = json.Unmarshal(data, &labels); err != nil {
+			return nil, err
+		}
+		for _, s := range labels {
+			for _, r := range s {
+				if font[r] == nil {
+					return nil, fmt.Errorf("字型缺字 U+%04X", r)
+				}
+			}
+		}
+		report("原版執行器", nil)
+		o, err := oracle.Load(filepath.Join(root, "ZELIARD.EXE"), root)
+		if err != nil {
+			return nil, err
+		}
+		closers = append(closers, func() { o.Close() })
+		o.SetScratch(filepath.Join(userRoot, "game"))
+		if *adlib {
+			config, e := os.ReadFile(filepath.Join(root, "RESOURCE.CFG"))
+			if e != nil {
+				return nil, e
+			}
+			config = []byte(strings.ReplaceAll(string(config), "MSCSTD.DRV", "MSCADLIB.DRV"))
+			if e = os.WriteFile(filepath.Join(userRoot, "game/RESOURCE.CFG"), config, 0600); e != nil {
+				return nil, e
+			}
+			o.SetAdLib(true)
+		}
+		if *cpuSpeed != 0 {
+			if !controls.ValidCPUSpeed(*cpuSpeed) {
+				return nil, fmt.Errorf("-cpu-speed只接受1/2/4/8/16/32")
+			}
+			settings.CPUSpeed = *cpuSpeed
+		}
+		effectiveCycles := *cycles
+		o.SetDOSBoxCycles(effectiveCycles)
+		g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, baseCycles: *cycles, cycles: effectiveCycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), audioMode: *audioMode, audioPath: *audioWAV}
+		g.cheats, err = cheats.New(o, filepath.Join(root, "ZELIARD.EXE"))
+		if err != nil {
+			log.Printf("作弊功能未啟用：%v", err)
+		} else {
+			g.cheats.DisableRegeneration = settings.DisableStandingRegen
+		}
+		report("HD補圖索引", nil)
+		if *manualArt != "" {
+			g.manualArtwork, err = hd.NewManualArtworkLazy(root, *manualArt)
+			if err != nil {
+				log.Printf("人工候選圖格未載入，保留原貌：%v", err)
+			}
+		}
+		if *worldTownArt != "" {
+			g.worldTowns, err = hd.NewWorldTownsLazy(root, *worldTownArt)
+			if err != nil {
+				log.Printf("後續城鎮候選未載入，保留原貌：%v", err)
+			}
+		}
+		if *fmLibrary != "" {
+			synth, e := fm.Open(*fmLibrary, 44100)
+			if e != nil {
+				return nil, e
+			}
+			closers = append(closers, func() { synth.Close() })
+			g.audio.SetFMSynth(synth)
+		}
+		g.observePath = *observePath
+		g.realtime = *realtime
+		if *inputTrace != "" {
+			trace, err := os.OpenFile(*inputTrace, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
+			if err != nil {
+				return nil, err
+			}
+			if err = trace.Close(); err != nil {
+				return nil, err
+			}
+			g.inputTrace = *inputTrace
+			g.trace(map[string]any{"kind": "header", "cycles_per_ms": effectiveCycles, "audio_sample_rate": 44100, "initial_memory_sha256": fmt.Sprintf("%x", sha256.Sum256(o.Bytes(oracle.Far(0, 0), 1<<20))), "initial_regs": o.Regs(), "cheats": g.cheats.State(), "source_kind": "native key edges and RunCycles journal; active cheats are not original oracle evidence"})
+		}
+		report("登錄洞窟圖組", nil)
+		if *caveArt != "" {
+			g.deferHD("洞窟基本圖組", g.caveModule, func() {
+				if *caveArt != "" {
+					g.caveTerrainHD, err = hd.NewCaveTerrain(*caveArt)
+					if err != nil {
+						log.Printf("洞窟地形HD未載入，保留原貌：%v", err)
+					} else {
+
+						for _, extra := range []struct {
+							name, dir string
+							load      func(string) error
+						}{
+							{"MPP1", *caveMPP1Art, g.caveTerrainHD.LoadMPP1},
+							{"共用平台", *caveCommonArt, g.caveTerrainHD.LoadCommon},
+							{"魔法石", *caveMagiaArt, g.caveTerrainHD.LoadMagia},
+							{"共用門框", *caveDoorArt, g.caveTerrainHD.LoadDoors},
+						} {
+							if extra.dir != "" {
+								if e := extra.load(extra.dir); e != nil {
+									log.Printf("%s地形HD未載入，保留該家族原貌：%v", extra.name, e)
+								}
+							}
+						}
+						if *caveObjectArt != "" {
+							objects, e := hd.NewCaveObjects(*caveObjectArt)
+							if e != nil {
+								log.Printf("洞窟物件HD未載入，保留物件原貌：%v", e)
+							} else {
+								if *caveObjectExtraArt != "" {
+									if err := objects.LoadExtra(*caveObjectExtraArt); err != nil {
+										log.Printf("物件補圖未載入，保留原有圖組：%v", err)
+									}
+								}
+								if *manualArt != "" {
+									if e := objects.LoadManualLazy(*manualArt); e != nil {
+										log.Printf("敵人與首領候選未載入：%v", e)
+									}
+								}
+								g.caveTerrainHD.SetObjects(objects)
+							}
+						}
+						if *caveWeaponArt != "" {
+							weapon, e := hd.NewCaveWeapon(*caveWeaponArt)
+							if e != nil {
+								log.Printf("洞窟武器HD未載入，保留武器原貌：%v", e)
+							} else {
+								if *caveCyanWeaponArt != "" {
+									if err := weapon.LoadCyan(*caveCyanWeaponArt); err != nil {
+										log.Printf("青藍刀光未載入，保留原有武器圖組：%v", err)
+									}
+								}
+								if *caveWeaponExtraArt != "" {
+									if err := weapon.LoadExtra(*caveWeaponExtraArt); err != nil {
+										log.Printf("刀光補圖未載入，保留原有圖組：%v", err)
+									}
+								}
+								weapon.SetCompleteArtwork(g.manualArtwork)
+								g.caveTerrainHD.SetWeapon(weapon)
+							}
+						}
+						if *cavePlayerArt != "" {
+							player, e := hd.NewCavePlayer(*cavePlayerArt)
+							if e != nil {
+								log.Printf("洞窟主角HD未載入，保留角色原貌：%v", e)
+							} else {
+								if *cavePlayerExtraArt != "" {
+									if err := player.LoadExtra(*cavePlayerExtraArt); err != nil {
+										log.Printf("主角擴充圖未載入，保留原有姿態：%v", err)
+									}
+								}
+								if *cavePlayerProfileArt != "" {
+									if err := player.LoadProfiles(*cavePlayerProfileArt); err != nil {
+										log.Printf("主角組合圖未載入，保留原有姿態：%v", err)
+									}
+								}
+								player.SetCompleteArtwork(g.manualArtwork)
+								g.caveTerrainHD.SetPlayer(player)
+							}
+						}
+					}
+				}
+				if *cavePortalArt != "" && g.caveTerrainHD != nil {
+					title := "MURALLA"
+					if translated, ok := g.hud.Translation("zelres2.file.0399b8"); ok {
+						title = translated
+					}
+					portal, e := hd.NewCavePortal(*cavePortalArt, font, title)
+					if e != nil {
+						log.Printf("入口HD未載入，保留原圖：%v", e)
+					} else {
+						g.caveTerrainHD.SetPortal(portal)
+					}
+				}
+			}, func() {
+				if g.caveTerrainHD != nil {
+					g.caveFrames = hd.NewCaveFrames(g.o)
+					g.caveFrames.HoldFreshBody(true)
+				}
+			})
+		}
+		if *caveIceArt != "" {
+			g.deferHD("冰窟地形", func() bool { return g.caveFamily() == "MPP4" }, func() {
+				if e := g.caveTerrainHD.LoadIce(*caveIceArt); e != nil {
+					log.Printf("冰窟圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *cavePeligroArt != "" {
+			g.deferHD("Peligro地形", func() bool { return g.caveFamily() == "MPP2" }, func() {
+				if e := g.caveTerrainHD.LoadPeligro(*cavePeligroArt); e != nil {
+					log.Printf("Peligro圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *caveMPP3Art != "" {
+			g.deferHD("MPP3地形", func() bool { return g.caveFamily() == "MPP3" }, func() {
+				if e := g.caveTerrainHD.LoadMPP3(*caveMPP3Art); e != nil {
+					log.Printf("MPP3圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *caveMPP5Art != "" {
+			g.deferHD("MPP5地形", func() bool { return g.caveFamily() == "MPP5" }, func() {
+				if e := g.caveTerrainHD.LoadMPP5(*caveMPP5Art); e != nil {
+					log.Printf("MPP5圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *caveMPP6Art != "" {
+			g.deferHD("MPP6地形", func() bool { return g.caveFamily() == "MPP6" }, func() {
+				if e := g.caveTerrainHD.LoadMPP6(*caveMPP6Art); e != nil {
+					log.Printf("MPP6圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *caveMPP7Art != "" {
+			g.deferHD("MPP7地形", func() bool { return g.caveFamily() == "MPP7" }, func() {
+				if e := g.caveTerrainHD.LoadMPP7(*caveMPP7Art); e != nil {
+					log.Printf("MPP7圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *caveMPP8Art != "" {
+			g.deferHD("MPP8地形", func() bool { return g.caveFamily() == "MPP8" }, func() {
+				if e := g.caveTerrainHD.LoadMPP8(*caveMPP8Art); e != nil {
+					log.Printf("MPP8圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *caveMPP9Art != "" {
+			g.deferHD("MPP9地形", func() bool { return g.caveFamily() == "MPP9" }, func() {
+				if e := g.caveTerrainHD.LoadMPP9(*caveMPP9Art); e != nil {
+					log.Printf("MPP9圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *caveMPPAArt != "" {
+			g.deferHD("MPPA地形", func() bool { return g.caveFamily() == "MPPA" }, func() {
+				if e := g.caveTerrainHD.LoadMPPA(*caveMPPAArt); e != nil {
+					log.Printf("MPPA圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+		if *caveMPPBArt != "" {
+			g.deferHD("MPPB地形", func() bool { return g.caveFamily() == "MPPB" }, func() {
+				if e := g.caveTerrainHD.LoadMPPB(*caveMPPBArt); e != nil {
+					log.Printf("MPPB圖組未載入：%v", e)
+				}
+			}, nil)
+		}
+
+		report("登錄城鎮圖組", nil)
+		if *townBackgroundMemory != "" || *townSceneryArt != "" || *castleArt != "" || *hdArt != "" || *townSkyArt != "" {
+			g.deferHD("城鎮與城堡HD", g.townModule, func() {
+				if *hdRef != "" || *hdArt != "" {
+					g.hd, err = hd.NewFrame(*hdRef, filepath.Join(filepath.Dir(*hdRef), "palette.bin"), *hdArt)
+					if err != nil {
+						log.Printf("HD 試作未載入，保留原貌：%v", err)
+					}
+				}
+				if *townBackgroundMemory != "" || *townBackgroundArt != "" {
+					g.townBackgroundHD, err = hd.NewTownBackground(root, *townSkyRef, *townSkyPalette, *townBackgroundMemory, *townBackgroundArt)
+					if err != nil {
+						log.Printf("完整遠山HD未載入，保留原貌：%v", err)
+					}
+				} else if *townSkyRef != "" || *townSkyPalette != "" || *townSkyArt != "" {
+					g.townSkyHD, err = hd.NewTownSky(root, *townSkyRef, *townSkyPalette, *townSkyArt)
+					if err != nil {
+						log.Printf("城鎮遠山HD未載入，保留原貌：%v", err)
+					}
+				}
+				if *townSceneryArt != "" || *townSignsText != "" {
+					g.townSceneryHD, err = hd.NewTownScenery(root, *townBackgroundMemory, *townSkyPalette, *townSceneryArt, *townSignsText, font)
+					if err != nil {
+						log.Printf("城鎮前景HD未載入，保留原貌：%v", err)
+					}
+
+				}
+				if *castleMemory != "" || *castleArt != "" {
+					var castle *hd.TownScenery
+					castle, err = hd.NewCastleScenery(root, *castleMemory, *castleArt, g.townBackgroundHD)
+					if err == nil {
+						if g.townSceneryHD == nil {
+							g.townSceneryHD = castle
+
+						} else {
+							err = g.townSceneryHD.AttachCastle(castle)
+						}
+					}
+					if err != nil {
+						log.Printf("城堡HD未載入，保留既有圖面：%v", err)
+					}
+				}
+				if *townGroundArt != "" {
+					g.townGroundHD, err = hd.NewTownGround(g.townSceneryHD, *townSkyRef, *townGroundArt)
+					if err != nil {
+						log.Printf("城鎮地面HD未載入，保留原貌：%v", err)
+					}
+				}
+				if *townPlayerArt != "" {
+					g.townPlayerHD, err = hd.NewTownPlayer(g.townSceneryHD, *townPlayerArt)
+					if err != nil {
+						log.Printf("城鎮主角HD未載入，保留原貌：%v", err)
+					}
+				}
+				if *townPlayerBackArt != "" {
+					if err = g.townPlayerHD.LoadBackPose(*townPlayerBackArt); err != nil {
+						log.Printf("城鎮背向HD未載入，保留既有圖面：%v", err)
+					}
+				}
+				if *townResidentsArt != "" {
+					g.townActorsHD, err = hd.NewTownActors(g.townPlayerHD, *townResidentsArt)
+					if err != nil {
+						log.Printf("城鎮居民HD未載入，保留既有圖面：%v", err)
+					}
+				}
+			}, func() {
+				if g.townSceneryHD != nil {
+					g.townFrames = hd.NewTownFrames(g.o, g.townSceneryHD)
+				}
+			})
+		}
+
+		if *interiorArt != "" || *kingArt != "" || *sageFramesArt != "" || *sageArt != "" || *merchantFramesArt != "" || *merchantArtA != "" || *bankArtA != "" || *churchArtwork != "" || *itemPalette != "" {
+			g.deferHD("人物與室內HD", g.roomDialogue, func() {
+				if *interiorArt != "" {
+					g.interiorHD, err = hd.NewInteriors(root, *interiorArt)
+					if err != nil {
+						log.Printf("小屋與旅館HD未載入，保留原貌：%v", err)
+					}
+				}
+
+				if *kingRefA != "" || *kingRefB != "" || *kingArt != "" || *kingSpeakingArt != "" {
+					g.kingHD, err = hd.NewKing(*kingRefA, *kingRefB, filepath.Join(filepath.Dir(*kingRefA), "palette.bin"), *kingArt, *kingSpeakingArt)
+					if err != nil {
+						log.Printf("國王 HD 圖組未載入，保留原貌：%v", err)
+					}
+				}
+				if *sageFramesArt != "" {
+					g.sageFramesHD, err = hd.NewSageFrames(root, *sageFramesArt)
+					if err != nil {
+						log.Printf("長老完整手勢圖組未載入，保留原貌：%v", err)
+					}
+				} else if *sageRefA != "" || *sageRefB != "" || *sagePalette != "" || *sageArt != "" {
+					g.sageHD, err = hd.NewSage(*sageRefA, *sageRefB, *sagePalette, *sageArt)
+					if err != nil {
+						log.Printf("長老 HD 圖面未載入，保留原貌：%v", err)
+					}
+				}
+				if *merchantFramesArt != "" {
+					g.merchantFramesHD, err = hd.NewMerchantFrames(root, *merchantFramesArt)
+					if err != nil {
+						log.Printf("武器店完整圖組未載入，保留原貌：%v", err)
+					}
+				} else if *merchantRefA != "" || *merchantRefB != "" || *merchantRefC != "" || *merchantPalette != "" || *merchantArtA != "" || *merchantArtB != "" || *merchantArtC != "" {
+					g.merchantHD, err = hd.NewMerchant(*merchantRefA, *merchantRefB, *merchantRefC, *merchantPalette, *merchantArtA, *merchantArtB, *merchantArtC)
+					if err != nil {
+						log.Printf("武器商人 HD 圖組未載入，保留原貌：%v", err)
+					}
+				}
+				if *bankRefA != "" || *bankRefB != "" || *bankRefC != "" || *bankPalette != "" || *bankArtA != "" || *bankArtB != "" || *bankArtC != "" {
+					g.bankHD, err = hd.NewBank(*bankRefA, *bankRefB, *bankRefC, *bankPalette, *bankArtA, *bankArtB, *bankArtC)
+					if err != nil {
+						log.Printf("銀行 HD 圖組未載入，保留原貌：%v", err)
+					}
+				}
+				if *churchReferences != "" || *churchArtwork != "" {
+					g.churchHD, err = hd.NewChurch(*churchReferences, *churchArtwork)
+					if err != nil {
+						log.Printf("教堂HD圖組未載入，保留原貌：%v", err)
+					}
+				}
+				var itemReferencePaths, itemArtworkPaths [4]string
+				itemRequested := *itemPalette != ""
+				for i := range itemRefs {
+					itemReferencePaths[i], itemArtworkPaths[i] = *itemRefs[i], *itemArts[i]
+					itemRequested = itemRequested || *itemRefs[i] != "" || *itemArts[i] != ""
+				}
+				if itemRequested {
+					g.itemShopHD, err = hd.NewItemShop(itemReferencePaths, *itemPalette, itemArtworkPaths)
+					if err != nil {
+						log.Printf("道具店 HD 圖組未載入，保留原貌：%v", err)
+					}
+				}
+			}, nil)
+		}
+
+		report("中文翻譯", nil)
+		if *introStory != "" {
+			g.introStory, err = overlay.NewIntroStory(o, filepath.Join(root, "ZELRES1.SAR"), *introStory, font)
+			if err != nil {
+				log.Printf("故事中文未載入，保留原文：%v", err)
+			}
+		}
+		if *introThreat != "" {
+			g.introThreat, err = overlay.NewIntroThreat(o, filepath.Join(root, "ZELRES1.SAR"), *introThreat, font)
+			if err != nil {
+				log.Printf("魔王宣言中文未載入，保留原文：%v", err)
+			}
+		}
+		if *introScroll != "" || *introCredits != "" || *introOutro != "" {
+			g.scroll, err = overlay.NewScrollBlocks(o, filepath.Join(root, "ZELRES1.SAR"), overlay.ScrollCatalogs{First: *introScroll, Credits: *introCredits, Outro: *introOutro}, font)
+			if err != nil {
+				log.Printf("片頭捲動中文未載入，保留原文：%v", err)
+			}
+		} else if *introRef != "" {
+			g.intro, err = overlay.NewIntro(*introRef, *introText, font)
+			if err != nil {
+				return nil, err
+			}
+			g.overlayPixels = make([]byte, width*600*4)
+		}
+		if *dialogueText != "" {
+			g.dialogue, err = overlay.NewDialogue(o, filepath.Join(root, "ZELRES2.SAR"), *dialogueText, font)
+			if err != nil {
+				log.Printf("對話試譯未載入，保留原文：%v", err)
+			}
+		}
+		if *labelsText != "" {
+			g.menuLabels, err = overlay.NewLabels(o, filepath.Join(root, "ZELRES2.SAR"), *labelsText, font)
+			if err != nil {
+				log.Printf("選單試譯未載入，保留原文：%v", err)
+			}
+		}
+		if g.dialogue != nil {
+			g.dialogue.UseLabels(g.menuLabels)
+		}
+		if *hudText != "" {
+			g.hud, err = overlay.NewHUD(o, root, *hudText, font)
+			if err != nil {
+				log.Printf("狀態列試譯未載入，保留原文：%v", err)
+			}
+		}
+
+		if *townText != "" {
+			g.townDialogue, err = overlay.NewTownDialogue(o, filepath.Join(root, "ZELRES2.SAR"), *townText, font)
+			if err != nil {
+				log.Printf("居民對話試譯未載入，保留原文：%v", err)
+			}
+		}
+		g.hdEnabled = *startHD && g.hasHDArtwork()
+		ready = true
+		g.closeResources = func() {
+			for i := len(closers) - 1; i >= 0; i-- {
+				closers[i]()
+			}
+		}
+		return g, nil
+
+	})
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetRunnableOnUnfocused(true)
-	runErr := ebiten.RunGame(g)
-	closeErr := g.output.close()
+	runErr := ebiten.RunGame(boot)
+	closeErr := boot.Close()
 	if err := errors.Join(runErr, closeErr); err != nil {
 		log.Fatal(err)
 	}

@@ -1,0 +1,13 @@
+{
+  "version": "v.1.0.4-20261022",
+  "source": "smoke/toolbar/cheat-settings.png",
+  "package": {
+    "file": "full-local/Zeliard-v.1.0.4-20261022-CHT-HD-Linux-x86_64.AppImage",
+    "sha256": "e81bfc2ec7b04b5f9a964cdf0bf1fef1c239bcc8211abef03773ae7fcb20aba1"
+  },
+  "binary_sha256": "bedd067e3af0d5c27eb3c751ac82f31b4a78596761bef011fba07b2e737295b9",
+  "image_sha256": "0e6c22ac79d8c25f7cf18c20561ee1d78193f52e47c722a4360320b3d569e778",
+  "tool": "tools/runtime_controls_smoke.py",
+  "scope": "實際新版AppImage解開後操作工具列；原版steps與cycles皆0，不作遊玩fps或音訊驗收",
+  "rights": "使用者指定README介面預覽，完整素材留本機"
+}

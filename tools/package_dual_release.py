@@ -17,7 +17,7 @@ if not re.fullmatch(r'v\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]{8}',VERSION):raise ValueEr
 W=Path(os.environ.get('ZELIARD_RELEASE_WORK',str(P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.','')))))
 D=P/'dist-all'/VERSION
 OLD=P/'workplace/music-release-v1/release-build'
-FONT=P/'workplace/full-hd-v1/manual-hd-v1/rounded-font'
+FONT=Path(os.environ.get('ZELIARD_RELEASE_FONT',str(P/'workplace/runtime-controls-v1/rounded-font')))
 MANUAL=P/'workplace/full-hd-v1/manual-hd-v1/registered'
 EDITIONS=('CHT','CHT-HD')
 
@@ -108,6 +108,10 @@ def setup(root,platform,edition):
 Windows開啟Zeliard.exe，macOS開啟.app，Linux執行AppImage。
 工具列可設定鍵盤及USB／藍牙手把；藍牙先由作業系統配對。
 工具列「速度」可選1x／2x／4x／8x／16x／32x上限，負載高時自動降速。
+工具列「作弊」可獨立鎖滿生命與MP，預設關閉；MP為各法術剩餘次數。
+「站立自動回血」預設開啟，可關閉；此設定保存，鎖滿生命／MP每次啟動關閉。
+啟動時顯示準備視窗及錯誤；HD圖組首次進入場景才載入，圖片首次使用才解碼。
+場景載入時暫停遊戲與音訊，完成後繼續；啟動日誌位於使用者設定目錄的startup.log。
 畫面顯示實際倍率與fps；HD 30fps為目標，尚待低負載環境驗收。
 方向鍵移動／跳躍／蹲下，空白鍵攻擊／交談，Enter裝備，Alt法術。
 Esc原版暫停，F12鍵盤設定，F1／F2音樂／音效，Ctrl+Q再按Y退出。
@@ -121,7 +125,7 @@ macOS：~/Library/Application Support/Zeliard-CHT
 
 macOS與Windows真機、實體USB／藍牙手把未驗。未知來源安全退回原貌。
 未宣稱全遊戲翻譯、每幀HD或通關驗收。封包驗收範圍見同版smoke記錄。
-本次CPU功能已編譯及核對內部邊界；依使用者指示未重跑完整遊戲與效能測試。
+本次只作啟動、工具列、居民對話與第一洞窟的限定檢查，不作完整通關或30fps保證。
 含原版資料與衍生美術，只留本機，不上傳或公開散布。
 '''
     (root/'README.txt').write_text(text.replace('\n','\r\n') if platform=='windows' else text,encoding='utf-8-sig' if platform=='windows' else 'utf-8',newline='')

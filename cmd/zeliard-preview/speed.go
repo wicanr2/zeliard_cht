@@ -13,14 +13,15 @@ import (
 var toolbarOriginal = image.Rect(8, 8, 112, 40)
 var toolbarHD = image.Rect(120, 8, 256, 40)
 var toolbarSpeed = image.Rect(264, 8, 400, 40)
-var toolbarController = image.Rect(408, 8, 592, 40)
-var toolbarPause = image.Rect(600, 8, 736, 40)
+var toolbarController = image.Rect(408, 8, 528, 40)
+var toolbarPause = image.Rect(608, 8, 736, 40)
 var toolbarKeyboard = image.Rect(744, 8, 952, 40)
 
 func speedRect(i int) image.Rectangle { return image.Rect(300, 170+i*50, 660, 212+i*50) }
 
 func (g *game) openSpeedPanel() {
 	g.panel, g.speedPanel, g.keyboardPanel = true, true, false
+	g.cheatPanel = false
 	g.listening, g.notice = "", ""
 	g.releaseGate = true
 	g.edges.Sync(g, nil)
@@ -134,13 +135,7 @@ func (p *performance) update(begin time.Time) { p.updateTime += time.Since(begin
 // A frame may contain several Update calls. Share its CPU allowance so catch-up
 // cannot delay the next HD presentation with a chain of long RunCycles calls.
 func (g *game) runCPUSlice(budget uint64) error {
-	allowance := time.Second/30 - g.lastDrawCost - 3*time.Millisecond
-	if allowance > 12*time.Millisecond {
-		allowance = 12 * time.Millisecond
-	}
-	if allowance < time.Millisecond {
-		allowance = time.Millisecond
-	}
+	allowance := controls.CPUFrameAllowance(g.lastDrawCost)
 	remaining := allowance - g.cpuFrameUsed
 	if remaining <= 0 || budget == 0 {
 		return nil
@@ -176,13 +171,7 @@ func (g *game) adaptCPU() {
 	if g.sliceElapsed == 0 || time.Since(g.lastRateChange) < 200*time.Millisecond {
 		return
 	}
-	allowance := time.Second/30 - g.lastDrawCost - 3*time.Millisecond
-	if allowance > 12*time.Millisecond {
-		allowance = 12 * time.Millisecond
-	}
-	if allowance < time.Millisecond {
-		allowance = time.Millisecond
-	}
+	allowance := controls.CPUFrameAllowance(g.lastDrawCost)
 	next := controls.SustainableCPURate(g.cycles, g.baseCycles*uint64(g.settings.CPUSpeed), g.sliceRan, g.sliceElapsed, allowance)
 	g.sliceRan, g.sliceElapsed = 0, 0
 	if next == g.cycles {

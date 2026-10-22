@@ -6,6 +6,12 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 1.0.4兩版六包 | 內容與限定啟動通過，完整執行待驗 | 六包逐檔manifest、SHA、模式、原版、字型、音源、HD清單與平台架構通過；Linux兩版原生啟動、Windows兩版Wine輔助啟動，原版steps／cycles皆0，使用者資料獨立。macOS只有通用架構與結構，不是真機。入口同版smoke、SHA256SUMS.json |
+| 1.0.4正式包工具列 | PASS_STARTUP_AND_CHEAT_TOOLBAR_UI_ONLY | HD AppImage實際設定頁，三開關獨立、預設關閉鎖滿值／開啟站立回血、回血設定保存。視窗約0.33秒、設定約2.03秒，15812張註冊而0張解碼；原版不推進。截圖已目視，入口同版smoke/toolbar及README圖片來源 |
+| 060原版短片段 | 受控規則測試通過 | 扣血／致命傷、法術扣次數、自然恢復抑制、錯誤來源與預設不寫；明示MZ受控片段，不是正常遊玩或原版parity。controls-tests-v6.jsonl無fail／skip |
+| 061按需與062來源守衛 | 限定測試通過 | 延後讀取、失敗快取、首次／重複使用、居民開框／進字／續頁、洞窟可信新主體與未知反例通過；targeted-tests-v5.jsonl無fail／skip。先前缺參數的skip未計通過 |
+| 062正常平台來源 | 限定來源連續性通過 | 包內SAVEM1副本經正常F7與既有平台鍵序，1250筆樣本、首次完成後缺失0，十個來源檢查點保留完成圖。前史未知，不是GUI、規則／亂數對拍或fps驗收；入口runtime-controls-v1/platform-source-v2 |
+| 062正常候選GUI | PASS_SCOPED_NORMAL_DIALOGUE_AND_FIRST_CAVE | 候選SHA 45f74ac1…284f926；正常F7、自建存檔、居民中文及第一洞窟站立／移動，每組66筆維持HD，存檔不變。Intel MTL／VirtualGL EGL，單CPU；洞窟移動約19至21fps，未達穩定30fps。本次關音訊，不是正式包實錄、通關或使用者精確平台站位。入口runtime-controls-v1/gameplay-v6 |
 | 1.0.3 README速度設定頁 | 實際介面截圖完成 | 從已交付HD AppImage開啟設定頁，暫停後以滑鼠選8x再開速度頁；960×680實際視窗已目視，六檔上限、選取狀態及操作說明可見。原版steps與cycles未推進，音訊關閉，不作遊玩、音訊或30fps驗收。來源見docs/images/cpu-speed-provenance.json與workplace/release-v103/readme-speed/selected-state.json |
 | v.1.0.3 CPU版六包 | PASS_PACKAGE_CONTENTS_RUNTIME_PENDING | CHT／CHT-HD各有Linux x86_64 AppImage、Windows x86_64 ZIP與macOS Intel／Apple Silicon通用ZIP。單CPU及Go平行度1重新編譯；六包解包／結構、架構、模式、29份原版資料、文字、字型、音源、HD過場與首領素材、逐檔清單及SHA核對通過，來源與CPU候選一致。沒有啟動遊戲、GUI、音訊或效能測試，HD 30fps、操作與音樂節奏待低載驗收；未重錄影片、不沿用舊啟動收據。入口同版smoke/release-audit.json、SHA256SUMS.json與workplace/release-v103/repack-receipt.json |
 | 059 CPU速度候選 | 已編譯，最終GUI／30fps待驗 | 使用者已選30fps優先、CPU倍率作上限並自動降速。設定保存及相容性、倍率邊界、時鐘分段、記憶體批次讀取資料／VGA／監看副作用與差異重生核對通過；前期固定倍率只作高載下研究資料。使用者隨後要求因CPU負載過重停止完整測試，最終自動調速候選未啟動GUI，不宣稱達30fps或音訊已驗。入口059與workplace/cpu-speed-v1/build-receipt.json，正式1.0.2包不變 |

@@ -13,6 +13,18 @@ func ValidCPUSpeed(value int) bool {
 	return false
 }
 
+// CPUFrameAllowance保留呈現時間。過載時仍給VM最少4ms，避免合成尖峰餓死操作。
+func CPUFrameAllowance(drawCost time.Duration) time.Duration {
+	allowance := time.Second/30 - drawCost - 3*time.Millisecond
+	if allowance > 24*time.Millisecond {
+		return 24 * time.Millisecond
+	}
+	if allowance < 4*time.Millisecond {
+		return 4 * time.Millisecond
+	}
+	return allowance
+}
+
 // SustainableCPURate treats the chosen speed as a ceiling and reserves a 30fps
 // frame period for both CPU execution and presentation. It never exceeds the ceiling.
 func SustainableCPURate(current, ceiling, ran uint64, elapsed, allowance time.Duration) uint64 {

@@ -3,7 +3,7 @@
 from pathlib import Path
 import argparse,hashlib,json,plistlib,struct,subprocess,tempfile,zipfile
 
-parser=argparse.ArgumentParser();mode=parser.add_mutually_exclusive_group();mode.add_argument('--runtime-fix',action='store_true',help='052受傷修正版，不要求重製051影片');mode.add_argument('--transition-fix',action='store_true',help='057／058過場及首領美術修正版，核對新版正常入洞及素材，不要求重製051影片');mode.add_argument('--cpu-speed-repack',action='store_true',help='059低負載重新打包，只核六包內容、架構與SHA，不啟動遊戲或宣稱30fps');args=parser.parse_args()
+parser=argparse.ArgumentParser();mode=parser.add_mutually_exclusive_group();mode.add_argument('--runtime-fix',action='store_true',help='052受傷修正版，不要求重製051影片');mode.add_argument('--transition-fix',action='store_true',help='057／058過場及首領美術修正版，核對新版正常入洞及素材，不要求重製051影片');mode.add_argument('--cpu-speed-repack','--contents-only',dest='cpu_speed_repack',action='store_true',help='059低負載重新打包，只核六包內容、架構與SHA，不啟動遊戲或宣稱30fps');args=parser.parse_args()
 P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.',''));D=P/'dist-all'/VERSION
 sha=lambda data:hashlib.sha256(data).hexdigest()
 def pe(data):
@@ -22,6 +22,7 @@ original={str(f.relative_to(P/'workplace/orig')):f.read_bytes() for f in (P/'wor
 reports=[];temporary=[]
 for edition in ('CHT','CHT-HD'):
     for platform in ('Linux','Windows','macOS'):
+        launch_scope='STRUCTURE_ONLY_NOT_MAC_HARDWARE' if platform=='macOS' else 'NOT_RUN_USER_DEFERRED'
         if platform=='Linux':
             evidence=D/'smoke'/('linux-'+edition);root=evidence/'squashfs-root'
             if not root.exists():
@@ -36,7 +37,8 @@ for edition in ('CHT','CHT-HD'):
             library=read('libzopl.so');assert library[:6]==b'\x7fELF\x02\x01' and struct.unpack_from('<H',library,18)[0]==62
             assert sha(library)==sha((W/'linux/libzopl.so').read_bytes())
             assert (root/'AppRun').stat().st_mode&0o111 and (root/'zeliard-preview').stat().st_mode&0o111
-            if not args.cpu_speed_repack:
+            if not args.cpu_speed_repack or (evidence/'receipt.json').exists():
+                launch_scope='PASS_NATIVE_SETTINGS_STARTUP'
                 launch=json.loads((evidence/'receipt.json').read_text());assert launch['status']=='PASS_NATIVE_PACKAGE_LAUNCH' and launch['edition']==edition
                 assert launch['binary_sha256']==sha(binary)
         else:
@@ -50,7 +52,8 @@ for edition in ('CHT','CHT-HD'):
             if platform=='macOS':prefix+=f'Zeliard-{edition}.app/Contents/Resources/game/'
             read=lambda name:z.read(prefix+name);names={name[len(prefix):] for name in z.namelist() if name.startswith(prefix) and not name.endswith('/')}
             if platform=='Windows':
-                if not args.cpu_speed_repack:
+                if not args.cpu_speed_repack or (D/'smoke'/('windows-'+edition)/'receipt.json').exists():
+                    launch_scope='PASS_WINE_AUXILIARY_SETTINGS_STARTUP'
                     launch=json.loads((D/'smoke'/('windows-'+edition)/'receipt.json').read_text());assert launch['status']=='PASS_NATIVE_PACKAGE_LAUNCH' and launch['edition']==edition
                     assert launch['binary_sha256']==sha(read('Zeliard.exe'))
                 assert sha(read('Zeliard.exe'))==sha((W/'windows/Zeliard.exe').read_bytes());pe(read('Zeliard.exe'));pe(read('zopl.dll'))
@@ -91,7 +94,7 @@ for edition in ('CHT','CHT-HD'):
         if args.cpu_speed_repack:
             assert read('README.txt').decode('utf-8-sig').find('32x')>=0
             assert json.loads(read('text/host.json'))['cpu_speed']=='速度'
-        reports.append({'edition':edition,'platform':platform,'files':len(names),'original_files':len(original),'mode_correct':True,'contents_and_hashes':'PASS','launch':'NOT_RUN_USER_DEFERRED' if args.cpu_speed_repack else 'PASS_NATIVE' if platform=='Linux' else 'PASS_WINE_AUXILIARY' if platform=='Windows' else 'STRUCTURE_ONLY_NOT_MAC_HARDWARE'})
+        reports.append({'edition':edition,'platform':platform,'files':len(names),'original_files':len(original),'mode_correct':True,'contents_and_hashes':'PASS','launch':launch_scope})
         if platform!='Linux':z.close()
 
 if args.cpu_speed_repack:

@@ -32,6 +32,14 @@ type ManualArtwork struct {
 }
 
 func NewManualArtwork(root, dir string) (*ManualArtwork, error) {
+	return newManualArtwork(root, dir, false)
+}
+
+func NewManualArtworkLazy(root, dir string) (*ManualArtwork, error) {
+	return newManualArtwork(root, dir, true)
+}
+
+func newManualArtwork(root, dir string, lazy bool) (*ManualArtwork, error) {
 	if _, err := checked(filepath.Join(root, "ZELIARD.EXE"), "fe1c00b3c95f516f01266acaa94fbb04fe7436492926d89ba4e522b66012a341", 1<<20); err != nil {
 		return nil, err
 	}
@@ -57,7 +65,7 @@ func NewManualArtwork(root, dir string) (*ManualArtwork, error) {
 		if len(r.Raster) != 64 || len(r.RGB) != 0 && len(r.RGB) != 192 || filepath.Base(r.File) != r.File {
 			return nil, fmt.Errorf("人工圖格來源不符")
 		}
-		im, e := checkedTerrainImage(filepath.Join(dir, r.File), r.Hash, 24, 24)
+		im, e := deferredTerrainImage(filepath.Join(dir, r.File), r.Hash, 24, 24, lazy)
 		if e != nil {
 			return nil, e
 		}
@@ -72,7 +80,7 @@ func NewManualArtwork(root, dir string) (*ManualArtwork, error) {
 			s.index[signature] = append(s.index[signature], t)
 		}
 	}
-	s.complete, err = loadCompleteArtwork(dir)
+	s.complete, err = loadCompleteArtworkMode(dir, lazy)
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +164,11 @@ func (s *ManualArtwork) Draw(dst *image.RGBA, raw, rgb []byte, origin image.Poin
 			}
 		}
 		if native {
-			draw.Draw(dst, image.Rect(p.x*3, p.y*3, p.x*3+24, p.y*3+24).Add(origin), p.tile.art, image.Point{}, draw.Over)
+			art := resolvedImage(p.tile.art)
+			if art == nil {
+				continue
+			}
+			draw.Draw(dst, image.Rect(p.x*3, p.y*3, p.x*3+24, p.y*3+24).Add(origin), art, image.Point{}, draw.Over)
 		}
 	}
 	return completeMatched || len(s.placements) > 0

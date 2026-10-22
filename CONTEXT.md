@@ -2,29 +2,30 @@
 
 更新日期：2026-10-22，Asia/Taipei。
 
-目前重新打包版本為`v.1.0.3-20261022`：工具列提供1x／2x／4x／8x／16x／32x上限，優先HD 30fps，負載高時自動降低實際CPU速率。右下角顯示實際倍率及幀率，設定保存且不重開遊戲。使用者已授權CHT及CHT-HD各三平台完整版，工作區`workplace/release-v103/`，入口[059](docs/spec/059-cpu-speed-toolbar.md#cpu版重新打包)。
+現行本機版本為`v.1.0.4-20261022`，完整包位於`dist-all/v.1.0.4-20261022/full-local/`。沿使用者既有授權，CHT與CHT-HD各提供Linux AppImage、Windows x86_64 ZIP及macOS通用ZIP。前版1.0.3、1.0.2與已發布tag／影片保留原身份；最近GitHub Release仍為1.0.2，完整版只留本機。
 
-使用者指出CPU負載過重，維持停止遊戲壓測。1.0.3只編譯與核六包內容／架構／SHA，最終GUI、HD 30fps及音訊／操作整合待低載驗收，059保持READY。最近GitHub Release仍為`v.1.0.2-20261021`；舊六包、兩片本機影片及已發布tag不覆寫，不把舊實錄當作1.0.3證據。
-
-依使用者要求，README已新增1.0.3實際速度設定頁截圖與六檔上限、操作及自動降速說明。從完整HD AppImage開啟設定頁，暫停後以滑鼠選8x，原版steps及cycles未推進；僅證設定頁呈現，不取代遊玩、音訊與30fps驗收。圖片及來源入口為README「工具列新增速度調整」、`docs/images/cpu-speed-provenance.json`及[擷取工具](tools/capture_speed_readme.py)，原始截圖與收據在`workplace/release-v103/readme-speed/`。
-
-影片已依使用者指示改在本機重錄。使用正式1.0.2 HD AppImage，沿[053錄影流程](docs/spec/053-ada-gameplay-promo.md)，Intel MTL透過VirtualGL EGL硬體繪圖，錄影採libx264。工作區沿用`workplace/ada-promo-v102/`，來源標為local；舊片與已發布tag保持原身份。
+本輪入口為[060作弊與難度](docs/spec/060-player-cheats.md)、[061啟動與按需HD](docs/spec/061-startup-on-demand-hd.md)、[062穩定呈現](docs/spec/062-stable-hd-presentation.md)。研究與候選只在`workplace/runtime-controls-v1/`，正式來源副本與建置在`workplace/release-v104/`。不重開完整通關、全遊戲逐幀、影片或實體手把驗收。
 
 ## 目前狀態表
 
-本機打包版本為 **v.1.0.3-20261022**，加入CPU速度功能，保留1.0.2的入洞過場、五組首領造型、中文與HD素材。下列過場及影片實錄皆為1.0.2歷史證據。
-
 | 項目 | 現況 |
 |---|---|
-| CPU功能 | 速度上限、自動降速、時鐘分段、實際倍率／fps、設定保存已接入並編譯；設定、時鐘與批次讀取邊界核對通過，最終GUI及30fps待驗 |
-| 入洞過場 | 原版完成回呼提供城鎮擦除來源；洞壁核對兩側錨點與逐8×8圖格，未完成單格保留原版，其餘維持HD |
-| 五組首領 | 章魚、飛鳥、藍白魔像、獨眼魔及披風魔王改用完整構圖，再裁切回原生元件；遊戲與README使用同一圖面 |
-| 覆蓋邊界 | 五張代表姿態及430個模板已更新；930個未涵蓋非空象限保留原貌，未驗完整首領動畫或後段正常出場 |
-| README | 已補中文手冊故事背景，30組怪物及10組首領代表姿態以完整角色呈現，來源及雜湊可回查 |
-| 完整包 | CHT與CHT-HD分開，各有Linux x86_64 AppImage、Windows x86_64 ZIP、macOS Intel／Apple Silicon通用ZIP |
-| 封包驗證 | 1.0.3依低載安排只核六包內容、架構、SHA、原版資料、模式、字型、音源與素材，不執行遊戲；不沿用1.0.2啟動結果作新版證據 |
-| 正常入洞 | 1.0.2 Linux包冷F7、入洞及DOS退出0；16筆擦除、29筆HD過場，中途整幅回退0，USR內容與mtime不變；1.0.3未重跑 |
-| 影片 | 保留1.0.2本機連續遊玩約61.1秒及60秒推廣片，音畫已驗；1.0.3未重新錄製 |
+| 工具列作弊 | 獨立鎖滿生命與MP，每次啟動關閉；MP為各法術剩餘次數，保留原學習與選擇規則 |
+| 站立回血 | 預設沿DOS版開啟，可獨立關閉並保存；道具與教堂回血仍有效，不稱PC-88完整規則重現 |
+| 啟動 | 先開準備視窗與錯誤日誌；大量圖片按需核SHA及解碼，城鎮／室內／洞窟與其餘地形按場景準備 |
+| 正式包啟動 | 兩個Linux包與兩個Windows包的Wine輔助啟動通過，原版steps／cycles皆0；macOS只核通用架構及內容 |
+| 介面抽樣 | 正式HD AppImage約0.33秒映射視窗、2.03秒設定就緒，15812個圖片註冊而0張載入；非所有電腦的時間保證 |
+| 對話HD | 正常候選GUI的居民進字／續頁背景保留，66筆樣本均有HD；保留原生對話框再疊中文 |
+| 洞窟HD | 正常候選GUI第一洞窟站立／移動各66筆保留HD；平台既有正常鍵序1250筆來源樣本缺失0，實際使用者精確站位未重現 |
+| 效能 | 減少重複完整合成，輸入仍60次Update，過載保留VM額度；受限單核心觀測洞窟約19至21fps，穩定30fps仍待低載確認 |
+| 原版來源 | 固定EXE、原始遊戲與存檔不覆寫；作弊開啟是明示規則差異，不列原版oracle證據 |
+| 保留限制 | 本次音訊關閉，未重驗播放品質、Windows／macOS真機、實體手把或完整通關 |
+
+正式包驗證在同版`smoke/linux-CHT*`、`windows-CHT*`及`toolbar`。候選正常玩家路徑在`workplace/runtime-controls-v1/gameplay-v6/`，二進位SHA為`45f74ac1a963e5083291847041aa30e23180096b6a1388bb8edc3d74e284f926`；正式包另以版號重新編譯，身份分開記錄，不能用候選收據冒稱正式包實錄。來源測試為`targeted-tests-v5.jsonl`、`controls-tests-v6.jsonl`，原始正常平台補證為`platform-source-v2/`。
+
+README已加入新版功能、開關行為與正式包實際截圖，來源為`docs/images/cheat-settings-provenance.json`。既有1.0.3速度設定頁與1.0.2遊玩圖片／影片保留版本標示。
+
+本輪已清除約3.08GiB重複組裝、解包與Wine層。六包、原版、字型、來源與二進位、截圖及驗證收據保留；收尾入口為`workplace/release-v104/repack-receipt.json`與`cleanup.json`。
 
 ## 正式交付與證據入口
 
