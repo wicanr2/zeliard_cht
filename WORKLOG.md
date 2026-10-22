@@ -1736,3 +1736,13 @@ CPU profile顯示逐byte完整記憶體讀取是大項。以release-v102的執�
 製作收據為同工作區repack-receipt.json，包含候選來源對應、六份平台二進位／音源SHA、既有純邊界核對出處及本輪未執行狀態；build-tools保存本輪建置、組裝、稽核、清理腳本與差異全文，入口由059索引。沿cleanup_dual_release.py --cpu-speed-repack先核六包SHA，僅清本版重複組裝層，共1,219,076,096配置bytes，約1.14GiB；固定來源、編譯紀錄、獨立執行器、平台二進位、Go快取、所有原版及唯一素材、存檔、候選診斷與六個成品均保留。
 
 清理後六包SHA及來源不變，1.0.2的manifest與使用者新增未追蹤文字檔雜湊不變；root-owned檔案、誤建.md目錄及專案容器為零。550個現行文件本地連結存在，git diff --check通過。清理明細及核對分別存cleanup.json與hygiene.json。README、CONTEXT、WORKLIST、AGENTS、059與驗證矩陣更新新交付及未驗限制；Git僅同步來源及文件，不上傳任何完整版或原始素材，本輪提交／push回讀另存git-publication.json。
+
+## 2026-10-22 README速度說明與實際設定頁截圖
+
+使用者要求README說明新增速度調整並更新截圖。路由命中README標準、文件職責及實際視窗擷取，載入對應入口，沿059既有設定頁，不修改遊戲程式、不重新編譯、打包或錄影。新增tools/capture_speed_readme.py，由059及README索引，工作區沿workplace/release-v103/readme-speed。
+
+以既有eob-audio-capture:20261009-r3、network none、UID/GID1000、單CPU quota、低shares128、2GiB及210秒外層逾時執行。專案與完整包唯讀掛載，僅本次輸出可寫。工具解開1.0.3 HD AppImage，以-show-controller避免推進原版，關閉音訊；Xvfb及遊戲均由finally停止。從實際工具列開速度設定，暫停後用滑鼠選8x，再開設定頁，擷取960×680實際視窗。原版steps及cycles前後相同，不把設定頁fps當HD遊玩效能。擷取後退出0並刪除本次可重生解壓層。
+
+圖片為docs/images/cpu-speed-settings.png，來源為同目錄cpu-speed-provenance.json；PNG直接取自實際視窗，無合成、重繪或修改像素。已目視六檔倍率、工具列速度8x、目前上限及繁中操作說明。來源封包SHA仍為b12d3a6b78923bb2e01faf030fab9d9de4642f23ad3b9c28135a5010ef711d8e，二進位為既有1.0.3；原圖、觀察狀態及隔離設定保留本機。README新增操作說明、上限與實際倍率差別及30fps待驗限制；CONTEXT、WORKLIST與驗證矩陣補上本次UI擷取範圍，不將整體GUI或效能升為完成。既有六包、版號、tag與影片均不變。
+
+PNG及工具SHA一致，本輪五份文件98個本地連結有效，root-owned與誤建.md目錄為零，本次解壓層已移除，專案容器為零。收據為readme-speed/hygiene.json。文件與使用者指定的介面預覽同步GitHub，來源提交及遠端回讀另存同工作區git-publication.json；完整包及原始素材未上傳，使用者未追蹤文字檔未動。

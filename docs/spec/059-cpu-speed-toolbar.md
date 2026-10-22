@@ -1,5 +1,7 @@
 # 工具列CPU速度與HD幀率
 
+README速度設定頁由[擷取工具](../../tools/capture_speed_readme.py)從1.0.3 HD AppImage重生，工作區為`workplace/release-v103/readme-speed/`。只在暫停設定頁以滑鼠選8x，保存實際視窗及來源清單，不推進原版或量測HD遊玩幀率。
+
 狀態：READY，2026-10-22。使用者明確要求2x、4x、8x、16x、32x及HD 30fps。只新增前端速度設定及等價效能改善，不改遊戲資料、地形、規則或存檔。
 
 ## 已確認來源

@@ -6,6 +6,7 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 1.0.3 README速度設定頁 | 實際介面截圖完成 | 從已交付HD AppImage開啟設定頁，暫停後以滑鼠選8x再開速度頁；960×680實際視窗已目視，六檔上限、選取狀態及操作說明可見。原版steps與cycles未推進，音訊關閉，不作遊玩、音訊或30fps驗收。來源見docs/images/cpu-speed-provenance.json與workplace/release-v103/readme-speed/selected-state.json |
 | v.1.0.3 CPU版六包 | PASS_PACKAGE_CONTENTS_RUNTIME_PENDING | CHT／CHT-HD各有Linux x86_64 AppImage、Windows x86_64 ZIP與macOS Intel／Apple Silicon通用ZIP。單CPU及Go平行度1重新編譯；六包解包／結構、架構、模式、29份原版資料、文字、字型、音源、HD過場與首領素材、逐檔清單及SHA核對通過，來源與CPU候選一致。沒有啟動遊戲、GUI、音訊或效能測試，HD 30fps、操作與音樂節奏待低載驗收；未重錄影片、不沿用舊啟動收據。入口同版smoke/release-audit.json、SHA256SUMS.json與workplace/release-v103/repack-receipt.json |
 | 059 CPU速度候選 | 已編譯，最終GUI／30fps待驗 | 使用者已選30fps優先、CPU倍率作上限並自動降速。設定保存及相容性、倍率邊界、時鐘分段、記憶體批次讀取資料／VGA／監看副作用與差異重生核對通過；前期固定倍率只作高載下研究資料。使用者隨後要求因CPU負載過重停止完整測試，最終自動調速候選未啟動GUI，不宣稱達30fps或音訊已驗。入口059與workplace/cpu-speed-v1/build-receipt.json，正式1.0.2包不變 |
 | 1.0.2本機新遊玩與推廣片 | 限定完成 | 正式Linux HD AppImage在Intel MTL／VirtualGL EGL錄製，libx264編碼；冷F7、中文對話、原貌／HD、入洞及設定頁，DOS退出0，USR內容與mtime不變。73筆擦除、139筆HD過場，中途整幅回退0。連續片61.1秒960×680／60fps及同期聲，mean -22.1／peak -3.5dB；推廣片60秒1280×720／60fps，mean -18.6／peak -4.5dB。訊號檢查與字幕／結尾目視通過，來源為local，不冒稱Ada新片。過場角色沿057局部覆繪限制，沒有新增完整通關或實體手把驗收。入口同版promo及workplace/ada-promo-v102/received |

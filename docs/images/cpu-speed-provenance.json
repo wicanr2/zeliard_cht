@@ -1,0 +1,21 @@
+{
+  "version": "v.1.0.3-20261022",
+  "scope": "README實際設定頁截圖；原版未推進，不作遊玩或HD幀率證據",
+  "package": "dist-all/v.1.0.3-20261022/full-local/Zeliard-v.1.0.3-20261022-CHT-HD-Linux-x86_64.AppImage",
+  "package_sha256": "b12d3a6b78923bb2e01faf030fab9d9de4642f23ad3b9c28135a5010ef711d8e",
+  "binary_sha256": "ad37d074b06c54115c8144662970a33650e09944f29bd52e45b106fab1276e9d",
+  "tool": "tools/capture_speed_readme.py",
+  "tool_sha256": "11f98c902fa45fb259b7c54fd29729eb90ec66776f0129aff1dde23f392086cb",
+  "image": "cpu-speed-settings.png",
+  "image_sha256": "08300faaacf4415f00e88867efd1779b3b82f8237bd78977fc9d0bf52519ff4e",
+  "width": 960,
+  "height": 680,
+  "selected_ceiling": 8,
+  "actual_multiplier": 1,
+  "original_steps_unchanged": true,
+  "original_cycles_unchanged": true,
+  "audio": "off",
+  "performance_acceptance": "NOT_MEASURED",
+  "source_receipt": "workplace/release-v103/readme-speed/selected-state.json",
+  "rights": "user-authorized README UI preview; full original data remains local"
+}

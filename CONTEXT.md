@@ -6,6 +6,8 @@
 
 使用者指出CPU負載過重，維持停止遊戲壓測。1.0.3只編譯與核六包內容／架構／SHA，最終GUI、HD 30fps及音訊／操作整合待低載驗收，059保持READY。最近GitHub Release仍為`v.1.0.2-20261021`；舊六包、兩片本機影片及已發布tag不覆寫，不把舊實錄當作1.0.3證據。
 
+依使用者要求，README已新增1.0.3實際速度設定頁截圖與六檔上限、操作及自動降速說明。從完整HD AppImage開啟設定頁，暫停後以滑鼠選8x，原版steps及cycles未推進；僅證設定頁呈現，不取代遊玩、音訊與30fps驗收。圖片及來源入口為README「工具列新增速度調整」、`docs/images/cpu-speed-provenance.json`及[擷取工具](tools/capture_speed_readme.py)，原始截圖與收據在`workplace/release-v103/readme-speed/`。
+
 影片已依使用者指示改在本機重錄。使用正式1.0.2 HD AppImage，沿[053錄影流程](docs/spec/053-ada-gameplay-promo.md)，Intel MTL透過VirtualGL EGL硬體繪圖，錄影採libx264。工作區沿用`workplace/ada-promo-v102/`，來源標為local；舊片與已發布tag保持原身份。
 
 ## 目前狀態表
