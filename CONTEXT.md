@@ -2,38 +2,43 @@
 
 更新日期：2026-10-22，Asia/Taipei。
 
-目前已完成[064系統介面字級](docs/spec/064-readable-system-text.md)的本機候選。使用者指出設定文字太小，要求可調並放大。沿既有圓體提供16／24／32像素，設定本文預設24，工具列及底部最高24。以 `bash tools/play-readable.sh` 啟動，候選身份為`development-ui-text-v1`，四種設定頁特大字、設定相容讀寫與冷重開均已核對，原版steps／cycles為0。收據在`workplace/ui-text-v1/smoke/receipt.json`，不改正式六包或影片身份。
+本輪入口為[065大字版重包與推廣片](docs/spec/065-readable-release-promo.md)，工作區`workplace/release-v105/`。使用者確認064後已授權正式重包及錄影，取代候選階段「不重打」安排。
 
-現行本機版本為`v.1.0.4-20261022`，完整包位於`dist-all/v.1.0.4-20261022/full-local/`。沿使用者既有授權，CHT與CHT-HD各提供Linux AppImage、Windows x86_64 ZIP及macOS通用ZIP。前版1.0.3、1.0.2與已發布tag／影片保留原身份；最近GitHub Release仍為1.0.2，完整版與影片只留本機。
+065已完成六包與60秒推廣片，入口為工作區`repack-receipt.json`。影片音畫、字幕及來源通過，540個重用HD畫格與720個新錄設定編碼畫格比對通過；原版標題曲配樂非同期聲。清理約3.78GiB後七份SHA不變，明細在`cleanup.json`與`cleanup-media.json`。完整遊玩與30fps未重驗。
 
-現行影片入口為[063新功能混剪與HD連續證明](docs/spec/063-feature-promo-stability-proof.md)。使用者已接受目前幀率，允許沿舊片混剪並要求在片內證明HD不再與原貌交替。60秒新版推廣片與約11秒對話、29秒平台完整證明已完成，放同版`promo/`，未重打六包。原始短錄、分鏡與收據在`workplace/promo-features-v104/`。
+已完成[064系統介面字級](docs/spec/064-readable-system-text.md)並收錄1.0.5六包。沿既有圓體提供16／24／32像素，設定本文預設24，工具列及底部最高24。正式HD AppImage的三檔切換、四種設定頁特大字與冷重開通過，原版steps／cycles為0、存檔不變。收據在同版`smoke/toolbar/receipt.json`；舊`development-ui-text-v1`候選及收據保留歷史身份。
 
-本輪入口為[060作弊與難度](docs/spec/060-player-cheats.md)、[061啟動與按需HD](docs/spec/061-startup-on-demand-hd.md)、[062穩定呈現](docs/spec/062-stable-hd-presentation.md)。研究與候選只在`workplace/runtime-controls-v1/`，正式來源副本與建置在`workplace/release-v104/`。不重開完整通關、全遊戲逐幀或實體手把驗收。
+現行本機版本為`v.1.0.5-20261022`，完整包位於`dist-all/v.1.0.5-20261022/full-local/`，由 `bash tools/play.sh` 啟動新版HD，`--cht`選原貌中文版。CHT與CHT-HD各提供Linux AppImage、Windows x86_64 ZIP及macOS通用ZIP。舊六包、影片與已發布tag保留原身份；最近GitHub Release仍為1.0.2，完整版與影片只留本機。
+
+現行影片由065新錄正式1.0.5字級、作弊與速度頁，混剪具名舊遊玩來源。1.0.4的[063連續防閃爍證明](docs/spec/063-feature-promo-stability-proof.md)保留原版號；新版主片10–17秒對話、17–28秒平台沿用該版來源，各自連續。28–40秒展示16／24／32字級，各4秒。配樂為原版標題曲、非同期聲，使用者已接受幀率，不重開30fps或通關。
+
+1.0.4基礎修正入口為[060作弊與難度](docs/spec/060-player-cheats.md)、[061啟動與按需HD](docs/spec/061-startup-on-demand-hd.md)、[062穩定呈現](docs/spec/062-stable-hd-presentation.md)。該輪研究與候選在`workplace/runtime-controls-v1/`，正式來源副本與建置在`workplace/release-v104/`。1.0.5沿用這些功能，不重開完整通關、全遊戲逐幀或實體手把驗收。
 
 ## 目前狀態表
 
 | 項目 | 現況 |
 |---|---|
+| 系統字級 | 1.0.5兩版皆可選16／24／32，預設24並保存；正式HD包14張設定視窗及冷重開已核對 |
 | 工具列作弊 | 獨立鎖滿生命與MP，每次啟動關閉；MP為各法術剩餘次數，保留原學習與選擇規則 |
 | 站立回血 | 預設沿DOS版開啟，可獨立關閉並保存；道具與教堂回血仍有效，不稱PC-88完整規則重現 |
 | 啟動 | 先開準備視窗與錯誤日誌；大量圖片按需核SHA及解碼，城鎮／室內／洞窟與其餘地形按場景準備 |
-| 正式包啟動 | 兩個Linux包與兩個Windows包的Wine輔助啟動通過，原版steps／cycles皆0；macOS只核通用架構及內容 |
-| 介面抽樣 | 正式HD AppImage約0.33秒映射視窗、2.03秒設定就緒，15812個圖片註冊而0張載入；非所有電腦的時間保證 |
+| 正式包啟動 | 1.0.5兩個Linux包與兩個Windows包的Wine輔助啟動通過，原版steps／cycles皆0；macOS只核通用架構及內容 |
+| 1.0.4啟動抽樣 | 當時正式HD AppImage約0.33秒映射視窗、2.03秒設定就緒，15812個圖片註冊而0張載入；不是1.0.5或所有電腦的時間保證 |
 | 對話HD | 正式1.0.4新增連續實錄，完整證明327個影片畫格及161筆去重來源均保留HD；片中10–17秒另核210個畫格 |
 | 洞窟HD | 正式1.0.4綠色平台站立／升降／移動連續實錄，完整證明857個影片畫格及248筆去重來源均保留HD；主片17–30秒另核390個畫格 |
 | 效能 | 使用者已接受前次幀率結果，本輪不再調速或以30fps為交付閘門；錄影封裝30fps不代表遊戲每秒30個新畫格 |
 | 原版來源 | 固定EXE、原始遊戲與存檔不覆寫；作弊開啟是明示規則差異，不列原版oracle證據 |
 | 保留限制 | 本次音訊關閉，未重驗播放品質、Windows／macOS真機、實體手把或完整通關 |
 
-正式包驗證在同版`smoke/linux-CHT*`、`windows-CHT*`及`toolbar`。前次候選正常玩家路徑在`workplace/runtime-controls-v1/gameplay-v6/`，二進位SHA為`45f74ac1a963e5083291847041aa30e23180096b6a1388bb8edc3d74e284f926`；正式包另以版號重新編譯，身份分開記錄，不能用候選收據冒稱正式包實錄。來源測試為`targeted-tests-v5.jsonl`、`controls-tests-v6.jsonl`，原始正常平台補證為`platform-source-v2/`。
+1.0.5正式包驗證在同版`smoke/linux-CHT*`、`windows-CHT*`及`toolbar`，六包內容稽核為`smoke/release-audit.json`。下方1.0.4的遊玩與來源收據保持原身份，不冒稱1.0.5正常遊玩。前次候選路徑在`workplace/runtime-controls-v1/gameplay-v6/`，二進位SHA為`45f74ac1a963e5083291847041aa30e23180096b6a1388bb8edc3d74e284f926`；來源測試為`targeted-tests-v5.jsonl`、`controls-tests-v6.jsonl`，原始平台補證為`platform-source-v2/`。
 
-README已加入新版功能、開關行為與正式包實際截圖，來源為`docs/images/cheat-settings-provenance.json`。既有1.0.3速度設定頁與1.0.2遊玩圖片／影片保留版本標示。
+README已加入1.0.5正式字級與特大作弊頁，來源為`docs/images/system-text-v105-provenance.json`。舊1.0.4作弊、1.0.3速度與1.0.2遊玩圖片／影片保留版本標示。
 
-本輪已清除約3.08GiB重複組裝、解包與Wine層。六包、原版、字型、來源與二進位、截圖及驗證收據保留；收尾入口為`workplace/release-v104/repack-receipt.json`與`cleanup.json`。
+1.0.4重包當時清除約3.08GiB重複組裝、解包與Wine層。六包、原版、字型、來源與二進位、截圖及驗證收據保留；歷史入口為`workplace/release-v104/repack-receipt.json`與`cleanup.json`。
 
-本輪清除約279.2MiB解包與剪輯重複層，三片及六包SHA再核對不變。`promo/media-manifest.json`索引本輪成品與QA，`workplace/promo-features-v104/cleanup.json`保存明列清理結果。
+1.0.4影片當時清除約279.2MiB解包與剪輯重複層，三片及六包SHA再核對不變。同版`promo/media-manifest.json`索引該輪成品與QA，`workplace/promo-features-v104/cleanup.json`保存清理結果。
 
-新片由正式AppImage擷取，Intel MTL／VirtualGL EGL與h264_vaapi硬體編碼，兩段證明保留完整960×680視窗，區間不剪接、不加速、不手動切換HD。生命鎖定開啟已在片中標明；配樂沿原版標題曲，非同期聲。新片的音畫、字幕及連續HD核對在同版`promo/quality.json`、`hd-stability-proof.json`、`visual-review.json`；原貌／HD同狀態參考只在證明區間之外取得，沒有混入補充證明。
+1.0.4證明片由當時正式AppImage擷取，Intel MTL／VirtualGL EGL與h264_vaapi硬體編碼，兩段保留完整960×680視窗，不剪接、不加速、不手動切換HD。生命鎖定開啟、原版標題曲非同期聲均標明。該版的音畫與HD核對仍在1.0.4的`promo/quality.json`、`hd-stability-proof.json`、`visual-review.json`；原貌／HD參考只在證明區間之外取得，沒有混入補充證明。
 
 ## 正式交付與證據入口
 

@@ -1802,3 +1802,17 @@ UI候選`gui-ui-v2`：視窗約0.17秒出現，工具列約1.56秒就緒；15812
 首輪驗證腳本沒有將封包初始化的存檔目錄環境變數導向隔離層，設定頁本身通過，後段核存檔時檔案不存在；第二輪合成Enter／Esc短脈衝未等待頁面回應，Esc落到後續頁面，腳本逾時。兩者分類為驗證腳本問題，保留attempt-1／attempt-2，改為明確使用ZELIARD_USER_DIR，逐鍵等到UI狀態回應及釋放，再以相同容器與命令乾淨重跑，成功不覆寫失敗紀錄。檢查也改成每筆觀察都先拒絕DOS前進。目視另發現舊底部提示重畫兩次，已改成一次繪製並以最終候選重新核對。
 
 候選啟動為bash tools/play-readable.sh；重建為bash tools/build-readable.sh，後者只沿現有唯讀素材與獨立dosgolem來源。既有六包、版本、tag與影片均未變。文件連結、來源SHA及擁有權核對在hygiene.json；容器使用--rm並由腳本finally清除背景程序。來源提交與私人儲存庫同步回讀見同工作區git-publication.json。
+
+## 2026-10-22 065 大字介面三平台重包與推廣片
+
+使用者確認064後授權重新打包完整版與錄製推廣片。已載入復古重製技能、版號、dist-all、文件職責與推廣片入口。新版本v.1.0.5-20261022，唯一工作區workplace/release-v105，沿兩版各三平台，原版與素材只留本機。原1.0.4 manifest及未追蹤TXT雜湊先存request.json。影片新錄正式大字設定頁，可沿先前授權混剪舊遊玩來源並明列版本，音樂沿已追溯原版標題曲。
+
+065完成：以ZELIARD_RELEASE_FONT=/project/workplace/ui-text-v1/rounded-font依序執行build_dual_release.sh prepare／compile／package，沿既有Go、Windows音源與macOS交叉工具映像，單CPU、Go平行度1與network none，從乾淨來源副本重建六包。identity.json記原版、完整來源、獨立dosgolem差異、字型與圖庫SHA。兩版Linux原生與Windows的Wine輔助啟動通過，macOS核Intel／Apple Silicon通用結構，audit_dual_release.py --readable-repack逐檔manifest、來源、架構、版號與字型均通過。不是Windows／macOS真機或遊玩驗收。
+
+正式HD AppImage以Intel MTL／VirtualGL EGL與h264_vaapi新錄字級設定，三檔即時選擇、14張設定視窗、特大作弊／速度／鍵盤／手把及冷重開恢復32通過。DOS steps／cycles皆0，存檔bytes及mtime不變。錄影原檔在recording/settings-source.mp4，實際輸入／畫面及來源收據在同版smoke/toolbar。Windows首輪已擷取正確頁面，但低CPU shares下100秒退出等待逾時；腳本改啟動就緒後第2幀擷取與160秒有界等待，在相同Wine映像乾淨重跑後退出0。原失敗資料留smoke/windows-CHT-attempt-1。跨bind目錄搬移與預建空輸出檢查失敗屬工具環境，修正輸出入口後重跑；不是遊戲缺陷。
+
+首輪硬體錄影已完成頁面，但FFmpeg依SIGINT回傳255，舊檢查僅接受0而中止。沿既有063錄影契約接受0或255，保留recording-attempt-1及smoke/toolbar-attempt-1，再由正式包重新錄製成功。60秒推廣片由make_readable_promo.py製作，城鎮1.0.2、對話／平台1.0.4來源均保留版號；新設定1.0.5，標題曲沿原版、明列非同期聲。初剪12秒連續設定段因錄製環境較慢而未切到32，目視後保留promo-attempt-1及edit-attempt-1，改為三檔各自連續4秒的實錄節選，沒有重繪或加速遊戲畫面。
+
+正式影片28–32秒為16字級、32–36秒為24、36–40秒為32，另有特大作弊與速度頁。1280×720／60秒H264＋AAC stereo，音量mean -18.6／peak -4.5dB，無長黑幀或兩秒靜音，字幕、開場／結尾及版本已目視。540個重用HD編碼畫格與720個新UI編碼畫格皆與來源比對，原貌／HD切換沒有混入舊證明。新UI原錄在32字級4秒區間有119個原生時間戳畫格，製片-r30輸出120；首輪passthrough比較因此拒絕。回查影片路由，source-cadence-study.json以相同原檔確認CFR與passthrough差異，再令新UI來源採製片相同-r30 CFR，舊證明仍按實際畫格核對；不降低像素門檻，不稱遊戲30fps。最後各段最大平均亮度誤差小於0.26，來源檢查通過。
+
+finalize_readable_release.py登錄六包與一片共七份產物，SHA256SUMS.json、media-manifest.json與repack-receipt.json保留完整身份。cleanup_readable_release.py先核七份SHA，只清本輪重複組裝／解壓／Wine及剪輯中間MP4，共4,062,547,968配置bytes，約3.78GiB，來源、二進位、原始錄影、素材、舊版、字型與Go快取保留。清理後七份及media檔案SHA、固定工具來源、舊1.0.4 manifest、使用者TXT均再核對不變，文件入口與擁有權通過；詳見hygiene.json。來源同步與遠端main回讀另存git-publication.json；完整包及影片不上傳，不建立或改寫已發布tag。

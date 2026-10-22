@@ -1,0 +1,26 @@
+{
+  "version": "v.1.0.5-20261022",
+  "source_kind": "actual formal HD AppImage extracted directory; not a mockup",
+  "binary_sha256": "a0e061f6b81011e3d54cb282f09a1d3f71cc0e9f1b636e76845de16a880987ee",
+  "capture_tool_sha256": "5bac1778eba23e2ff5fac345b74ed241546d4e3e6037eae8ad39d242d538c680",
+  "receipt": "dist-all/v.1.0.5-20261022/smoke/toolbar/receipt.json",
+  "native_steps": 0,
+  "native_cycles": 0,
+  "not_gameplay_fps_evidence": true,
+  "images": [
+    {
+      "file": "system-text-v105.png",
+      "sha256": "1c9bc74c3a50107ded22e821b4ef28f0de7766939640ab048feb5afb66105335",
+      "source": "dist-all/v.1.0.5-20261022/smoke/toolbar/boot1/cheat-32.png",
+      "text_size": 32,
+      "toolbar_size": 24
+    },
+    {
+      "file": "text-size-v105.png",
+      "sha256": "5e21f636ba4d31014be7d9ba0e60910235266a8180ef14bcbcdf5dc0bfd3e948",
+      "source": "dist-all/v.1.0.5-20261022/smoke/toolbar/boot1/text-size-32.png",
+      "text_size": 32,
+      "toolbar_size": 24
+    }
+  ]
+}

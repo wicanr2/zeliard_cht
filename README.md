@@ -18,7 +18,7 @@
 
 使用 dosgolem 直接執行 DOS《神劍封魔》，在原版畫面上疊加繁體中文與 HD，並加入可綁定藍牙、USB 手把的工具列。執行與覆繪參考《銀河超能力戰記》中文化專案，工具列參考《三國演義》重製版。
 
-本機新版1.0.4提供「原版＋中文（CHT）」及「原版＋中文＋HD（CHT-HD）」兩套三平台完整包。CHT保留原版美術，不附HD圖庫；CHT-HD預設開啟手繪HD，可從工具列切回原貌。兩版都包含原版遊戲、圓體中文、配樂音色改善、CPU速度及鍵盤／手把設定，存檔相容。新版加入啟動進度、HD按需載入、生命／MP鎖定及站立回血開關，並修正居民對話與可信洞窟繪製間隙的HD閃回。交付方式見[規格051](docs/spec/051-dual-edition-release.md)，修正範圍見[060](docs/spec/060-player-cheats.md)、[061](docs/spec/061-startup-on-demand-hd.md)及[062](docs/spec/062-stable-hd-presentation.md)。
+本機新版1.0.5提供「原版＋中文（CHT）」及「原版＋中文＋HD（CHT-HD）」兩套三平台完整包，加入可保存的系統字級，設定本文預設放大為24像素。CHT保留原版美術，不附HD圖庫；CHT-HD預設開啟手繪HD，可從工具列切回原貌。兩版都包含原版遊戲、圓體中文、配樂音色改善、CPU速度及鍵盤／手把設定，存檔相容，並保留啟動進度、HD按需載入、生命／MP鎖定、站立回血開關與HD閃回修正。新版交付見[規格065](docs/spec/065-readable-release-promo.md)，既有功能範圍見[060](docs/spec/060-player-cheats.md)、[061](docs/spec/061-startup-on-demand-hd.md)及[062](docs/spec/062-stable-hd-presentation.md)。
 
 HD 圖樣搜尋已加速，並補上持盾受擊後特殊姿態的高清接入。正常接敵變色與後續姿態均保留 HD 背景和角色，原版移動速度與規則不變。修正與驗證範圍見[規格052](docs/spec/052-hd-runtime-damage.md)。
 
@@ -28,14 +28,14 @@ HD 圖樣搜尋已加速，並補上持盾受擊後特殊姿態的高清接入�
 | 洞窟 | 沿用11組地形、門框與物件；八組敵人、十組首領及第二階段模板均有HD圖面 |
 | 主角與武器 | 保留既有完整姿態，加入主角230個原生圖塊與三組刀光301個圖塊的組裝；未知來源安全退回 |
 | 片頭、結局與介面 | 已接入補繪插畫、頭像表情、幻影階段、結局合成、裝備物品圖示與法術效果 |
-| 整合狀態 | 新版程式候選完成正常F7、居民中文對話與第一洞窟站立／移動，限定樣本維持HD；未重跑完整通關、音訊或實體手把 |
+| 整合狀態 | 前版1.0.4完成正常F7、居民中文與第一洞窟限定HD實錄；1.0.5核正式包啟動及字級，不重跑通關、音訊或實體手把 |
 | 平台封包 | 兩版各有Linux AppImage、Windows ZIP及macOS通用ZIP；各平台核對範圍見驗證矩陣，不以交叉建置當真機驗收 |
 
 HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝備法術、片頭與結局補圖，來源與接入見[規格050](docs/spec/050-manual-hd-delivery.md)。未知或不符來源保留原貌；不以完整資料包或第一洞窟錄影宣稱全遊戲翻譯、每幀HD或完整通關已驗收。
 
 中文採用較圓潤的[jf open 粉圓2.1](https://github.com/justfont/open-huninn-font/releases/tag/v2.1)，在工具列、對話、選單與狀態列依顯示尺寸合成柔邊，保留原字距及文字區域。字型採OFL-1.1，授權全文隨本機包附上。製作方式見[字型工具](tools/prepare_rounded_font.py)。
 
-配樂改用原版 AdLib 驅動與可替換的 Nuked-OPL3 音源，保留原曲。封包採實際時間推進，卡頓時最多追趕100毫秒，暫停及失焦不追趕。1.0.4兩版均通過Linux原生啟動與Wine輔助啟動；本次啟動檢查關閉音訊，未重驗播放品質。實體USB／藍牙手把、Windows與macOS真機尚未驗收。詳見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
+配樂改用原版 AdLib 驅動與可替換的 Nuked-OPL3 音源，保留原曲。封包採實際時間推進，卡頓時最多追趕100毫秒，暫停及失焦不追趕。1.0.5兩版均通過Linux原生啟動與Wine輔助啟動；本次啟動檢查關閉音訊，未重驗播放品質。實體USB／藍牙手把、Windows與macOS真機尚未驗收。詳見 [VERIFICATION-MATRIX.md](VERIFICATION-MATRIX.md)。
 
 啟動後先顯示準備視窗，列出目前階段、耗時與錯誤。HD的城鎮、室內及洞窟圖組在首次進入該類場景時準備，補圖在首次匹配時核對並解碼，之後使用快取。場景載入期間暫停遊戲與音訊，完成後繼續；啟動日誌為使用者設定目錄內的`startup.log`。這會縮短開始等待，首次進入場景仍可能短暫顯示載入頁。
 
@@ -69,11 +69,11 @@ HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝
 
 ### 可調整的系統字級
 
-字級功能目前提供本機候選，啟動使用 `bash tools/play-readable.sh`。上方工具列的「字級」可選 **標準16／大字24／特大32**，立即套用並自動保存。設定本文預設24像素，工具列最高24；選擇16可還原原有大小。遊戲內對話與原版畫面不受影響。現有1.0.4正式包仍維持原介面，候選與建置入口見[規格064](docs/spec/064-readable-system-text.md)。
+1.0.5兩種版本的上方工具列都有「字級」，可選 **標準16／大字24／特大32**，立即套用並自動保存。設定本文預設24像素，工具列最高24；選擇16可還原原有大小。遊戲內對話與原版畫面不受影響。操作與範圍見[規格064](docs/spec/064-readable-system-text.md)，啟動使用下方正式包或 `bash tools/play.sh`。
 
-![字級候選的實際作弊設定頁，本文使用32像素，工具列使用24像素](docs/images/system-text-32.png)
+![1.0.5正式HD包的字級頁，可選16、24、32像素，本文使用32像素](docs/images/text-size-v105.png)
 
-上圖為候選的實際視窗，設定頁暫停原版；圖中fps不代表遊玩效能。[截圖來源](docs/images/system-text-provenance.json)可回查二進位與設定。字級切換及冷重開已核對，未重新驗通關或幀率。
+上圖取自1.0.5正式HD AppImage，另見[特大字作弊頁](docs/images/system-text-v105.png)。設定頁暫停原版，圖中fps不代表遊玩效能。[截圖來源](docs/images/system-text-v105-provenance.json)可回查二進位與設定。字級切換及冷重開已核對，未重新驗通關或幀率。
 
 ## 素材總覽
 
@@ -103,7 +103,7 @@ HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝
 
 ## 開始遊玩
 
-本機完整版放在 `dist-all/v.1.0.4-20261022/full-local/`，包含遊戲資料，未上傳GitHub。檔名以`Zeliard-v.1.0.4-20261022-`開頭：
+本機完整版放在 `dist-all/v.1.0.5-20261022/full-local/`，包含遊戲資料，未上傳GitHub。檔名以`Zeliard-v.1.0.5-20261022-`開頭：
 
 | 平台 | 原版＋中文 | 原版＋中文＋HD |
 |---|---|---|
@@ -111,7 +111,7 @@ HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝
 | Windows x86_64 | `CHT-Windows-x86_64.zip` | `CHT-HD-Windows-x86_64.zip` |
 | macOS Intel／Apple Silicon | `CHT-macOS-universal.zip` | `CHT-HD-macOS-universal.zip` |
 
-前版封包保留在各自版號目錄。新版沿用1.0.2的HD入洞過場與五組完整構圖首領、1.0.3的CPU速度功能，再加入啟動、工具列與HD穩定修正。美術範圍見[過場修正](docs/spec/057-cave-transition-hd.md)與[首領美術](docs/spec/058-coherent-boss-hd.md)。
+前版封包保留在各自版號目錄。新版沿用1.0.2的HD入洞過場與五組完整構圖首領、1.0.3的CPU速度、1.0.4的啟動與HD穩定修正，再加入可調字級。美術範圍見[過場修正](docs/spec/057-cave-transition-hd.md)與[首領美術](docs/spec/058-coherent-boss-hd.md)。
 
 Windows解壓縮後開啟`Zeliard.exe`，macOS開啟`Zeliard-CHT.app`或`Zeliard-CHT-HD.app`。Linux可直接執行所選AppImage，也可在專案目錄啟動HD版：
 
@@ -121,7 +121,7 @@ bash tools/play.sh
 
 原貌中文版使用`bash tools/play.sh --cht`。兩套包分開提供，安裝位置不影響共用存檔格式。
 
-原生封包不需要Docker。若Linux缺少FUSE，可在新目錄以AppImage的`--appimage-extract`解開，再執行`squashfs-root/AppRun`。1.0.4兩版均以此方式通過啟動及獨立存檔目錄檢查。
+原生封包不需要Docker。若Linux缺少FUSE，可在新目錄以AppImage的`--appimage-extract`解開，再執行`squashfs-root/AppRun`。1.0.5兩版均以此方式通過啟動及獨立存檔目錄檢查。
 
 工具列可開啟「搖桿／手把」及「鍵盤設定」，HD版另可切換原貌／HD。藍牙先在系統配對，USB手把先插入，再選裝置及綁定。鍵盤可重綁、解除、還原預設，兩種設定都會保存。
 
@@ -140,17 +140,17 @@ bash tools/play.sh
 
 包內附自建存檔SAVETEST，可按F7讀取後從Muralla鎮向右進入第一洞窟。存檔與操作設定保存在系統使用者設定目錄的 `Zeliard-CHT`：Linux為 `~/.config/Zeliard-CHT/`，Windows為 `%AppData%\Zeliard-CHT\`，macOS為 `~/Library/Application Support/Zeliard-CHT/`。可用 `ZELIARD_USER_DIR` 指定其他目錄。
 
-新版60秒推廣片沿前片剪輯，加入1.0.4正式HD包的實際速度、作弊／回血開關與按需載入畫面。城鎮巡禮與鍵盤／手把頁沿用1.0.2來源，畫面另標版本；配樂沿已追溯的原版標題曲，沒有冒稱同期聲。製作與來源見[規格063](docs/spec/063-feature-promo-stability-proof.md)。
+新版60秒推廣片新錄1.0.5正式HD AppImage的字級選擇、特大作弊與速度頁。第28–40秒分別展示16、24、32字級的實際畫面，各4秒，切換立即生效並保存。城鎮沿1.0.2、對話與平台沿1.0.4已核對來源，片中保留來源版號；配樂沿原版標題曲，明列非同期聲。製作與來源見[規格065](docs/spec/065-readable-release-promo.md)。
 
-第10–17秒為新版中文對話，第17–30秒為新版綠色平台操作。兩段各自連續，保留完整視窗及工具列，區間內不剪接、不加速、不手動切換HD。主片這600個畫格與下列兩段完整證明均核對HD選取、完成來源及高清細節，未見整幅原貌回退；遊玩時開啟生命鎖定，片中已標明。結果只涵蓋錄到的範圍，不外推全遊戲每幀。
+第10–17秒對話、第17–28秒平台重用1.0.4的防閃爍實錄。兩段各自連續，保留完整視窗及工具列，區間內不剪接、不加速、不手動切換HD。來源已核對HD選取、完成來源及高清細節，未見整幅原貌回退；生命鎖定開啟，片中已標明。下列完整證明仍保留1.0.4版號，不冒稱1.0.5遊玩實錄，也不外推全遊戲每幀。
 
 | 影片 | 本機路徑 |
 |---|---|
-| 新功能推廣片，60秒，1280×720 | `dist-all/v.1.0.4-20261022/promo/Zeliard-v.1.0.4-20261022-promo.mp4` |
-| HD對話連續證明，約11秒，960×680 | `dist-all/v.1.0.4-20261022/promo/Zeliard-v.1.0.4-20261022-HD-dialogue-proof.mp4` |
-| HD平台連續證明，約29秒，960×680 | `dist-all/v.1.0.4-20261022/promo/Zeliard-v.1.0.4-20261022-HD-platform-proof.mp4` |
+| 1.0.5大字功能推廣片，60秒，1280×720 | `dist-all/v.1.0.5-20261022/promo/Zeliard-v.1.0.5-20261022-promo.mp4` |
+| 1.0.4 HD對話連續證明，約11秒，960×680 | `dist-all/v.1.0.4-20261022/promo/Zeliard-v.1.0.4-20261022-HD-dialogue-proof.mp4` |
+| 1.0.4 HD平台連續證明，約29秒，960×680 | `dist-all/v.1.0.4-20261022/promo/Zeliard-v.1.0.4-20261022-HD-platform-proof.mp4` |
 
-各版檔案大小與SHA-256見同版`SHA256SUMS.json`，新片來源、音畫與防閃爍核對在`promo/`，封包檢查在`smoke/`。本次只追加三片，六個完整包不變；舊1.0.2同期聲遊玩片、入洞檢查與Ada影片仍保留原身份。最近GitHub Release仍為[1.0.2](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.2-20261021)。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
+各版檔案大小與SHA-256見同版`SHA256SUMS.json`，新片來源、音畫與畫格核對在`promo/`，封包檢查在`smoke/`。本次重建1.0.5六包與一支推廣片，舊版封包、影片與已發布tag保留原身份。最近GitHub Release仍為[1.0.2](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.2-20261021)。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
 
 洞窟的插畫片段會核對母圖的可見來源，避免小圖樣誤貼到主角或背景。舊封包與影片均保持原身份，未用舊影片冒稱新版實錄。
 

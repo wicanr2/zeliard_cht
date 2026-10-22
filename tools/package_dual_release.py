@@ -87,7 +87,7 @@ def prepare():
         write(root/'runtime-args.json',list(entries.items()))
         write(root/'bundle-options.json',['-adlib','-audio','ebiten','-realtime','-hd='+str(edition=='CHT-HD').lower()])
         (root/'VERSION').write_text(VERSION+'\n');(root/'EDITION').write_text(edition+'\n')
-    write(W/'identity.json',{'version':VERSION,'source_files':inventory(W/'sources'),'dosgolem_files':inventory(W/'dosgolem'),'original_files':inventory(P/'workplace/orig'),'asset_sources':sources,'complete_art_sha256':sha(MANUAL/'complete-art.json'),'coherent-bosses_sha256':sha(MANUAL/'coherent-bosses.json'),'cave-transition_sha256':sha(MANUAL/'cave-transition.json'),'rights':'full-local only'})
+    write(W/'identity.json',{'version':VERSION,'source_files':inventory(W/'sources'),'dosgolem_files':inventory(W/'dosgolem'),'original_files':inventory(P/'workplace/orig'),'asset_sources':sources,'font_source':str(FONT),'font_sha256':sha(FONT/'font.hex.gz'),'smooth_font_sha256':sha(FONT/'font.hex.gz.smooth.json.gz'),'complete_art_sha256':sha(MANUAL/'complete-art.json'),'coherent-bosses_sha256':sha(MANUAL/'coherent-bosses.json'),'cave-transition_sha256':sha(MANUAL/'cave-transition.json'),'rights':'full-local only'})
     print('PREPARED',VERSION,EDITIONS,flush=True)
 
 def archive(source,target):
@@ -107,12 +107,14 @@ def setup(root,platform,edition):
 
 Windows開啟Zeliard.exe，macOS開啟.app，Linux執行AppImage。
 工具列可設定鍵盤及USB／藍牙手把；藍牙先由作業系統配對。
+工具列「字級」可選標準16／大字24／特大32，立即套用並保存，預設24。
+設定本文最高32，工具列最高24；遊戲內對話與原版畫面不受影響。
 工具列「速度」可選1x／2x／4x／8x／16x／32x上限，負載高時自動降速。
 工具列「作弊」可獨立鎖滿生命與MP，預設關閉；MP為各法術剩餘次數。
 「站立自動回血」預設開啟，可關閉；此設定保存，鎖滿生命／MP每次啟動關閉。
 啟動時顯示準備視窗及錯誤；HD圖組首次進入場景才載入，圖片首次使用才解碼。
 場景載入時暫停遊戲與音訊，完成後繼續；啟動日誌位於使用者設定目錄的startup.log。
-畫面顯示實際倍率與fps；HD 30fps為目標，尚待低負載環境驗收。
+畫面顯示實際倍率與fps；使用者已接受目前幀率，不保證穩定30fps。
 方向鍵移動／跳躍／蹲下，空白鍵攻擊／交談，Enter裝備，Alt法術。
 Esc原版暫停，F12鍵盤設定，F1／F2音樂／音效，Ctrl+Q再按Y退出。
 可開新局，或F7讀SAVETEST，再從Muralla向右進第一洞窟。

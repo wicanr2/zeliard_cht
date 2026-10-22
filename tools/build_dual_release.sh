@@ -9,8 +9,9 @@ work="$project/workplace/release-v${version_core//./}"
 [[ -d "$work" && -d "$project/dist-all" && -d "$project/workplace/gocache" && -d /home/anr2/cht/dosgolem/workplace/gomodcache ]]
 common=(--rm --label project=zeliard --network none --user "$(id -u):$(id -g)" --memory 3g --cpus 1 --cpu-shares 128 --pids-limit 256)
 phase=${1:-all}
+release_font=${ZELIARD_RELEASE_FONT:-/project/workplace/runtime-controls-v1/rounded-font}
 if [[ $phase == all || $phase == prepare ]]; then
-  timeout 180 docker run "${common[@]}" -v "$project:/project:ro" -v "$work:$work:rw" -v "$project/dist-all:/project/dist-all:rw" -e "ZELIARD_RELEASE_WORK=$work" eob-audio-capture:20261009-r3 python3 /project/tools/package_dual_release.py prepare
+  timeout 180 docker run "${common[@]}" -v "$project:/project:ro" -v "$work:$work:rw" -v "$project/dist-all:/project/dist-all:rw" -e "ZELIARD_RELEASE_WORK=$work" -e "ZELIARD_RELEASE_FONT=$release_font" eob-audio-capture:20261009-r3 python3 /project/tools/package_dual_release.py prepare
 fi
 mounts=(-v "$work:/build:rw" -v /home/anr2/cht/dosgolem/workplace/gomodcache:/gomodcache:ro -v "$project/workplace/gocache:/gocache:rw")
 envs=(-e GOWORK=/build/build.work -e GOCACHE=/gocache -e GOMODCACHE=/gomodcache -e GOPROXY=off -e GOSUMDB=off -e GOTOOLCHAIN=local -e GOMAXPROCS=1 -e GOFLAGS=-p=1 -e "BUILD_VERSION=$version")

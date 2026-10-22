@@ -18,7 +18,7 @@ def sha(file):
 manifest=json.loads((D/'SHA256SUMS.json').read_text())
 assert manifest['version']==VERSION
 if args.cpu_speed_repack:
-    assert manifest['validation']['status']=='PASS_PACKAGE_CONTENTS_RUNTIME_PENDING'
+    assert manifest['validation']['status'] in ('PASS_PACKAGE_CONTENTS_RUNTIME_PENDING','PASS_LOCAL_DUAL_EDITION_SCOPED_SETTINGS_RELEASE')
     assert manifest['validation']['cpu_speed_repack'] is True
 else:
     assert manifest['validation']['status']=='PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE'

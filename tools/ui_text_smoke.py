@@ -8,14 +8,18 @@ import subprocess
 import time
 
 P = Path('/project')
-W = P / 'workplace/ui-text-v1'
-B = W / 'preview'
-O = W / 'smoke'
-assert W.stat().st_uid == os.getuid() and not O.exists()
-O.mkdir()
+W = Path(os.environ.get('ZELIARD_UI_WORK', str(P / 'workplace/ui-text-v1')))
+B = Path(os.environ.get('ZELIARD_UI_BUNDLE', str(W / 'preview')))
+O = Path(os.environ.get('ZELIARD_UI_OUTPUT', str(W / 'smoke')))
+record_path = os.environ.get('ZELIARD_UI_RECORD', '')
+assert W.stat().st_uid == os.getuid() and (not O.exists() or not any(O.iterdir()))
+O.mkdir(exist_ok=True)
 env = {**os.environ, 'DISPLAY': ':96', 'GOMAXPROCS': '1', 'LP_NUM_THREADS': '1', 'LD_LIBRARY_PATH': str(B / 'lib'), 'ZELIARD_USER_DIR': str(O / 'user')}
 children, shots, boots = [], [], []
 process = window = directory = None
+video = None
+record_begin = time.monotonic()
+record_epoch = time.time()
 
 
 def invoke(args):
@@ -66,8 +70,10 @@ def shot(name, extra=None):
     path = directory / (name + '.png')
     invoke(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-f', 'x11grab', '-video_size', '960x680', '-draw_mouse', '0', '-i', ':96.0+0,0', '-frames:v', '1', '-threads', '1', str(path)])
     (directory / (name + '.json')).write_text(json.dumps(s, ensure_ascii=False, indent=2) + '\n')
-    shots.append({'name': name, 'size': s['ui_text_size'], 'path': str(path.relative_to(W)), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+    shots.append({'name': name, 'size': s['ui_text_size'], 'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'wall_seconds': time.monotonic()-record_begin})
     print('SHOT', name, s['ui_text_size'], flush=True)
+    if record_path and len(boots) == 1:
+        time.sleep(4 if name in ('text-size-16', 'text-size-24', 'text-size-32') else 8 if name in ('cheat-32', 'speed-32') else .3)
 
 
 def choose(size, keyboard=False):
@@ -136,9 +142,20 @@ try:
     renderer = invoke(['/opt/VirtualGL/bin/vglrun', '-d', 'egl', '/opt/VirtualGL/bin/glxinfo', '-B']).stdout.decode()
     assert 'direct rendering: Yes' in renderer and 'llvmpipe' not in renderer.lower()
     (O / 'renderer.txt').write_text(renderer)
+    if record_path:
+        target = Path(record_path)
+        assert target.parent.is_dir() and not target.exists()
+        record_begin, record_epoch = time.monotonic(), time.time()
+        video = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'info', '-filter_threads', '1', '-vaapi_device', '/dev/dri/renderD128', '-f', 'x11grab', '-video_size', '960x680', '-framerate', '30', '-draw_mouse', '0', '-i', ':96.0+0,0', '-an', '-vf', 'format=nv12,hwupload', '-c:v', 'h264_vaapi', '-qp', '20', '-movflags', '+faststart', str(target)], env=env, stdout=subprocess.DEVNULL, stderr=(target.parent / 'ffmpeg.log').open('wb'))
+        children.append(video)
     start()
     assert state()['ui_text_size'] == 24
     shot('controller-24')
+    if record_path:
+        choose(16)
+        shot('text-size-16')
+        choose(24)
+        shot('text-size-24')
     choose(32, keyboard=True)
     shot('text-size-32')
     for x, panel in [(568, 'cheat'), (330, 'speed'), (800, 'keyboard'), (440, 'controller')]:
@@ -159,6 +176,9 @@ try:
     choose(32)
     shot('saved-32')
     finish()
+    if video is not None:
+        video.send_signal(signal.SIGINT)
+        assert video.wait(timeout=15) in (0,255)
     original_save = O / 'user/game/SAVETEST.usr'
     before = (hashlib.sha256(original_save.read_bytes()).hexdigest(), original_save.stat().st_mtime_ns)
     start()
@@ -172,6 +192,9 @@ try:
     after = (hashlib.sha256(original_save.read_bytes()).hexdigest(), original_save.stat().st_mtime_ns)
     assert before == after
     receipt = {'status': 'PASS_SCOPED_UI_TEXT_SETTINGS', 'binary_sha256': hashlib.sha256((B / 'zeliard-preview').read_bytes()).hexdigest(), 'script_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), 'boots': boots, 'shots': shots, 'sizes': [16,24,32], 'default': 24, 'cold_restart': 32, 'dos_steps': 0, 'dos_cycles': 0, 'game_save_unchanged': True, 'renderer': renderer, 'not_checked': ['gameplay', 'FPS', 'Windows/macOS real hardware', 'physical gamepad']}
+    receipt.update(version=(B / 'VERSION').read_text().strip(), source_kind='actual package extracted directory' if record_path else 'local candidate')
+    if record_path:
+        receipt.update(recording=record_path, video_sha256=hashlib.sha256(Path(record_path).read_bytes()).hexdigest(), record_begin_epoch=record_epoch)
     (O / 'receipt.json').write_text(json.dumps(receipt, ensure_ascii=False, indent=2)+'\n')
     print(receipt['status'], flush=True)
 finally:
