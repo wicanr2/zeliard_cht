@@ -39,3 +39,11 @@
 重建時在既有Go工具容器、單CPU及GOMAXPROCS=1下使用`GOWORK=/project/workplace/cpu-speed-v1/build.work`、唯讀模組快取及本專案可寫Go快取，執行`go build -buildvcs=false -o /project/workplace/cpu-speed-v1/preview/zeliard-preview ./cmd/zeliard-preview`。build.work指定本專案與新獨立執行器，後者由既有正式來源套用[批次讀取差異](../../tools/dosgolem-bulk-read.patch)取得；後續[雙版本包裝](../../tools/package_dual_release.py)也會核對並套用該差異。
 
 `build-receipt.json`記錄候選二進位SHA及來源。設定保存、倍率上限、負載降速、時鐘換速保留已累積時間、普通／平面／跨界／監看副作用及差異重生核對通過；這些是內部邊界證據。最終候選依使用者指示未啟動遊戲，實際HD 30fps、音樂節奏與操作尚待後續確認。
+
+## CPU版重新打包
+
+使用者已授權重打包完整版，版號為`v.1.0.3-20261022`。沿[雙版本建置](../../tools/build_dual_release.sh)，工作區為`workplace/release-v103/`，交付位於`dist-all/v.1.0.3-20261022/full-local/`。CHT及CHT-HD分開，各提供Linux x86_64 AppImage、Windows x86_64 ZIP及macOS通用ZIP。兩版都提供CPU選單，CHT不附HD圖庫。
+
+建置使用單核心、GOMAXPROCS=1、Go平行度1及低CPU shares。沿[六包稽核](../../tools/audit_dual_release.py)的`--cpu-speed-repack`核對內容、平台架構、來源、原版資料、兩版模式、字型、音源及逐檔SHA。此選項不啟動遊戲、不要求新影片；結果標為`PASS_PACKAGE_CONTENTS_RUNTIME_PENDING`。接續[包裝工具](../../tools/package_dual_release.py)的`finish`保存清單。原已發布tag、Release及1.0.2影片不變，不冒稱1.0.3實錄；059維持READY，HD 30fps及最終音訊／操作仍待低載驗收。
+
+內容與封包SHA通過後，使用[清理工具](../../tools/cleanup_dual_release.py)的`--cpu-speed-repack`移除本版重複組裝層。保留固定來源、編譯紀錄、平台二進位、Go快取、六包與既有素材及存檔，再核正式成品SHA。製作、清理與來源同步入口依序為`workplace/release-v103/repack-receipt.json`、`cleanup.json`、`hygiene.json`及`git-publication.json`。

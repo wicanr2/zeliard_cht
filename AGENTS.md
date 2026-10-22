@@ -1,5 +1,7 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+最新CPU版重新打包依[059](docs/spec/059-cpu-speed-toolbar.md#cpu版重新打包)：使用者授權CHT／CHT-HD各三平台完整包，版本`v.1.0.3-20261022`，工作區`workplace/release-v103/`。低載建置與內容稽核，不重跑遊戲壓測，不宣稱HD 30fps已驗。六包內容核對使用[稽核工具](tools/audit_dual_release.py)的`--cpu-speed-repack`；舊已發布tag及影片維持原身份。
+
 CPU速度新增入口：[059規格](docs/spec/059-cpu-speed-toolbar.md)、[工具列與效能計數](cmd/zeliard-preview/speed.go)及[倍率驗證](internal/prototype/controls/speed.go)。本輪工作區workplace/cpu-speed-v1，CPU倍率與HD實際幀率分開記錄，不以設定值或錄影幀率宣稱達標。
 
 2026-10-22使用者選擇HD 30fps優先，CPU選擇值作上限，負載高時自動降速並顯示實際倍率。使用者隨後指出CPU負載過重，停止遊戲壓測與完整驗收；僅完成串接、低成本邊界核對及必要編譯，30fps仍待低載實測。候選啟動入口為[play-cpu-preview.sh](tools/play-cpu-preview.sh)，不覆寫1.0.2正式包。[時鐘分段核對](internal/prototype/sound/clock_rate_test.go)避免調速重算舊時間；[設定及降速邊界](internal/prototype/controls/speed_test.go)保留上限與相容性。

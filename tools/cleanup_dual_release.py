@@ -4,7 +4,9 @@ from pathlib import Path
 import argparse,hashlib,json,os,shutil
 
 parser=argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--closeout',action='store_true',help='正式結案時追加清除舊封包解壓、Wine與可重建剪輯片段；保留來源及存檔')
+mode=parser.add_mutually_exclusive_group()
+mode.add_argument('--closeout',action='store_true',help='正式結案時追加清除舊封包解壓、Wine與可重建剪輯片段；保留來源及存檔')
+mode.add_argument('--cpu-speed-repack',action='store_true',help='059六包內容已核對、執行驗收待低載；只移除本版重複組裝層，保留Go快取')
 args=parser.parse_args()
 
 P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.',''));D=P/'dist-all'/VERSION
@@ -14,7 +16,12 @@ def sha(file):
         for chunk in iter(lambda:stream.read(1<<20),b''):h.update(chunk)
     return h.hexdigest()
 manifest=json.loads((D/'SHA256SUMS.json').read_text())
-assert manifest['validation']['status']=='PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE'
+assert manifest['version']==VERSION
+if args.cpu_speed_repack:
+    assert manifest['validation']['status']=='PASS_PACKAGE_CONTENTS_RUNTIME_PENDING'
+    assert manifest['validation']['cpu_speed_repack'] is True
+else:
+    assert manifest['validation']['status']=='PASS_LOCAL_DUAL_EDITION_THREE_PLATFORM_RELEASE'
 for name,row in manifest['artifacts'].items():
     file=D/name;assert file.is_file() and file.stat().st_size==row['bytes'] and sha(file)==row['sha256']
 
@@ -31,7 +38,7 @@ if (attempt/'delivery/full-local').exists():
     roots += [f for f in packages if not f.name.endswith('-CHT-Linux-x86_64.AppImage')]
 for name in ('sources','dosgolem','linux','windows','mac-amd64','mac-arm64','macos','data-CHT','data-CHT-HD','AppDir-CHT','AppDir-CHT-HD','Zeliard-CHT-Windows','Zeliard-CHT-HD-Windows','Zeliard-CHT-macOS','Zeliard-CHT-HD-macOS'):
     roots.append(attempt/name)
-roots.append(P/'workplace/gocache')
+if not args.cpu_speed_repack:roots.append(P/'workplace/gocache')
 if args.closeout:
     promotion=json.loads((W/'formal-promotion.json').read_text())
     assert promotion['status']=='PASS_UNCHANGED_RUNTIME_FORMAL_PROMOTION'
@@ -62,6 +69,6 @@ for root in roots:
             else:child.unlink()
     elif root.is_dir():shutil.rmtree(root)
     else:root.unlink()
-report={'version':VERSION,'closeout':args.closeout,'removed':removed,'allocated_bytes':sum(r['allocated_bytes'] for r in removed),'preserved':'六個正式包、推廣片、錄影原檔、源音訊、截圖、收據、唯一生成圖、提示詞、原版、字型、存檔及固定原始碼均保留。首批失敗日誌、參數與一份CHT AppImage亦保留。'}
+report={'version':VERSION,'closeout':args.closeout,'cpu_speed_repack':args.cpu_speed_repack,'removed':removed,'allocated_bytes':sum(r['allocated_bytes'] for r in removed),'preserved':'六個正式包、推廣片、錄影原檔、源音訊、截圖、收據、唯一生成圖、提示詞、原版、字型、存檔及固定原始碼均保留。首批失敗日誌、參數與一份CHT AppImage亦保留。'}
 (W/'cleanup.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print('CLEANED_ALLOCATED_BYTES',report['allocated_bytes'],flush=True)

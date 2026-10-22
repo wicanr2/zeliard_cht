@@ -1722,3 +1722,17 @@ CPU profile顯示逐byte完整記憶體讀取是大項。以release-v102的執�
 候選執行檔SHA為c0fbc4faea1ba1d1badcf4f6541131605d40774cf9c68252310bf9a7273d95ba，位於workplace/cpu-speed-v1/preview/zeliard-preview。bash tools/play-cpu-preview.sh提供本機入口，沿用保留的1.0.2圖庫連結；這是development候選，不是新的正式發行。原六包、兩片影片、VERSION、已發布tag及Release不變。059維持READY，最終GUI、操作、聲音與30fps待低載環境驗收。
 
 文件及來源連結均存在，root-owned檔案及誤建.md目錄為零，原新增未追蹤文字檔未修改或納入提交。保留候選、獨立執行器及診斷來源供後續低載檢查，不清除候選依賴的圖庫或固定輸入。來源同步回讀另存同工作區git-publication.json。
+
+## 2026-10-22 CPU功能雙版本完整版重包
+
+使用者確認工具列倍率入口後，授權重新打包完整版。依打包、dist-all、版號與文件職責路由，載入重製技能及驗收reference，沿059執行。採新版本`v.1.0.3-20261022`，不覆寫1.0.2六包、影片、已發布tag或Release。CHT及CHT-HD分開，各提供Linux x86_64 AppImage、Windows x86_64 ZIP與macOS Intel／Apple Silicon通用ZIP；原版完整資料及完整HD素材只留本機。
+
+以`bash tools/build_dual_release.sh prepare`、`compile`、`package`依序重建。新工作區為workplace/release-v103，固定來源、獨立dosgolem及identity.json保留。通用批次讀取差異在新副本套用，遊戲來源與前輪CPU候選雜湊相同；VERSION升版，工具列及音訊程式未另改。所有工作使用既有Docker image、UID/GID1000、network none、單核心quota、低CPU shares128、Go GOMAXPROCS=1及平行度1，記憶體上限3GiB，不在主機執行編譯或遊戲。AppImage壓縮器雖列出14個worker，仍受容器單核心quota約束。
+
+包內README新增六檔CPU上限、自動降速及實際倍率／fps說明，明列30fps與音訊／操作待低載驗收。新增`audit_dual_release.py --cpu-speed-repack`，逐包核架構、二進位及音源身份、檔案清單與SHA、29份原版資料、CHT無HD圖庫／CHT-HD預設HD、中文字型與授權、原版音源、過場與五組首領圖面。六包均通過，結果刻意標為`PASS_PACKAGE_CONTENTS_RUNTIME_PENDING`，沒有啟動GUI、Wine、遊戲、音訊或效能測試，不把舊啟動收據當作本版證據，不升059為CONFORMED。
+
+`package_dual_release.py finish`產生同版SHA256SUMS.json，共六份正式成品；沒有重錄或複製舊影片進新版promo。Linux執行檔SHA為`ad37d074b06c54115c8144662970a33650e09944f29bd52e45b106fab1276e9d`，Windows為`8d30566fb4b027f168fe9595423f5a592fbf1fd94f5bf69c5108308b15725964`，macOS通用執行檔為`a50fb2aca20425331690e4a54e1503616b729b21bc8636c4332325ca6f24fe8e`。實際成品、模式及逐包SHA見dist-all/v.1.0.3-20261022/full-local、smoke/release-audit.json與SHA256SUMS.json。bash tools/play.sh已依VERSION開新版HD，--cht開原貌中文版。
+
+製作收據為同工作區repack-receipt.json，包含候選來源對應、六份平台二進位／音源SHA、既有純邊界核對出處及本輪未執行狀態；build-tools保存本輪建置、組裝、稽核、清理腳本與差異全文，入口由059索引。沿cleanup_dual_release.py --cpu-speed-repack先核六包SHA，僅清本版重複組裝層，共1,219,076,096配置bytes，約1.14GiB；固定來源、編譯紀錄、獨立執行器、平台二進位、Go快取、所有原版及唯一素材、存檔、候選診斷與六個成品均保留。
+
+清理後六包SHA及來源不變，1.0.2的manifest與使用者新增未追蹤文字檔雜湊不變；root-owned檔案、誤建.md目錄及專案容器為零。550個現行文件本地連結存在，git diff --check通過。清理明細及核對分別存cleanup.json與hygiene.json。README、CONTEXT、WORKLIST、AGENTS、059與驗證矩陣更新新交付及未驗限制；Git僅同步來源及文件，不上傳任何完整版或原始素材，本輪提交／push回讀另存git-publication.json。

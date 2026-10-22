@@ -7,13 +7,13 @@ version_core=${version#v.}
 version_core=${version_core%%-*}
 work="$project/workplace/release-v${version_core//./}"
 [[ -d "$work" && -d "$project/dist-all" && -d "$project/workplace/gocache" && -d /home/anr2/cht/dosgolem/workplace/gomodcache ]]
-common=(--rm --label project=zeliard --network none --user "$(id -u):$(id -g)" --memory 3g --cpus 2 --pids-limit 256)
+common=(--rm --label project=zeliard --network none --user "$(id -u):$(id -g)" --memory 3g --cpus 1 --cpu-shares 128 --pids-limit 256)
 phase=${1:-all}
 if [[ $phase == all || $phase == prepare ]]; then
   timeout 180 docker run "${common[@]}" -v "$project:/project:ro" -v "$work:$work:rw" -v "$project/dist-all:/project/dist-all:rw" -e "ZELIARD_RELEASE_WORK=$work" eob-audio-capture:20261009-r3 python3 /project/tools/package_dual_release.py prepare
 fi
 mounts=(-v "$work:/build:rw" -v /home/anr2/cht/dosgolem/workplace/gomodcache:/gomodcache:ro -v "$project/workplace/gocache:/gocache:rw")
-envs=(-e GOWORK=/build/build.work -e GOCACHE=/gocache -e GOMODCACHE=/gomodcache -e GOPROXY=off -e GOSUMDB=off -e GOTOOLCHAIN=local -e GOMAXPROCS=2 -e "BUILD_VERSION=$version")
+envs=(-e GOWORK=/build/build.work -e GOCACHE=/gocache -e GOMODCACHE=/gomodcache -e GOPROXY=off -e GOSUMDB=off -e GOTOOLCHAIN=local -e GOMAXPROCS=1 -e GOFLAGS=-p=1 -e "BUILD_VERSION=$version")
 if [[ $phase == all || $phase == compile ]]; then
   timeout 600 docker run "${common[@]}" "${mounts[@]}" "${envs[@]}" -w /build/sources dosgolem-go-ebiten:1.24-r1 sh -c '
     set -e

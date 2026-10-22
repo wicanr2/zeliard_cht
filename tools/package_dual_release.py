@@ -107,6 +107,8 @@ def setup(root,platform,edition):
 
 Windows開啟Zeliard.exe，macOS開啟.app，Linux執行AppImage。
 工具列可設定鍵盤及USB／藍牙手把；藍牙先由作業系統配對。
+工具列「速度」可選1x／2x／4x／8x／16x／32x上限，負載高時自動降速。
+畫面顯示實際倍率與fps；HD 30fps為目標，尚待低負載環境驗收。
 方向鍵移動／跳躍／蹲下，空白鍵攻擊／交談，Enter裝備，Alt法術。
 Esc原版暫停，F12鍵盤設定，F1／F2音樂／音效，Ctrl+Q再按Y退出。
 可開新局，或F7讀SAVETEST，再從Muralla向右進第一洞窟。
@@ -119,6 +121,7 @@ macOS：~/Library/Application Support/Zeliard-CHT
 
 macOS與Windows真機、實體USB／藍牙手把未驗。未知來源安全退回原貌。
 未宣稱全遊戲翻譯、每幀HD或通關驗收。封包驗收範圍見同版smoke記錄。
+本次CPU功能已編譯及核對內部邊界；依使用者指示未重跑完整遊戲與效能測試。
 含原版資料與衍生美術，只留本機，不上傳或公開散布。
 '''
     (root/'README.txt').write_text(text.replace('\n','\r\n') if platform=='windows' else text,encoding='utf-8-sig' if platform=='windows' else 'utf-8',newline='')
