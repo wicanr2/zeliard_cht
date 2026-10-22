@@ -15,22 +15,23 @@ peak=float(re.search(r'max_volume: ([\-\d.]+) dB',log).group(1));mean=float(re.s
 assert -40<mean<-8 and peak<-.1,(mean,peak)
 assert 'black_start:' not in log,'出現連續黑幀'
 assert 'silence_start:' not in log,'出現兩秒以上靜音'
-stills=[];time=0
+stills=[];native_pauses=[];time=0
 for s in meta['segments']:
     if s['kind']=='intentional still':stills.append((time,time+s['seconds']))
+    if s.get('expected_native_pause'):native_pauses.append((time,time+s['seconds']))
     time+=s['seconds']
 freezes=[];start=None
 for line in log.splitlines():
     if 'freeze_start:' in line:start=float(line.split('freeze_start:')[-1])
     if 'freeze_end:' in line and start is not None:
-        end=float(line.split('freeze_end:')[-1]);overlap=sum(max(0,min(end,b)-max(start,a))for a,b in stills)
+        end=float(line.split('freeze_end:')[-1]);overlap=sum(max(0,min(end,b)-max(start,a))for a,b in stills+native_pauses)
         freezes.append({'start':start,'end':end,'planned_still_overlap':overlap,'unplanned_seconds':max(0,end-start-overlap)});start=None
 if start is not None:
-    end=60;overlap=sum(max(0,min(end,b)-max(start,a))for a,b in stills)
+    end=60;overlap=sum(max(0,min(end,b)-max(start,a))for a,b in stills+native_pauses)
     freezes.append({'start':start,'end':end,'planned_still_overlap':overlap,'unplanned_seconds':max(0,end-start-overlap)})
 assert all(f['unplanned_seconds']<=3.5 for f in freezes),freezes
-run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-i',str(video),'-vf','fps=1/10,scale=426:240,tile=3x2','-frames:v','1',str(O/'contact-sheet.jpg')])
-report={'status':'PASS_PROMO_TECHNICAL_QA','seconds':60,'resolution':[1280,720],'video_codec':v['codec_name'],'audio_codec':a['codec_name'],'audio_channels':2,'mean_db':mean,'peak_db':peak,'long_silence':False,'long_black_frames':False,'freeze_intervals':freezes,'planned_still_ranges':stills,'subtitles_bounds_checked':meta['subtitle_bounds_checked'],'sha256':hashlib.sha256(video.read_bytes()).hexdigest(),'visual_review':'contact-sheet.jpg；目視審查另記，不以技術通過代替'}
+run(['ffmpeg','-nostdin','-hide_banner','-loglevel','error','-y','-i',str(video),'-vf','fps=1/10,scale=426:240,tile=3x2','-frames:v','1',str(O/'contact-sheet.jpg')])
+report={'status':'PASS_PROMO_TECHNICAL_QA','seconds':60,'resolution':[1280,720],'video_codec':v['codec_name'],'audio_codec':a['codec_name'],'audio_channels':2,'mean_db':mean,'peak_db':peak,'long_silence':False,'long_black_frames':False,'freeze_intervals':freezes,'planned_still_ranges':stills,'expected_native_pause_ranges':native_pauses,'subtitles_bounds_checked':meta['subtitle_bounds_checked'],'sha256':hashlib.sha256(video.read_bytes()).hexdigest(),'visual_review':'contact-sheet.jpg；目視審查另記，不以技術通過代替'}
 (O/'quality.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n');print(report['status'])
 
 # 053另交付連續遊玩片段。場景等待、對話及正常暫停如實保留，不套用推廣片的靜音刪除標準。

@@ -55,7 +55,7 @@ HD版收錄已盤點的城鎮、室內、洞窟、人物、敵人、首領、裝
 
 1.0.3在上方工具列新增「速度」，原貌中文版與HD版都可選擇 **1×／2×／4×／8×／16×／32×**。可用滑鼠點選，或用方向鍵選擇後按Enter確認；Esc返回，設定自動保存。
 
-所選倍率是CPU速度上限。負載高時會自動降速，右下角顯示實際倍率與fps，以HD 30fps為目標。上圖取自1.0.3完整包，示範選擇8×上限；設定頁暫停原版，圖中的fps不代表HD遊玩效能。30fps仍待低負載驗收。[截圖來源與雜湊](docs/images/cpu-speed-provenance.json)可回查實際封包及[擷取工具](tools/capture_speed_readme.py)。
+所選倍率是CPU速度上限。負載高時會自動降速，右下角顯示實際倍率與fps，以HD 30fps為目標。上圖取自1.0.3完整包，示範選擇8×上限；設定頁暫停原版，圖中的fps不代表HD遊玩效能。[截圖來源與雜湊](docs/images/cpu-speed-provenance.json)可回查實際封包及[擷取工具](tools/capture_speed_readme.py)。
 
 ### 生命、MP與站立回血
 
@@ -117,7 +117,7 @@ bash tools/play.sh
 
 工具列可開啟「搖桿／手把」及「鍵盤設定」，HD版另可切換原貌／HD。藍牙先在系統配對，USB手把先插入，再選裝置及綁定。鍵盤可重綁、解除、還原預設，兩種設定都會保存。
 
-上方「速度」提供1x、2x、4x、8x、16x、32x上限，負載高時自動降速，以HD 30fps為目標；右下角顯示實際倍率及幀率。設定會保存，切換不重開遊戲。新版減少重複畫面合成並保留過載時的操作執行額度，單核心限定檢查尚未達穩定30fps；這項目標仍待低載環境確認。範圍見[CPU速度規格](docs/spec/059-cpu-speed-toolbar.md)與[呈現修正](docs/spec/062-stable-hd-presentation.md)。
+上方「速度」提供1x、2x、4x、8x、16x、32x上限，負載高時自動降速；右下角顯示實際倍率及幀率。設定會保存，切換不重開遊戲。新版減少重複合成並保留過載時的操作執行額度。使用者已接受目前幀率，不宣稱穩定30fps，也不以此延後交付。範圍見[CPU速度規格](docs/spec/059-cpu-speed-toolbar.md)與[呈現修正](docs/spec/062-stable-hd-presentation.md)。
 
 | 預設按鍵 | 操作 |
 |---|---|
@@ -132,15 +132,17 @@ bash tools/play.sh
 
 包內附自建存檔SAVETEST，可按F7讀取後從Muralla鎮向右進入第一洞窟。存檔與操作設定保存在系統使用者設定目錄的 `Zeliard-CHT`：Linux為 `~/.config/Zeliard-CHT/`，Windows為 `%AppData%\Zeliard-CHT\`，macOS為 `~/Library/Application Support/Zeliard-CHT/`。可用 `ZELIARD_USER_DIR` 指定其他目錄。
 
-1.0.2影片已在本機重新錄製，使用正式Linux HD包、Intel MTL硬體繪圖與VirtualGL，包含城鎮、教堂中文對話、原貌／HD切換、修正後入洞過場、第一洞窟與工具列。連續遊玩片段約61秒，保留同期音效；60秒推廣片另以原版標題曲配樂。來源與範圍見[規格053](docs/spec/053-ada-gameplay-promo.md)。
+新版60秒推廣片沿前片剪輯，加入1.0.4正式HD包的實際速度、作弊／回血開關與按需載入畫面。城鎮巡禮與鍵盤／手把頁沿用1.0.2來源，畫面另標版本；配樂沿已追溯的原版標題曲，沒有冒稱同期聲。製作與來源見[規格063](docs/spec/063-feature-promo-stability-proof.md)。
+
+第10–17秒為新版中文對話，第17–30秒為新版綠色平台操作。兩段各自連續，保留完整視窗及工具列，區間內不剪接、不加速、不手動切換HD。主片這600個畫格與下列兩段完整證明均核對HD選取、完成來源及高清細節，未見整幅原貌回退；遊玩時開啟生命鎖定，片中已標明。結果只涵蓋錄到的範圍，不外推全遊戲每幀。
 
 | 影片 | 本機路徑 |
 |---|---|
-| 本機連續遊玩，約61秒，960×680／60fps，保留同期遊戲音效 | `dist-all/v.1.0.2-20261021/promo/Zeliard-v.1.0.2-20261021-local-gameplay.mp4` |
-| 60秒推廣片，1280×720／60fps，原版標題曲配樂 | `dist-all/v.1.0.2-20261021/promo/Zeliard-v.1.0.2-20261021-promo.mp4` |
-| 1.0.2入洞過場檢查，960×680，無音軌 | `dist-all/v.1.0.2-20261021/smoke/integration/transition-playthrough.mp4` |
+| 新功能推廣片，60秒，1280×720 | `dist-all/v.1.0.4-20261022/promo/Zeliard-v.1.0.4-20261022-promo.mp4` |
+| HD對話連續證明，約11秒，960×680 | `dist-all/v.1.0.4-20261022/promo/Zeliard-v.1.0.4-20261022-HD-dialogue-proof.mp4` |
+| HD平台連續證明，約29秒，960×680 | `dist-all/v.1.0.4-20261022/promo/Zeliard-v.1.0.4-20261022-HD-platform-proof.mp4` |
 
-各版檔案大小與SHA-256見同版`SHA256SUMS.json`，影片檢查在`promo/`，封包檢查在`smoke/`。1.0.3及1.0.4未重錄影片，既有1.0.2與舊Ada影片均保留原身份。最近GitHub Release仍為[1.0.2](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.2-20261021)。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
+各版檔案大小與SHA-256見同版`SHA256SUMS.json`，新片來源、音畫與防閃爍核對在`promo/`，封包檢查在`smoke/`。本次只追加三片，六個完整包不變；舊1.0.2同期聲遊玩片、入洞檢查與Ada影片仍保留原身份。最近GitHub Release仍為[1.0.2](https://github.com/wicanr2/zeliard_cht/releases/tag/v.1.0.2-20261021)。封包與影片包含原版資料、音樂及衍生美術，只留本機，不上傳或公開散布。
 
 洞窟的插畫片段會核對母圖的可見來源，避免小圖樣誤貼到主角或背景。舊封包與影片均保持原身份，未用舊影片冒稱新版實錄。
 

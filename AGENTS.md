@@ -1,5 +1,7 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+現行影片工作為[063新功能混剪與HD防閃爍證明](docs/spec/063-feature-promo-stability-proof.md)。使用者接受目前幀率，允許沿舊片混剪，另要求新版連續對話與洞窟平台實錄證明HD不與原貌交替；證明區間不剪接、不調速、不手動切換HD。工作區`workplace/promo-features-v104/`，只新增同版promo，不重打六包或重開30fps驗收。
+
 2026-10-22新增工作沿`workplace/runtime-controls-v1/`：[060工具列作弊與站立回血](docs/spec/060-player-cheats.md)、[061啟動進度與按需HD](docs/spec/061-startup-on-demand-hd.md)、[062 HD閃回與延遲](docs/spec/062-stable-hd-presentation.md)。使用者已選鎖定滿血／滿MP，另要求站立回血開關；Windows與Linux啟動等待、洞窟HD交替及對話閃回一併處理。規格未READY前只蒐證與可撤回prototype，不把未知欄位寫入正式路徑；只做這些問題的限定檢查，不重開完整通關。
 
 最新CPU版重新打包依[059](docs/spec/059-cpu-speed-toolbar.md#cpu版重新打包)：使用者授權CHT／CHT-HD各三平台完整包，版本`v.1.0.3-20261022`，工作區`workplace/release-v103/`。低載建置與內容稽核，不重跑遊戲壓測，不宣稱HD 30fps已驗。六包內容核對使用[稽核工具](tools/audit_dual_release.py)的`--cpu-speed-repack`；舊已發布tag及影片維持原身份。
