@@ -65,12 +65,11 @@ func (g *game) keyboardName(key string) string {
 }
 
 func (g *game) drawKeyboardPanel() {
-	g.text(image.Rect(60, 90, 700, 120), g.label("keyboard_title"))
-	g.button(image.Rect(720, 90, 900, 122), g.label("controller"), false)
+	g.text(image.Rect(60, 88, 700, 128), g.label("keyboard_title"))
+	g.button(image.Rect(720, 88, 900, 128), g.label("controller_short"), false)
 	g.text(image.Rect(60, 135, 900, 175), g.label("keyboard_bind"))
-	g.text(image.Rect(60, 180, 900, 205), g.label("keyboard_help"))
-	g.text(image.Rect(60, 210, 900, 235), g.label("keyboard_scope"))
-	g.text(image.Rect(60, 238, 900, 263), g.notice)
+	g.text(image.Rect(60, 180, 900, 216), g.label("keyboard_help"))
+	g.text(image.Rect(60, 218, 900, 254), g.label("keyboard_scope"))
 	for i, action := range controls.Actions {
 		value := g.keyboardName(g.settings.Keyboard[action])
 		if g.listening == action {
@@ -78,6 +77,7 @@ func (g *game) drawKeyboardPanel() {
 		}
 		g.button(actionRect(i), g.label(action)+"："+value, g.focus == i)
 	}
+	g.text(image.Rect(60, 518, 900, 554), g.notice)
 	g.button(image.Rect(60, 560, 360, 600), g.label("keyboard_reset"), false)
 	g.button(image.Rect(400, 560, 690, 600), g.label("keyboard_unbind"), false)
 	g.button(image.Rect(740, 560, 900, 600), g.label("close"), false)

@@ -2,6 +2,8 @@
 
 更新日期：2026-10-22，Asia/Taipei。
 
+目前已完成[064系統介面字級](docs/spec/064-readable-system-text.md)的本機候選。使用者指出設定文字太小，要求可調並放大。沿既有圓體提供16／24／32像素，設定本文預設24，工具列及底部最高24。以 `bash tools/play-readable.sh` 啟動，候選身份為`development-ui-text-v1`，四種設定頁特大字、設定相容讀寫與冷重開均已核對，原版steps／cycles為0。收據在`workplace/ui-text-v1/smoke/receipt.json`，不改正式六包或影片身份。
+
 現行本機版本為`v.1.0.4-20261022`，完整包位於`dist-all/v.1.0.4-20261022/full-local/`。沿使用者既有授權，CHT與CHT-HD各提供Linux AppImage、Windows x86_64 ZIP及macOS通用ZIP。前版1.0.3、1.0.2與已發布tag／影片保留原身份；最近GitHub Release仍為1.0.2，完整版與影片只留本機。
 
 現行影片入口為[063新功能混剪與HD連續證明](docs/spec/063-feature-promo-stability-proof.md)。使用者已接受目前幀率，允許沿舊片混剪並要求在片內證明HD不再與原貌交替。60秒新版推廣片與約11秒對話、29秒平台完整證明已完成，放同版`promo/`，未重打六包。原始短錄、分鏡與收據在`workplace/promo-features-v104/`。

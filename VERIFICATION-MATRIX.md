@@ -6,6 +6,7 @@
 
 | 項目 | 狀態 | 證據與限制 |
 |---|---|---|
+| 064可調系統字級 | PASS_SCOPED_UI_TEXT_SETTINGS | development-ui-text-v1候選，24像素預設、16／24／32立即切換、工具列最高24、四種設定頁32像素與鍵盤綁定等待、冷重開恢復32；12張實際視窗均無固定文字溢出。原版steps／cycles為0，存檔bytes／mtime不變。設定與字體套件通過；入口workplace/ui-text-v1，圖片來源見docs/images/system-text-provenance.json。沒有重打六包或重驗遊玩／幀率 |
 | 063新功能推廣片與HD連續證明 | PASS_PROMO_TECHNICAL_QA／PASS_SCOPED_CONTINUOUS_HD_VIDEO_PROOF | 正式1.0.4 HD包，Intel MTL／VirtualGL EGL＋VAAPI；主片60秒1280×720，mean -18.6／peak -4.5dB，無長黑幀或靜音，字幕與版本標示已目視。主片10–17秒210幀、17–30秒390幀，各段無剪接或HD手動切換；補充片10.9秒327幀與28.57秒857幀，同步161／248筆去重來源均有HD。實際影片HD選取與亮度細節逐幀核對，原貌回退0。生命鎖定開啟、配樂非同期聲明示；舊片標1.0.2。使用者接受目前fps，不宣稱遊戲30fps或全遊戲完成；入口同版promo及workplace/promo-features-v104 |
 | 1.0.4兩版六包 | 內容與限定啟動通過，完整執行待驗 | 六包逐檔manifest、SHA、模式、原版、字型、音源、HD清單與平台架構通過；Linux兩版原生啟動、Windows兩版Wine輔助啟動，原版steps／cycles皆0，使用者資料獨立。macOS只有通用架構與結構，不是真機。入口同版smoke、SHA256SUMS.json |
 | 1.0.4正式包工具列 | PASS_STARTUP_AND_CHEAT_TOOLBAR_UI_ONLY | HD AppImage實際設定頁，三開關獨立、預設關閉鎖滿值／開啟站立回血、回血設定保存。視窗約0.33秒、設定約2.03秒，15812張註冊而0張解碼；原版不推進。截圖已目視，入口同版smoke/toolbar及README圖片來源 |

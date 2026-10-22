@@ -1,5 +1,7 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
+目前系統字級工作見[064系統介面字級](docs/spec/064-readable-system-text.md)。使用者要求工具列及設定文字可調並加大；沿粉圓2.1，提供16／24／32像素，設定本文預設24。工作區`workplace/ui-text-v1/`，只做設定頁與冷重開的限定檢查，不重開幀率或通關驗收，不覆寫既有六包及影片。
+
 現行影片工作為[063新功能混剪與HD防閃爍證明](docs/spec/063-feature-promo-stability-proof.md)。使用者接受目前幀率，允許沿舊片混剪，另要求新版連續對話與洞窟平台實錄證明HD不與原貌交替；證明區間不剪接、不調速、不手動切換HD。工作區`workplace/promo-features-v104/`，只新增同版promo，不重打六包或重開30fps驗收。
 
 2026-10-22新增工作沿`workplace/runtime-controls-v1/`：[060工具列作弊與站立回血](docs/spec/060-player-cheats.md)、[061啟動進度與按需HD](docs/spec/061-startup-on-demand-hd.md)、[062 HD閃回與延遲](docs/spec/062-stable-hd-presentation.md)。使用者已選鎖定滿血／滿MP，另要求站立回血開關；Windows與Linux啟動等待、洞窟HD交替及對話閃回一併處理。規格未READY前只蒐證與可撤回prototype，不把未知欄位寫入正式路徑；只做這些問題的限定檢查，不重開完整通關。

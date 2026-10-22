@@ -15,13 +15,14 @@ var toolbarHD = image.Rect(120, 8, 256, 40)
 var toolbarSpeed = image.Rect(264, 8, 400, 40)
 var toolbarController = image.Rect(408, 8, 528, 40)
 var toolbarPause = image.Rect(608, 8, 736, 40)
-var toolbarKeyboard = image.Rect(744, 8, 952, 40)
+var toolbarKeyboard = image.Rect(744, 8, 856, 40)
 
 func speedRect(i int) image.Rectangle { return image.Rect(300, 170+i*50, 660, 212+i*50) }
 
 func (g *game) openSpeedPanel() {
 	g.panel, g.speedPanel, g.keyboardPanel = true, true, false
 	g.cheatPanel = false
+	g.textSizePanel = false
 	g.listening, g.notice = "", ""
 	g.releaseGate = true
 	g.edges.Sync(g, nil)
@@ -90,7 +91,7 @@ func (g *game) updateSpeedPanel(point image.Point, click bool, just func(string)
 func (g *game) drawSpeedPanel() {
 	g.button(image.Rect(40, 80, 920, 630), "", false)
 	g.text(image.Rect(60, 90, 900, 122), g.label("cpu_title"))
-	g.text(image.Rect(60, 130, 900, 160), fmt.Sprintf("%s：%d cycles/ms　%s %.2fx", g.label("cpu_base"), g.baseCycles, g.label("cpu_effective"), float64(g.cycles)/float64(g.baseCycles)))
+	g.text(image.Rect(60, 130, 900, 166), fmt.Sprintf("%s：%d cycles/ms　%s %.2fx", g.label("cpu_base"), g.baseCycles, g.label("cpu_effective"), float64(g.cycles)/float64(g.baseCycles)))
 	for i, multiplier := range controls.CPUSpeeds {
 		label := fmt.Sprintf("%dx", multiplier)
 		if multiplier == 1 {
@@ -101,8 +102,8 @@ func (g *game) drawSpeedPanel() {
 		}
 		g.button(speedRect(i), label, i == g.speedFocus)
 	}
-	g.text(image.Rect(60, 485, 900, 515), g.label("cpu_help"))
-	g.text(image.Rect(60, 520, 900, 550), g.label("cpu_scope"))
+	g.text(image.Rect(60, 478, 900, 514), g.label("cpu_help"))
+	g.text(image.Rect(60, 518, 900, 554), g.label("cpu_scope"))
 	g.button(image.Rect(740, 560, 900, 600), g.label("close"), false)
 }
 

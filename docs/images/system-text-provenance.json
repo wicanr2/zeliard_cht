@@ -1,0 +1,17 @@
+{
+  "identity": "development-ui-text-v1; 064 settings-only candidate",
+  "image": "system-text-32.png",
+  "image_sha256": "beac3296484dd8da1cb2da17d459a8fe84286c838a850c0fe5fc27c495c0fc95",
+  "source": "workplace/ui-text-v1/smoke/boot1/cheat-32.png",
+  "binary_sha256": "002a934f869e920af1681824aa2481b347cfb85dc384decf8befefe47411055b",
+  "script": "tools/ui_text_smoke.py",
+  "script_sha256": "3d20fdd5639fb2ac522f1aee1e3ba2c3aab66986cd4bfe8357dcfef7ee198324",
+  "font_manifest": "workplace/ui-text-v1/rounded-font/manifest.json",
+  "text_size": 32,
+  "toolbar_size": 24,
+  "native_steps": 0,
+  "native_cycles": 0,
+  "source_receipt": "workplace/ui-text-v1/smoke/receipt.json",
+  "not_gameplay_fps_evidence": true,
+  "not_in_existing_formal_packages": true
+}

@@ -9,10 +9,11 @@ import (
 
 var toolbarCheats = image.Rect(536, 8, 600, 40)
 
-func cheatRect(i int) image.Rectangle { return image.Rect(100, 180+i*90, 860, 244+i*90) }
+func cheatRect(i int) image.Rectangle { return image.Rect(100, 216+i*78, 860, 276+i*78) }
 
 func (g *game) openCheatPanel() {
 	g.panel, g.cheatPanel, g.keyboardPanel, g.speedPanel = true, true, false, false
+	g.textSizePanel = false
 	g.listening, g.notice = "", ""
 	g.releaseGate = true
 	g.edges.Sync(g, nil)
@@ -56,8 +57,8 @@ func (g *game) updateCheatPanel(point image.Point, click bool, just func(string)
 
 func (g *game) drawCheatPanel() {
 	g.button(image.Rect(40, 80, 920, 630), "", false)
-	g.text(image.Rect(60, 90, 900, 125), g.label("cheat_title"))
-	g.text(image.Rect(60, 130, 900, 162), g.label("cheat_scope"))
+	g.text(image.Rect(60, 90, 900, 128), g.label("cheat_title"))
+	g.text(image.Rect(60, 132, 900, 208), g.label("cheat_scope"))
 	values := [3]bool{}
 	if g.cheats != nil {
 		values = [3]bool{g.cheats.LockHP, g.cheats.LockMP, !g.cheats.DisableRegeneration}
@@ -70,7 +71,7 @@ func (g *game) drawCheatPanel() {
 		}
 		g.button(cheatRect(i), g.label(k)+"："+g.label(state), g.cheatFocus == i)
 	}
-	g.text(image.Rect(60, 465, 900, 502), g.label("cheat_mp_help"))
-	g.text(image.Rect(60, 510, 900, 545), g.label("cheat_help"))
+	g.text(image.Rect(60, 440, 900, 512), g.label("cheat_mp_help"))
+	g.text(image.Rect(60, 520, 900, 554), g.label("cheat_help"))
 	g.button(image.Rect(740, 560, 900, 600), g.label("close"), false)
 }

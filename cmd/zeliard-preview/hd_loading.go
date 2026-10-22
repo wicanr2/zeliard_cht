@@ -80,10 +80,10 @@ func (g *game) drawHDLoading(screen *ebiten.Image) {
 	if job == nil {
 		return
 	}
-	draw.Draw(g.canvas, image.Rect(120, 230, 840, 450), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
+	draw.Draw(g.canvas, image.Rect(120, 230, 840, 470), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
 	g.text(image.Rect(150, 250, 810, 290), "正在準備"+job.name)
 	g.text(image.Rect(150, 315, 810, 350), fmt.Sprintf("已等待 %.1f 秒，遊戲暫停。", time.Since(job.started).Seconds()))
-	g.text(image.Rect(150, 370, 810, 410), "只載入目前場景所需圖組，完成後繼續。")
+	g.text(image.Rect(150, 370, 810, 450), "只載入目前場景所需圖組，完成後繼續。")
 	g.texture.WritePixels(g.canvas.Pix)
 	screen.DrawImage(g.texture, nil)
 }

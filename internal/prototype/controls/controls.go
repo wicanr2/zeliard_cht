@@ -35,6 +35,7 @@ func (b Binding) Active(buttons []bool, axes []float64, deadzone float64) bool {
 }
 
 type Settings struct {
+	UITextSize           int                           `json:"ui_text_size,omitempty"`
 	DisableStandingRegen bool                          `json:"disable_standing_regen,omitempty"`
 	CPUSpeed             int                           `json:"cpu_speed,omitempty"`
 	Version              int                           `json:"version"`
@@ -45,7 +46,7 @@ type Settings struct {
 }
 
 func Default() Settings {
-	return Settings{Version: 1, CPUSpeed: 1, Deadzone: .25, Profiles: map[string]map[string]Binding{}, Keyboard: DefaultKeyboard()}
+	return Settings{Version: 1, UITextSize: 24, CPUSpeed: 1, Deadzone: .25, Profiles: map[string]map[string]Binding{}, Keyboard: DefaultKeyboard()}
 }
 
 func Load(path string) (Settings, error) {
@@ -62,6 +63,9 @@ func Load(path string) (Settings, error) {
 	}
 	if !ValidCPUSpeed(s.CPUSpeed) {
 		s.CPUSpeed = 1
+	}
+	if !ValidUITextSize(s.UITextSize) {
+		s.UITextSize = 24
 	}
 	if s.Version != 1 || math.IsNaN(s.Deadzone) || s.Deadzone < .05 || s.Deadzone > .9 || s.Profiles == nil {
 		return s, fmt.Errorf("手把設定格式或死區無效")

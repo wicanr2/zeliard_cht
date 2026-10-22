@@ -40,6 +40,9 @@ type device struct {
 	key, name string
 }
 type game struct {
+	textSizePanel               bool
+	textSizeFocus               int
+	uiTextOverflow              []string
 	hdJobs                      []*hdLoadJob
 	hdLoading                   *hdLoadJob
 	hdFamilySignature, hdFamily string
@@ -242,7 +245,7 @@ func (g *game) beginBind(action string, axes []float64) {
 
 func actionRect(i int) image.Rectangle {
 	col, row := i/6, i%6
-	return image.Rect(60+col*430, 270+row*36, 465+col*430, 302+row*36)
+	return image.Rect(60+col*430, 270+row*40, 465+col*430, 308+row*40)
 }
 func (g *game) captureBinding(buttons []bool, axes []float64) {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
@@ -321,6 +324,7 @@ func (g *game) Update() error {
 		g.panel = true
 		g.keyboardPanel = g.keyboardToolbarPressed()
 		g.speedPanel = false
+		g.cheatPanel, g.textSizePanel = false, false
 		g.releaseGate = true
 		g.edges.Sync(g, nil)
 	}
@@ -334,10 +338,11 @@ func (g *game) Update() error {
 		g.hdEnabled = !g.hdEnabled
 	}
 	if click && image.Pt(x, y).In(toolbarController) {
-		g.panel = !g.panel || g.keyboardPanel || g.speedPanel || g.cheatPanel
+		g.panel = !g.panel || g.keyboardPanel || g.speedPanel || g.cheatPanel || g.textSizePanel
 		g.keyboardPanel = false
 		g.cheatPanel = false
 		g.speedPanel = false
+		g.textSizePanel = false
 		g.listening = ""
 		g.releaseGate = true
 		g.edges.Sync(g, nil)
@@ -347,6 +352,7 @@ func (g *game) Update() error {
 		g.keyboardPanel = true
 		g.cheatPanel = false
 		g.speedPanel = false
+		g.textSizePanel = false
 		g.listening = ""
 		g.releaseGate = true
 		g.edges.Sync(g, nil)
@@ -361,6 +367,12 @@ func (g *game) Update() error {
 	if click && point.In(toolbarCheats) {
 		g.openCheatPanel()
 	}
+	if click && point.In(toolbarTextSize) {
+		g.openTextSizePanel()
+	}
+	if g.panel && g.textSizePanel {
+		return g.updateTextSizePanel(point, click, just)
+	}
 	if g.panel && g.cheatPanel {
 		return g.updateCheatPanel(point, click, just)
 	}
@@ -369,7 +381,7 @@ func (g *game) Update() error {
 	}
 	if g.panel {
 		g.edges.Sync(g, nil)
-		if click && point.In(image.Rect(720, 90, 900, 122)) {
+		if click && point.In(image.Rect(720, 88, 900, 128)) {
 			g.keyboardPanel = !g.keyboardPanel
 			g.listening, g.notice = "", ""
 		}
@@ -566,14 +578,23 @@ var keyboard = map[ebiten.Key]uint8{
 
 var white = color.RGBA{230, 235, 245, 255}
 
-func (g *game) text(box image.Rectangle, s string) { g.font.Draw(g.canvas, box, s, white) }
+func (g *game) text(box image.Rectangle, s string) {
+	size := g.systemTextSize()
+	// 工具列與狀態列的高度固定，最大24像素不侵入原版畫面。
+	if (box.Max.Y <= barHeight || box.Min.Y >= 648) && size > 24 {
+		size = 24
+	}
+	if !g.font.DrawText(g.canvas, box, s, size, white) {
+		g.uiTextOverflow = append(g.uiTextOverflow, s)
+	}
+}
 func (g *game) button(box image.Rectangle, s string, active bool) {
 	c := color.RGBA{42, 52, 70, 255}
 	if active {
 		c = color.RGBA{40, 90, 115, 255}
 	}
 	draw.Draw(g.canvas, box, &image.Uniform{c}, image.Point{}, draw.Src)
-	g.text(image.Rect(box.Min.X+10, box.Min.Y, box.Max.X-10, box.Max.Y), s)
+	g.text(image.Rect(box.Min.X+6, box.Min.Y, box.Max.X-6, box.Max.Y), s)
 }
 
 func (g *game) cavePlayerState() map[string]any {
@@ -636,6 +657,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	g.lastRenderedAt = time.Now()
 	g.lastRenderedUpdate = g.frames
+	g.uiTextOverflow = nil
 	begin := time.Now()
 	defer func() { g.lastDrawCost = time.Since(begin); g.cpuFrameUsed = 0; g.perf.draw(begin) }()
 	g.manualArtwork.BeginFrame()
@@ -848,57 +870,58 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	g.button(toolbarHD, g.label(hdLabel), g.hdEnabled)
 	g.button(toolbarSpeed, fmt.Sprintf("%s %dx", g.label("cpu_speed"), g.settings.CPUSpeed), g.speedPanel)
-	g.button(toolbarController, g.label("controller"), g.panel && !g.keyboardPanel && !g.speedPanel && !g.cheatPanel)
+	g.button(toolbarController, g.label("controller_short"), g.panel && !g.keyboardPanel && !g.speedPanel && !g.cheatPanel && !g.textSizePanel)
 	g.button(toolbarCheats, g.label("cheat_toolbar"), g.cheatPanel || g.cheats != nil && (g.cheats.LockHP || g.cheats.LockMP || g.cheats.DisableRegeneration))
-	g.button(toolbarKeyboard, g.label("keyboard_settings"), g.panel && g.keyboardPanel)
+	g.button(toolbarKeyboard, g.label("keyboard_short"), g.panel && g.keyboardPanel)
+	g.button(toolbarTextSize, g.label("ui_text_toolbar"), g.textSizePanel)
 	pause := "pause"
 	if g.paused {
 		pause = "resume"
 	}
 	g.button(toolbarPause, g.label(pause), g.paused)
-	g.text(image.Rect(12, 650, 740, 678), g.label("prototype"))
+	footer := g.label("prototype")
 	if g.hdEnabled && !g.hdMatched {
-		g.text(image.Rect(12, 650, 740, 678), g.label("hd_fallback")+"　"+g.label("prototype"))
+		footer = g.label("hd_fallback")
 	}
-	if g.panel && !g.speedPanel && !g.cheatPanel {
+	g.text(image.Rect(12, 650, 740, 678), footer)
+	if g.panel && !g.speedPanel && !g.cheatPanel && !g.textSizePanel {
 		draw.Draw(g.canvas, image.Rect(40, 80, 920, 630), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
-		g.text(image.Rect(60, 90, 900, 120), g.label("panel_title"))
-		g.button(image.Rect(720, 90, 900, 122), g.label("keyboard_settings"), false)
-		deviceName := g.label("none")
-		if len(g.devices) > 0 {
-			deviceName = g.label("choose")
-			for _, d := range g.devices {
-				if d.id == g.selected {
-					deviceName = d.name
-				}
-			}
-		}
-		g.button(image.Rect(60, 135, 900, 175), g.label("devices")+"："+deviceName, false)
-		g.text(image.Rect(60, 180, 900, 205), g.label("pair"))
-		g.text(image.Rect(60, 210, 900, 235), g.label("bind"))
-		g.text(image.Rect(60, 238, 900, 263), g.notice)
-		for i, a := range controls.Actions {
-			value := g.label("unbound")
-			if g.selected >= 0 {
-				if b, ok := g.profile()[a]; ok {
-					value = fmt.Sprintf("%s %d", g.label(b.Kind), b.Index)
-					if b.Kind == "axis" {
-						value = fmt.Sprintf("%s %d %+.0f", g.label("axis"), b.Index, float64(b.Sign))
+		if g.keyboardPanel {
+			g.drawKeyboardPanel()
+		} else {
+			g.text(image.Rect(60, 88, 700, 128), g.label("panel_title"))
+			g.button(image.Rect(720, 88, 900, 128), g.label("keyboard_settings"), false)
+			deviceName := g.label("none")
+			if len(g.devices) > 0 {
+				deviceName = g.label("choose")
+				for _, d := range g.devices {
+					if d.id == g.selected {
+						deviceName = d.name
 					}
 				}
 			}
-			if g.listening == a {
-				value = g.label("listening")
+			g.button(image.Rect(60, 135, 900, 175), g.label("devices")+"："+deviceName, false)
+			g.text(image.Rect(60, 180, 900, 216), g.label("pair"))
+			g.text(image.Rect(60, 218, 900, 254), g.label("bind"))
+			for i, a := range controls.Actions {
+				value := g.label("unbound")
+				if g.selected >= 0 {
+					if b, ok := g.profile()[a]; ok {
+						value = fmt.Sprintf("%s %d", g.label(b.Kind), b.Index)
+						if b.Kind == "axis" {
+							value = fmt.Sprintf("%s %d %+.0f", g.label("axis"), b.Index, float64(b.Sign))
+						}
+					}
+				}
+				if g.listening == a {
+					value = g.label("binding_waiting")
+				}
+				g.button(actionRect(i), g.label(a)+"："+value, g.focus == i)
 			}
-			g.button(actionRect(i), g.label(a)+"："+value, g.focus == i)
-		}
-		g.text(image.Rect(60, 520, 900, 548), g.label("keyboard"))
-		g.button(image.Rect(60, 560, 360, 600), g.label("clear"), false)
-		g.button(image.Rect(400, 560, 690, 600), fmt.Sprintf("%s %.2f", g.label("deadzone"), g.settings.Deadzone), false)
-		g.button(image.Rect(740, 560, 900, 600), g.label("close"), false)
-		if g.keyboardPanel {
-			draw.Draw(g.canvas, image.Rect(40, 80, 920, 630), &image.Uniform{color.RGBA{25, 32, 45, 255}}, image.Point{}, draw.Src)
-			g.drawKeyboardPanel()
+			g.text(image.Rect(60, 518, 900, 554), g.notice)
+			g.button(image.Rect(60, 560, 360, 600), g.label("clear"), false)
+			g.button(image.Rect(400, 560, 690, 600), fmt.Sprintf("%s %.2f", g.label("deadzone"), g.settings.Deadzone), false)
+			g.button(image.Rect(740, 560, 900, 600), g.label("close"), false)
 		}
 	}
 	if g.speedPanel {
@@ -906,6 +929,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 	if g.cheatPanel {
 		g.drawCheatPanel()
+	}
+	if g.textSizePanel {
+		g.drawTextSizePanel()
 	}
 	g.text(image.Rect(752, 650, 948, 678), fmt.Sprintf("%.2fx %.1f fps", float64(g.cycles)/float64(g.baseCycles), g.perf.FPS))
 	// 診斷快照在本次合成後寫入，避免短暫姿態混到上一張HD狀態。
@@ -934,6 +960,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 			itemExplanation = g.dialogue.ItemExplanationState()
 		}
 		data, _ := json.Marshal(map[string]any{"steps": g.o.Steps(), "cycles": g.o.Cycles(), "focused": ebiten.IsFocused(), "paused": g.paused, "panel": g.panel, "keyboard_panel": g.keyboardPanel, "keyboard_bindings": g.settings.Keyboard, "input_gate": g.releaseGate, "mode": g.o.VideoMode(), "ip": fmt.Sprint(g.o.IP()), "dialogue_rejections": rejections, "quotation": quotation, "bank_dialogue": bankDialogue, "item_purchase": itemPurchase, "item_sale": itemSale, "item_explanation": itemExplanation, "held_keys": held, "frames": g.frames,
+			"ui_text_size": g.systemTextSize(), "ui_text_panel": g.textSizePanel, "ui_text_focus": g.textSizeFocus, "ui_listening": g.listening, "ui_text_overflow": g.uiTextOverflow,
 			"town_dialogue": townDialogue,
 			"hd_enabled":    g.hdEnabled, "town_sky_hd_matched": g.townSkyHDMatched,
 			"town_background_hd_matched": g.townBackgroundMatch,
