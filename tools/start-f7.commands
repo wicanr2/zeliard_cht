@@ -1,0 +1,50 @@
+# 冷開機到開局：柱子逐格揭開、第一次進城堡；在城堡按F7讀原包SAVEM1。只送原版按鍵；原包存檔前史未知。規格067。
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x41 500000
+run 2000000
+key 0x15 150000
+run 1500000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x32 100000
+run 200000
+key 0x02 100000
+run 200000
+shot name
+key 0x1c 100000
+run 16000000
+shot restored

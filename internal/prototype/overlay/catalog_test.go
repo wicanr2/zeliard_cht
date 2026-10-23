@@ -259,3 +259,81 @@ func TestSignSources(t *testing.T) {
 		}
 	}
 }
+
+// TestStoryCatalogs 以實際字模載入片頭與結局故事譯表，片段鍵、順序與五列安全區都要通過。規格014、067。
+// ZELIARD_STORY_DUMP 非空時列出結局片段的原文，供翻譯對照。
+func TestStoryCatalogs(t *testing.T) {
+	root, fontPath := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_FONT")
+	if root == "" || fontPath == "" {
+		t.Skip("須掛載原版與字型")
+	}
+	font, err := bitmap.Load(fontPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		prof    *storyProfile
+		catalog string
+	}{{&introStoryProfile, "intro-story-prototype.tsv"}, {&endingStoryProfile, "ending-story-prototype.tsv"}} {
+		data, err := os.ReadFile(filepath.Join(root, c.prof.sar))
+		if err != nil {
+			t.Fatal(err)
+		}
+		entries, _, _, err := parseStoryProfile(data, c.prof)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if os.Getenv("ZELIARD_STORY_DUMP") != "" {
+			for _, e := range entries {
+				var text []byte
+				for _, f := range e.files {
+					text = append(text, data[f])
+				}
+				t.Logf("%s\tpage%d row%d style%x\t%s", e.key, e.page, e.row, e.style, text)
+			}
+		}
+		text, err := os.ReadFile(filepath.Join("../../../text", c.catalog))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err = loadStoryText(entries, text, font); err != nil {
+			t.Fatal(c.catalog, err)
+		}
+	}
+}
+
+// TestEndingCreditsCatalog 核對結局名單的字段切分與中文寬度。ZELIARD_STORY_DUMP 非空時列出原文與位置。規格067。
+func TestEndingCreditsCatalog(t *testing.T) {
+	root, fontPath := os.Getenv("ZELIARD_ORIG"), os.Getenv("ZELIARD_FONT")
+	if root == "" || fontPath == "" {
+		t.Skip("須掛載原版與字型")
+	}
+	font, err := bitmap.Load(fontPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := os.ReadFile(filepath.Join(root, "ZELRES2.SAR"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	entries, _, err := parseCredits(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if os.Getenv("ZELIARD_STORY_DUMP") != "" {
+		for _, e := range entries {
+			var text []byte
+			for _, f := range e.files {
+				text = append(text, data[f])
+			}
+			t.Logf("%s\tscreen%d row%d col%d\t%s", e.key, e.screen, e.row, e.col, text)
+		}
+	}
+	text, err := os.ReadFile("../../../text/ending-credits-prototype.tsv")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = loadCreditsText(entries, text, font); err != nil {
+		t.Fatal(err)
+	}
+}

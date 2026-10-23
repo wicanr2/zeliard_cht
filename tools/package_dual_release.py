@@ -51,6 +51,8 @@ def prepare():
     for name in ('linux','windows','mac-amd64','mac-arm64','macos'):(W/name).mkdir()
     for name in ('full-local','smoke','promo'):(D/name).mkdir(parents=True,exist_ok=False)
     translations={k:v for k,v in json.loads((OLD/'data/runtime-args.json').read_text()) if v.startswith('text/') and k!='-town-signs-text'}
+    # 規格067：結局敘述與名單譯表是1.0.7新增，舊版runtime-args沒有。
+    translations.update({'-ending-story':'text/ending-story-prototype.tsv','-ending-credits':'text/ending-credits-prototype.tsv'})
     sources=[]
     for edition in EDITIONS:
         root=W/('data-'+edition);root.mkdir()
@@ -106,10 +108,11 @@ def setup(root,platform,edition):
 
 包含完整原版遊戲、目前繁體中文、粉圓字型、原版AdLib音樂與Nuked-OPL3音色改善。
 {'本版預設HD，可在工具列切回原貌；包含050已盤點補圖，未知來源保留原貌。' if edition=='CHT-HD' else '本版保留原版美術，不附HD圖庫；HD版為另一個獨立封包。'}
-1.0.6：已有譯文的原版字形改由中文直接取代，不先顯示英文；補齊國王、長老、商店、銀行、
-旅館、洞窟訊息與標題版權等中文，人名地名寫成「中文（English）」並屬試譯。
-{'進房間的人像從第一個畫面起顯示HD，片頭捲字溶解時中文同步淡出。' if edition=='CHT-HD' else '片頭捲字溶解時中文同步淡出。'}
-Windows版的遊戲與使用者設定目錄位於不同磁碟時也可啟動。結局文字尚未中文化。
+1.0.7：結局的敘述、製作名單、登場魔物與版權改為中文；狀態列地名、房間標題與
+alma寶石寫成「中文（English）」，日籍工作人員查得到漢字的寫漢字。
+{'開局兩側柱子逐格揭開、第一次進城堡與F7讀檔選單期間都維持HD；結局人物說話時插畫維持HD。' if edition=='CHT-HD' else 'F7讀檔選單與結局名單的文字都顯示中文。'}
+1.0.6：已有譯文的原版字形改由中文直接取代，不先顯示英文；人名地名屬試譯。
+Windows版的遊戲與使用者設定目錄位於不同磁碟時也可啟動。
 
 Windows開啟Zeliard.exe，macOS開啟.app，Linux執行AppImage。
 工具列可設定鍵盤及USB／藍牙手把；藍牙先由作業系統配對。

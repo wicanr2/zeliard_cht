@@ -90,6 +90,7 @@ type hudSource struct {
 	box                 image.Rectangle
 	header              uint16
 	foreground, shadow  uint8
+	width               int
 }
 
 // HUD只觀察原版完成的欄位。原版數值、條件、存檔與輸入不依賴譯文。
@@ -101,6 +102,8 @@ type HUD struct {
 	pending   *hudSource
 	visible   []string
 	Completed int
+	// Undrawn 是上次 Draw 原版欄位字形完整、卻放不下而沒畫中文的欄數（探針用）。規格067。
+	Undrawn int
 }
 
 func hudHash(data []byte) string { return fmt.Sprintf("%x", sha256.Sum256(data)) }
@@ -188,7 +191,8 @@ func NewHUD(o *oracle.Oracle, root, catalog string, font bitmap.Font) (*HUD, err
 			}
 			width += len(g) / 16 * 12
 		}
-		if width > box.Dx()*3 || box.Dy()*3 < 24 {
+		// 場景名寫成「中文（English）」可比原文長，執行時向兩側的空白欄延伸，上限是地點欄寬。規格067。
+		if width > box.Dx()*3 && (d.kind != "scene" || width > hudSceneMaxWidth) || box.Dy()*3 < 24 {
 			return nil, fmt.Errorf("狀態列譯文超出安全區：%s", row[0])
 		}
 		prefix := append([]byte(nil), file[d.module:d.module+64]...)
@@ -196,7 +200,7 @@ func NewHUD(o *oracle.Oracle, root, catalog string, font bitmap.Font) (*HUD, err
 		if d.entry == 0x22cd {
 			fg, shadow = 9, 45
 		}
-		h.sources[d.key] = &hudSource{hudDefinition: d, raw: raw, prefix: prefix, rawHash: hudHash(raw), prefixHash: hudHash(prefix), text: text, box: box, header: uint16(int(d.base) + header - d.module), foreground: fg, shadow: shadow}
+		h.sources[d.key] = &hudSource{hudDefinition: d, raw: raw, prefix: prefix, rawHash: hudHash(raw), prefixHash: hudHash(prefix), text: text, box: box, header: uint16(int(d.base) + header - d.module), foreground: fg, shadow: shadow, width: width}
 	}
 	if len(h.sources) != len(hudDefinitions) {
 		return nil, fmt.Errorf("狀態列catalog來源缺漏：%d／%d", len(h.sources), len(hudDefinitions))
@@ -290,35 +294,92 @@ func (h *HUD) valid(s *hudSource, raw []byte, pal [256][3]uint8) bool {
 // 模組卸載不等於畫面消失。保留最多五欄，只在完整原版字形仍存在時覆繪。
 func (h *HUD) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin image.Point) int {
 	h.visible = nil
+	h.Undrawn = 0
 	if h.original != nil && h.original.VideoMode() != 0x13 {
 		return 0
 	}
+	var drawn []image.Rectangle
 	for _, kind := range []string{"life", "almas", "gold", "place", "scene"} {
 		s := h.fields[kind]
 		if s == nil || !h.valid(s, raw, pal) {
 			continue
 		}
-		box := image.Rect(origin.X+s.box.Min.X*3, origin.Y+s.box.Min.Y*3, origin.X+s.box.Max.X*3, origin.Y+s.box.Max.Y*3)
+		native, size, width := s.box, 24, s.width
+		if width > native.Dx()*3 {
+			var fits bool
+			if native, fits = hudExtend(raw, s.box, width, drawn); !fits {
+				// 延伸後仍放不下時改用16像素字，不退回原版英文。
+				size, width = 16, (width-3)*2/3+3
+				if width > native.Dx()*3 {
+					h.Undrawn++
+					continue
+				}
+			}
+		}
+		box := image.Rect(origin.X+native.Min.X*3, origin.Y+native.Min.Y*3, origin.X+native.Max.X*3, origin.Y+native.Max.Y*3)
 		if !box.In(dst.Bounds()) {
+			h.Undrawn++
 			continue
 		}
+		drawn = append(drawn, native)
 		bg, fg, shadow := pal[5], pal[s.foreground], pal[s.shadow]
 		for y := box.Min.Y; y < box.Max.Y; y++ {
 			for x := box.Min.X; x < box.Max.X; x++ {
 				dst.SetRGBA(x, y, color.RGBA{bg[0], bg[1], bg[2], 255})
 			}
 		}
-		x := box.Min.X
+		x, y := box.Min.X, box.Min.Y+(24-size)/2
+		if native != s.box || size != 24 {
+			x += (box.Dx() - width) / 2
+		}
 		for _, ch := range s.text {
-			w := len(h.font[ch]) / 16 * 8
-			dw := w * 3 / 2
-			h.font.DrawGlyph(dst, image.Pt(x+3, box.Min.Y), ch, 24, color.RGBA{shadow[0], shadow[1], shadow[2], 255}, nil)
-			h.font.DrawGlyph(dst, image.Pt(x, box.Min.Y), ch, 24, color.RGBA{fg[0], fg[1], fg[2], 255}, nil)
+			dw := len(h.font[ch]) / 16 * 8 * size / 16
+			h.font.DrawGlyph(dst, image.Pt(x+size/8, y), ch, size, color.RGBA{shadow[0], shadow[1], shadow[2], 255}, nil)
+			h.font.DrawGlyph(dst, image.Pt(x, y), ch, size, color.RGBA{fg[0], fg[1], fg[2], 255}, nil)
 			x += dw
 		}
 		h.visible = append(h.visible, s.key)
 	}
 	return len(h.visible)
+}
+
+// hudSceneMaxWidth 是地點欄去掉「地點」標籤後的寬度（原版x=80..187，乘3）。
+const hudSceneMaxWidth = (187 - 80) * 3
+
+// hudExtend 把場景名欄向左右延伸到原版畫面上整欄都是欄底色（色號5）的範圍，兩端各留一欄；
+// 不跨進已畫的其他欄位。第二個回傳值表示24像素字是否放得下。規格067。
+func hudExtend(raw []byte, box image.Rectangle, width int, taken []image.Rectangle) (image.Rectangle, bool) {
+	blank := func(x int) bool {
+		if x < 0 || x >= 320 {
+			return false
+		}
+		for _, r := range taken {
+			if x >= r.Min.X && x < r.Max.X {
+				return false
+			}
+		}
+		for y := box.Min.Y; y < box.Max.Y; y++ {
+			if raw[y*320+x] != 5 {
+				return false
+			}
+		}
+		return true
+	}
+	lo, hi := box.Min.X, box.Max.X
+	for blank(lo - 1) {
+		lo--
+	}
+	for blank(hi) {
+		hi++
+	}
+	if lo < box.Min.X {
+		lo++
+	}
+	if hi > box.Max.X {
+		hi--
+	}
+	out := image.Rect(lo, box.Min.Y, hi, box.Max.Y)
+	return out, width <= out.Dx()*3
 }
 
 func (h *HUD) VisibleKeys() []string {

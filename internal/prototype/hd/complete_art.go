@@ -50,6 +50,12 @@ type CompleteArtwork struct {
 	active, lastActive []bool
 	lastRaw            []byte
 	placements         []completePlacement
+	// held 是上一次比對到的大插畫；Held 是沿用次數。規格067。
+	held    []completePlacement
+	holding bool
+	Held    int
+	// introMode 是原版 FF77 非零的片頭／結局模式；只有這時沿用說話中的大插畫。
+	introMode bool
 }
 
 func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
@@ -360,6 +366,7 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 				}
 			}
 		}
+		s.holdLarge(raw)
 		sort.SliceStable(s.placements, func(i, j int) bool {
 			a, b := s.placements[i].entry, s.placements[j].entry
 			return a.Width*a.Height > b.Width*b.Height
@@ -480,4 +487,69 @@ func (s *CompleteArtwork) compose(source string, raster []byte, width int) ([]co
 		}
 	}
 	return pixels, bounds
+}
+
+// completeHoldArea 是可沿用的大插畫最小面積（64×64）。
+const completeHoldArea = 64 * 64
+
+// holdLarge 處理結局人物說話：原版在臉上貼小圖（enddemo 8x..Cx 控制碼，最大約36×32），整張插畫
+// 比對不到，只剩局部碎片，畫面成為 HD 與原版交錯。上一次已比對到的大插畫，同一位置只有八分之一以內的點
+// 不同時沿用整張，原版的說話小圖不顯示。畫面換掉或逐點清除超過八分之一就停止。規格067。
+func (s *CompleteArtwork) holdLarge(raw []byte) {
+	s.holding = false
+	var large []completePlacement
+	for _, p := range s.placements {
+		if p.entry.Width*p.entry.Height >= completeHoldArea {
+			large = append(large, p)
+		}
+	}
+	for _, p := range s.held {
+		if !s.introMode {
+			// 遊戲中的大背景（如 ckpd、ympd）上會有角色移動，沿用會把角色蓋掉。
+			break
+		}
+		found := false
+		for _, q := range large {
+			if q == p {
+				found = true
+				break
+			}
+		}
+		if found || !s.active[p.entry.Group] {
+			continue
+		}
+		diff, total := 0, 0
+		for row := 0; row < p.entry.Height; row++ {
+			for col := 0; col < p.entry.Width; col++ {
+				at := row*p.entry.Width + col
+				if len(p.entry.Mask) != 0 && p.entry.Mask[at] == 0 {
+					continue
+				}
+				total++
+				if raw[(p.y+row)*320+p.x+col] != p.entry.Raster[at] {
+					diff++
+				}
+			}
+		}
+		if total > 0 && diff*8 <= total {
+			s.placements = append(s.placements, p)
+			large = append(large, p)
+			s.Held++
+			s.holding = true
+		}
+	}
+	s.held = large
+}
+
+// largeCovers 回報這次比對（含沿用）有大插畫完整蓋住 r。
+func (s *CompleteArtwork) largeCovers(r image.Rectangle) bool {
+	if s == nil {
+		return false
+	}
+	for _, p := range s.held {
+		if r.In(image.Rect(p.x, p.y, p.x+p.entry.Width, p.y+p.entry.Height)) {
+			return true
+		}
+	}
+	return false
 }

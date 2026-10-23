@@ -285,7 +285,7 @@ func TestIntroStoryMalformedCatalog(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	old := "很久以前，一場可怕的暴風雨襲擊了 Zeliard 大地。"
+	old := "很久以前，一場可怕的暴風雨襲擊了澤利亞德（Zeliard）大地。"
 	for _, tc := range []struct {
 		name    string
 		text    []byte

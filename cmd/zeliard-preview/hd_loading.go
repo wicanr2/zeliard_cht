@@ -126,6 +126,24 @@ func loadRoomPrefixes(sar string) map[int][]byte {
 	return prefixes
 }
 
+// selectModulePayload 是 ZELRES1 第6項模組的 payload 起點：開局畫邊框與狀態列、F7 讀檔選單都由它
+// 載在 01B1:6000 執行，暫時取代城鎮模組。規格067。
+const selectModulePayload = 0xceb5
+
+func loadSelectPrefix(sar string) []byte {
+	data, err := os.ReadFile(sar)
+	if err != nil || selectModulePayload+64 > len(data) {
+		log.Printf("選單模組前綴未載入：%v", err)
+		return nil
+	}
+	return append([]byte(nil), data[selectModulePayload:selectModulePayload+64]...)
+}
+
+// selectModuleLoaded 回報選單模組目前是否載在 01B1:6000。
+func (g *game) selectModuleLoaded() bool {
+	return len(g.selectPrefix) == 64 && g.o.VideoMode() == 0x13 && bytes.Equal(g.o.Bytes(oracle.Far(0x1b1, 0x6000), 64), g.selectPrefix)
+}
+
 // roomModuleLoaded 回報指定房間模組目前是否載在 01B1:A000。
 func (g *game) roomModuleLoaded(module int) bool {
 	p, ok := g.roomPrefixes[module]
@@ -158,4 +176,41 @@ func (g *game) caveFamily() string {
 		g.hdFamilySignature, g.hdFamily = key, family
 	}
 	return family
+}
+
+// endingModulePayload 是結局 enddemo.bin（ZELRES2 第50項）的 payload 起點；小屋 OMOYPRO 載到 01B1:6000。規格067。
+const endingModulePayload = 0x4457c
+
+func loadEndingPrefix(sar string) []byte {
+	data, err := os.ReadFile(sar)
+	if err != nil || endingModulePayload+64 > len(data) {
+		log.Printf("結局模組前綴未載入：%v", err)
+		return nil
+	}
+	return append([]byte(nil), data[endingModulePayload:endingModulePayload+64]...)
+}
+
+func (g *game) endingLoaded() bool {
+	return len(g.endingPrefix) == 64 && g.o.VideoMode() == 0x13 && bytes.Equal(g.o.Bytes(oracle.Far(0x1b1, 0x6000), 64), g.endingPrefix)
+}
+
+// endingPortraits 是結局對話畫面兩個肖像框：外框為1像素寬的119色矩形，內部肖像96×88。
+var endingPortraits = []struct{ frame, portrait image.Rectangle }{
+	{image.Rect(41, 21, 143, 114), image.Rect(44, 24, 140, 112)},
+	{image.Rect(177, 21, 279, 114), image.Rect(180, 24, 276, 112)},
+}
+
+// endingFramed 檢查外框四邊都是119色。
+func endingFramed(raw []byte, r image.Rectangle) bool {
+	for x := r.Min.X; x < r.Max.X; x++ {
+		if raw[r.Min.Y*320+x] != 119 || raw[(r.Max.Y-1)*320+x] != 119 {
+			return false
+		}
+	}
+	for y := r.Min.Y; y < r.Max.Y; y++ {
+		if raw[y*320+r.Min.X] != 119 || raw[y*320+r.Max.X-1] != 119 {
+			return false
+		}
+	}
+	return true
 }

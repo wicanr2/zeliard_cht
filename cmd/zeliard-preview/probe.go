@@ -73,10 +73,22 @@ func (g *game) shown(glyph *probeGlyph, raw, rawRGB []byte) (present, visible in
 		return present, 0, true
 	}
 	if visible > 0 {
+		native := 0
 		for _, p := range glyph.blank {
-			if raw[p] != glyph.Color && blockIs(g.canvas, p%320*3, barHeight+p/320*3, ink) {
+			if raw[p] == glyph.Color {
+				continue
+			}
+			if blockIs(g.canvas, p%320*3, barHeight+p/320*3, ink) {
 				return present, 0, true
 			}
+			if blockIs(g.canvas, p%320*3, barHeight+p/320*3, rawRGB[p*3:p*3+3]) {
+				native++
+			}
+		}
+		// 規格067：字形要看得出來，同格須有原版底色不同於字色的點照原版顯示。沒有的話，畫面上的字色
+		// 是覆繪層的底色或筆畫，例如中文底色上的黑色陰影字，不算露出。
+		if native == 0 {
+			return present, 0, true
 		}
 	}
 	return
@@ -98,6 +110,12 @@ type probeRow struct {
 	Burst int `json:"burst"`
 	// Palette 是當下色盤的 SHA-256 前 12 碼，供淡入淡出期間的 HD 比對歸因。
 	Palette string `json:"palette"`
+	// Revealed 是上一個合成點之後，覆繪層拒收已認領文字而把原版字形寫回畫面的像素數。規格067。
+	Revealed int `json:"revealed,omitempty"`
+	// RevealedVisible 是寫回的點在這個合成點仍是寫回的色號、且畫布照原版顯示的數目，即寫回後真的露出的英文。
+	RevealedVisible int `json:"revealed_visible,omitempty"`
+	// HUDUndrawn 是原版欄位字形完整、卻沒有畫上中文的狀態列欄數。
+	HUDUndrawn int `json:"hud_undrawn,omitempty"`
 }
 
 // loadHDNow 在探針內同步完成場景圖組載入；GUI 版在背景載入並暫停原版。
@@ -109,6 +127,7 @@ func (g *game) loadHDNow() {
 		if job.finished || !job.when() {
 			continue
 		}
+		fmt.Fprintf(os.Stderr, "探針同步載入場景HD：%s（%d步）\n", job.name, g.o.Steps())
 		job.load()
 		if job.apply != nil {
 			job.apply()
@@ -167,10 +186,17 @@ func (g *game) runFlickerProbe(commandsPath, out string, slice uint64, census bo
 	defer glyphFile.Close()
 	scene := g.sceneKey()
 	burst := newVRAMBurst(g.o)
+	revealed, blackGlyphs := 0, 0
 	var active []*probeGlyph
 	g.o.OnCall(oracle.Far(0x1b1, 0x27e9), func(o *oracle.Oracle) {
 		pixels, blank, color := glyphPixels(o)
 		ret := o.StackWord(0)
+		// 規格067：色號0的字形只用於陰影（與彩色本字成對）與看不見的標記；黑底上畫完或擦掉都同色，
+		// 追蹤不會結束，之後別的圖畫到同一格就誤判露出。不追蹤，另計數量。
+		if color == 0 {
+			blackGlyphs++
+			return
+		}
 		active = append(active, &probeGlyph{Step: o.Steps(), Scene: scene, Caller: fmt.Sprintf("%04x", ret), Char: uint8(o.AX()), Color: color, X: int(o.BX()), Y: int(o.CX() & 0xff), pixels: pixels, blank: blank})
 	})
 	// 中文層開始前先記一次，分辨字形是被中文層還是 HD 層蓋掉。
@@ -233,6 +259,17 @@ func (g *game) runFlickerProbe(commandsPath, out string, slice uint64, census bo
 				shots = shots[1:]
 			}
 			row := probeRow{Step: g.o.Steps(), Scene: scene, HD: g.hdEnabled, Layers: g.layers, Burst: burst.Recent(4), Palette: paletteHash(g.o.Palette())}
+			if gate := glyphpatch.For(g.o); gate != nil {
+				row.Revealed, revealed = gate.Revealed-revealed, gate.Revealed
+				for _, p := range gate.TakeRevealed() {
+					if raw[p] != 0 && blockIs(g.canvas, p%320*3, barHeight+p/320*3, rawRGB[p*3:p*3+3]) {
+						row.RevealedVisible++
+					}
+				}
+			}
+			if g.hud != nil {
+				row.HUDUndrawn = g.hud.Undrawn
+			}
 			if g.townDialogue != nil {
 				state := g.townDialogue.State()
 				row.Town, _ = state["key"].(string)
@@ -371,10 +408,28 @@ func (g *game) runFlickerProbe(commandsPath, out string, slice uint64, census bo
 			if err == nil {
 				err = advance(130000000 - g.o.Steps())
 			}
+		case "poke":
+			// 結構驗證用：直接寫一個 byte 到原版記憶體，例如 poke 0x1b1:0x49 1 讓小屋載入結局。
+			// 只供正常遊玩到不了的畫面，收據須標明不是正常玩家路徑。規格067。
+			var seg, off, v uint64
+			addr := strings.SplitN(f[1], ":", 2)
+			if len(addr) != 2 || len(f) < 3 {
+				err = fmt.Errorf("第 %d 行：poke 格式為 段:位移 值", lineNo+1)
+			} else if seg, err = number(addr[0]); err == nil {
+				if off, err = number(addr[1]); err == nil {
+					if v, err = number(f[2]); err == nil {
+						g.o.SetByte(oracle.Far(uint16(seg), uint16(off)), uint8(v))
+					}
+				}
+			}
 		case "shot":
 			// 鍵序中的具名截圖存最後一次合成的畫面，與 GUI 同一路徑。
 			if len(f) > 1 {
 				err = savePNG(fmt.Sprintf("%s.shot-%s.png", out, f[1]), g.canvas)
+				if err == nil {
+					// 同時存 01B1 段記憶體，供辨識當下載入的模組。
+					err = os.WriteFile(fmt.Sprintf("%s.shot-%s.mem", out, f[1]), g.o.Bytes(oracle.Far(0x1b1, 0), 65536), 0644)
+				}
 			}
 		case "quit":
 		default:
@@ -396,6 +451,7 @@ func (g *game) runFlickerProbe(commandsPath, out string, slice uint64, census bo
 	if err := glyphs.Flush(); err != nil {
 		return err
 	}
+	fmt.Fprintf(os.Stderr, "探針略過色號0字形（陰影與看不見的標記）：%d\n", blackGlyphs)
 	if census {
 		b, err := json.MarshalIndent(writers, "", " ")
 		if err != nil {

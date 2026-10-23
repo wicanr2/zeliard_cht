@@ -47,6 +47,8 @@ type game struct {
 	uiTextOverflow              []string
 	hdJobs                      []*hdLoadJob
 	roomPrefixes                map[int][]byte
+	selectPrefix                []byte
+	endingPrefix                []byte
 	hdLoading                   *hdLoadJob
 	hdFamilySignature, hdFamily string
 
@@ -101,6 +103,8 @@ type game struct {
 	scroll               *overlay.Scroll
 	introThreat          *overlay.IntroThreat
 	introStory           *overlay.IntroStory
+	endingStory          *overlay.IntroStory
+	endingCredits        *overlay.EndingCredits
 	dialogue             *overlay.Dialogue
 	townDialogue         *overlay.TownDialogue
 	menuLabels           *overlay.Labels
@@ -151,9 +155,11 @@ type game struct {
 	beforeText           func()
 	portraits            map[string]*portraitHold
 	dissolveHeld         *dissolveHold
-	overlayPixels        []byte
-	texture              *ebiten.Image
-	canvas               *image.RGBA
+	// townHeld 是上一次合成的城鎮畫帶，原版首次畫城鎮場景期間沿用。規格067。
+	townHeld      *image.RGBA
+	overlayPixels []byte
+	texture       *ebiten.Image
+	canvas        *image.RGBA
 }
 
 func (g *game) label(key string) string {
@@ -776,6 +782,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 			"town_frame_presentation":    g.townFrames.State(),
 			"intro_threat":               g.introThreat.State(),
 			"intro_story":                g.introStory.State(),
+			"ending_story":               g.endingStory.State(),
+			"ending_credits":             g.endingCredits.State(),
 			"intro_scroll":               g.scroll.State(),
 			"cave_frame_presentation":    g.caveFrames.State(),
 			"cave_terrain_hd_matched":    g.caveTerrainMatch,
@@ -995,6 +1003,8 @@ func main() {
 	introOutro := flag.String("intro-outro", "", "可選：故事後六行捲字中文試譯 TSV")
 	introThreat := flag.String("intro-threat", "", "可選：魔王三行宣言中文試譯 TSV")
 	introStory := flag.String("intro-story", "", "可選：完整故事中文試譯 TSV")
+	endingStory := flag.String("ending-story", "", "可選：結局敘述中文 TSV（規格067）")
+	endingCredits := flag.String("ending-credits", "", "可選：結局製作名單、登場魔物與版權中文 TSV（規格067）")
 	dialogueText := flag.String("dialogue-text", "", "可選：對話與報價試譯 TSV")
 	labelsText := flag.String("labels-text", "", "可選：城鎮選單標籤試譯 TSV")
 	hudText := flag.String("hud-text", "", "可選：狀態列與場景名稱試譯 TSV")
@@ -1202,6 +1212,8 @@ func main() {
 		o.SetDOSBoxCycles(effectiveCycles)
 		g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, baseCycles: *cycles, cycles: effectiveCycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), audioMode: *audioMode, audioPath: *audioWAV}
 		g.roomPrefixes = loadRoomPrefixes(filepath.Join(root, "ZELRES2.SAR"))
+		g.selectPrefix = loadSelectPrefix(filepath.Join(root, "ZELRES1.SAR"))
+		g.endingPrefix = loadEndingPrefix(filepath.Join(root, "ZELRES2.SAR"))
 		g.cheats, err = cheats.New(o, filepath.Join(root, "ZELIARD.EXE"))
 		if err != nil {
 			log.Printf("作弊功能未啟用：%v", err)
@@ -1416,7 +1428,8 @@ func main() {
 
 		report("登錄城鎮圖組", nil)
 		if *townBackgroundMemory != "" || *townSceneryArt != "" || *castleArt != "" || *hdArt != "" || *townSkyArt != "" {
-			g.deferHD("城鎮與城堡HD", g.townModule, func() {
+			// 規格067：開局由選單模組逐格畫兩側邊框，邊框 HD 須在揭開前就緒。
+			g.deferHD("城鎮與城堡HD", func() bool { return g.townModule() || g.selectModuleLoaded() }, func() {
 				if *hdRef != "" || *hdArt != "" {
 					g.hd, err = hd.NewFrame(*hdRef, filepath.Join(filepath.Dir(*hdRef), "palette.bin"), *hdArt)
 					if err != nil {
@@ -1482,6 +1495,9 @@ func main() {
 			}, func() {
 				if g.townSceneryHD != nil {
 					g.townFrames = hd.NewTownFrames(g.o, g.townSceneryHD)
+					if g.townFrames != nil {
+						g.townFrames.Menu = g.selectModuleLoaded
+					}
 					if g.townFrames != nil && g.townDialogue != nil {
 						g.townFrames.Dialogue = func() (bool, image.Rectangle) {
 							return g.townDialogue.State()["key"] != "", g.townDialogue.BackdropBox()
@@ -1560,6 +1576,18 @@ func main() {
 			g.introStory, err = overlay.NewIntroStory(o, filepath.Join(root, "ZELRES1.SAR"), *introStory, font)
 			if err != nil {
 				log.Printf("故事中文未載入，保留原文：%v", err)
+			}
+		}
+		if *endingStory != "" {
+			g.endingStory, err = overlay.NewEndingStory(o, filepath.Join(root, "ZELRES2.SAR"), *endingStory, font)
+			if err != nil {
+				log.Printf("結局敘述中文未載入，保留原文：%v", err)
+			}
+		}
+		if *endingCredits != "" {
+			g.endingCredits, err = overlay.NewEndingCredits(o, filepath.Join(root, "ZELRES2.SAR"), *endingCredits, font)
+			if err != nil {
+				log.Printf("結局名單中文未載入，保留原文：%v", err)
 			}
 		}
 		if *introThreat != "" {

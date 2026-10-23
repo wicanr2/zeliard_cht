@@ -15,6 +15,7 @@ import (
 // IntroStory只讀原版的文字與清框，規格014記錄來源及停止線。
 type IntroStory struct {
 	o                                   *oracle.Oracle
+	prof                                *storyProfile
 	font                                bitmap.Font
 	pool                                []byte
 	entries                             []storyEntry
@@ -33,6 +34,15 @@ type IntroStory struct {
 }
 
 func NewIntroStory(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*IntroStory, error) {
+	return newStory(o, sar, catalog, font, &introStoryProfile)
+}
+
+// NewEndingStory 以同一套生命週期覆繪結局敘述（ZELRES2 第50項 enddemo）。規格067。
+func NewEndingStory(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*IntroStory, error) {
+	return newStory(o, sar, catalog, font, &endingStoryProfile)
+}
+
+func newStory(o *oracle.Oracle, sar, catalog string, font bitmap.Font, prof *storyProfile) (*IntroStory, error) {
 	if o == nil {
 		return nil, fmt.Errorf("故事缺少原版執行器")
 	}
@@ -40,10 +50,10 @@ func NewIntroStory(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*In
 	if err != nil {
 		return nil, err
 	}
-	if threatHash(data) != "56a73b59e952dab47fb0171a3fb1cdb7d641baceafa97e2826057f877a590eb0" {
+	if threatHash(data) != prof.sarSHA {
 		return nil, fmt.Errorf("故事來源版本不符")
 	}
-	entries, chars, clears, err := parseStory(data)
+	entries, chars, clears, err := parseStoryProfile(data, prof)
 	if err != nil {
 		return nil, err
 	}
@@ -54,12 +64,12 @@ func NewIntroStory(o *oracle.Oracle, sar, catalog string, font bitmap.Font) (*In
 	if err = loadStoryText(entries, text, font); err != nil {
 		return nil, err
 	}
-	s := &IntroStory{o: o, font: font, pool: append([]byte(nil), data[storyFileStart:storyFileEnd]...), entries: entries, chars: chars, clearPages: clears, done: make([]int, len(entries))}
-	o.OnCall(oracle.Far(0x1b1, 0x6a8b), s.readByte)
-	o.OnCall(oracle.Far(0x1b1, 0x6ade), s.beginGlyph)
-	o.OnCall(oracle.Far(0x1b1, 0x6aef), s.endGlyph)
-	o.OnCall(oracle.Far(0x1b1, 0x6bfd), s.beginClear)
-	o.OnCall(oracle.Far(0x1b1, 0x6c0a), s.endClear)
+	s := &IntroStory{o: o, prof: prof, font: font, pool: append([]byte(nil), data[prof.fileStart:prof.fileEnd]...), entries: entries, chars: chars, clearPages: clears, done: make([]int, len(entries))}
+	o.OnCall(oracle.Far(0x1b1, prof.readByte), s.readByte)
+	o.OnCall(oracle.Far(0x1b1, prof.glyphBegin), s.beginGlyph)
+	o.OnCall(oracle.Far(0x1b1, prof.glyphEnd), s.endGlyph)
+	o.OnCall(oracle.Far(0x1b1, prof.clearBegin), s.beginClear)
+	o.OnCall(oracle.Far(0x1b1, prof.clearEnd), s.endClear)
 	return s, nil
 }
 func storyWord(p []byte, i int) uint16 { return uint16(p[i]) | uint16(p[i+1])<<8 }
@@ -74,13 +84,11 @@ func (s *IntroStory) source() ([]byte, bool) {
 		return nil, false
 	}
 	p := glyphpatch.CodeView(s.o, oracle.Far(0x1b1, 0), 65536)
-	if p[0xff77] != 255 || storyWord(p, 0xf500) != 0xf506 || !bytes.Equal(p[0x79c6:0x9060], s.pool) {
+	lo, hi := s.prof.memory()
+	if p[0xff77] != 255 || storyWord(p, 0xf500) != 0xf506 || !bytes.Equal(p[lo:hi], s.pool) {
 		return nil, false
 	}
-	for _, g := range []struct {
-		lo, hi int
-		sha    string
-	}{{0x6000, 0x6040, "0dc4cbac83b93284bdb4c90cb875a07f768bfd45e833dfd135a386f610a09e3e"}, {0x6a75, 0x6cc4, "e1c479c686b20282701e9928caf016841931a5876250e0fc4dd5659492563aa5"}, {0x27e9, 0x2857, "e2e41fc888266454bb405a02919fee48682538bb741964383da854a83b559fca"}, {0x947d, 0x953d, "15eda0237134c09a79b7a068929c292ef9161f96c9f46d3b79b5555b5bfe9cf9"}, {0xf506, 0xf806, "8ff0729de496f9d84d4cb3e4931a349a028981232507939f23af95a821d955d6"}} {
+	for _, g := range s.prof.guards {
 		if threatHash(p[g.lo:g.hi]) != g.sha {
 			return nil, false
 		}
@@ -103,9 +111,10 @@ func (s *IntroStory) start() {
 	s.tracking = true
 	s.ready = false
 	s.finished = false
-	s.nextFile = storyFileStart
+	s.nextFile = s.prof.fileStart
 	s.lastFile = 0
-	s.page = 0
+	s.page = s.prof.firstPage
+	s.ready = s.prof.readyAtStart
 	s.pending = 0
 	s.completed = make([]byte, 18240)
 	s.shadow = nil
@@ -123,16 +132,16 @@ func (s *IntroStory) readByte(o *oracle.Oracle) {
 		s.halt("byte source")
 		return
 	}
-	ptr := storyWord(p, 0x6d56)
-	file := int(ptr) - 1 - 0x6000 + 0xa4
-	if file == storyFileStart {
+	ptr := storyWord(p, s.prof.pointer)
+	file := s.prof.file(ptr)
+	if file == s.prof.fileStart {
 		s.start()
 	}
 	if !s.tracking {
 		return
 	}
 	value := byte(o.Regs().AX)
-	if file != s.nextFile || file < storyFileStart || file >= storyFileEnd || value != s.pool[file-storyFileStart] || o.SI() != ptr || s.pending != 0 {
+	if file != s.nextFile || file < s.prof.fileStart || file >= s.prof.fileEnd || value != s.pool[file-s.prof.fileStart] || o.SI() != ptr || s.pending != 0 {
 		s.halt("byte order")
 		return
 	}
@@ -178,11 +187,11 @@ func (s *IntroStory) beginGlyph(o *oracle.Oracle) {
 	}
 	p, ok := s.source()
 	r := o.Regs()
-	if !ok || o.DSReg() != 0x1b1 || s.pending != 0 || s.lastByte < 32 || s.lastByte >= 127 || byte(r.AX) != s.lastByte || int(storyWord(p, 0x6d56)) != s.lastFile-0xa4+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.completed) {
+	if !ok || o.DSReg() != 0x1b1 || s.pending != 0 || s.lastByte < 32 || s.lastByte >= 127 || byte(r.AX) != s.lastByte || int(storyWord(p, s.prof.pointer)) != s.lastFile-s.prof.module+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.completed) {
 		s.halt("glyph start")
 		return
 	}
-	if s.lastFile != storyFileStart {
+	if s.prof.startMarker == 0 || s.lastFile != s.prof.fileStart {
 		c, known := s.chars[s.lastFile]
 		if !known {
 			s.halt("unknown glyph")
@@ -190,11 +199,11 @@ func (s *IntroStory) beginGlyph(o *oracle.Oracle) {
 		}
 		e := s.entries[c.entry]
 		shadow, front := storyStyle(e.style)
-		if e.page != s.page || c.index != s.done[c.entry] || p[0x6d5b] != shadow || p[0x6d5c] != front {
+		if e.page != s.page || c.index != s.done[c.entry] || p[s.prof.shadowVar] != shadow || p[s.prof.frontVar] != front {
 			s.halt("glyph identity or style")
 			return
 		}
-	} else if s.lastByte != 'P' || p[0x6d5b] != 0 || p[0x6d5c] != 0 {
+	} else if s.lastByte != s.prof.startMarker || p[s.prof.shadowVar] != 0 || p[s.prof.frontVar] != 0 {
 		s.halt("initial glyph")
 		return
 	}
@@ -205,12 +214,12 @@ func (s *IntroStory) beginGlyph(o *oracle.Oracle) {
 	}
 	glyph := p[0xf506+int(s.lastByte-32)*8 : 0xf506+int(s.lastByte-32)*8+8]
 	s.shadow = append([]byte(nil), s.completed...)
-	if !storyPaint(s.shadow, glyph, x+1, y+1, p[0x6d5b]*17) {
+	if !storyPaint(s.shadow, glyph, x+1, y+1, p[s.prof.shadowVar]*17) {
 		s.halt("shadow bounds")
 		return
 	}
 	s.full = append([]byte(nil), s.shadow...)
-	if !storyPaint(s.full, glyph, x, y, p[0x6d5c]*17) {
+	if !storyPaint(s.full, glyph, x, y, p[s.prof.frontVar]*17) {
 		s.halt("foreground bounds")
 		return
 	}
@@ -225,7 +234,7 @@ func (s *IntroStory) endGlyph(o *oracle.Oracle) {
 	p, ok := s.source()
 	r := o.Regs()
 	stack := o.Bytes(oracle.Far(r.SS, r.SP), 2)
-	if !ok || o.DSReg() != 0x1b1 || stack[0] != s.pendingChar || int(storyWord(p, 0x6d56)) != s.pendingFile-0xa4+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.full) {
+	if !ok || o.DSReg() != 0x1b1 || stack[0] != s.pendingChar || int(storyWord(p, s.prof.pointer)) != s.pendingFile-s.prof.module+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.full) {
 		s.halt("glyph completion")
 		return
 	}
@@ -259,7 +268,7 @@ func (s *IntroStory) endClear(o *oracle.Oracle) {
 		return
 	}
 	p, ok := s.source()
-	if !ok || o.DSReg() != 0x1b1 || int(storyWord(p, 0x6d56)) != s.pendingFile-0xa4+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.full) {
+	if !ok || o.DSReg() != 0x1b1 || int(storyWord(p, s.prof.pointer)) != s.pendingFile-s.prof.module+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.full) {
 		s.halt("clear completion")
 		return
 	}
@@ -346,5 +355,5 @@ func (s *IntroStory) State() map[string]any {
 		total += len(s.entries[i].files)
 		keys = append(keys, s.entries[i].key)
 	}
-	return map[string]any{"active": s.tracking && s.ready && total > 0, "page": s.page, "page_native_done": done, "page_native_total": total, "page_complete": total > 0 && done == total, "keys": keys, "glyphs": s.Glyphs, "clears": s.Clears, "fragments": s.Fragments, "pending": s.pending, "finished": s.finished, "last_source_file": s.lastFile, "rejected": s.Rejected, "last_error": s.lastError, "scope": "固定故事58片段，原始清框／字形來源；其餘片頭另驗"}
+	return map[string]any{"active": s.tracking && s.ready && total > 0, "page": s.page, "page_native_done": done, "page_native_total": total, "page_complete": total > 0 && done == total, "keys": keys, "glyphs": s.Glyphs, "clears": s.Clears, "fragments": s.Fragments, "pending": s.pending, "finished": s.finished, "last_source_file": s.lastFile, "rejected": s.Rejected, "last_error": s.lastError, "scope": fmt.Sprintf("固定%s故事%d片段，原始清框／字形來源", s.prof.name, len(s.entries))}
 }

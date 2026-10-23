@@ -102,6 +102,11 @@ func (g *game) compose() (presented *hd.TownPresentation, cavePresented *hd.Cave
 		} else {
 			presented = g.townFrames.Present(raw, rawRGB, false)
 		}
+		if presented == nil {
+			// 規格067：F7 讀檔選單暫時取代城鎮模組，沿用最後一張已驗城鎮畫面，選單框內放回原版。
+			presented = g.townFrames.PresentMenu(raw, rawRGB)
+			g.layers["town_menu_hold"] = presented != nil
+		}
 		if presented != nil {
 			rgb, townRaw = presented.RGB, presented.Indexed
 		}
@@ -110,6 +115,7 @@ func (g *game) compose() (presented *hd.TownPresentation, cavePresented *hd.Cave
 	if g.caveFrames != nil {
 		blocked := g.townDialogue != nil && g.townDialogue.State()["key"] != ""
 		cavePresented = g.caveFrames.Present(raw, rawRGB, blocked)
+		g.layers["cave_menu_hold"] = cavePresented != nil && !cavePresented.MenuBox.Empty()
 		if cavePresented != nil && presented == nil {
 			rgb, townRaw = cavePresented.RGB, cavePresented.Indexed
 		}
@@ -277,10 +283,22 @@ func (g *game) compose() (presented *hd.TownPresentation, cavePresented *hd.Cave
 	if g.hdEnabled && g.manualArtwork != nil && w == 320 && h == 200 {
 		transition := g.manualArtwork.DrawCaveTransition(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
 		g.manualArtwork.SetResources(townResources, townExtra)
+		g.manualArtwork.SetIntroMode(g.o.Byte(oracle.Far(0x1b1, 0xff77)) != 0)
 		manual := g.manualArtwork.Draw(g.canvas, townRaw, rgb, image.Pt(0, barHeight))
 		coherent := g.manualArtwork.DrawCoherent(g.canvas, townRaw, rgb, image.Pt(0, barHeight))
 		g.hdMatched = transition || manual || coherent || g.hdMatched
 		g.layers["cave_transition"], g.layers["manual_art"], g.layers["coherent_art"] = transition, manual, coherent
+		g.layers["manual_art_held"] = g.manualArtwork.CompleteHeld()
+		// 規格067：結局對話的肖像框沒有整張肖像吻合（含說話沿用）時，整框顯示原版，
+		// 不讓其他圖組的同色小格拼成 HD 與原版交錯的格子。
+		if g.endingLoaded() {
+			for _, p := range endingPortraits {
+				if endingFramed(raw, p.frame) && !g.manualArtwork.LargeCovers(p.portrait) {
+					restoreNativeBox(g.canvas, rawRGB, p.portrait)
+					g.layers["ending_portrait_native"] = true
+				}
+			}
+		}
 	}
 	// 規格066：房間模組已載入而人像層尚未比對到時（進房間的未登錄姿態或揭開中），外框仍在就畫
 	// 第一個 HD 姿態；外框不在才只顯示原版。不讓逐格覆繪拼出 HD 與原版交錯的馬賽克。
@@ -301,8 +319,18 @@ func (g *game) compose() (presented *hd.TownPresentation, cavePresented *hd.Cave
 			g.layers[p.Layer+"_native"] = true
 		}
 	}
+	// 規格067：原版第一次畫一個城鎮場景（如開局進城堡）時，畫完前 HD 層比對不到；HD 模式沿用上一張
+	// 合成的城鎮畫帶，到完成點才換成 HD，不顯示原版逐欄畫出的過程。
+	holding := g.hdEnabled && presented == nil && cavePresented == nil && g.townHeld != nil && w == 320 && h == 200 && g.townFrames.FirstDraw(g.o.Steps())
+	if holding {
+		draw.Draw(g.canvas, g.townHeld.Bounds(), g.townHeld, g.townHeld.Bounds().Min, draw.Src)
+		g.layers["town_first_draw_hold"] = true
+	}
 	if presented != nil && !presented.DialogueBox.Empty() {
 		restoreChangedRows(g.canvas, raw, presented.SourceIndexed, rawRGB, presented.DialogueBox)
+	}
+	if cavePresented != nil && presented == nil && !cavePresented.MenuBox.Empty() {
+		restoreChangedRows(g.canvas, raw, cavePresented.SourceIndexed, rawRGB, cavePresented.MenuBox)
 	}
 	if g.beforeText != nil {
 		g.beforeText()
@@ -326,6 +354,12 @@ func (g *game) compose() (presented *hd.TownPresentation, cavePresented *hd.Cave
 	if g.introStory != nil && w == 320 && h == 200 {
 		g.layers["text_intro_story"] = g.introStory.Draw(g.canvas, raw, g.o.Palette(), image.Pt(0, barHeight))
 	}
+	if g.endingStory != nil && w == 320 && h == 200 {
+		g.layers["text_ending_story"] = g.endingStory.Draw(g.canvas, raw, g.o.Palette(), image.Pt(0, barHeight))
+	}
+	if g.endingCredits != nil && w == 320 && h == 200 {
+		g.layers["text_ending_credits"] = g.endingCredits.Draw(g.canvas, raw, g.o.Palette(), image.Pt(0, barHeight))
+	}
 	if g.dialogue != nil && w == 320 && h == 200 {
 		g.layers["text_dialogue"] = g.dialogue.Draw(g.canvas, raw, g.o.Palette(), image.Pt(0, barHeight))
 	}
@@ -341,8 +375,18 @@ func (g *game) compose() (presented *hd.TownPresentation, cavePresented *hd.Cave
 	}
 	g.dissolveFrame(scene, raw, w, h, presented != nil || cavePresented != nil)
 	presented.ApplyErase(g.canvas, image.Pt(0, barHeight))
+	if !holding {
+		box := image.Rect(townBox.Min.X*scale, barHeight+townBox.Min.Y*scale, townBox.Max.X*scale, barHeight+townBox.Max.Y*scale)
+		if g.townHeld == nil {
+			g.townHeld = image.NewRGBA(box)
+		}
+		draw.Draw(g.townHeld, box, g.canvas, box.Min, draw.Src)
+	}
 	return
 }
+
+// townBox 是城鎮畫帶（與 hd.TownFrames 的呈現範圍相同）。
+var townBox = image.Rect(48, 24, 272, 158)
 
 // hideClaimedGlyphs 在中文層之前清掉底圖上被壓下的原版字形。字形只存在守衛輸入；
 // 底圖某點若整個 3×3 區塊仍是守衛色，換回 VRAM 實際的像素。中文層之後才畫，筆畫不受影響。

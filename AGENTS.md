@@ -1,10 +1,12 @@
 # 神劍封魔 Zeliard：繁體中文化與 HD
 
-目前交付入口：[066原版字形改寫與無閃爍呈現](docs/spec/066-glyph-patch-stable-presentation.md)。使用者要求Windows啟動修正、徹底解決閃爍（HD依目前模式不交替、不先露英文）與補齊缺譯，專有名詞寫「中文（English）」，合併出1.0.6。版號`v.1.0.6-20261023`，CHT／CHT-HD各三平台；工作區`workplace/release-v106/`，正式建置在其下`package/`，作廢的前兩次打包保留於`package-attempt-1/`、`package-attempt-2/`。1.0.6沒有新推廣片，1.0.5影片保留原版號。字形patch在[glyphpatch](internal/prototype/glyphpatch/gate.go)；轉場清黑保留在[dissolve_hold.go](cmd/zeliard-preview/dissolve_hold.go)；探針為`-flicker-probe`，判讀用[flicker_report.py](tools/flicker_report.py)。
+目前交付入口：[067開局揭開、F7選單與結局的無閃爍呈現及補譯](docs/spec/067-start-menu-ending-presentation.md)。使用者在1.0.6推送後要求結局敘述、製作名單與版權翻譯，開局逐格揭開、第一次進城堡與F7維持HD，並確定中文不會再變回英文；另出1.0.7，結局以`poke 01B1:0049=1`直接觸發驗證。版號`v.1.0.7-20261023`，工作區`workplace/release-v107/`，正式建置在其下`package/`；探針基底沿用`workplace/release-v106/probe-base/`的`v107-*`。入口：[結局敘述共用片頭故事流程](internal/prototype/overlay/intro_story_layout.go)、[結局名單](internal/prototype/overlay/ending_credits.go)、[邊框逐格HD](internal/prototype/hd/frame.go)、[F7與首次繪製沿用](internal/prototype/hd/town_frames.go)、[洞窟存框沿用](internal/prototype/hd/cave_frames.go)、[插畫說話沿用](internal/prototype/hd/complete_art.go)、[HUD欄位延伸](internal/prototype/overlay/hud.go)；鍵序[開局F7](tools/start-f7.commands)、[洞窟F7](tools/cave-f7.commands)、[結局直接觸發](tools/ending-poke.commands)、[片頭跳過](tools/story-skip.commands)。
+
+前次交付入口：[066原版字形改寫與無閃爍呈現](docs/spec/066-glyph-patch-stable-presentation.md)。使用者要求Windows啟動修正、徹底解決閃爍（HD依目前模式不交替、不先露英文）與補齊缺譯，專有名詞寫「中文（English）」，合併出1.0.6。版號`v.1.0.6-20261023`，CHT／CHT-HD各三平台；工作區`workplace/release-v106/`，正式建置在其下`package/`，作廢的前兩次打包保留於`package-attempt-1/`、`package-attempt-2/`。1.0.6沒有新推廣片，1.0.5影片保留原版號。字形patch在[glyphpatch](internal/prototype/glyphpatch/gate.go)；轉場清黑保留在[dissolve_hold.go](cmd/zeliard-preview/dissolve_hold.go)；探針為`-flicker-probe`，判讀用[flicker_report.py](tools/flicker_report.py)。
 
 066入口：[字形patch產生與安裝](internal/prototype/glyphpatch/patch.go)及[測試](internal/prototype/glyphpatch/patch_test.go)；[通用每次寫入監看差異](tools/dosgolem-write-watch.patch)只套在本專案dosgolem副本；[字形前提研究](tools/glyph_patch_study.go)與[原版／patch版同步差分](tools/glyph_patch_diff.go)；[缺譯盤點](tools/dialogue_inventory.py)；[數字句](internal/prototype/overlay/number_chain.go)、[洞窟告示](internal/prototype/overlay/sign.go)與[譯表結構閘門](internal/prototype/overlay/catalog_test.go)；[房間人像預設姿態](internal/prototype/hd/portrait_boxes.go)；[跨磁碟路徑判斷](cmd/zeliard-preview/paths.go)。探針鍵序新增[國王二訪](tools/king-revisit.commands)、[盾牌購買](tools/weapon-shield.commands)、[BNN銀行](tools/bnn-bank.commands)、[BNN兌換](tools/bnn-exchange.commands)、[SAVEM1銀行](tools/savem1-bank.commands)與[原包存檔盤點](tools/save-survey.commands)，只送原版按鍵，原包存檔前史未知。
 
-前次交付入口：[065大字介面雙版本與推廣片](docs/spec/065-readable-release-promo.md)。使用者已確認064並授權重包完整版與錄影，取代候選階段不重打的安排。版號`v.1.0.5-20261022`，CHT／CHT-HD各三平台，沿既有打包工具；工作區`workplace/release-v105/`，影片新錄正式字級頁並可混剪明列版本的舊遊玩來源。幀率已接受，不重開通關。
+更早交付入口：[065大字介面雙版本與推廣片](docs/spec/065-readable-release-promo.md)。使用者已確認064並授權重包完整版與錄影，取代候選階段不重打的安排。版號`v.1.0.5-20261022`，CHT／CHT-HD各三平台，沿既有打包工具；工作區`workplace/release-v105/`，影片新錄正式字級頁並可混剪明列版本的舊遊玩來源。幀率已接受，不重開通關。
 
 064候選階段見[系統介面字級](docs/spec/064-readable-system-text.md)。沿粉圓2.1，提供16／24／32像素，設定本文預設24。原候選工作區`workplace/ui-text-v1/`保留，正式重包與錄影改依上方065；不重開幀率或通關驗收。
 
@@ -363,6 +365,7 @@ GUI來源重生：[hd_gui_frame_probe.go](tools/hd_gui_frame_probe.go)，核保�
 | [internal/prototype/overlay/scroll_blocks_test.go](internal/prototype/overlay/scroll_blocks_test.go) | 三組捲字正常原版配對、獨立排版、途中呈現與退回驗證 |
 | [text/intro-threat-prototype.tsv](text/intro-threat-prototype.tsv) | 魔王三行宣言的來源鍵與中文試譯，控制碼仍由原版消費 |
 | [text/intro-story-prototype.tsv](text/intro-story-prototype.tsv) | 完整故事58個文字／字色片段的來源鍵與中文試譯 |
+| [text/ending-story-prototype.tsv](text/ending-story-prototype.tsv)、[text/ending-credits-prototype.tsv](text/ending-credits-prototype.tsv) | 結局敘述27段與製作名單、登場魔物、版權60段的來源鍵與中文；規格067 |
 | [internal/prototype/overlay/intro_story.go](internal/prototype/overlay/intro_story.go) | 規格014的原版字形、清框與唯讀中文生命週期 |
 | [internal/prototype/overlay/intro_story_layout.go](internal/prototype/overlay/intro_story_layout.go) | 故事固定來源分段、譯表及有界排版 |
 | [internal/prototype/overlay/intro_story_test.go](internal/prototype/overlay/intro_story_test.go) | 完整原版故事配對、47頁獨立排版與途中／退回驗證 |

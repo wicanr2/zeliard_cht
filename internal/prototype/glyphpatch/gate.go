@@ -38,6 +38,8 @@ type Gate struct {
 	keep [2]int
 
 	Suppressed, Passed, Anomalies, Revealed int
+	// revealedAt 是 Reveal 寫回的畫面位置，供探針檢查寫回後是否真的露出。規格067。
+	revealedAt []int
 }
 
 type move struct {
@@ -274,6 +276,9 @@ func Reveal(o *oracle.Oracle, rects ...image.Rectangle) {
 				if p := y*320 + x; g.set[p] {
 					o.SetByte(oracle.Far(Visible, uint16(p)), g.pix[p])
 					g.Revealed++
+					if len(g.revealedAt) < 64000 {
+						g.revealedAt = append(g.revealedAt, p)
+					}
 				}
 			}
 		}
@@ -322,3 +327,13 @@ func (g *Gate) Hidden(fn func(p int, color uint8)) {
 
 // Buffer 回傳 289A 保存的平面值，供差分測試重建 31B1 緩衝。
 func (g *Gate) Buffer() map[uint16]uint8 { return g.saved }
+
+// TakeRevealed 回傳上次取出之後 Reveal 寫回的位置並清空（探針用）。
+func (g *Gate) TakeRevealed() []int {
+	if g == nil {
+		return nil
+	}
+	out := g.revealedAt
+	g.revealedAt = nil
+	return out
+}

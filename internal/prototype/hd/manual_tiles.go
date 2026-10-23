@@ -173,3 +173,20 @@ func (s *ManualArtwork) Draw(dst *image.RGBA, raw, rgb []byte, origin image.Poin
 	}
 	return completeMatched || len(s.placements) > 0
 }
+
+// CompleteHeld 回報這次合成是否沿用了上一次整張比對到的大插畫（結局人物說話）。規格067。
+func (s *ManualArtwork) CompleteHeld() bool {
+	return s != nil && s.complete != nil && s.complete.holding
+}
+
+// LargeCovers 回報這次合成有整張大插畫（含說話沿用）完整蓋住 r（原版座標）。規格067。
+func (s *ManualArtwork) LargeCovers(r image.Rectangle) bool {
+	return s != nil && s.complete.largeCovers(r)
+}
+
+// SetIntroMode 設定原版是否在片頭／結局模式（FF77 非零）；只有這時沿用說話中的大插畫。規格067。
+func (s *ManualArtwork) SetIntroMode(on bool) {
+	if s != nil && s.complete != nil {
+		s.complete.introMode = on
+	}
+}

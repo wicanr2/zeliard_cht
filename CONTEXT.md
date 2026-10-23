@@ -2,11 +2,30 @@
 
 更新日期：2026-10-23，Asia/Taipei。
 
-本輪入口為[066原版字形改寫與無閃爍呈現](docs/spec/066-glyph-patch-stable-presentation.md)，工作區`workplace/release-v106/`。使用者要求Windows啟動修正、徹底解決閃爍與補齊缺譯，合併出1.0.6；閃爍驗收限定為HD依目前模式不與原貌交替、英文不得先出現再變中文。
+本輪入口為[067開局揭開、F7選單與結局的無閃爍呈現及補譯](docs/spec/067-start-menu-ending-presentation.md)，工作區`workplace/release-v107/`。使用者在1.0.6推送後要求：結局敘述、製作名單與版權翻譯；開局逐格揭開與第一次進城堡、F7都要維持HD；中文出現後又變回英文要確定處理好。決定另出1.0.7，結局以直接載入結局模組驗證，HUD場景名、房間標題與alma改「中文（English）」，日籍人名查得到漢字就寫漢字。
 
-現行本機版本為`v.1.0.6-20261023`，完整包位於`dist-all/v.1.0.6-20261023/full-local/`，`bash tools/play.sh`啟動HD版、`--cht`選原貌中文版。正式建置在`workplace/release-v106/package/`，Linux二進位SHA為`5a73a5d59a44076cec75b1dd13c797746adfb4fb2f2e136fb2466aa36b4138cb`。前兩次打包未發布即作廢：第一次在片頭跳過與房間離場會露出英文，第二次在居民對話開框有一個合成點HD與原版拼接；各自保留於`workplace/release-v106/package-attempt-1/`、`package-attempt-2/`。1.0.6沒有新推廣片，1.0.5影片保留原版號。
+現行本機版本為`v.1.0.7-20261023`，完整包位於`dist-all/v.1.0.7-20261023/full-local/`，`bash tools/play.sh`啟動HD版、`--cht`選原貌中文版。正式建置在`workplace/release-v107/package/`，Linux二進位SHA為`3eeb4b7a9ebdeeea7cbc9e826fdc84bec401aeef48df4aae37c52eb87552bed6`，出貨來源與工作樹逐檔相同。第一次1.0.7打包未發布即作廢（說話沿用原本不分模式，可能蓋住遊戲過場背景上的角色），保留於`workplace/release-v107/package-attempt-1/`。1.0.7沒有新推廣片。
 
 ## 目前狀態表
+
+| 項目 | 1.0.7現況 |
+|---|---|
+| 結局中文 | 敘述27段、製作名單與登場魔物及版權60段覆繪；探針以`poke 01B1:0049=1`直接觸發，屬結構驗證 |
+| 開局柱子 | 揭開期間逐格畫HD，眼睛暗色畫格列入允許；邊框HD隨選單模組載入提前備妥 |
+| 第一次進城堡 | 原版畫完前沿用上一張城鎮畫帶，完成即HD，上限1M指令 |
+| F7選單 | 城鎮沿用最後一張已驗完成畫面；洞窟以存框追蹤沿用；選單框內原版樣式加中文 |
+| 結局插畫 | 片頭／結局模式下，說話小圖時大插畫沿用整張HD；對話肖像框沒有整張肖像時整框原版 |
+| 譯名 | HUD場景名、房間標題「賈辛（Jashiin）殿」、「靈魂寶石（alma）」、片頭故事與捲字專名、名單漢字 |
+| 探針 | 正式binary 17條（HD 12、CHT 5）英文先於中文、中文後變回英文、寫回後可見、狀態列未畫全為0；不追蹤色號0字形，字形可見須同格原版底色照原版顯示 |
+| 保留限制 | 結局部分插畫HD對不上（加蘭離城、公主對話姿態、FIN）；陽台棋盤格；後段內容只靜態通過 |
+
+1.0.7正式包驗證在同版`smoke/`與`SHA256SUMS.json`；探針輸出在`workplace/release-v107/probe/out/rel*`。
+
+## 前次交付（1.0.6）
+
+1.0.6入口為[066原版字形改寫與無閃爍呈現](docs/spec/066-glyph-patch-stable-presentation.md)，工作區`workplace/release-v106/`，以`4b884ba`推送。1.0.6版本為`v.1.0.6-20261023`，完整包位於`dist-all/v.1.0.6-20261023/full-local/`。正式建置在`workplace/release-v106/package/`，Linux二進位SHA為`5a73a5d59a44076cec75b1dd13c797746adfb4fb2f2e136fb2466aa36b4138cb`。前兩次打包未發布即作廢：第一次在片頭跳過與房間離場會露出英文，第二次在居民對話開框有一個合成點HD與原版拼接；各自保留於`workplace/release-v106/package-attempt-1/`、`package-attempt-2/`。1.0.6沒有新推廣片，1.0.5影片保留原版號。
+
+## 1.0.6狀態表
 
 | 項目 | 1.0.6現況 |
 |---|---|

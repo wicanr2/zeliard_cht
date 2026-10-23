@@ -19,7 +19,7 @@ zelres2.file.01885d	舊武器折抵{trade}金幣。
 zelres2.file.018904	確定交易嗎？
 zelres2.file.018a17	若只是來浪費我的時間，就請離開吧。
 zelres2.file.019def	……啊，失禮了。需要我幫忙嗎？
-zelres2.file.019e15	先生，您沒有攜帶 alma 寶石。
+zelres2.file.019e15	先生，您沒有攜帶靈魂寶石（alma）。
 zelres2.file.019f2d	您要存入多少金幣？
 zelres2.file.019fe3	您要領出多少金幣？
 zelres2.file.01a05a	您的帳戶沒有存款。
@@ -119,7 +119,7 @@ zelres2.file.019056	這面是一般用途的盾牌，不是本店最好的。我
 zelres2.file.0190e1	這面盾牌自成一格，堅固、輕巧又好用。這是上等盾牌，勇者至少該有一面。
 zelres2.file.01916f	嗬！您真有眼光。這面盾牌不是普通的鐵，而是名為魔鋼（Magane）的魔法金屬，一般武器打不壞。
 zelres2.file.019226	有了這面盾牌，最強的劍也像紙一樣。它輕如羽毛、硬如鑽石，用得好能陪您一輩子。
-zelres2.file.019e80	抱歉，您的 alma 寶石不夠。
+zelres2.file.019e80	抱歉，您的靈魂寶石（alma）不夠。
 zelres2.file.019eab	我聽不懂。請把您的來意說清楚。
 zelres2.file.019ee5	還有其他事嗎？
 zelres2.file.019f04	您身上沒有帶金幣吧？
@@ -150,5 +150,5 @@ zelres2.file.01b55b	這根羽毛記得最後和你說話的長老的聲音。
 zelres2.file.01b5a3	右手拿著揮一下就能回到他身邊，從沒失靈過。
 zelres2.file.0188b8	舊盾牌折抵{trade}金幣。
 zelres2.file.018710	我很樂意幫您修理盾牌，只要{1}金幣。要開始修理嗎？
-zelres2.file.019e3c	我們的匯率是{1}個 alma 寶石換{2}金幣。可以嗎？
+zelres2.file.019e3c	我們的匯率是{1}個靈魂寶石（alma）換{2}金幣。可以嗎？
 zelres2.file.01baa9	歡迎光臨，先生！看來您走了很遠的路。在本店住一晚就能恢復體力。最好的房間只要{1}金幣，要住下嗎？

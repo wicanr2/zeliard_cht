@@ -18,6 +18,8 @@ type CavePresentation struct {
 	Steps, Cycles, BodySteps, BodyCycles                     uint64
 	Decoded                                                  *caveDecoded
 	Paints                                                   []CavePaint
+	// MenuBox 是選單沿用時原版選單框的範圍，前端在框內放回原版。規格067。
+	MenuBox image.Rectangle
 }
 
 type caveFrameInput struct {
@@ -48,6 +50,9 @@ type CaveFrames struct {
 	state, lastRefusal map[string]any
 	rejected           *CaveRejected
 	rejectedState      map[string]any
+	// boxes 是原版以 289A 存下、尚未以 28D9 還原的方框（F7 選單等）。框開著時遊戲暫停，
+	// 洞窟畫面只在框內改變。規格067。
+	boxes []image.Rectangle
 }
 
 // HoldFreshBody是062的明示呈現選項；既有原版來源重現仍沿預設契約。
@@ -62,6 +67,22 @@ func NewCaveFrames(o *oracle.Oracle) *CaveFrames {
 		return nil
 	}
 	f := &CaveFrames{original: o}
+	// 289A 以 AL 列、AH 八點欄、CL 列數、CH 八點寬存框；28D9 同參數還原。規格066、067。
+	boxAt := func(o *oracle.Oracle) image.Rectangle {
+		ax, cx := o.AX(), o.CX()
+		x, y := int(ax>>8)*8, int(ax&0xff)
+		return image.Rect(x, y, x+int(cx>>8)*8, y+int(cx&0xff))
+	}
+	o.OnCall(oracle.Far(0x1b1, 0x289a), func(o *oracle.Oracle) { f.boxes = append(f.boxes, boxAt(o)) })
+	o.OnCall(oracle.Far(0x1b1, 0x28d9), func(o *oracle.Oracle) {
+		r := boxAt(o)
+		for i := len(f.boxes) - 1; i >= 0; i-- {
+			if f.boxes[i] == r {
+				f.boxes = append(f.boxes[:i], f.boxes[i+1:]...)
+				break
+			}
+		}
+	})
 	for _, off := range []uint16{0x703c, 0x7136} {
 		o.OnCall(oracle.Far(0x1b1, off), func(o *oracle.Oracle) {
 			if o.DSReg() != 0x1b1 {
@@ -297,7 +318,11 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 		f.clear()
 		return nil
 	}
-	if !f.drawing && !caveFrameEqual(in.indexed, last.SourceIndexed) {
+	var menuBox image.Rectangle
+	if !f.drawing && len(f.boxes) > 0 && !caveFrameEqual(in.indexed, last.SourceIndexed) {
+		menuBox = caveDiffInside(in, last, f.boxes)
+	}
+	if menuBox.Empty() && !f.drawing && !caveFrameEqual(in.indexed, last.SourceIndexed) {
 		// 028：4129新主體可早於批次開始。撤除舊呈現，保留當次可信主體；
 		// 未完成圖面仍不呈現，後續finish須重新核整個原版畫格。
 		fresh := f.body != nil && f.body.steps > last.Steps && f.body.cycles >= last.Cycles && f.body.steps <= in.steps && f.body.cycles <= in.cycles && caveFrameSource(*f.body)
@@ -354,7 +379,10 @@ func (f *CaveFrames) selectFrame(in caveFrameInput, blocked bool) *CavePresentat
 	d.MagiaRecords = append([]caveMagiaRecord{}, d.MagiaRecords...)
 	d.Cells = append([]caveCell(nil), d.Cells...)
 	d.Objects = append([]caveObject(nil), d.Objects...)
-	return &CavePresentation{Indexed: raw, RGB: rgb, Palette: cloneTownBytes(last.Palette), SourceIndexed: cloneTownBytes(last.SourceIndexed), Memory: cloneTownBytes(last.Memory), BodyMemory: cloneTownBytes(last.BodyMemory), Steps: last.Steps, Cycles: last.Cycles, BodySteps: last.BodySteps, BodyCycles: last.BodyCycles, Decoded: &d, Paints: append([]CavePaint(nil), last.Paints...)}
+	if !menuBox.Empty() {
+		f.state["menu_box"] = menuBox
+	}
+	return &CavePresentation{Indexed: raw, RGB: rgb, Palette: cloneTownBytes(last.Palette), SourceIndexed: cloneTownBytes(last.SourceIndexed), Memory: cloneTownBytes(last.Memory), BodyMemory: cloneTownBytes(last.BodyMemory), Steps: last.Steps, Cycles: last.Cycles, BodySteps: last.BodySteps, BodyCycles: last.BodyCycles, Decoded: &d, Paints: append([]CavePaint(nil), last.Paints...), MenuBox: menuBox}
 }
 
 func (f *CaveFrames) State() map[string]any {
@@ -362,4 +390,32 @@ func (f *CaveFrames) State() map[string]any {
 		return nil
 	}
 	return f.state
+}
+
+// caveDiffInside 回傳畫面與完成畫面不同之處的外接矩形；有任何不同點落在開著的方框之外就回傳空矩形。
+func caveDiffInside(in caveFrameInput, last *CavePresentation, boxes []image.Rectangle) image.Rectangle {
+	if len(in.indexed) != 64000 || len(in.rgb) != 192000 || !bytes.Equal(in.palette, last.Palette) {
+		return image.Rectangle{}
+	}
+	var diff image.Rectangle
+	for y := cavePresentationBox.Min.Y; y < cavePresentationBox.Max.Y; y++ {
+		for x := cavePresentationBox.Min.X; x < cavePresentationBox.Max.X; x++ {
+			i := y*320 + x
+			if in.indexed[i] == last.SourceIndexed[i] && bytes.Equal(in.rgb[i*3:i*3+3], last.RGB[i*3:i*3+3]) {
+				continue
+			}
+			inside := false
+			for _, b := range boxes {
+				if image.Pt(x, y).In(b) {
+					inside = true
+					break
+				}
+			}
+			if !inside {
+				return image.Rectangle{}
+			}
+			diff = diff.Union(image.Rect(x, y, x+1, y+1))
+		}
+	}
+	return diff
 }

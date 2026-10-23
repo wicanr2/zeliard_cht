@@ -23,6 +23,20 @@ type TownFrames struct {
 	// 完成點的畫面需用對話前的已驗畫面補上框內像素。規格066。
 	Dialogue func() (bool, image.Rectangle)
 	backdrop *TownPresentation
+	// Menu 回報 F7 讀檔等選單模組是否載在 01B1:6000。選單暫時取代城鎮模組，城鎮其餘資料與畫面不變。規格067。
+	Menu func() bool
+	// firstDraw 是尚無已驗完成畫面時原版開始畫城鎮的步數；到完成點或換掉來源才歸零。規格067。
+	firstDraw uint64
+	// holdRefused 在完成點被拒收後設定，直到下一次成功收下才再沿用前一張畫面，避免一直凍結。
+	holdRefused bool
+}
+
+// townFirstDrawLimit 是首次繪製最多沿用前一張畫面的指令數；實測城堡首次進入約0.15M指令。
+const townFirstDrawLimit = 1000000
+
+// FirstDraw 回報原版正在畫一個還沒有已驗完成畫面的城鎮場景，且未超過上限。
+func (t *TownFrames) FirstDraw(steps uint64) bool {
+	return t != nil && t.firstDraw != 0 && steps >= t.firstDraw && steps-t.firstDraw < townFirstDrawLimit
 }
 
 // TownPresentation的來源屬完成時刻，畫帶外仍為當次原版。
@@ -102,13 +116,18 @@ func (t *TownFrames) clear() { t.complete = nil; t.drawing = false }
 func (t *TownFrames) begin(in townFrameInput) {
 	if !t.scene.frameSource(in) {
 		t.clear()
+		t.firstDraw = 0
 		return
 	}
 	t.drawing = true
+	if t.complete == nil && t.firstDraw == 0 && !t.holdRefused {
+		t.firstDraw = in.steps
+	}
 }
 func cloneTownBytes(b []byte) []byte { return append([]byte(nil), b...) }
 func (t *TownFrames) finish(in townFrameInput) {
 	t.drawing = false
+	t.firstDraw = 0
 	if t.Dialogue != nil {
 		if active, box := t.Dialogue(); active {
 			// 對話中的完成畫面含原版對話框。框已確定且有對話前的底圖時，框內換成底圖像素後照原本驗證，
@@ -138,12 +157,14 @@ func (t *TownFrames) finish(in townFrameInput) {
 	}
 	if !t.scene.frameSource(in) {
 		t.refused++
+		t.holdRefused = true
 		t.lastRefusal = map[string]any{"steps": in.steps, "cycles": in.cycles, "reason": "source"}
 		t.clear()
 		return
 	}
 	if _, err := t.scene.decode(in.mode, in.primary, in.resources, in.extra, in.indexed, in.rgb); err != nil {
 		t.refused++
+		t.holdRefused = true
 		t.lastRefusal = map[string]any{"steps": in.steps, "cycles": in.cycles, "reason": err.Error()}
 		t.clear()
 		return
@@ -153,6 +174,7 @@ func (t *TownFrames) finish(in townFrameInput) {
 	t.backdrop = t.complete
 	t.wipeErased = 0
 	t.captured++
+	t.holdRefused = false
 	t.lastRefusal = nil
 }
 
@@ -181,6 +203,44 @@ func (t *TownFrames) PresentDialogue(raw, rgb []byte, box image.Rectangle) *Town
 		return nil
 	}
 	return t.selectDialogueFrame(t.read(raw, rgb), box)
+}
+
+// PresentMenu 在選單模組佔用 01B1:6000 時沿用最後一張已驗城鎮完成畫面。城鎮地圖、資源、鏡頭與色盤
+// 須與該畫面相同；畫帶內與該畫面不同的點取外接矩形當選單框，框內由前端放回原版。規格067。
+func (t *TownFrames) PresentMenu(raw, rgb []byte) *TownPresentation {
+	if t == nil || t.Menu == nil || !t.Menu() || t.backdrop == nil {
+		return nil
+	}
+	f, in := t.backdrop, t.read(raw, rgb)
+	if len(in.indexed) != 64000 || len(in.rgb) != 192000 || in.steps < f.Steps || in.cycles < f.Cycles || !bytes.Equal(in.palette, f.Palette) || townSceneWord(in.primary, 0x80) != townSceneWord(f.Primary, 0x80) {
+		return nil
+	}
+	// 選單只換掉 6000..9FFF 的模組；其餘城鎮來源以完成畫面的模組區補回後須通過同一個來源守衛。
+	masked := in
+	masked.primary = cloneTownBytes(in.primary)
+	copy(masked.primary[0x6000:0xa000], f.Primary[0x6000:0xa000])
+	held := townFrameInput{mode: in.mode, primary: f.Primary, resources: f.Resources, extra: f.Extra, palette: f.Palette}
+	profile := t.scene.sourceProfile(masked)
+	if profile == nil || profile != t.scene.sourceProfile(held) {
+		return nil
+	}
+	var box image.Rectangle
+	for y := townPresentationBox.Min.Y; y < townPresentationBox.Max.Y; y++ {
+		for x := townPresentationBox.Min.X; x < townPresentationBox.Max.X; x++ {
+			i := y*320 + x
+			if in.indexed[i] != f.SourceIndexed[i] || !bytes.Equal(in.rgb[i*3:i*3+3], f.RGB[i*3:i*3+3]) {
+				box = box.Union(image.Rect(x, y, x+1, y+1))
+			}
+		}
+	}
+	indexed, out := cloneTownBytes(in.indexed), cloneTownBytes(in.rgb)
+	for y := townPresentationBox.Min.Y; y < townPresentationBox.Max.Y; y++ {
+		a, b := y*320+townPresentationBox.Min.X, y*320+townPresentationBox.Max.X
+		copy(indexed[a:b], f.SourceIndexed[a:b])
+		copy(out[a*3:b*3], f.RGB[a*3:b*3])
+	}
+	t.state = map[string]any{"used": true, "menu_hold": true, "menu_box": box, "source_steps": f.Steps, "scope": "選單期間沿用的已驗城鎮完成畫面；選單框內為原版"}
+	return &TownPresentation{Indexed: indexed, RGB: out, Primary: f.Primary, Resources: f.Resources, Extra: f.Extra, SourceIndexed: f.SourceIndexed, Palette: f.Palette, Steps: f.Steps, Cycles: f.Cycles, DialogueBox: box}
 }
 
 func (t *TownFrames) selectDialogueFrame(in townFrameInput, box image.Rectangle) *TownPresentation {

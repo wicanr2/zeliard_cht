@@ -15,8 +15,19 @@ import (
 const scale, nativeWidth, nativeHeight, sideWidth = 3, 320, 200, 48
 
 type Frame struct {
-	indices, rgb []byte
-	panels       [2]*image.RGBA
+	indices, rgb, palette []byte
+	panels                [2]*image.RGBA
+}
+
+// frameEyes 是開局逐格揭開時兩側雕像眼睛的暗色畫格（色號）。原版畫完柱子後才把這30點換成亮色；
+// 實測於冷新局48.31M指令，規格067。
+var frameEyes = map[int]byte{
+	47*320 + 9: 24, 47*320 + 309: 29, 47*320 + 310: 24, 48*320 + 9: 43, 48*320 + 11: 24,
+	48*320 + 309: 29, 48*320 + 310: 24, 48*320 + 311: 24, 49*320 + 8: 29, 49*320 + 9: 29,
+	49*320 + 10: 24, 49*320 + 11: 27, 49*320 + 307: 29, 49*320 + 308: 29, 49*320 + 309: 24,
+	49*320 + 310: 29, 49*320 + 311: 27, 50*320 + 8: 29, 50*320 + 9: 24, 50*320 + 10: 27,
+	50*320 + 11: 27, 50*320 + 307: 24, 50*320 + 308: 24, 50*320 + 309: 27, 50*320 + 310: 27,
+	50*320 + 311: 27, 51*320 + 8: 24, 51*320 + 9: 24, 51*320 + 310: 27, 51*320 + 311: 27,
 }
 
 func checked(path, expected string, maximum int64) ([]byte, error) {
@@ -59,7 +70,7 @@ func NewFrame(reference, palette, artwork string) (*Frame, error) {
 	if err != nil {
 		return nil, err
 	}
-	f := &Frame{indices: idx, rgb: make([]byte, 320*200*3)}
+	f := &Frame{indices: idx, rgb: make([]byte, 320*200*3), palette: pal}
 	for i, value := range idx {
 		copy(f.rgb[i*3:i*3+3], pal[int(value)*3:int(value)*3+3])
 	}
@@ -108,13 +119,73 @@ func (f *Frame) Match(indexed, rgb []byte) bool {
 	return true
 }
 
+// revealing 回報原版是否正在逐格畫出同一組邊框：兩側每一點不是尚未畫的色號0，就是參考色號與RGB，
+// 或眼睛的暗色畫格；且至少已畫一點。任何其他色號或色盤不同都不算。規格067。
+func (f *Frame) revealing(indexed, rgb []byte) bool {
+	if len(indexed) != 320*200 || len(rgb) != 320*200*3 {
+		return false
+	}
+	drawn := false
+	for y := 0; y < nativeHeight; y++ {
+		for _, start := range []int{0, nativeWidth - sideWidth} {
+			for i := y*nativeWidth + start; i < y*nativeWidth+start+sideWidth; i++ {
+				v := indexed[i]
+				switch {
+				case v == 0:
+					continue
+				case v == f.indices[i]:
+					if !bytes.Equal(rgb[i*3:i*3+3], f.rgb[i*3:i*3+3]) {
+						return false
+					}
+				case frameEyes[i] == v:
+					if !bytes.Equal(rgb[i*3:i*3+3], f.palette[int(v)*3:int(v)*3+3]) {
+						return false
+					}
+				default:
+					return false
+				}
+				drawn = true
+			}
+		}
+	}
+	return drawn
+}
+
+// Draw 完整吻合時畫兩側 HD 邊框；原版逐格揭開期間只畫已有像素的8×8格，尚未畫到的格維持原版的黑色，
+// 不先露出原版圖格。規格067。
 func (f *Frame) Draw(dst *image.RGBA, indexed, rgb []byte, origin image.Point) bool {
-	if !f.Match(indexed, rgb) {
+	if f.Match(indexed, rgb) {
+		for side, panel := range f.panels {
+			position := origin.Add(image.Pt(side*(nativeWidth-sideWidth)*scale, 0))
+			draw.Draw(dst, panel.Bounds().Add(position), panel, image.Point{}, draw.Src)
+		}
+		return true
+	}
+	if !f.revealing(indexed, rgb) {
 		return false
 	}
 	for side, panel := range f.panels {
-		position := origin.Add(image.Pt(side*(nativeWidth-sideWidth)*scale, 0))
-		draw.Draw(dst, panel.Bounds().Add(position), panel, image.Point{}, draw.Src)
+		start := side * (nativeWidth - sideWidth)
+		for cy := 0; cy < nativeHeight; cy += 8 {
+			for cx := 0; cx < sideWidth; cx += 8 {
+				if !cellInked(indexed, start+cx, cy) {
+					continue
+				}
+				cell := image.Rect(cx*scale, cy*scale, (cx+8)*scale, (cy+8)*scale)
+				draw.Draw(dst, cell.Add(origin).Add(image.Pt(start*scale, 0)), panel, cell.Min, draw.Src)
+			}
+		}
 	}
 	return true
+}
+
+func cellInked(indexed []byte, x, y int) bool {
+	for dy := 0; dy < 8; dy++ {
+		for dx := 0; dx < 8; dx++ {
+			if indexed[(y+dy)*nativeWidth+x+dx] != 0 {
+				return true
+			}
+		}
+	}
+	return false
 }

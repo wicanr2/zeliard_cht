@@ -1,0 +1,66 @@
+# 冷F7讀原包SAVEM1進第一洞窟，在洞窟按F7開讀檔選單再按N取消。只送原版按鍵；原包存檔前史未知。規格067。
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x41 500000
+run 2000000
+key 0x15 150000
+run 1500000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x1e 100000
+run 200000
+key 0x2f 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x12 100000
+run 200000
+key 0x1f 100000
+run 200000
+key 0x14 100000
+run 200000
+key 0x1c 100000
+run 16000000
+key 0x4d 8000000
+run 250000
+key 0x48 250000
+run 20000000
+shot cave-entered
+key 0x41 500000
+run 3000000
+shot cave-f7-menu
+key 0x31 150000
+run 4000000
+shot cave-f7-cancel
+key 0x4b 2000000
+run 1000000
+shot cave-after
