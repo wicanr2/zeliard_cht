@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"log"
+	"os"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -102,6 +104,44 @@ func (g *game) roomDialogue() bool {
 	}
 	key, _ := g.dialogue.State()["key"].(string)
 	return key != ""
+}
+
+// roomModulePayloads 是載在 01B1:A000 的房間模組 SAR2 payload 起點：國王、小屋、武器店、
+// 銀行、教堂、道具店、旅館、長老。規格066：人物 HD 須在原版揭開人像前就緒，
+// 不能等第一個對話字，也不依賴對話譯表是否載入成功。
+var roomModulePayloads = []int{0x16e1a, 0x175c0, 0x17817, 0x19462, 0x1a19e, 0x1a588, 0x1b7b2, 0x1bcc6}
+
+func loadRoomPrefixes(sar string) map[int][]byte {
+	data, err := os.ReadFile(sar)
+	if err != nil {
+		log.Printf("房間模組前綴未載入：%v", err)
+		return nil
+	}
+	prefixes := map[int][]byte{}
+	for _, p := range roomModulePayloads {
+		if p+64 <= len(data) {
+			prefixes[p] = append([]byte(nil), data[p:p+64]...)
+		}
+	}
+	return prefixes
+}
+
+// roomModuleLoaded 回報指定房間模組目前是否載在 01B1:A000。
+func (g *game) roomModuleLoaded(module int) bool {
+	p, ok := g.roomPrefixes[module]
+	return ok && g.o.VideoMode() == 0x13 && bytes.Equal(g.o.Bytes(oracle.Far(0x1b1, 0xa000), 64), p)
+}
+
+func (g *game) roomEntered() bool {
+	if g.roomDialogue() {
+		return true
+	}
+	for _, module := range roomModulePayloads {
+		if g.roomModuleLoaded(module) {
+			return true
+		}
+	}
+	return false
 }
 
 func (g *game) caveFamily() string {

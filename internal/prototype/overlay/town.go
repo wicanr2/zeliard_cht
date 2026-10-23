@@ -14,6 +14,7 @@ import (
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 type townSource struct {
@@ -251,6 +252,8 @@ func (d *TownDialogue) beginGlyph(o *oracle.Oracle) {
 	expectedY := box.Min.Y + 4 + int(o.Byte(oracle.Far(0x1b1, 0x7c54)))*10
 	if !ok || !geometry || !townCode(o) || !s.valid(o) || o.AX()>>8 != 1 || byte(o.AX()) != ch || x != expectedX || y != expectedY {
 		d.LastRejection = map[string]any{"site": "glyph", "pos": pos, "ax": o.AX(), "bx": o.BX(), "cx": o.CX(), "ds": o.DSReg(), "source": s.key, "progress_valid": ok, "geometry_valid": geometry, "code_valid": townCode(o), "source_valid": s.valid(o), "box": box, "glyphs": d.Glyphs}
+		// 規格066：進行中的對話被拒收時，已壓下的字形照原版寫回，不留空白。
+		glyphpatch.Reveal(o, d.box)
 		d.Rejected++
 		d.reset()
 		return
@@ -258,6 +261,7 @@ func (d *TownDialogue) beginGlyph(o *oracle.Oracle) {
 	safe := box.Inset(4)
 	positions, err := townLayout(d.font, s.text, safe)
 	if err != nil {
+		glyphpatch.Reveal(o, d.box)
 		d.Rejected++
 		d.reset()
 		return
@@ -267,6 +271,8 @@ func (d *TownDialogue) beginGlyph(o *oracle.Oracle) {
 	d.marker = image.Rect(box.Min.X+84, box.Min.Y+74, box.Min.X+92, box.Min.Y+82)
 	d.visible = (count*len(s.text) + s.total - 1) / s.total
 	d.pending = true
+	// 規格066：來源與幾何已核對，這個字形由中文取代，原版不畫進畫面。
+	glyphpatch.Claim(o, 0x64b7)
 }
 
 func townCrop(indexed []byte, box image.Rectangle) []byte {
@@ -285,7 +291,7 @@ func (d *TownDialogue) capture(o *oracle.Oracle) {
 		d.reset()
 		return
 	}
-	d.completed = townCrop(o.Indexed(), d.box)
+	d.completed = townCrop(glyphpatch.Indexed(o), d.box)
 	d.pending = false
 }
 
@@ -355,10 +361,16 @@ func (d *TownDialogue) BackdropBox() image.Rectangle {
 }
 
 func (d *TownDialogue) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, origin image.Point) bool {
-	if d.current == nil || d.pending || len(d.completed) == 0 {
+	// 字形閘啟用時畫面上沒有原版英文，pending 期間沿用上一個完成狀態續畫，
+	// 不必等原版字形或捲動完成；完成框比對只在非 pending 時做。
+	held := d.pending && glyphpatch.For(d.original) != nil
+	if d.current == nil || d.pending && !held || len(d.completed) == 0 {
 		return false
 	}
-	if d.original == nil || !townDisplayCode(d.original) || !d.current.valid(d.original) || !hudPalette(palette) || !bytes.Equal(d.completed, townCrop(indexed, d.box)) {
+	if d.original == nil || !townDisplayCode(d.original) || !d.current.valid(d.original) || !hudPalette(palette) || !held && !bytes.Equal(d.completed, townCrop(indexed, d.box)) {
+		if d.original != nil {
+			glyphpatch.Reveal(d.original, d.box)
+		}
 		d.Rejected++
 		d.reset()
 		return false

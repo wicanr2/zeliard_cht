@@ -1,20 +1,41 @@
 # 目前狀態
 
-更新日期：2026-10-22，Asia/Taipei。
+更新日期：2026-10-23，Asia/Taipei。
 
-本輪入口為[065大字版重包與推廣片](docs/spec/065-readable-release-promo.md)，工作區`workplace/release-v105/`。使用者確認064後已授權正式重包及錄影，取代候選階段「不重打」安排。
+本輪入口為[066原版字形改寫與無閃爍呈現](docs/spec/066-glyph-patch-stable-presentation.md)，工作區`workplace/release-v106/`。使用者要求Windows啟動修正、徹底解決閃爍與補齊缺譯，合併出1.0.6；閃爍驗收限定為HD依目前模式不與原貌交替、英文不得先出現再變中文。
+
+現行本機版本為`v.1.0.6-20261023`，完整包位於`dist-all/v.1.0.6-20261023/full-local/`，`bash tools/play.sh`啟動HD版、`--cht`選原貌中文版。正式建置在`workplace/release-v106/package/`，Linux二進位SHA為`5a73a5d59a44076cec75b1dd13c797746adfb4fb2f2e136fb2466aa36b4138cb`。前兩次打包未發布即作廢：第一次在片頭跳過與房間離場會露出英文，第二次在居民對話開框有一個合成點HD與原版拼接；各自保留於`workplace/release-v106/package-attempt-1/`、`package-attempt-2/`。1.0.6沒有新推廣片，1.0.5影片保留原版號。
+
+## 目前狀態表
+
+| 項目 | 1.0.6現況 |
+|---|---|
+| Windows啟動 | 改以檔案身份比對祖先目錄，遊戲與使用者目錄在不同磁碟也能啟動；Wine跨磁碟預設目錄兩包通過，使用者回報的C槽案例未重現 |
+| 字形改寫 | 啟動時由原版`GMMCGA.BIN`另存patch版到使用者目錄；已認領文字畫到`B000`不顯示，原版與patch版同步差分零差 |
+| 英文露出 | 正式binary探針：英文先於中文0；中文之後退回英文只剩黑底上的黑色陰影字；從未覆蓋的只有黑字與續頁、填空圖形 |
+| 人像 | 國王、道具店、銀行、教堂進場揭開期間顯示HD；離場清黑時保留HD人像同步溶解 |
+| 轉場清黑 | 片頭按Space與房間離場改由保存的合成畫面同步溶解，見066「轉場逐點清黑」 |
+| 居民開框 | 對話框內只有原版已畫到的列換回原版，畫框前保留HD |
+| 補譯 | 對話、商店說明、數字句、洞窟訊息、首領台詞與標題版權補齊，專有名詞寫「中文（English）」；部分只靜態通過 |
+| 保留限制 | 開局外框柱子逐格組合時顯示原版；F7讀檔選單期間城鎮背景退原版；陽台插畫棋盤格；結局未中文化；HUD專名未改 |
+
+1.0.6正式包驗證在同版`smoke/`與`SHA256SUMS.json`；探針輸出在`workplace/release-v106/probe/out/v106rel3-*`，摘要在`smoke/probe-release/`。
+
+## 前次交付（1.0.5）
+
+前次入口為[065大字版重包與推廣片](docs/spec/065-readable-release-promo.md)，工作區`workplace/release-v105/`。使用者確認064後已授權正式重包及錄影，取代候選階段「不重打」安排。
 
 065已完成六包與60秒推廣片，入口為工作區`repack-receipt.json`。影片音畫、字幕及來源通過，540個重用HD畫格與720個新錄設定編碼畫格比對通過；原版標題曲配樂非同期聲。清理約3.78GiB後七份SHA不變，明細在`cleanup.json`與`cleanup-media.json`。完整遊玩與30fps未重驗。
 
 已完成[064系統介面字級](docs/spec/064-readable-system-text.md)並收錄1.0.5六包。沿既有圓體提供16／24／32像素，設定本文預設24，工具列及底部最高24。正式HD AppImage的三檔切換、四種設定頁特大字與冷重開通過，原版steps／cycles為0、存檔不變。收據在同版`smoke/toolbar/receipt.json`；舊`development-ui-text-v1`候選及收據保留歷史身份。
 
-現行本機版本為`v.1.0.5-20261022`，完整包位於`dist-all/v.1.0.5-20261022/full-local/`，由 `bash tools/play.sh` 啟動新版HD，`--cht`選原貌中文版。CHT與CHT-HD各提供Linux AppImage、Windows x86_64 ZIP及macOS通用ZIP。舊六包、影片與已發布tag保留原身份；最近GitHub Release仍為1.0.2，完整版與影片只留本機。
+1.0.5版本完整包位於`dist-all/v.1.0.5-20261022/full-local/`。CHT與CHT-HD各提供Linux AppImage、Windows x86_64 ZIP及macOS通用ZIP。舊六包、影片與已發布tag保留原身份；最近GitHub Release仍為1.0.2，完整版與影片只留本機。
 
-現行影片由065新錄正式1.0.5字級、作弊與速度頁，混剪具名舊遊玩來源。1.0.4的[063連續防閃爍證明](docs/spec/063-feature-promo-stability-proof.md)保留原版號；新版主片10–17秒對話、17–28秒平台沿用該版來源，各自連續。28–40秒展示16／24／32字級，各4秒。配樂為原版標題曲、非同期聲，使用者已接受幀率，不重開30fps或通關。
+最新影片仍是065新錄的正式1.0.5字級、作弊與速度頁，混剪具名舊遊玩來源。1.0.4的[063連續防閃爍證明](docs/spec/063-feature-promo-stability-proof.md)保留原版號；新版主片10–17秒對話、17–28秒平台沿用該版來源，各自連續。28–40秒展示16／24／32字級，各4秒。配樂為原版標題曲、非同期聲，使用者已接受幀率，不重開30fps或通關。
 
 1.0.4基礎修正入口為[060作弊與難度](docs/spec/060-player-cheats.md)、[061啟動與按需HD](docs/spec/061-startup-on-demand-hd.md)、[062穩定呈現](docs/spec/062-stable-hd-presentation.md)。該輪研究與候選在`workplace/runtime-controls-v1/`，正式來源副本與建置在`workplace/release-v104/`。1.0.5沿用這些功能，不重開完整通關、全遊戲逐幀或實體手把驗收。
 
-## 目前狀態表
+## 1.0.5狀態表
 
 | 項目 | 現況 |
 |---|---|
@@ -46,7 +67,7 @@ README已加入1.0.5正式字級與特大作弊頁，來源為`docs/images/syste
 - 1.0.3六包內容稽核及清理後SHA核對均通過。清除本輪重複組裝約1.14GiB，550個文件連結有效，root-owned與誤建.md目錄為零，專案容器已移除。入口為同工作區`repack-receipt.json`、`cleanup.json`與`hygiene.json`；Linux二進位SHA為`ad37d074b06c54115c8144662970a33650e09944f29bd52e45b106fab1276e9d`。來源同步回讀保存在`git-publication.json`。
 - 先前CPU候選在`workplace/cpu-speed-v1/preview/`，沿既有1.0.2圖庫連結，保留診斷來源及`build-receipt.json`。新版打包也以`tools/dosgolem-bulk-read.patch`在獨立dosgolem副本重生，不改共用執行器。前期固定倍率資料只代表高載下的可丟棄量測，不作最終自動調速驗收。
 
-- 前次六包交付為`dist-all/v.1.0.3-20261022/full-local/`，由`bash tools/play.sh`預設啟動新版HD，`--cht`選原貌中文版。1.0.2六包與影片仍在`dist-all/v.1.0.2-20261021/`，保持原身份。所有完整版與影片只留本機。
+- 1.0.3六包在`dist-all/v.1.0.3-20261022/full-local/`；`bash tools/play.sh`依VERSION啟動目前版本。1.0.2六包與影片仍在`dist-all/v.1.0.2-20261021/`，保持原身份。所有完整版與影片只留本機。
 - 本機新片來源為`workplace/ada-promo-v102/received/`，保留原始錄影、PCM／WAV、輸入及十張視窗；`local-input-manifest.json`記錄正式包及固定腳本。139筆HD過場中途整幅回退0，正常DOS退出0，存檔內容與mtime不變；過場角色沿057的局部HD與原貌保留邊界，不宣稱每個像素皆重繪。
 - 本次錄影清理約473MiB重複傳輸、解包及剪輯中間檔，原始錄影與八個正式成品保留。清理後八份SHA及遊戲來源相同，root-owned與誤建.md目錄均零；入口為同工作區`cleanup-local.json`、`hygiene.json`及`git-publication.json`。
 - 1.0.2固定來源為`workplace/release-v102/identity.json`；舊六包核對在`dist-all/v.1.0.2-20261021/smoke/release-audit.json`，正常入洞在`smoke/integration/receipt.json`。舊Linux執行檔SHA為`031cfe6f45e6d3f48f588e1e31b0c09950106ef512dfcfb1bf474a83c1814037`。

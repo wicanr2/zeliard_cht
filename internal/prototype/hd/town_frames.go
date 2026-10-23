@@ -5,6 +5,7 @@ import (
 	"image"
 
 	"github.com/wicanr2/dosgolem/oracle"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 // TownFrames只保留已驗原版完成點。位址、來源與時間差見規格008。
@@ -18,6 +19,10 @@ type TownFrames struct {
 	captured, refused uint64
 	state             map[string]any
 	lastRefusal       map[string]any
+	// Dialogue 回傳居民對話是否進行中及目前對話框。對話期間原版仍繼續繪製居民走動，
+	// 完成點的畫面需用對話前的已驗畫面補上框內像素。規格066。
+	Dialogue func() (bool, image.Rectangle)
+	backdrop *TownPresentation
 }
 
 // TownPresentation的來源屬完成時刻，畫帶外仍為當次原版。
@@ -57,8 +62,8 @@ func NewTownFrames(o *oracle.Oracle, scene *TownScenery) *TownFrames {
 			t.clear()
 			return
 		}
-		_, _, rgb := o.ScreenRGB()
-		t.finish(t.read(o.Indexed(), rgb))
+		_, _, rgb := glyphpatch.ScreenRGB(o)
+		t.finish(t.read(glyphpatch.Indexed(o), rgb))
 	})
 	return t
 }
@@ -104,6 +109,33 @@ func (t *TownFrames) begin(in townFrameInput) {
 func cloneTownBytes(b []byte) []byte { return append([]byte(nil), b...) }
 func (t *TownFrames) finish(in townFrameInput) {
 	t.drawing = false
+	if t.Dialogue != nil {
+		if active, box := t.Dialogue(); active {
+			// 對話中的完成畫面含原版對話框。框已確定且有對話前的底圖時，框內換成底圖像素後照原本驗證，
+			// 相機或場景改變時驗證會拒收；框未確定時不收這次完成，沿用上一張。
+			if box.Empty() || !box.In(image.Rect(0, 0, 320, 200)) || t.backdrop == nil || len(in.indexed) != 64000 || len(in.rgb) != 192000 {
+				return
+			}
+			masked := in
+			masked.indexed, masked.rgb = cloneTownBytes(in.indexed), cloneTownBytes(in.rgb)
+			for y := box.Min.Y; y < box.Max.Y; y++ {
+				a, b := y*320+box.Min.X, y*320+box.Max.X
+				copy(masked.indexed[a:b], t.backdrop.SourceIndexed[a:b])
+				copy(masked.rgb[a*3:b*3], t.backdrop.RGB[a*3:b*3])
+			}
+			// 背景圖塊快取 E000 每欄8列，第r列對應畫面 y=78+8r；被框蓋住的格子原版改成框用編號，
+			// 同樣取對話前底圖的值，讓像素與快取來自同一份狀態。
+			masked.primary = cloneTownBytes(in.primary)
+			for col := 0; col < 28; col++ {
+				for row := 0; row < 8; row++ {
+					if image.Rect(48+col*8, 78+row*8, 56+col*8, 86+row*8).Overlaps(box) {
+						masked.primary[0xe000+col*8+row] = t.backdrop.Primary[0xe000+col*8+row]
+					}
+				}
+			}
+			in = masked
+		}
+	}
 	if !t.scene.frameSource(in) {
 		t.refused++
 		t.lastRefusal = map[string]any{"steps": in.steps, "cycles": in.cycles, "reason": "source"}
@@ -118,6 +150,7 @@ func (t *TownFrames) finish(in townFrameInput) {
 	}
 	t.complete = &TownPresentation{Indexed: cloneTownBytes(in.indexed), RGB: cloneTownBytes(in.rgb), Primary: cloneTownBytes(in.primary), Resources: cloneTownBytes(in.resources), Extra: cloneTownBytes(in.extra), SourceIndexed: cloneTownBytes(in.indexed), Palette: cloneTownBytes(in.palette), Steps: in.steps, Cycles: in.cycles}
 	t.wipeSource = t.complete
+	t.backdrop = t.complete
 	t.wipeErased = 0
 	t.captured++
 	t.lastRefusal = nil
@@ -177,7 +210,8 @@ func (t *TownFrames) selectDialogueFrame(in townFrameInput, box image.Rectangle)
 		t.state["reason"] = "dialogue geometry"
 		return nil
 	}
-	for y := townPresentationBox.Min.Y; y < townPresentationBox.Max.Y; y++ {
+	// 原版正在重畫城鎮時（居民走動），下一個完成點會帶來新的已驗畫面；這段期間沿用上一張，不撤除 HD。
+	for y := townPresentationBox.Min.Y; y < townPresentationBox.Max.Y && !t.drawing; y++ {
 		for x := townPresentationBox.Min.X; x < townPresentationBox.Max.X; x++ {
 			if image.Pt(x, y).In(box) {
 				continue

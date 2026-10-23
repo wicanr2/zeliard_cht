@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """051：核對六個完整包的來源、模式、平台、內容、啟動與新版影片。"""
 from pathlib import Path
-import argparse,hashlib,json,plistlib,struct,subprocess,tempfile,zipfile
+import argparse,hashlib,json,os,plistlib,struct,subprocess,tempfile,zipfile
 
-parser=argparse.ArgumentParser();mode=parser.add_mutually_exclusive_group();mode.add_argument('--runtime-fix',action='store_true',help='052受傷修正版，不要求重製051影片');mode.add_argument('--transition-fix',action='store_true',help='057／058過場及首領美術修正版，核對新版正常入洞及素材，不要求重製051影片');mode.add_argument('--cpu-speed-repack','--contents-only',dest='cpu_speed_repack',action='store_true',help='059低負載重新打包，只核六包內容、架構與SHA，不啟動遊戲或宣稱30fps');mode.add_argument("--readable-repack",action="store_true",help="065字級版六包與限定啟動；幀率已接受");args=parser.parse_args();args.cpu_speed_repack=args.cpu_speed_repack or args.readable_repack
-P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.',''));D=P/'dist-all'/VERSION
+parser=argparse.ArgumentParser();mode=parser.add_mutually_exclusive_group();mode.add_argument('--runtime-fix',action='store_true',help='052受傷修正版，不要求重製051影片');mode.add_argument('--transition-fix',action='store_true',help='057／058過場及首領美術修正版，核對新版正常入洞及素材，不要求重製051影片');mode.add_argument('--cpu-speed-repack','--contents-only',dest='cpu_speed_repack',action='store_true',help='059低負載重新打包，只核六包內容、架構與SHA，不啟動遊戲或宣稱30fps');mode.add_argument("--readable-repack",action="store_true",help="065字級版六包與限定啟動；幀率已接受");mode.add_argument("--glyph-patch-repack",action="store_true",help="066字形取代與補譯版六包；內容、模式、字型與寫入監看差異");args=parser.parse_args();args.cpu_speed_repack=args.cpu_speed_repack or args.readable_repack or args.glyph_patch_repack
+P=Path('/project');VERSION=(P/'VERSION').read_text().strip();W=Path(os.environ.get('ZELIARD_RELEASE_WORK',str(P/'workplace'/('release-v'+VERSION[2:].split('-')[0].replace('.','')))));D=P/'dist-all'/VERSION
 sha=lambda data:hashlib.sha256(data).hexdigest()
 def pe(data):
     assert data[:2]==b'MZ';at=struct.unpack_from('<I',data,0x3c)[0];assert data[at:at+4]==b'PE\0\0';assert struct.unpack_from('<H',data,at+4)[0]==0x8664
@@ -18,6 +18,9 @@ for row in identity['dosgolem_files']:assert sha((W/'dosgolem'/row['file']).read
 if args.cpu_speed_repack:
     assert (W/'sources/cmd/zeliard-preview/speed.go').is_file()
     assert (W/'dosgolem/internal/machine/read_bytes.go').is_file()
+if args.glyph_patch_repack:
+    assert (W/'dosgolem/oracle/write_every.go').is_file()
+    assert (W/'sources/internal/prototype/glyphpatch/gate.go').is_file()
 original={str(f.relative_to(P/'workplace/orig')):f.read_bytes() for f in (P/'workplace/orig').rglob('*') if f.is_file()}
 reports=[];temporary=[]
 for edition in ('CHT','CHT-HD'):
@@ -67,7 +70,7 @@ for edition in ('CHT','CHT-HD'):
                 assert plistlib.loads(z.read(base+'Info.plist'))['CFBundleGetInfoString']==VERSION
         assert read('VERSION').decode().strip()==VERSION and read('EDITION').decode().strip()==edition
         entries=dict(json.loads(read('runtime-args.json')));options=json.loads(read('bundle-options.json'))
-        assert options==['-adlib','-audio','ebiten','-realtime','-hd='+str(edition=='CHT-HD').lower()]
+        assert options==['-adlib','-audio','ebiten','-realtime','-glyph-patch','-hd='+str(edition=='CHT-HD').lower()]
         assert entries['-dialogue-text']=='text/dialogue-prototype.tsv' and entries['-text']=='text/host.json'
         assert all(value in names or any(name.startswith(value+'/') for name in names) for value in entries.values())
         assert all(read('original/'+name)==data for name,data in original.items())
@@ -99,6 +102,11 @@ for edition in ('CHT','CHT-HD'):
             assert sha(read("font.hex.gz"))==identity["font_sha256"]
             assert sha(read("font.hex.gz.smooth.json.gz"))==identity["smooth_font_sha256"]
             assert "特大32" in read("README.txt").decode("utf-8-sig")
+        if args.glyph_patch_repack:
+            assert sha(read("font.hex.gz"))==identity["font_sha256"]
+            assert sha(read("font.hex.gz.smooth.json.gz"))==identity["smooth_font_sha256"]
+            assert "1.0.6" in read("README.txt").decode("utf-8-sig")
+            assert "zelres2.file.01735d" in read("text/dialogue-prototype.tsv").decode()
         reports.append({'edition':edition,'platform':platform,'files':len(names),'original_files':len(original),'mode_correct':True,'contents_and_hashes':'PASS','launch':launch_scope})
         if platform!='Linux':z.close()
 
@@ -124,6 +132,9 @@ report={'status':'PASS_PACKAGE_CONTENTS_RUNTIME_PENDING' if args.cpu_speed_repac
 if args.readable_repack:
     assert all(r["launch"].startswith("PASS_") for r in reports if r["platform"]!="macOS")
     report.update(status="PASS_LOCAL_DUAL_EDITION_SCOPED_SETTINGS_RELEASE",readable_repack=True,hd_30fps="USER_ACCEPTED_NOT_A_GATE")
+if args.glyph_patch_repack:
+    assert all(r["launch"].startswith("PASS_") for r in reports if r["platform"]!="macOS")
+    report.update(status="PASS_LOCAL_DUAL_EDITION_GLYPH_PATCH_RELEASE",glyph_patch_repack=True,hd_30fps="USER_ACCEPTED_NOT_A_GATE")
 (D/'smoke/release-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
 print(report['status'],flush=True)
 for temp in temporary:temp.cleanup()

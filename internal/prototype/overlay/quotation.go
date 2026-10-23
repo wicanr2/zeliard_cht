@@ -9,6 +9,7 @@ import (
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 type quoteFragment struct {
@@ -30,12 +31,13 @@ type quoteToken struct {
 // Quotation 只合成已驗證的武器報價來源鏈。數字保留原版字形，
 // 商品譯名引用 Labels 的同一份來源；交易與資金判定仍由原版處理。
 type Quotation struct {
+	original            *oracle.Oracle
 	font                bitmap.Font
 	paint               *paintHistory
 	labels              *Labels
 	prefix              []byte
 	fragments           map[int]quoteFragment
-	texts               [4]string
+	texts               [5]string
 	stage, index, ready int
 	active, pending     bool
 	item                *labelSource
@@ -44,12 +46,15 @@ type Quotation struct {
 	completed           []byte
 	paintSerial         uint64
 	Glyphs, Completed   int
+	// 規格066：盾牌折抵改走 B0A1／B0B1 片段；沒有舊盾牌時原版由價格直接跳到 B0ED 確認句。
+	// 兩者由模組 A5CC 與 A619 設定 FF4C，見 number_chain.go 的同類證據。
+	shield, noTrade bool
 }
 
 func newQuotation(o *oracle.Oracle, data []byte, texts map[string]string, font bitmap.Font, paint *paintHistory) (*Quotation, error) {
-	keys := [4]string{"zelres2.file.0188f4", "zelres2.file.01891d", "zelres2.file.01885d", "zelres2.file.018904"}
-	placeholders := [4]string{"item", "price", "trade", ""}
-	q := &Quotation{font: font, paint: paint, fragments: map[int]quoteFragment{}, prefix: append([]byte(nil), data[0x17817:0x17857]...)}
+	keys := [5]string{"zelres2.file.0188f4", "zelres2.file.01891d", "zelres2.file.01885d", "zelres2.file.018904", "zelres2.file.0188b8"}
+	placeholders := [5]string{"item", "price", "trade", "", "trade"}
+	q := &Quotation{original: o, font: font, paint: paint, fragments: map[int]quoteFragment{}, prefix: append([]byte(nil), data[0x17817:0x17857]...)}
 	found := 0
 	for i, key := range keys {
 		text, ok := texts[key]
@@ -82,10 +87,11 @@ func newQuotation(o *oracle.Oracle, data []byte, texts map[string]string, font b
 	if found == 0 {
 		return nil, nil
 	}
-	if found != 4 {
-		return nil, fmt.Errorf("報價試譯須完整提供四個片段")
+	if found != len(keys) {
+		return nil, fmt.Errorf("報價試譯須完整提供%d個片段", len(keys))
 	}
-	for _, binding := range [][3]int{{0, 0xb0dd, 0xb0e7}, {2, 0xb0e7, 0xb0ed}, {3, 0xb106, 0xb115}, {5, 0xb115, 0xb11f}, {6, 0xb046, 0xb056}, {8, 0xb056, 0xb081}, {9, 0xb0ed, 0xb106}} {
+	// 16、18 為盾牌折抵的 6、8 段替代片段。
+	for _, binding := range [][3]int{{0, 0xb0dd, 0xb0e7}, {2, 0xb0e7, 0xb0ed}, {3, 0xb106, 0xb115}, {5, 0xb115, 0xb11f}, {6, 0xb046, 0xb056}, {8, 0xb056, 0xb081}, {9, 0xb0ed, 0xb106}, {16, 0xb0a1, 0xb0b1}, {18, 0xb0b1, 0xb0dc}} {
 		start, end := binding[1], binding[2]
 		raw := append([]byte(nil), data[0x17817+start-0xa000:0x17817+end-0xa000]...)
 		fragment := quoteFragment{start: uint16(start), raw: raw}
@@ -113,6 +119,15 @@ func (q *Quotation) reset() {
 	q.price, q.trade = quoteNumber{}, quoteNumber{}
 	q.pendingNumber = nil
 	q.completed = nil
+	q.shield, q.noTrade = false, false
+}
+
+// abort 用於已認領字形後的來源不符：壓下的字形照原版寫回後退出，不留空白框。
+func (q *Quotation) abort(o *oracle.Oracle) {
+	if q.active {
+		glyphpatch.Reveal(o, dialogueBox)
+	}
+	q.reset()
 }
 
 func (q *Quotation) begin(o *oracle.Oracle) {
@@ -125,11 +140,21 @@ func (q *Quotation) begin(o *oracle.Oracle) {
 		q.active = true
 	}
 	if q.stage >= 10 || o.DSReg() != 0x01b1 || o.AX()>>8 != 1 || int(o.BX()) < 54 || int(o.BX())+8 > 264 || o.CX()&255 < 99 || o.CX()&255 > 139 || byte(o.AX()) != o.Byte(oracle.Far(0x01b1, pos)) || !bytes.Equal(q.prefix, o.Bytes(oracle.Far(0x01b1, 0xa000), len(q.prefix))) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x711b), 5), []byte{0x2e, 0xff, 0x16, 0x22, 0x20}) {
-		q.reset()
+		q.abort(o)
 		return
 	}
 	var fragment quoteFragment
 	q.pendingNumber = nil
+	if q.stage == 6 && q.index == 0 {
+		switch pos {
+		case q.fragments[16].positions[0]:
+			q.shield = true
+		case q.fragments[9].positions[0]:
+			// 沒有舊裝備可折抵：原版由價格直接印確認句。
+			q.noTrade = true
+			q.stage = 9
+		}
+	}
 	switch q.stage {
 	case 1:
 		if q.item == nil {
@@ -141,7 +166,7 @@ func (q *Quotation) begin(o *oracle.Oracle) {
 			}
 		}
 		if q.item == nil {
-			q.reset()
+			q.abort(o)
 			return
 		}
 		fragment.start = uint16(int(q.item.base) + q.item.offset)
@@ -156,7 +181,7 @@ func (q *Quotation) begin(o *oracle.Oracle) {
 		}
 		if q.index == 0 {
 			if pos != 0xbc33 {
-				q.reset()
+				q.abort(o)
 				return
 			}
 			raw := o.Bytes(oracle.Far(0x01b1, pos), 10)
@@ -165,14 +190,14 @@ func (q *Quotation) begin(o *oracle.Oracle) {
 				end++
 			}
 			if end < 1 || end > 8 || end >= len(raw) || raw[end] != 0xff {
-				q.reset()
+				q.abort(o)
 				return
 			}
 			number.raw = append([]byte(nil), raw[:end+1]...)
 			number.box = image.Rect(int(o.BX()), int(o.CX()&255), int(o.BX())+8, int(o.CX()&255)+8)
 		}
 		if int(o.CX()&255) != number.box.Min.Y || int(o.BX()) < number.box.Min.X || int(o.BX()) > number.box.Max.X {
-			q.reset()
+			q.abort(o)
 			return
 		}
 		number.box.Max.X = int(o.BX()) + 8
@@ -183,10 +208,14 @@ func (q *Quotation) begin(o *oracle.Oracle) {
 		}
 		q.pendingNumber = number
 	default:
-		fragment = q.fragments[q.stage]
+		stage := q.stage
+		if q.shield && (stage == 6 || stage == 8) {
+			stage += 10
+		}
+		fragment = q.fragments[stage]
 	}
 	if q.index >= len(fragment.positions) || pos != fragment.positions[q.index] || !bytes.Equal(fragment.raw, o.Bytes(oracle.Far(0x01b1, fragment.start), len(fragment.raw))) {
-		q.reset()
+		q.abort(o)
 		return
 	}
 	q.index++
@@ -195,18 +224,22 @@ func (q *Quotation) begin(o *oracle.Oracle) {
 		q.index = 0
 	}
 	q.pending = true
+	// 規格066：文字字形由中文取代；價格等數字保留原版圖形，不認領。
+	if q.pendingNumber == nil {
+		glyphpatch.Claim(o, 0x7120)
+	}
 }
 
 func (q *Quotation) capture(o *oracle.Oracle) {
 	if !q.active || !q.pending {
 		return
 	}
-	raw := o.Indexed()
+	raw := glyphpatch.Indexed(o)
 	if number := q.pendingNumber; number != nil {
 		number.pixels = labelCrop(raw, number.box)
 		for _, v := range number.pixels {
 			if v != 0 && v != 9 {
-				q.reset()
+				q.abort(o)
 				return
 			}
 		}
@@ -229,6 +262,12 @@ func (q *Quotation) tokens() []quoteToken {
 			break
 		}
 		text := q.texts[i]
+		if i == 2 && q.noTrade {
+			continue
+		}
+		if i == 2 && q.shield {
+			text = q.texts[4]
+		}
 		for len(text) > 0 {
 			at := strings.IndexByte(text, '{')
 			if at < 0 {
@@ -288,13 +327,13 @@ func (q *Quotation) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, origin 
 	}
 	masks, known := q.paint.masks(q.paintSerial, raw)
 	if !known || !q.pending && !visibleRowsEqual(q.completed, raw, []image.Rectangle{dialogueBox}, masks) {
-		q.reset()
+		q.abort(q.original)
 		return false
 	}
 	tokens := q.tokens()
 	positions, valid := quoteLayout(tokens)
 	if !valid {
-		q.reset()
+		q.abort(q.original)
 		return false
 	}
 	bg, fg := pal[0], pal[9]

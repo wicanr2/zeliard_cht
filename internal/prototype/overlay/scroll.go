@@ -14,6 +14,7 @@ import (
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 // Scroll只讀三組已驗捲動來源，契約見規格015。
@@ -241,10 +242,10 @@ func (s *Scroll) beginRow(o *oracle.Oracle) {
 		s.reset("row start")
 		return
 	}
-	raw := o.Indexed()
+	raw := glyphpatch.Indexed(o)
 	lo := s.block.top * 320
 	hi := (s.block.top + s.block.height) * 320
-	if len(raw) != 64000 || (s.completed != nil && !bytes.Equal(raw[lo:hi], s.completed)) {
+	if len(raw) != 64000 || (s.completed != nil && !textPlaneEqual(raw[lo:hi], s.completed)) {
 		s.reset("row prior frame")
 		return
 	}
@@ -261,10 +262,10 @@ func (s *Scroll) endRow(o *oracle.Oracle) {
 		return
 	}
 	_, ok := s.sourceSnapshot()
-	raw := o.Indexed()
+	raw := glyphpatch.Indexed(o)
 	lo := s.block.top * 320
 	hi := (s.block.top + s.block.height) * 320
-	if !ok || o.DSReg() != 0x1b1 || len(raw) != 64000 || !bytes.Equal(raw[lo:hi], s.expected) {
+	if !ok || o.DSReg() != 0x1b1 || len(raw) != 64000 || !textPlaneEqual(raw[lo:hi], s.expected) {
 		s.reset("row completion")
 		return
 	}
@@ -321,19 +322,41 @@ func (s *Scroll) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, or
 		return false
 	}
 	region := indexed[top*320 : bottom*320]
+	removed, text := 0, 0
 	for i, v := range region {
-		if v == s.completed[i] {
+		if s.completed[i]&0x66 != 0 {
+			text++
+		}
+		if v&0x66 == s.completed[i]&0x66 {
 			continue
 		}
-		if s.pending && (v == s.expected[i] || v == (s.completed[i]&0x99)) {
+		if s.pending && (v&0x66 == s.expected[i]&0x66 || v&0x66 == 0) {
+			continue
+		}
+		// 規格066：片頭溶解逐點清掉字層；被清掉的英文點只計數，中文依剩餘比例同步溶解。
+		if v&0x66 == 0 {
+			removed++
 			continue
 		}
 		s.reset("unobserved display write")
 		return false
 	}
+	remaining := 1.0
+	if removed > 0 && text > 0 {
+		remaining = float64(text-removed) / float64(text)
+	}
+	// 依原版像素位置決定溶解次序，三倍畫布同一原版點同進退。
+	keep := func(p image.Point) bool {
+		if remaining >= 1 {
+			return true
+		}
+		h := uint32((p.X-origin.X)/3)*2654435761 ^ uint32((p.Y-origin.Y)/3)*40503
+		return float64(h%1024) < remaining*1024
+	}
 	for y := top; y < bottom; y++ {
 		for x := 0; x < 320; x++ {
-			v := s.completed[(y-top)*320+x] & 0x99
+			// 規格066：底圖取當下畫面，片頭溶解改寫的 99h 底圖照原版呈現，66h 字層由中文取代。
+			v := region[(y-top)*320+x] & 0x99
 			c := palette[v]
 			for yy := 0; yy < 3; yy++ {
 				for xx := 0; xx < 3; xx++ {
@@ -349,7 +372,7 @@ func (s *Scroll) Draw(dst *image.RGBA, indexed []byte, palette [256][3]uint8, or
 		for _, ch := range line.text {
 			gw := len(s.font[ch]) / 16 * 8
 			dw := gw * 3 / 2
-			s.font.DrawGlyph(dst, image.Pt(x, y), ch, 24, color.RGBA{ink[0], ink[1], ink[2], 255}, func(p image.Point) bool { return p.In(box) })
+			s.font.DrawGlyph(dst, image.Pt(x, y), ch, 24, color.RGBA{ink[0], ink[1], ink[2], 255}, func(p image.Point) bool { return p.In(box) && keep(p) })
 			x += dw
 		}
 	}
@@ -375,4 +398,18 @@ func (s *Scroll) State() map[string]any {
 		counts[k] = v
 	}
 	return map[string]any{"active": s.active, "block": name, "top": top, "height": height, "source_file": s.file, "source_key": s.current.key, "source_rows": s.sourceRows, "pending": s.pending, "visible_keys": keys, "rows": s.Rows, "sources": s.Sources, "finished_blocks": s.BlocksCompleted, "block_rows": counts, "rejected": s.Rejected, "last_error": s.lastError}
+}
+
+// textPlaneEqual 只比對捲字的 66h 字層。片頭溶解在同一視窗讀改寫 99h 底圖（規格066），
+// 字層仍由捲字常式獨占，底圖變化不代表文字來源失效。
+func textPlaneEqual(a, b []byte) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i]&0x66 != b[i]&0x66 {
+			return false
+		}
+	}
+	return true
 }

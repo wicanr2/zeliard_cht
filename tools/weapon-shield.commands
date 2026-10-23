@@ -1,0 +1,62 @@
+# 冷新局領賞後進武器店：沒有盾牌時選修理、聽練習劍說明、買第一面盾牌（沒有舊盾牌可折抵），只送原版按鍵。
+king
+key 0x4d 24000000
+run 1000000
+key 0x4d 3000000
+run 500000
+key 0x48 250000
+run 12000000
+shot greeting
+key 0x50 100000
+run 1500000
+shot repair-selected
+key 0x39 500000
+run 12000000
+shot no-shield
+key 0x39 500000
+run 8000000
+shot after-no-shield
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+key 0x50 100000
+run 1500000
+shot describe-selected
+key 0x39 500000
+run 12000000
+shot describe-list
+key 0x39 500000
+run 16000000
+shot describe-first
+key 0x39 500000
+run 12000000
+shot describe-after
+key 0x39 500000
+run 8000000
+shot describe-followup
+key 0x50 100000
+run 1500000
+key 0x39 500000
+run 8000000
+shot describe-finished
+key 0x48 100000
+run 1500000
+shot buy-shield-selected
+key 0x39 500000
+run 8000000
+shot shield-list
+key 0x39 500000
+run 16000000
+shot shield-quote
+key 0x39 500000
+run 10000000
+shot shield-purchased
+key 0x48 100000
+run 1500000
+key 0x48 100000
+run 1500000
+shot repair-again-selected
+key 0x39 500000
+run 12000000
+shot not-needed

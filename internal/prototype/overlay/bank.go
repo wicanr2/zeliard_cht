@@ -10,9 +10,13 @@ import (
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 const bankNumberAddress uint16 = 0xad30
+
+// bankGreetingDot 是問候前省略號的「.」：SAR2 檔案 19DED，模組 A077 設定 FF4C。
+const bankGreetingDot uint16 = 0xa98b
 
 // 銀行標題使用固定八字元 counted-row，並非 ASCIIZ。
 // 此入口只接受已驗銀行來源，不把其他場景的 header 格式推廣為通用契約。
@@ -20,7 +24,7 @@ func (l *Labels) beginBankTitle(o *oracle.Oracle) {
 	l.bankTitlePending = nil
 	s := l.sources["zelres2.file.019d54"]
 	if s == nil || !s.bankTitle || o.VideoMode() != 0x13 || o.DSReg() != 0x01b1 || o.SI() != 0xa8ee ||
-		fmt.Sprintf("%x", sha256.Sum256(o.Bytes(oracle.Far(0x01b1, 0x22cd), 0x78))) != "f7415a3888eb9e7bafd8d68b76f3e281a7fe4a6c5b15275e5536d40a7594fef4" ||
+		fmt.Sprintf("%x", sha256.Sum256(glyphpatch.CodeView(o, oracle.Far(0x01b1, 0x22cd), 0x78))) != "f7415a3888eb9e7bafd8d68b76f3e281a7fe4a6c5b15275e5536d40a7594fef4" ||
 		!bytes.Equal(s.prefix, o.Bytes(oracle.Far(0x01b1, 0xa000), len(s.prefix))) ||
 		!bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0xa8ee), 4), []byte{0x18, 0xaf, 2, 8}) ||
 		!bytes.Equal(s.raw, o.Bytes(oracle.Far(0x01b1, 0xa8f2), len(s.raw))) {
@@ -29,15 +33,23 @@ func (l *Labels) beginBankTitle(o *oracle.Oracle) {
 	box := image.Rect(98, 175, 138, 183)
 	offset := image.Pt(1, 0)
 	l.bankTitlePending = &labelStamp{source: s, box: box, rows: []image.Rectangle{box}, foreground: 9, background: 5, shadow: 45, shadowOffset: &offset}
+	glyphpatch.ClaimText(o)
 }
 
 func (l *Labels) finishBankTitle(o *oracle.Oracle) {
 	p := l.bankTitlePending
 	l.bankTitlePending = nil
+	// 規格066：已認領的標題若最後沒有存入，照原版寫回，不留空白。
+	stored := false
+	defer func() {
+		if p != nil && !stored {
+			glyphpatch.Reveal(o, p.rows...)
+		}
+	}()
 	if p == nil || o.DSReg() != 0x01b1 || o.SI() != 0xa8fa || o.Byte(oracle.Far(0x01b1, 0x2cbd)) != 9 || o.Byte(oracle.Far(0x01b1, 0x2cbe)) != 45 {
 		return
 	}
-	p.raw = labelRowsCrop(o.Indexed(), p.rows)
+	p.raw = labelRowsCrop(glyphpatch.Indexed(o), p.rows)
 	ink := false
 	for _, v := range p.raw {
 		if v != 5 && v != 9 && v != 45 {
@@ -49,6 +61,7 @@ func (l *Labels) finishBankTitle(o *oracle.Oracle) {
 		return
 	}
 	p.palette, p.paintSerial = o.Palette(), l.paint.serial
+	stored = true
 	l.store(*p)
 }
 
@@ -65,6 +78,7 @@ type bankPart struct {
 // bankDialogue 只觀察銀行的已驗文字鏈。問句與後接的兩筆結果分開保存，
 // 每筆數字取自當時已完成的原版字形，不讀帳戶欄位計算餘額。
 type bankDialogue struct {
+	original                               *oracle.Oracle
 	font                                   bitmap.Font
 	paint                                  *paintHistory
 	prefix                                 []byte
@@ -94,7 +108,7 @@ func bankFragment(data []byte, start, end int) quoteFragment {
 }
 
 func newBankDialogue(o *oracle.Oracle, data []byte, texts map[string]string, font bitmap.Font, paint *paintHistory) (*bankDialogue, error) {
-	b := &bankDialogue{font: font, paint: paint, prefix: append([]byte(nil), data[0x19462:0x194a2]...)}
+	b := &bankDialogue{original: o, font: font, paint: paint, prefix: append([]byte(nil), data[0x19462:0x194a2]...)}
 	// SAR2 檔案偏移；動態片段中間的數字與 & 控制碼由原版消費。
 	bindings := [][4]int{
 		{0x19def, 0x19e15, 0, 0}, {0x19e15, 0x19e3c, 0, 0},
@@ -160,6 +174,14 @@ func newBankDialogue(o *oracle.Oracle, data []byte, texts map[string]string, fon
 	return b, nil
 }
 
+// abort 用於已認領字形後的來源不符：壓下的字形照原版寫回後退出，不留空白框。
+func (b *bankDialogue) abort(o *oracle.Oracle) {
+	if b.active {
+		glyphpatch.Reveal(o, dialogueBox)
+	}
+	b.reset()
+}
+
 func (b *bankDialogue) reset() {
 	b.active, b.pending, b.pendingNumber, b.prompt = false, false, false, false
 	b.current = nil
@@ -170,6 +192,27 @@ func (b *bankDialogue) reset() {
 
 func (b *bankDialogue) begin(o *oracle.Oracle) {
 	pos := o.Word(oracle.Far(0x01b1, 0xff4c)) - 1
+	// 規格066：問候前的省略號由模組 A077 把 FF4C 設到同一個「.」(A98B) 逐點印出，
+	// 接著 A094 從 A98D 印問候。點併入問候字段，由中文的「……」取代，不先露出英文點。
+	if pos == bankGreetingDot {
+		var greeting *bankSource
+		for _, s := range b.sources {
+			if s.key == "zelres2.file.019def" {
+				greeting = s
+			}
+		}
+		if greeting == nil || o.Byte(oracle.Far(0x01b1, pos)) != '.' || o.DSReg() != 0x01b1 || o.AX() != 0x0100|'.' || o.BX() < 54 || o.BX()+8 > 264 || o.CX()&255 < 99 || o.CX()&255 > 139 || !bytes.Equal(b.prefix, o.Bytes(oracle.Far(0x01b1, 0xa000), len(b.prefix))) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x711b), 5), []byte{0x2e, 0xff, 0x16, 0x22, 0x20}) {
+			b.abort(o)
+			return
+		}
+		if !b.active || b.current == nil || b.current.source != greeting || b.phase != 0 || b.index != 0 {
+			b.reset()
+			b.active, b.current = true, &bankPart{source: greeting}
+		}
+		b.pending = true
+		glyphpatch.Claim(o, 0x7120)
+		return
+	}
 	var start *bankSource
 	for _, s := range b.sources {
 		if len(s.first.positions) > 0 && pos == s.first.positions[0] {
@@ -181,7 +224,7 @@ func (b *bankDialogue) begin(o *oracle.Oracle) {
 		return
 	}
 	if o.DSReg() != 0x01b1 || o.AX()>>8 != 1 || o.BX() < 54 || o.BX()+8 > 264 || o.CX()&255 < 99 || o.CX()&255 > 139 || byte(o.AX()) != o.Byte(oracle.Far(0x01b1, pos)) || !bytes.Equal(b.prefix, o.Bytes(oracle.Far(0x01b1, 0xa000), len(b.prefix))) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x711b), 5), []byte{0x2e, 0xff, 0x16, 0x22, 0x20}) {
-		b.reset()
+		b.abort(o)
 		return
 	}
 	if start != nil {
@@ -195,7 +238,7 @@ func (b *bankDialogue) begin(o *oracle.Oracle) {
 				}
 			}
 			if !valid {
-				b.reset()
+				b.abort(o)
 				return
 			}
 		}
@@ -204,7 +247,7 @@ func (b *bankDialogue) begin(o *oracle.Oracle) {
 		b.phase, b.index = 0, 0
 	}
 	if b.current == nil {
-		b.reset()
+		b.abort(o)
 		return
 	}
 	s := b.current.source
@@ -216,7 +259,7 @@ func (b *bankDialogue) begin(o *oracle.Oracle) {
 		if b.index == 0 {
 			// 固定銀行來源的數字暫存位置由正常交易字形追蹤核對。
 			if pos != bankNumberAddress {
-				b.reset()
+				b.abort(o)
 				return
 			}
 			raw := o.Bytes(oracle.Far(0x01b1, pos), 10)
@@ -225,14 +268,14 @@ func (b *bankDialogue) begin(o *oracle.Oracle) {
 				end++
 			}
 			if end < 1 || end > 8 || end >= len(raw) || raw[end] != 255 {
-				b.reset()
+				b.abort(o)
 				return
 			}
 			n.raw = append([]byte(nil), raw[:end+1]...)
 			n.box = image.Rect(int(o.BX()), int(o.CX()&255), int(o.BX())+8, int(o.CX()&255)+8)
 		}
 		if int(o.CX()&255) != n.box.Min.Y || int(o.BX()) < n.box.Min.X || int(o.BX()) > n.box.Max.X {
-			b.reset()
+			b.abort(o)
 			return
 		}
 		n.box.Max.X = int(o.BX()) + 8
@@ -245,7 +288,7 @@ func (b *bankDialogue) begin(o *oracle.Oracle) {
 		fragment = s.last
 	}
 	if b.index >= len(fragment.positions) || pos != fragment.positions[b.index] || !bytes.Equal(fragment.raw, o.Bytes(oracle.Far(0x01b1, fragment.start), len(fragment.raw))) {
-		b.reset()
+		b.abort(o)
 		return
 	}
 	b.index++
@@ -254,10 +297,14 @@ func (b *bankDialogue) begin(o *oracle.Oracle) {
 		b.index = 0
 	}
 	b.pending = true
+	// 規格066：問句字形由中文取代；金額數字保留原版圖形，不認領。
+	if !b.pendingNumber {
+		glyphpatch.Claim(o, 0x7120)
+	}
 }
 
 func (b *bankDialogue) captureFrame(o *oracle.Oracle) {
-	b.completed = dialogueCrop(o.Indexed())
+	b.completed = dialogueCrop(glyphpatch.Indexed(o))
 	b.palette = o.Palette()
 	b.paintSerial = b.paint.serial
 }
@@ -267,10 +314,10 @@ func (b *bankDialogue) capture(o *oracle.Oracle) {
 	}
 	if b.pendingNumber {
 		n := &b.current.number
-		n.pixels = labelCrop(o.Indexed(), n.box)
+		n.pixels = labelCrop(glyphpatch.Indexed(o), n.box)
 		for _, v := range n.pixels {
 			if v != 0 && v != 9 {
-				b.reset()
+				b.abort(o)
 				return
 			}
 		}
@@ -314,19 +361,19 @@ func (b *bankDialogue) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, orig
 	}
 	masks, known := b.paint.masks(b.paintSerial, raw)
 	if pal != b.palette || !known || !b.pending && !visibleRowsEqual(b.completed, raw, []image.Rectangle{dialogueBox}, masks) {
-		b.reset()
+		b.abort(b.original)
 		return false
 	}
 	tokens := b.tokens()
 	positions, valid := quoteLayout(tokens)
 	if !valid {
-		b.reset()
+		b.abort(b.original)
 		return false
 	}
 	for _, t := range tokens {
 		if n := t.number; n != nil {
 			if n.box.Empty() || len(n.pixels) != n.box.Dx()*n.box.Dy() {
-				b.reset()
+				b.abort(b.original)
 				return false
 			}
 		}
@@ -347,7 +394,7 @@ func (b *bankDialogue) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, orig
 		at := positions[i].Add(box.Min)
 		if n := t.number; n != nil {
 			if len(n.pixels) != n.box.Dx()*n.box.Dy() {
-				b.reset()
+				b.abort(b.original)
 				return false
 			}
 			for y := 0; y < n.box.Dy()*3; y++ {

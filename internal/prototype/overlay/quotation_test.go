@@ -30,10 +30,10 @@ func TestQuotationCatalogAndNumberBitmapFallback(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer o.Close()
-	keys := []string{"zelres2.file.0188f4", "zelres2.file.01891d", "zelres2.file.01885d", "zelres2.file.018904"}
+	keys := []string{"zelres2.file.0188f4", "zelres2.file.01891d", "zelres2.file.01885d", "zelres2.file.018904", "zelres2.file.0188b8"}
 	for _, bad := range []string{"missing", "duplicate", "unknown", "incomplete", "font"} {
 		t.Run(bad, func(t *testing.T) {
-			texts := map[string]string{keys[0]: "購買{item}？", keys[1]: "售價{price}金幣。", keys[2]: "舊武器折抵{trade}金幣。", keys[3]: "確定交易嗎？"}
+			texts := map[string]string{keys[0]: "購買{item}？", keys[1]: "售價{price}金幣。", keys[2]: "舊武器折抵{trade}金幣。", keys[3]: "確定交易嗎？", keys[4]: "舊盾牌折抵{trade}金幣。"}
 			switch bad {
 			case "missing":
 				texts[keys[1]] = "售價金幣。"
@@ -56,7 +56,7 @@ func TestQuotationCatalogAndNumberBitmapFallback(t *testing.T) {
 	}
 	// 合成數字圖形測試只證明顯示契約，不當作原版987／65的行為證據。
 	raw := make([]byte, 64000)
-	q := &Quotation{font: font, paint: &paintHistory{}, active: true, ready: 10, completed: dialogueCrop(raw), item: &labelSource{text: []rune("測試")}, texts: [4]string{"購買{item}？", "售價{price}金幣。", "舊武器折抵{trade}金幣。", "確定交易嗎？"}}
+	q := &Quotation{font: font, paint: &paintHistory{}, active: true, ready: 10, completed: dialogueCrop(raw), item: &labelSource{text: []rune("測試")}, texts: [5]string{"購買{item}？", "售價{price}金幣。", "舊武器折抵{trade}金幣。", "確定交易嗎？", "舊盾牌折抵{trade}金幣。"}}
 	q.price = quoteNumber{raw: []byte("987\xff"), box: image.Rect(0, 0, 21, 8), pixels: make([]byte, 21*8)}
 	q.trade = quoteNumber{raw: []byte("65\xff"), box: image.Rect(0, 0, 14, 8), pixels: make([]byte, 14*8)}
 	for i := range q.price.pixels {

@@ -29,6 +29,8 @@ var townBackgroundProfiles = []townBackgroundProfile{
 type TownBackground struct {
 	indices, palette []byte
 	art              *image.RGBA
+	// Reason 是最近一次未接入的檢查項目，供診斷。
+	Reason string
 }
 
 func townBackgroundHash(b []byte) string { return fmt.Sprintf("%x", sha256.Sum256(b)) }
@@ -90,14 +92,17 @@ func NewTownBackground(root, reference, palette, memoryReference, artwork string
 }
 
 func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed, rgb []byte) ([]bool, bool) {
+	s.Reason = "input"
 	if mode != 0x13 || len(primary) != 65536 || len(resources) != 65536 || len(indexed) != 64000 || len(rgb) != 192000 {
 		return nil, false
 	}
+	s.Reason = "code"
 	if binary.LittleEndian.Uint16(primary[0xff2c:]) != 0x11b1 || binary.LittleEndian.Uint16(resources[0x8000:]) != 0x8006 ||
 		townBackgroundHash(primary[0x3000:0x32fc]) != "9d263b7441ef4edc7ba21af5f7c8d66806ce5d4e993d0a2ee69cb3cbeac303f5" ||
 		townBackgroundHash(primary[0xa000:0xb500]) != "1c2a41755ddff41db37e45b22517b1d9e3bfb8a658afa9d7a48fee2b05b12a5c" {
 		return nil, false
 	}
+	s.Reason = "profile"
 	tileLimit := 0
 	for _, p := range townBackgroundProfiles {
 		if townBackgroundHash(primary[0xc000:0xc040]) == p.module && townBackgroundHash(resources[0x8100:0x8100+p.tiles*48]) == p.atlas && townBackgroundHash(resources[0xd000:0xd000+p.tiles*8]) == p.mask && townBackgroundHash(resources[0x8006:0x8106]) == p.flags {
@@ -117,10 +122,12 @@ func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed,
 		i := (24+y)*320 + 48 + x
 		return indexed[i] == want && bytes.Equal(rgb[i*3:i*3+3], s.palette[int(want)*3:int(want)*3+3])
 	}
+	s.Reason = "sky"
 	for y := 0; y < 54; y++ {
 		for x := 0; x < 224; x++ {
 			i := y*224 + x
 			if !matches(x, y, s.indices[i]) {
+				s.Reason = fmt.Sprintf("sky %d,%d", 48+x, 24+y)
 				return nil, false
 			}
 			mask[i] = true
@@ -129,6 +136,7 @@ func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed,
 	for col := 0; col < 28; col++ {
 		for row := 0; row < 3; row++ {
 			tile := int(primary[0xe000+col*8+row])
+			s.Reason = "tiles"
 			if tile >= tileLimit {
 				return nil, false
 			}
@@ -146,6 +154,7 @@ func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed,
 						want = s.indices[i]
 					}
 					if !matches(x, y, want) {
+						s.Reason = fmt.Sprintf("tile %d,%d", 48+x, 24+y)
 						return nil, false
 					}
 					mask[i] = useBackground
@@ -153,6 +162,7 @@ func (s *TownBackground) backgroundMask(mode uint8, primary, resources, indexed,
 			}
 		}
 	}
+	s.Reason = ""
 	return mask, true
 }
 

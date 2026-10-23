@@ -5,7 +5,8 @@ IFS= read -r version < "$project/VERSION"
 [[ $version =~ ^v\.[0-9]+\.[0-9]+\.[0-9]+-[0-9]{8}$ ]]
 version_core=${version#v.}
 version_core=${version_core%%-*}
-work="$project/workplace/release-v${version_core//./}"
+# 預設工作區由版號推得；ZELIARD_RELEASE_WORK 可指向同一版本工作區下的獨立打包目錄。
+work=${ZELIARD_RELEASE_WORK:-$project/workplace/release-v${version_core//./}}
 [[ -d "$work" && -d "$project/dist-all" && -d "$project/workplace/gocache" && -d /home/anr2/cht/dosgolem/workplace/gomodcache ]]
 common=(--rm --label project=zeliard --network none --user "$(id -u):$(id -g)" --memory 3g --cpus 1 --cpu-shares 128 --pids-limit 256)
 phase=${1:-all}

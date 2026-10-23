@@ -39,12 +39,14 @@ def prepare():
     for name in ('go.mod','go.sum','VERSION','LICENSE'):shutil.copy2(P/name,W/'sources'/name)
     shutil.copytree(OLD/'dosgolem',W/'dosgolem')
     # Isolate git discovery from the parent project; apply only to this new copy.
-    patch=P/'tools/dosgolem-bulk-read.patch'
     patch_env={**os.environ,'GIT_CEILING_DIRECTORIES':str(W)}
-    subprocess.run(['git','apply','--check',str(patch)],cwd=W/'dosgolem',env=patch_env,check=True)
-    subprocess.run(['git','apply',str(patch)],cwd=W/'dosgolem',env=patch_env,check=True)
+    # 規格066：唯讀批次讀取之後再套每次寫入監看；兩者都不含 Zeliard 條件。
+    for patch in (P/'tools/dosgolem-bulk-read.patch',P/'tools/dosgolem-write-watch.patch'):
+        subprocess.run(['git','apply','--check',str(patch)],cwd=W/'dosgolem',env=patch_env,check=True)
+        subprocess.run(['git','apply',str(patch)],cwd=W/'dosgolem',env=patch_env,check=True)
     assert 'return o.m.ReadBytes' in (W/'dosgolem/oracle/oracle.go').read_text()
     assert (W/'dosgolem/internal/machine/read_bytes.go').is_file()
+    assert 'func (o *Oracle) WatchEveryWrite' in (W/'dosgolem/oracle/write_every.go').read_text()
     (W/'build.work').write_text('go 1.24.0\nuse (\n /build/sources\n /build/dosgolem\n)\n')
     for name in ('linux','windows','mac-amd64','mac-arm64','macos'):(W/name).mkdir()
     for name in ('full-local','smoke','promo'):(D/name).mkdir(parents=True,exist_ok=False)
@@ -85,7 +87,7 @@ def prepare():
             entries.update({'-manual-hd-art':'assets/manual-hd','-world-town-art':'assets/manual-hd'})
         for flag,relative in entries.items():assert (root/relative).exists(),(flag,relative)
         write(root/'runtime-args.json',list(entries.items()))
-        write(root/'bundle-options.json',['-adlib','-audio','ebiten','-realtime','-hd='+str(edition=='CHT-HD').lower()])
+        write(root/'bundle-options.json',['-adlib','-audio','ebiten','-realtime','-glyph-patch','-hd='+str(edition=='CHT-HD').lower()])
         (root/'VERSION').write_text(VERSION+'\n');(root/'EDITION').write_text(edition+'\n')
     write(W/'identity.json',{'version':VERSION,'source_files':inventory(W/'sources'),'dosgolem_files':inventory(W/'dosgolem'),'original_files':inventory(P/'workplace/orig'),'asset_sources':sources,'font_source':str(FONT),'font_sha256':sha(FONT/'font.hex.gz'),'smooth_font_sha256':sha(FONT/'font.hex.gz.smooth.json.gz'),'complete_art_sha256':sha(MANUAL/'complete-art.json'),'coherent-bosses_sha256':sha(MANUAL/'coherent-bosses.json'),'cave-transition_sha256':sha(MANUAL/'cave-transition.json'),'rights':'full-local only'})
     print('PREPARED',VERSION,EDITIONS,flush=True)
@@ -104,6 +106,10 @@ def setup(root,platform,edition):
 
 包含完整原版遊戲、目前繁體中文、粉圓字型、原版AdLib音樂與Nuked-OPL3音色改善。
 {'本版預設HD，可在工具列切回原貌；包含050已盤點補圖，未知來源保留原貌。' if edition=='CHT-HD' else '本版保留原版美術，不附HD圖庫；HD版為另一個獨立封包。'}
+1.0.6：已有譯文的原版字形改由中文直接取代，不先顯示英文；補齊國王、長老、商店、銀行、
+旅館、洞窟訊息與標題版權等中文，人名地名寫成「中文（English）」並屬試譯。
+{'進房間的人像從第一個畫面起顯示HD，片頭捲字溶解時中文同步淡出。' if edition=='CHT-HD' else '片頭捲字溶解時中文同步淡出。'}
+Windows版的遊戲與使用者設定目錄位於不同磁碟時也可啟動。結局文字尚未中文化。
 
 Windows開啟Zeliard.exe，macOS開啟.app，Linux執行AppImage。
 工具列可設定鍵盤及USB／藍牙手把；藍牙先由作業系統配對。
@@ -127,7 +133,7 @@ macOS：~/Library/Application Support/Zeliard-CHT
 
 macOS與Windows真機、實體USB／藍牙手把未驗。未知來源安全退回原貌。
 未宣稱全遊戲翻譯、每幀HD或通關驗收。封包驗收範圍見同版smoke記錄。
-本次只作啟動、工具列、居民對話與第一洞窟的限定檢查，不作完整通關或30fps保證。
+本次作探針、字形差分與限定啟動檢查，不作完整通關或30fps保證。
 含原版資料與衍生美術，只留本機，不上傳或公開散布。
 '''
     (root/'README.txt').write_text(text.replace('\n','\r\n') if platform=='windows' else text,encoding='utf-8-sig' if platform=='windows' else 'utf-8',newline='')

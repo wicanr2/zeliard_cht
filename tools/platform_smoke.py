@@ -57,6 +57,15 @@ try:
     report={'status':'PASS_NATIVE_PACKAGE_LAUNCH','platform':mode,'method':'AppImage extraction-mode native AppRun' if mode=='linux' else 'Wine auxiliary startup; Windows hardware not tested','package_sha256':h(package),'binary_sha256':h(binary),'exit_code':0,'startup_assets_ready':True,'unused_hd_assets_deferred':True,'deferred_images':observed['hd_deferred_images'],'original_not_advanced':True,'standalone_asset_resolution':True,'separate_user_storage':True,'startup_audio':'off; not audio acceptance','startup_log':(O/'user/startup.log').read_text(),'command':command}
     report['edition']=edition or 'legacy'
     report['ui_text_size']=observed['ui_text_size']
+    if mode=='windows':
+        # 遊戲在Z:而預設使用者目錄在C:，1.0.5曾誤判為位於原版目錄內。
+        cross=dict(env);cross.pop('ZELIARD_USER_DIR')
+        log=(O/'cross-volume.log').open('wb');p=subprocess.Popen([wine,str(binary),'-audio','off','-capture','Z:\\output\\cross-volume.png','-capture-frames',capture_frames],cwd=O,env=cross,stdout=log,stderr=log);children.append(p)
+        p.wait(timeout=exit_timeout)
+        users=list((O/'wine-prefix/drive_c/users').glob('*/AppData/Roaming/Zeliard-CHT'))
+        assert p.returncode==0 and len(users)==1 and (users[0]/'game/SAVETEST.usr').is_file(),(p.returncode,(O/'cross-volume.log').read_text(errors='replace')[-2000:])
+        startup=(users[0]/'startup.log').read_text();assert '使用者目錄不可' not in startup and '原版目錄 Z:\\output' in startup,startup
+        report['cross_volume_default_user_dir']={'status':'PASS','startup_log':startup}
     (O/'receipt.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(mode,report['status'],flush=True)
 finally:

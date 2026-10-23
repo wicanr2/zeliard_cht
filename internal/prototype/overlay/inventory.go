@@ -7,6 +7,7 @@ import (
 	"image"
 
 	"github.com/wicanr2/dosgolem/oracle"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 // 裝備頁 AA2B 的 ASCIIZ 迴圈每字重新進入。只有完整來源、逐字位置、
@@ -18,7 +19,7 @@ func (l *Labels) beginInventory(o *oracle.Oracle) {
 		bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x24ea), 8), []byte{0, 9, 18, 27, 36, 45, 54, 63}) &&
 		o.Byte(oracle.Far(0x01b1, 0xff77)) == 0
 	if !valid {
-		l.inventoryPending = nil
+		l.dropInventory(o)
 		return
 	}
 	if l.inventoryPending == nil {
@@ -56,12 +57,23 @@ func (l *Labels) beginInventory(o *oracle.Oracle) {
 		l.inventoryIndex >= len(s.raw) || int(o.SI()) != int(s.base)+s.offset+l.inventoryIndex ||
 		int(o.BX()) != p.box.Min.X+l.inventoryIndex*8 || int(o.CX()&255) != p.box.Min.Y ||
 		uint8(o.AX()>>8)*9 != p.foreground {
-		l.inventoryPending = nil
+		l.dropInventory(o)
 		return
 	}
 	if s.raw[l.inventoryIndex] != 0 {
 		l.inventoryIndex++
+		// 規格066：已核對的物品名字形由中文取代；AA44 為陰影、AA4F 為字色。
+		glyphpatch.Claim(o, 0xaa44, 0xaa4f)
 	}
+}
+
+// dropInventory 放棄進行中的物品名；已壓下的字形照原版寫回。
+func (l *Labels) dropInventory(o *oracle.Oracle) {
+	if p := l.inventoryPending; p != nil {
+		glyphpatch.Unclaim(o, 0xaa44, 0xaa4f)
+		glyphpatch.Reveal(o, p.rows...)
+	}
+	l.inventoryPending = nil
 }
 
 // inventoryIconFrame 只接受本輪正常路徑的完整面板、零物品圖示與來源。
@@ -107,13 +119,21 @@ func (l *Labels) observeInventoryIcon(raw []byte, pal [256][3]uint8) {
 }
 
 func (l *Labels) finishInventory(o *oracle.Oracle) {
+	glyphpatch.Unclaim(o, 0xaa44, 0xaa4f)
 	p := l.inventoryPending
 	l.inventoryPending = nil
+	// 規格066：已認領的物品名若最後沒有存入，照原版寫回，不留空白。
+	stored := false
+	defer func() {
+		if p != nil && !stored {
+			glyphpatch.Reveal(o, p.rows...)
+		}
+	}()
 	if p == nil || l.inventoryIndex != len(p.source.raw)-1 || int(o.SI()) != int(p.source.base)+p.source.offset+len(p.source.raw) ||
 		o.DSReg() != 0x01b1 || uint8(o.AX()>>8)*9 != p.foreground {
 		return
 	}
-	p.raw = labelRowsCrop(o.Indexed(), p.rows)
+	p.raw = labelRowsCrop(glyphpatch.Indexed(o), p.rows)
 	ink := false
 	for _, v := range p.raw {
 		if v != 0 && v != p.foreground && (p.shadow == 0 || v != p.shadow) {
@@ -125,5 +145,6 @@ func (l *Labels) finishInventory(o *oracle.Oracle) {
 		return
 	}
 	p.palette, p.paintSerial = o.Palette(), l.paint.serial
+	stored = true
 	l.store(*p)
 }

@@ -6,6 +6,7 @@ import (
 	"image"
 
 	"github.com/wicanr2/dosgolem/oracle"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 type paintEvent struct {
@@ -38,7 +39,7 @@ func observePaint(o *oracle.Oracle) *paintHistory {
 			h.invalidate()
 			return
 		}
-		h.record(box, o.Indexed())
+		h.record(box, glyphpatch.Indexed(o))
 	})
 	return h
 }

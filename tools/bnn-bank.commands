@@ -1,0 +1,67 @@
+# 冷開機讀原包 BNN（29 顆寶石），在 Muralla 找銀行門口；只送原版按鍵。
+run 12000000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x39 50000
+run 7950000
+key 0x41 500000
+run 2000000
+key 0x15 150000
+run 1500000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0xe 100000
+run 200000
+key 0x30 100000
+run 200000
+key 0x31 100000
+run 200000
+key 0x31 100000
+run 200000
+key 0x1c 100000
+run 16000000
+shot loaded
+key 0x4b 2000000
+run 300000
+shot left-1
+key 0x4b 2000000
+run 300000
+shot left-2
+key 0x4b 2000000
+run 300000
+shot left-3
+key 0x4b 2000000
+run 300000
+shot left-4
+key 0x4b 2000000
+run 300000
+shot left-5
+key 0x4b 2000000
+run 300000
+shot left-6
+key 0x4b 2000000
+run 300000
+shot left-7
+key 0x4b 2000000
+run 300000
+shot left-8

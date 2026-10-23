@@ -15,6 +15,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -26,6 +27,7 @@ import (
 	"github.com/wicanr2/zeliard_cht/internal/prototype/cheats"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/controls"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/fm"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/hd"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/overlay"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/sound"
@@ -44,6 +46,7 @@ type game struct {
 	textSizeFocus               int
 	uiTextOverflow              []string
 	hdJobs                      []*hdLoadJob
+	roomPrefixes                map[int][]byte
 	hdLoading                   *hdLoadJob
 	hdFamilySignature, hdFamily string
 
@@ -144,6 +147,10 @@ type game struct {
 	churchHDMatched      bool
 	churchHDFrame        int
 	hdEnabled, hdMatched bool
+	layers               map[string]bool
+	beforeText           func()
+	portraits            map[string]*portraitHold
+	dissolveHeld         *dissolveHold
 	overlayPixels        []byte
 	texture              *ebiten.Image
 	canvas               *image.RGBA
@@ -660,206 +667,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	g.uiTextOverflow = nil
 	begin := time.Now()
 	defer func() { g.lastDrawCost = time.Since(begin); g.cpuFrameUsed = 0; g.perf.draw(begin) }()
-	g.manualArtwork.BeginFrame()
-	w, h, rawRGB := g.o.ScreenRGB()
-	raw := g.o.Indexed()
-	rgb, townRaw := rawRGB, raw
-	var presented *hd.TownPresentation
-	if g.townFrames != nil {
-		blocked := g.townDialogue != nil && g.townDialogue.State()["key"] != ""
-		if blocked {
-			presented = g.townFrames.PresentDialogue(raw, rawRGB, g.townDialogue.BackdropBox())
-		} else {
-			presented = g.townFrames.Present(raw, rawRGB, false)
-		}
-		if presented != nil {
-			rgb, townRaw = presented.RGB, presented.Indexed
-		}
-	}
-	var cavePresented *hd.CavePresentation
-	if g.caveFrames != nil {
-		blocked := g.townDialogue != nil && g.townDialogue.State()["key"] != ""
-		cavePresented = g.caveFrames.Present(raw, rawRGB, blocked)
-		if cavePresented != nil && presented == nil {
-			rgb, townRaw = cavePresented.RGB, cavePresented.Indexed
-		}
-	}
-
-	draw.Draw(g.canvas, g.canvas.Bounds(), &image.Uniform{color.RGBA{18, 23, 32, 255}}, image.Point{}, draw.Src)
-	if w == 320 && h == 200 && len(rgb) == 320*200*3 {
-		bitmap.DrawRGB3(g.canvas, rgb, image.Pt(0, barHeight))
-	}
-	g.hdMatched = false
-	if g.hdEnabled && g.hd != nil && w == 320 && h == 200 {
-		g.hdMatched = g.hd.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
-	}
-	g.townSkyHDMatched = false
-	if g.hdEnabled && g.townSkyHD != nil && w == 320 && h == 200 {
-		g.townSkyHDMatched = g.townSkyHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0xc000), 64), raw, rawRGB, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.townSkyHDMatched
-	}
-	g.townBackgroundMatch = false
-	var townPrimary, townResources, townExtra, townPalette []byte
-	if g.townBackgroundHD != nil || g.townSceneryHD != nil || g.worldTowns != nil || g.manualArtwork != nil {
-		townPrimary = g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
-		townResources = g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
-		townExtra = g.o.Bytes(oracle.Far(0x21b1, 0), 65536)
-		if presented != nil {
-			townPrimary, townResources, townExtra = presented.Primary, presented.Resources, presented.Extra
-		}
-		if cavePresented != nil && presented == nil {
-			townPrimary = cavePresented.Memory[0x1b10:0x11b10]
-			townResources = cavePresented.Memory[0x11b10:0x21b10]
-			townExtra = cavePresented.Memory[0x21b10:0x31b10]
-		}
-	}
-	if g.townGroundHD != nil || g.townPlayerHD != nil {
-		if presented != nil {
-			townPalette = presented.Palette
-		} else {
-			for _, c := range g.o.Palette() {
-				townPalette = append(townPalette, c[:]...)
-			}
-		}
-	}
-	if g.hdEnabled && g.townBackgroundHD != nil && w == 320 && h == 200 {
-		g.townBackgroundMatch = g.townBackgroundHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townRaw, rgb, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.townBackgroundMatch
-	}
-	g.townSceneryMatch = false
-	if g.hdEnabled && g.worldTowns != nil && w == 320 && h == 200 {
-		g.hdMatched = g.worldTowns.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townRaw, rgb, image.Pt(0, barHeight)) || g.hdMatched
-	}
-	if g.hdEnabled && g.townSceneryHD != nil && w == 320 && h == 200 {
-		g.townSceneryMatch = g.townSceneryHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, image.Pt(0, barHeight), true)
-		g.hdMatched = g.hdMatched || g.townSceneryMatch
-	}
-	g.townGroundMatch = false
-	if g.hdEnabled && g.townGroundHD != nil && w == 320 && h == 200 {
-		g.townGroundMatch = g.townGroundHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, townPalette, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.townGroundMatch
-	}
-	g.townActorsMatch = false
-	g.townActorsHD.Clear()
-	if g.hdEnabled && g.townActorsHD != nil && g.townSceneryMatch && w == 320 && h == 200 {
-		g.townActorsMatch = g.townActorsHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, townPalette, image.Pt(0, barHeight))
-	}
-	g.townPlayerMatch = g.townActorsMatch
-	if g.hdEnabled && !g.townActorsMatch && g.townPlayerHD != nil && g.townSceneryMatch && w == 320 && h == 200 {
-		g.townPlayerMatch = g.townPlayerHD.Draw(g.canvas, g.o.VideoMode(), townPrimary, townResources, townExtra, townRaw, rgb, townPalette, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.townPlayerMatch
-	}
-	g.kingHDMatched, g.kingHDPose = false, -1
-	g.caveTerrainMatch = false
-	if g.hdEnabled && g.caveTerrainHD != nil && cavePresented != nil && w == 320 && h == 200 {
-		g.caveTerrainMatch = g.caveTerrainHD.Draw(g.canvas, cavePresented, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.caveTerrainMatch
-	}
-	if g.hdEnabled && g.kingHD != nil && w == 320 && h == 200 {
-		g.kingHDMatched, g.kingHDPose = g.kingHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.kingHDMatched
-	}
-	g.sageHDMatched, g.sageHDPose = false, -1
-	g.sageFramesHD.Clear()
-	if g.hdEnabled && g.sageFramesHD != nil && w == 320 && h == 200 {
-		p := g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
-		r := g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
-		var palette []byte
-		for _, color := range g.o.Palette() {
-			palette = append(palette, color[:]...)
-		}
-		g.sageHDMatched = g.sageFramesHD.Draw(g.canvas, g.o.VideoMode(), p, r, raw, rawRGB, palette, image.Pt(0, barHeight))
-		if g.sageHDMatched {
-			g.sageHDPose = g.sageFramesHD.State()["pose"].(int)
-		}
-		g.hdMatched = g.hdMatched || g.sageHDMatched
-	} else if g.hdEnabled && g.sageHD != nil && w == 320 && h == 200 {
-		g.sageHDMatched, g.sageHDPose = g.sageHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.sageHDMatched
-	}
-	g.merchantHDMatched, g.merchantHDPose = false, -1
-	g.merchantFramesHD.Clear()
-	if g.hdEnabled && g.merchantFramesHD != nil && w == 320 && h == 200 {
-		p := g.o.Bytes(oracle.Far(0x1b1, 0), 65536)
-		r := g.o.Bytes(oracle.Far(0x11b1, 0), 65536)
-		var palette []byte
-		for _, color := range g.o.Palette() {
-			palette = append(palette, color[:]...)
-		}
-		g.merchantHDMatched = g.merchantFramesHD.Draw(g.canvas, g.o.VideoMode(), p, r, raw, rawRGB, palette, image.Pt(0, barHeight))
-		if g.merchantHDMatched {
-			g.merchantHDPose = g.merchantFramesHD.State()["pose"].(int)
-		}
-		g.hdMatched = g.hdMatched || g.merchantHDMatched
-	} else if g.hdEnabled && g.merchantHD != nil && w == 320 && h == 200 {
-		g.merchantHDMatched, g.merchantHDPose = g.merchantHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.merchantHDMatched
-	}
-	g.bankHDMatched, g.bankHDPose = false, -1
-	if g.hdEnabled && g.bankHD != nil && w == 320 && h == 200 {
-		g.bankHDMatched, g.bankHDPose = g.bankHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.bankHDMatched
-	}
-	g.itemShopHDMatched, g.itemShopHDPose = false, -1
-	if g.hdEnabled && g.itemShopHD != nil && w == 320 && h == 200 {
-		g.itemShopHDMatched, g.itemShopHDPose = g.itemShopHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.itemShopHDMatched
-	}
-	g.churchHDMatched, g.churchHDFrame = false, -1
-	if g.hdEnabled && g.churchHD != nil && w == 320 && h == 200 {
-		g.churchHDMatched, g.churchHDFrame = g.churchHD.Draw(g.canvas, raw, rawRGB, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.churchHDMatched
-	}
-	g.interiorHDMatch = false
-	g.interiorHD.Clear()
-	if g.hdEnabled && g.interiorHD != nil && w == 320 && h == 200 {
-		var palette []byte
-		for _, color := range g.o.Palette() {
-			palette = append(palette, color[:]...)
-		}
-		g.interiorHDMatch = g.interiorHD.Draw(g.canvas, g.o.VideoMode(), g.o.Bytes(oracle.Far(0x1b1, 0), 65536), g.o.Bytes(oracle.Far(0x11b1, 0), 65536), raw, rawRGB, palette, image.Pt(0, barHeight))
-		g.hdMatched = g.hdMatched || g.interiorHDMatch
-	}
-	if g.hdEnabled && g.manualArtwork != nil && w == 320 && h == 200 {
-		g.hdMatched = g.manualArtwork.DrawCaveTransition(g.canvas, raw, rawRGB, image.Pt(0, barHeight)) || g.hdMatched
-		g.manualArtwork.SetResources(townResources, townExtra)
-		g.hdMatched = g.manualArtwork.Draw(g.canvas, townRaw, rgb, image.Pt(0, barHeight)) || g.hdMatched
-		g.hdMatched = g.manualArtwork.DrawCoherent(g.canvas, townRaw, rgb, image.Pt(0, barHeight)) || g.hdMatched
-	}
-	if presented != nil && !presented.DialogueBox.Empty() {
-		restoreNativeBox(g.canvas, rawRGB, presented.DialogueBox)
-	}
-	if g.intro != nil && w == 320 && h == 200 {
-		g.intro.Frame(raw, rawRGB)
-		clear(g.overlayPixels)
-		if g.intro.Draw(g.overlayPixels, scale, nil) {
-			src := &image.RGBA{Pix: g.overlayPixels, Stride: width * 4, Rect: image.Rect(0, 0, width, 600)}
-			draw.Draw(g.canvas, image.Rect(0, barHeight, width, barHeight+600), src, image.Point{}, draw.Over)
-		}
-	}
-	if g.scroll != nil && w == 320 && h == 200 {
-		g.scroll.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
-	}
-	if g.introThreat != nil && w == 320 && h == 200 {
-		g.introThreat.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
-	}
-	if g.introStory != nil && w == 320 && h == 200 {
-		g.introStory.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
-	}
-	if g.dialogue != nil && w == 320 && h == 200 {
-		g.dialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
-	}
-	if g.menuLabels != nil && w == 320 && h == 200 {
-		g.menuLabels.ObserveFrame(g.o.Indexed(), g.o.Palette())
-		g.menuLabels.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
-	}
-	if g.hud != nil && w == 320 && h == 200 {
-		g.hud.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
-	}
-	if g.townDialogue != nil && w == 320 && h == 200 {
-		g.townDialogue.Draw(g.canvas, g.o.Indexed(), g.o.Palette(), image.Pt(0, barHeight))
-	}
-	presented.ApplyErase(g.canvas, image.Pt(0, barHeight))
+	presented, cavePresented, w, h, raw, rawRGB := g.compose()
 	g.button(toolbarOriginal, g.label("original"), !g.hdEnabled)
 	hdLabel := "hd"
 	if g.hd != nil {
@@ -1165,6 +973,12 @@ func main() {
 	capture := flag.String("capture", "", "GUI 測試擷取路徑，完成後結束")
 	captureRequest := flag.String("capture-request", "", "GUI 測試：等待指定訊號檔存在再擷取，取代更新次數條件")
 	observePath := flag.String("observe", "", "可選：每秒寫入唯讀執行進度，供 GUI 驗證診斷")
+	flickerProbe := flag.String("flicker-probe", "", "可選：不開視窗，以鍵序檔重播並在每個切片點合成，記錄閃爍證據")
+	flickerOut := flag.String("flicker-out", "", "閃爍探針輸出前綴；檔案須不存在")
+	flickerSlice := flag.Uint64("flicker-slice", 20000, "閃爍探針每次合成之間的原版指令數")
+	flickerCensus := flag.Bool("flicker-census", false, "閃爍探針另外統計所有VRAM寫入者")
+	flickerShots := flag.String("flicker-shots", "", "閃爍探針在這些指令數（逗號分隔、遞增）之後存下合成畫面")
+	glyphPatch := flag.Bool("glyph-patch", false, "於可寫層放入patch版GMMCGA.BIN，已認領的原版字形不進畫面；規格066")
 	inputTrace := flag.String("input-trace", "", "可選：本地原版輸入／週期日誌，不覆寫既有檔案")
 	audioMode := flag.String("audio", "off", "原版音效試作：off 或 ebiten；正式預設待確認")
 	audioWAV := flag.String("audio-wav", "", "可選：將原版生成取樣另存新WAV；不是裝置監聽錄音")
@@ -1282,9 +1096,8 @@ func main() {
 		showStartupError(fmt.Errorf("%v", err))
 		return
 	}
-	rel, err := filepath.Rel(root, userRoot)
-	if err != nil || !(rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator))) {
-		showStartupError(fmt.Errorf("%v", "使用者目錄不可位於原版資料目錄內"))
+	if insideDir(root, userRoot) {
+		showStartupError(fmt.Errorf("使用者目錄不可位於原版資料目錄內：使用者目錄 %s；原版目錄 %s", userRoot, root))
 		return
 	}
 	if *audioWAV != "" {
@@ -1293,9 +1106,8 @@ func main() {
 			showStartupError(fmt.Errorf("%v", e))
 			return
 		}
-		relative, e := filepath.Rel(root, path)
-		if e != nil || !(relative == ".." || strings.HasPrefix(relative, ".."+string(filepath.Separator))) {
-			showStartupError(fmt.Errorf("%v", "原版音訊記錄不可位於原版資料目錄內"))
+		if insideDir(root, path) {
+			showStartupError(fmt.Errorf("原版音訊記錄不可位於原版資料目錄內：%s；原版目錄 %s", path, root))
 			return
 		}
 	}
@@ -1311,9 +1123,10 @@ func main() {
 		log.SetOutput(io.MultiWriter(os.Stderr, logFile))
 	}
 	log.Printf("啟動 %s", version)
+	log.Printf("原版目錄 %s；使用者目錄 %s", root, userRoot)
 	ebiten.SetWindowSize(width, height)
 	ebiten.SetWindowTitle("神劍封魔：啟動中")
-	boot := newStartup(logPath, func(report func(string, bitmap.Font)) (*game, error) {
+	load := func(report func(string, bitmap.Font)) (*game, error) {
 		var closers []func()
 		ready := false
 		defer func() {
@@ -1356,6 +1169,18 @@ func main() {
 		}
 		closers = append(closers, func() { o.Close() })
 		o.SetScratch(filepath.Join(userRoot, "game"))
+		// 規格066：patch版驅動只放在可寫層，原版目錄不動；關閉時只移除本工具產生的檔案。
+		if *glyphPatch {
+			sum, e := glyphpatch.Install(root, filepath.Join(userRoot, "game"))
+			if e != nil {
+				log.Printf("字形patch未啟用，保留原版繪字：%v", e)
+			} else {
+				glyphpatch.Enable(o)
+				log.Printf("字形patch已啟用：%s %s", glyphpatch.DriverName, sum)
+			}
+		} else if e := glyphpatch.Remove(root, filepath.Join(userRoot, "game")); e != nil {
+			return nil, e
+		}
 		if *adlib {
 			config, e := os.ReadFile(filepath.Join(root, "RESOURCE.CFG"))
 			if e != nil {
@@ -1376,6 +1201,7 @@ func main() {
 		effectiveCycles := *cycles
 		o.SetDOSBoxCycles(effectiveCycles)
 		g := &game{o: o, audio: o.NewAudio(44100), font: font, labels: labels, settings: settings, settingsPath: filepath.Join(userRoot, "controller.json"), selected: -1, baseCycles: *cycles, cycles: effectiveCycles, panel: *panel, capturePath: *capture, captureRequest: *captureRequest, captureFrame: *frames, canvas: image.NewRGBA(image.Rect(0, 0, width, height)), audioMode: *audioMode, audioPath: *audioWAV}
+		g.roomPrefixes = loadRoomPrefixes(filepath.Join(root, "ZELRES2.SAR"))
 		g.cheats, err = cheats.New(o, filepath.Join(root, "ZELIARD.EXE"))
 		if err != nil {
 			log.Printf("作弊功能未啟用：%v", err)
@@ -1656,12 +1482,17 @@ func main() {
 			}, func() {
 				if g.townSceneryHD != nil {
 					g.townFrames = hd.NewTownFrames(g.o, g.townSceneryHD)
+					if g.townFrames != nil && g.townDialogue != nil {
+						g.townFrames.Dialogue = func() (bool, image.Rectangle) {
+							return g.townDialogue.State()["key"] != "", g.townDialogue.BackdropBox()
+						}
+					}
 				}
 			})
 		}
 
 		if *interiorArt != "" || *kingArt != "" || *sageFramesArt != "" || *sageArt != "" || *merchantFramesArt != "" || *merchantArtA != "" || *bankArtA != "" || *churchArtwork != "" || *itemPalette != "" {
-			g.deferHD("人物與室內HD", g.roomDialogue, func() {
+			g.deferHD("人物與室內HD", g.roomEntered, func() {
 				if *interiorArt != "" {
 					g.interiorHD, err = hd.NewInteriors(root, *interiorArt)
 					if err != nil {
@@ -1764,6 +1595,12 @@ func main() {
 		if g.dialogue != nil {
 			g.dialogue.UseLabels(g.menuLabels)
 		}
+		// 規格066：記錄實際載入的譯表路徑與雜湊，回報與探針先核這一行。
+		for _, path := range []string{*dialogueText, *labelsText, *hudText, *townText} {
+			if path != "" {
+				log.Printf("譯表 %s", catalogIdentity(path))
+			}
+		}
 		if *hudText != "" {
 			g.hud, err = overlay.NewHUD(o, root, *hudText, font)
 			if err != nil {
@@ -1786,7 +1623,30 @@ func main() {
 		}
 		return g, nil
 
-	})
+	}
+	if *flickerProbe != "" {
+		g, err := load(func(string, bitmap.Font) {})
+		if err != nil {
+			log.Fatal(err)
+		}
+		var shots []uint64
+		for _, f := range strings.Split(*flickerShots, ",") {
+			if f = strings.TrimSpace(f); f != "" {
+				v, e := strconv.ParseUint(f, 0, 64)
+				if e != nil {
+					log.Fatal(e)
+				}
+				shots = append(shots, v)
+			}
+		}
+		err = g.runFlickerProbe(*flickerProbe, *flickerOut, *flickerSlice, *flickerCensus, shots)
+		g.closeResources()
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+	boot := newStartup(logPath, load)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetRunnableOnUnfocused(true)
 	runErr := ebiten.RunGame(boot)

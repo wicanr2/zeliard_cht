@@ -9,11 +9,13 @@ import (
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 // itemPurchase 共用道具店購買後訊息、出售確認與商品說明的唯讀顯示鏈。
 // 三種來源分開配對；原版決定交易、翻頁與等待輸入。
 type itemPurchase struct {
+	original            *oracle.Oracle
 	font                bitmap.Font
 	paint               *paintHistory
 	labels              *Labels
@@ -61,16 +63,52 @@ func newItemSale(o *oracle.Oracle, data []byte, texts map[string]string, font bi
 	})
 }
 
+// itemDetail 是道具店商品名稱的模組位址，以及說明前段、後段起點與結束位置。
+// 八件依固定 SAR 的名稱表與說明順序；前段止於第一個「/」之後，刀劍油沿 1.0.5 已驗切點。
+type itemDetail struct {
+	name   uint16
+	bounds [3]uint16
+}
+
+var itemDetails = []itemDetail{
+	{0xb09a, [3]uint16{0xab4a, 0xab86, 0xabc5}}, // Ken'ko 藥水
+	{0xb0a8, [3]uint16{0xabc5, 0xac11, 0xac9c}}, // Juu-en 果實
+	{0xb0b5, [3]uint16{0xac9c, 0xacf2, 0xad39}}, // Kashi 靈藥
+	{0xb0c5, [3]uint16{0xad39, 0xadae, 0xadfd}}, // Chikara 粉末
+	{0xb0d4, [3]uint16{0xadfd, 0xae34, 0xaea6}}, // Magia 石
+	{0xb0e0, [3]uint16{0xaea6, 0xaedc, 0xaf3d}}, // Acero 聖水
+	{0xb0f4, [3]uint16{0xaf3d, 0xaf7c, 0xafd3}}, // 刀劍油
+	{0xb0fe, [3]uint16{0xafd3, 0xb01b, 0xb08a}}, // Kioku 羽毛
+}
+
+func itemDetailOf(name uint16) (itemDetail, bool) {
+	for _, item := range itemDetails {
+		if item.name == name {
+			return item, true
+		}
+	}
+	return itemDetail{}, false
+}
+
 func newItemExplanation(o *oracle.Oracle, data []byte, texts map[string]string, font bitmap.Font, paint *paintHistory) (*itemPurchase, error) {
-	return newItemChain(o, data, texts, font, paint, itemChainSpec{
-		keys: []string{"zelres2.file.01b053", "zelres2.file.01b0d2", "zelres2.file.01b10e", "zelres2.file.01b385", "zelres2.file.01b3bc", "zelres2.file.01b4c5", "zelres2.file.01b504"}, placeholders: []string{"item", "", "", "", "", "", ""},
+	spec := itemChainSpec{
+		keys: []string{"zelres2.file.01b053"}, placeholders: []string{"item"},
 		start: 0xaacb, terminal: 5, thresholds: [3]int{3, 4, 5}, explanation: true,
-		bindings: [][3]int{{0, 0xaacb, 0xaae6}, {2, 0xaae6, 0xaaea}, {0xab4a, 0xab4a, 0xab86}, {0xab86, 0xab86, 0xabc5}, {0xadfd, 0xadfd, 0xae34}, {0xae34, 0xae34, 0xaea6}, {0xaf3d, 0xaf3d, 0xaf7c}, {0xaf7c, 0xaf7c, 0xafd3}},
-	})
+		bindings: [][3]int{{0, 0xaacb, 0xaae6}, {2, 0xaae6, 0xaaea}},
+	}
+	for _, item := range itemDetails {
+		for i := 0; i < 2; i++ {
+			start, end := int(item.bounds[i]), int(item.bounds[i+1])
+			spec.keys = append(spec.keys, fmt.Sprintf("zelres2.file.%06x", 0x1a588+start-0xa000))
+			spec.placeholders = append(spec.placeholders, "")
+			spec.bindings = append(spec.bindings, [3]int{start, start, end})
+		}
+	}
+	return newItemChain(o, data, texts, font, paint, spec)
 }
 
 func newItemChain(o *oracle.Oracle, data []byte, texts map[string]string, font bitmap.Font, paint *paintHistory, spec itemChainSpec) (*itemPurchase, error) {
-	q := &itemPurchase{font: font, paint: paint, fragments: map[int]quoteFragment{}, prefix: append([]byte(nil), data[0x1a588:0x1a5c8]...), start: spec.start, terminal: spec.terminal, thresholds: spec.thresholds, explanation: spec.explanation, details: map[uint16][2]string{}}
+	q := &itemPurchase{original: o, font: font, paint: paint, fragments: map[int]quoteFragment{}, prefix: append([]byte(nil), data[0x1a588:0x1a5c8]...), start: spec.start, terminal: spec.terminal, thresholds: spec.thresholds, explanation: spec.explanation, details: map[uint16][2]string{}}
 	translated := make([]string, len(spec.keys))
 	found := 0
 	for i, key := range spec.keys {
@@ -109,8 +147,8 @@ func newItemChain(o *oracle.Oracle, data []byte, texts map[string]string, font b
 	}
 	if spec.explanation {
 		q.texts[0] = translated[0]
-		for i, address := range []uint16{0xb09a, 0xb0d4, 0xb0f4} {
-			q.details[address] = [2]string{translated[1+i*2], translated[2+i*2]}
+		for i, item := range itemDetails {
+			q.details[item.name] = [2]string{translated[1+i*2], translated[2+i*2]}
 		}
 	} else {
 		copy(q.texts[:], translated)
@@ -160,6 +198,14 @@ func newItemChain(o *oracle.Oracle, data []byte, texts map[string]string, font b
 	return q, nil
 }
 
+// abort 用於已認領字形後的來源不符：壓下的字形照原版寫回後退出，不留空白框。
+func (q *itemPurchase) abort(o *oracle.Oracle) {
+	if q.active {
+		glyphpatch.Reveal(o, dialogueBox)
+	}
+	q.reset()
+}
+
 func (q *itemPurchase) reset() {
 	q.active, q.pending = false, false
 	q.stage, q.index, q.ready = 0, 0, 0
@@ -182,28 +228,28 @@ func (q *itemPurchase) begin(o *oracle.Oracle) {
 	// 介紹中的商品名在BX=258畫空白後換行，不能用八像素包圍盒拒絕可變字距文字。
 	// 數字仍保留完整八列／八像素字形的邊界檢查。
 	if q.stage >= q.terminal || o.DSReg() != 0x01b1 || o.AX()>>8 != 1 || int(o.BX()) < 54 || int(o.BX()) >= 264 || !q.explanation && int(o.BX())+8 > 264 || o.CX()&255 < 99 || o.CX()&255 > 139 || byte(o.AX()) != o.Byte(oracle.Far(0x01b1, pos)) || !bytes.Equal(q.prefix, o.Bytes(oracle.Far(0x01b1, 0xa000), len(q.prefix))) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, 0x711b), 5), []byte{0x2e, 0xff, 0x16, 0x22, 0x20}) {
-		q.reset()
+		q.abort(o)
 		return
 	}
 	var fragment quoteFragment
 	q.pendingNumber = nil
 	if q.explanation && q.stage >= 3 {
 		if q.item == nil {
-			q.reset()
+			q.abort(o)
 			return
 		}
 		address := uint16(int(q.item.base) + q.item.offset)
-		ranges := map[uint16][3]uint16{0xb09a: {0xab4a, 0xab86, 0xabc5}, 0xb0d4: {0xadfd, 0xae34, 0xaea6}, 0xb0f4: {0xaf3d, 0xaf7c, 0xafd3}}
-		bounds, ok := ranges[address]
+		item, ok := itemDetailOf(address)
+		bounds := item.bounds
 		if !ok {
-			q.reset()
+			q.abort(o)
 			return
 		}
 		start, end := bounds[q.stage-3], bounds[q.stage-2]
 		fragment = quoteFragment{start: start, raw: o.Bytes(oracle.Far(0x01b1, start), int(end-start))}
 		// 原始來源必須與固定 SAR 的對應片段完全相同，不能只接受執行中任意字串。
 		if !bytes.Equal(fragment.raw, q.fragments[int(start)].raw) {
-			q.reset()
+			q.abort(o)
 			return
 		}
 		fragment.positions = q.fragments[int(start)].positions
@@ -213,8 +259,8 @@ func (q *itemPurchase) begin(o *oracle.Oracle) {
 		switch q.stage {
 		case 1:
 			if q.item == nil {
-				if pos != 0xb09a && pos != 0xb0d4 && pos != 0xb0f4 {
-					q.reset()
+				if _, known := itemDetailOf(pos); !known {
+					q.abort(o)
 					return
 				}
 				for _, s := range q.labels.sources {
@@ -225,7 +271,7 @@ func (q *itemPurchase) begin(o *oracle.Oracle) {
 				}
 			}
 			if q.item == nil {
-				q.reset()
+				q.abort(o)
 				return
 			}
 			fragment.start = uint16(int(q.item.base) + q.item.offset)
@@ -237,7 +283,7 @@ func (q *itemPurchase) begin(o *oracle.Oracle) {
 			number := &q.price
 			if q.index == 0 {
 				if pos != 0xb21e {
-					q.reset()
+					q.abort(o)
 					return
 				}
 				raw := o.Bytes(oracle.Far(0x01b1, pos), 10)
@@ -246,14 +292,14 @@ func (q *itemPurchase) begin(o *oracle.Oracle) {
 					end++
 				}
 				if end < 1 || end > 8 || end >= len(raw) || raw[end] != 0xff {
-					q.reset()
+					q.abort(o)
 					return
 				}
 				number.raw = append([]byte(nil), raw[:end+1]...)
 				number.box = image.Rect(int(o.BX()), int(o.CX()&255), int(o.BX())+8, int(o.CX()&255)+8)
 			}
 			if int(o.CX()&255) != number.box.Min.Y || int(o.BX()) < number.box.Min.X || int(o.BX()) > number.box.Max.X {
-				q.reset()
+				q.abort(o)
 				return
 			}
 			number.box.Max.X = int(o.BX()) + 8
@@ -268,7 +314,7 @@ func (q *itemPurchase) begin(o *oracle.Oracle) {
 		}
 	}
 	if q.index >= len(fragment.positions) || pos != fragment.positions[q.index] || !bytes.Equal(fragment.raw, o.Bytes(oracle.Far(0x01b1, fragment.start), len(fragment.raw))) {
-		q.reset()
+		q.abort(o)
 		return
 	}
 	q.index++
@@ -277,18 +323,22 @@ func (q *itemPurchase) begin(o *oracle.Oracle) {
 		q.index = 0
 	}
 	q.pending = true
+	// 規格066：文字字形由中文取代；價格等數字保留原版圖形，不認領。
+	if q.pendingNumber == nil {
+		glyphpatch.Claim(o, 0x7120)
+	}
 }
 
 func (q *itemPurchase) capture(o *oracle.Oracle) {
 	if !q.active || !q.pending {
 		return
 	}
-	raw := o.Indexed()
+	raw := glyphpatch.Indexed(o)
 	if number := q.pendingNumber; number != nil {
 		number.pixels = labelCrop(raw, number.box)
 		for _, v := range number.pixels {
 			if v != 0 && v != 9 {
-				q.reset()
+				q.abort(o)
 				return
 			}
 		}
@@ -303,7 +353,7 @@ func (q *itemPurchase) capture(o *oracle.Oracle) {
 }
 
 func (q *itemPurchase) captureFrame(o *oracle.Oracle) {
-	q.completed = dialogueCrop(o.Indexed())
+	q.completed = dialogueCrop(glyphpatch.Indexed(o))
 	q.palette = o.Palette()
 	q.paintSerial = q.paint.serial
 	q.pending = false
@@ -349,18 +399,18 @@ func (q *itemPurchase) Draw(dst *image.RGBA, raw []byte, pal [256][3]uint8, orig
 	}
 	masks, known := q.paint.masks(q.paintSerial, raw)
 	if pal != q.palette || !known || !q.pending && !visibleRowsEqual(q.completed, raw, []image.Rectangle{dialogueBox}, masks) {
-		q.reset()
+		q.abort(q.original)
 		return false
 	}
 	tokens := q.tokens()
 	positions, valid := quoteLayout(tokens)
 	if !valid {
-		q.reset()
+		q.abort(q.original)
 		return false
 	}
 	for _, token := range tokens {
 		if n := token.number; n != nil && (n.box.Empty() || len(n.pixels) != n.box.Dx()*n.box.Dy()) {
-			q.reset()
+			q.abort(q.original)
 			return false
 		}
 	}

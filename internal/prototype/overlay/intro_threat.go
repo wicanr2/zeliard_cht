@@ -13,6 +13,7 @@ import (
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 // IntroThreat只觀察原版宣言，契約見規格013。
@@ -119,7 +120,7 @@ func (s *IntroThreat) source() ([]byte, bool) {
 	if s.o.VideoMode() != 0x13 {
 		return nil, false
 	}
-	p := s.o.Bytes(oracle.Far(0x1b1, 0), 65536)
+	p := glyphpatch.CodeView(s.o, oracle.Far(0x1b1, 0), 65536)
 	if p[0xff77] != 255 || uint16(p[0xf500])|uint16(p[0xf501])<<8 != 0xf506 {
 		return nil, false
 	}
@@ -163,7 +164,7 @@ func (s *IntroThreat) begin(o *oracle.Oracle) {
 	c := s.chars[s.done]
 	r := o.Regs()
 	x := int(p[0x653d]) | int(p[0x653e])<<8
-	if o.SI() != c.source+1 || byte(r.AX) != c.value || x != c.x || int(p[0x653f]) != c.y || !bytes.Equal(threatRegion(o.Indexed()), s.completed) {
+	if o.SI() != c.source+1 || byte(r.AX) != c.value || x != c.x || int(p[0x653f]) != c.y || !bytes.Equal(threatRegion(glyphpatch.Indexed(o)), s.completed) {
 		s.reset()
 		return
 	}
@@ -192,7 +193,7 @@ func (s *IntroThreat) end(o *oracle.Oracle) {
 	r := o.Regs()
 	stack := o.Bytes(oracle.Far(r.SS, r.SP), 4)
 	c := s.chars[s.done]
-	if !ok || o.DSReg() != 0x1b1 || uint16(stack[0])|uint16(stack[1])<<8 != c.source+1 || stack[2] != c.value || !bytes.Equal(threatRegion(o.Indexed()), s.final) {
+	if !ok || o.DSReg() != 0x1b1 || uint16(stack[0])|uint16(stack[1])<<8 != c.source+1 || stack[2] != c.value || !bytes.Equal(threatRegion(glyphpatch.Indexed(o)), s.final) {
 		s.reset()
 		return
 	}

@@ -7,6 +7,7 @@ import (
 	"image"
 
 	"github.com/wicanr2/dosgolem/oracle"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 var cavePresentationBox = image.Rect(48, 14, 272, 158)
@@ -92,8 +93,8 @@ func NewCaveFrames(o *oracle.Oracle) *CaveFrames {
 				f.clear()
 				return
 			}
-			_, _, rgb := o.ScreenRGB()
-			f.finish(f.read(o.Indexed(), rgb))
+			_, _, rgb := glyphpatch.ScreenRGB(o)
+			f.finish(f.read(glyphpatch.Indexed(o), rgb))
 		})
 	}
 	return f

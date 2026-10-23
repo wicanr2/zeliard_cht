@@ -9,6 +9,7 @@ import (
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 // IntroStory只讀原版的文字與清框，規格014記錄來源及停止線。
@@ -72,7 +73,7 @@ func (s *IntroStory) source() ([]byte, bool) {
 	if s.o.VideoMode() != 0x13 {
 		return nil, false
 	}
-	p := s.o.Bytes(oracle.Far(0x1b1, 0), 65536)
+	p := glyphpatch.CodeView(s.o, oracle.Far(0x1b1, 0), 65536)
 	if p[0xff77] != 255 || storyWord(p, 0xf500) != 0xf506 || !bytes.Equal(p[0x79c6:0x9060], s.pool) {
 		return nil, false
 	}
@@ -177,7 +178,7 @@ func (s *IntroStory) beginGlyph(o *oracle.Oracle) {
 	}
 	p, ok := s.source()
 	r := o.Regs()
-	if !ok || o.DSReg() != 0x1b1 || s.pending != 0 || s.lastByte < 32 || s.lastByte >= 127 || byte(r.AX) != s.lastByte || int(storyWord(p, 0x6d56)) != s.lastFile-0xa4+0x6001 || !bytes.Equal(storyRegion(o.Indexed()), s.completed) {
+	if !ok || o.DSReg() != 0x1b1 || s.pending != 0 || s.lastByte < 32 || s.lastByte >= 127 || byte(r.AX) != s.lastByte || int(storyWord(p, 0x6d56)) != s.lastFile-0xa4+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.completed) {
 		s.halt("glyph start")
 		return
 	}
@@ -224,7 +225,7 @@ func (s *IntroStory) endGlyph(o *oracle.Oracle) {
 	p, ok := s.source()
 	r := o.Regs()
 	stack := o.Bytes(oracle.Far(r.SS, r.SP), 2)
-	if !ok || o.DSReg() != 0x1b1 || stack[0] != s.pendingChar || int(storyWord(p, 0x6d56)) != s.pendingFile-0xa4+0x6001 || !bytes.Equal(storyRegion(o.Indexed()), s.full) {
+	if !ok || o.DSReg() != 0x1b1 || stack[0] != s.pendingChar || int(storyWord(p, 0x6d56)) != s.pendingFile-0xa4+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.full) {
 		s.halt("glyph completion")
 		return
 	}
@@ -244,7 +245,7 @@ func (s *IntroStory) beginClear(o *oracle.Oracle) {
 	}
 	_, ok := s.source()
 	next, known := s.clearPages[s.lastFile]
-	if !ok || o.DSReg() != 0x1b1 || s.pending != 0 || s.lastByte != 0xfe || !known || next != s.page+1 || !bytes.Equal(storyRegion(o.Indexed()), s.completed) {
+	if !ok || o.DSReg() != 0x1b1 || s.pending != 0 || s.lastByte != 0xfe || !known || next != s.page+1 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.completed) {
 		s.halt("clear start")
 		return
 	}
@@ -258,7 +259,7 @@ func (s *IntroStory) endClear(o *oracle.Oracle) {
 		return
 	}
 	p, ok := s.source()
-	if !ok || o.DSReg() != 0x1b1 || int(storyWord(p, 0x6d56)) != s.pendingFile-0xa4+0x6001 || !bytes.Equal(storyRegion(o.Indexed()), s.full) {
+	if !ok || o.DSReg() != 0x1b1 || int(storyWord(p, 0x6d56)) != s.pendingFile-0xa4+0x6001 || !bytes.Equal(storyRegion(glyphpatch.Indexed(o)), s.full) {
 		s.halt("clear completion")
 		return
 	}

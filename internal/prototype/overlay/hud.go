@@ -16,6 +16,7 @@ import (
 
 	"github.com/wicanr2/dosgolem/oracle"
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
+	"github.com/wicanr2/zeliard_cht/internal/prototype/glyphpatch"
 )
 
 type hudDefinition struct {
@@ -221,7 +222,7 @@ func hudPrefixMatches(s *hudSource, prefix []byte) bool {
 
 func (h *HUD) begin(o *oracle.Oracle, entry uint16) {
 	h.pending = nil
-	if o.VideoMode() != 0x13 || o.DSReg() != 0x01b1 || hudHash(o.Bytes(oracle.Far(0x01b1, 0x22bf), 0xc7)) != "a4564867c4b2fa886ea061551023ca7343b7e6b33f2ec9dd392b6aa452627504" {
+	if o.VideoMode() != 0x13 || o.DSReg() != 0x01b1 || hudHash(glyphpatch.CodeView(o, oracle.Far(0x01b1, 0x22bf), 0xc7)) != "a4564867c4b2fa886ea061551023ca7343b7e6b33f2ec9dd392b6aa452627504" {
 		return
 	}
 	if o.Word(oracle.Far(0x01b1, 0xf504)) != 0xf856 || hudHash(o.Bytes(oracle.Far(0x01b1, 0xf856), 768)) != "f16d564fee5c4472914b4dc64cf467bcd05da89125288a83b0b065d164707d07" {
@@ -247,6 +248,10 @@ func (h *HUD) begin(o *oracle.Oracle, entry uint16) {
 			h.pending = &candidate
 		}
 	}
+	if h.pending != nil {
+		// 規格066：唯一來源的名稱整串由中文取代。
+		glyphpatch.ClaimText(o)
+	}
 }
 
 func hudPalette(pal [256][3]uint8) bool {
@@ -260,12 +265,20 @@ func hudPalette(pal [256][3]uint8) bool {
 func (h *HUD) finish(o *oracle.Oracle) {
 	s := h.pending
 	h.pending = nil
+	// 規格066：已認領的名稱若最後沒有接受，照原版寫回，不留空白。
+	stored := false
+	defer func() {
+		if s != nil && !stored {
+			glyphpatch.Reveal(o, s.box)
+		}
+	}()
 	if s == nil || o.DSReg() != 0x01b1 || o.SI() != s.header+uint16(len(s.raw)) || !bytes.Equal(o.Bytes(oracle.Far(0x01b1, s.header), len(s.raw)), s.raw) {
 		return
 	}
-	if !h.valid(s, o.Indexed(), o.Palette()) {
+	if !h.valid(s, glyphpatch.Indexed(o), o.Palette()) {
 		return
 	}
+	stored = true
 	h.fields[s.kind] = s
 	h.Completed++
 }
