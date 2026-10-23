@@ -104,10 +104,14 @@ def setup(root,platform,edition):
     library={'linux':'libzopl.so','windows':'zopl.dll','macos':'libzopl.dylib'}[platform]
     write(root/'runtime-args.json',json.loads((root/'runtime-args.json').read_text())+[['-fm-library',library]])
     heading='原版＋中文＋HD' if edition=='CHT-HD' else '原版＋中文'
+    # 規格069：1.0.8只更新HD圖庫的片頭與結局插畫。
+    notes108=('1.0.8：片頭與結局插畫依原版色盤重畫，修正HD紅綠色序；守護神靈、結局第一段公主人像與開機魔王宣言\n'
+              '補上HD，人物說話、眨眼時插畫維持HD。片尾捲字期間與主角跑進光裡的片刻仍顯示原版。') if edition=='CHT-HD' else '1.0.8：HD版更新片頭與結局插畫；本版不含HD圖庫，遊戲內容與1.0.7相同。'
     text=f'''神劍封魔 Zeliard {VERSION} {heading}
 
 包含完整原版遊戲、目前繁體中文、粉圓字型、原版AdLib音樂與Nuked-OPL3音色改善。
 {'本版預設HD，可在工具列切回原貌；包含050已盤點補圖，未知來源保留原貌。' if edition=='CHT-HD' else '本版保留原版美術，不附HD圖庫；HD版為另一個獨立封包。'}
+{notes108}
 1.0.7：結局的敘述、製作名單、登場魔物與版權改為中文；狀態列地名、房間標題與
 alma寶石寫成「中文（English）」，日籍工作人員查得到漢字的寫漢字。
 {'開局兩側柱子逐格揭開、第一次進城堡與F7讀檔選單期間都維持HD；結局人物說話時插畫維持HD。' if edition=='CHT-HD' else 'F7讀檔選單與結局名單的文字都顯示中文。'}

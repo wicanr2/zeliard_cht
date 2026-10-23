@@ -2,22 +2,27 @@
 
 更新日期：2026-10-23，Asia/Taipei。
 
-本輪入口為[067開局揭開、F7選單與結局的無閃爍呈現及補譯](docs/spec/067-start-menu-ending-presentation.md)，工作區`workplace/release-v107/`。使用者在1.0.6推送後要求：結局敘述、製作名單與版權翻譯；開局逐格揭開與第一次進城堡、F7都要維持HD；中文出現後又變回英文要確定處理好。決定另出1.0.7，結局以直接載入結局模組驗證，HUD場景名、房間標題與alma改「中文（English）」，日籍人名查得到漢字就寫漢字。
+本輪入口為[069插畫重畫版交付、推廣片與結案清理](docs/spec/069-picture-repaint-release.md)，工作區`workplace/release-v108/`。使用者在068推送`d8c54a0`後指示錄製推廣影片、打包三平台完整版號，打包完清理工作區，這樣就算結案。
 
-現行本機版本為`v.1.0.7-20261023`，完整包位於`dist-all/v.1.0.7-20261023/full-local/`，`bash tools/play.sh`啟動HD版、`--cht`選原貌中文版。正式建置在`workplace/release-v107/package/`，Linux二進位SHA為`3eeb4b7a9ebdeeea7cbc9e826fdc84bec401aeef48df4aae37c52eb87552bed6`，出貨來源與工作樹逐檔相同。第一次1.0.7打包未發布即作廢（說話沿用原本不分模式，可能蓋住遊戲過場背景上的角色）；作廢產物已於2026-10-23依使用者指示刪除。1.0.7沒有新推廣片。
+現行本機版本為`v.1.0.8-20261023`，完整包位於`dist-all/v.1.0.8-20261023/full-local/`，`bash tools/play.sh`啟動HD版、`--cht`選原貌中文版。正式建置在`workplace/release-v108/package/`，Linux二進位SHA為`1424b1201942397e68ad907987b2af0c6095f7155935c9c3b65a7d04046f4559`，出貨來源與工作樹逐檔相同，HD圖庫`complete-art.json` `b4103bf6…ef41`。CHT版遊戲內容與1.0.7相同。六包稽核`PASS_LOCAL_DUAL_EDITION_PICTURE_RELEASE`，Linux原生兩包、Wine輔助兩包（含跨磁碟）啟動通過，macOS只核通用結構。
 
-## 開發中：068片頭與結局插畫HD覆蓋（未打包）
+1.0.8推廣片60秒，位於`dist-all/v.1.0.8-20261023/promo/`。主機負載過高（實際CPU倍率0.083）無法實錄視窗，使用者選擇改用1.0.8正式執行檔經探針合成路徑存下的畫面，片中逐張標示；結局另標結構觸發。配樂為原版標題曲，非同期聲。
 
-1.0.7以`6830358`推送後，使用者要求清理作廢打包並修正結局與片頭陽台插畫；第一輪以`ad77357`推送。入口[068片頭與結局插畫的HD覆蓋修正](docs/spec/068-picture-coverage.md)，工作區`workplace/picture-coverage-v1/`。[補登錄工具](tools/hd_picture_complete.py)把只有人工圖格的插畫登錄為整張插畫與片段，FIN兩張遮去第0列，國王擁抱圖背景透明；[插畫覆繪](internal/prototype/hd/complete_art.go)在片頭／結局模式下以特徵點過半相符補畫被局部蓋住的插畫。
+結案清理逐檔配置bytes合計19,670,798,336：三版組裝層與解壓層、Wine prefix、探針基底、探針截圖與Go快取內容。收據在`workplace/release-v108/cleanup.json`與`cleanup-dry-run.txt`；探針jsonl、日誌與1.0.8推廣片來源`rel-*`保留。重跑探針須先由正式AppImage重解基底，見069。
 
-2026-10-23使用者指示以正確色序重畫，由Codex內建生圖處理。[參考圖工具](tools/hd_picture_refs.py)依實機截圖的點陣與色盤做參考圖，生成圖由[色相閘門](tools/hd_hue_check.py)檢查；[補丁工具](tools/hd_portrait_patch.py)處理人像說話與眨眼、魔王與`new1`的說話嘴型及yuu3灰光剪影畫格。story四張、完整插畫三張、`new1`與以實機點陣為準的`sei`、`dmaou`都已重畫並登錄；`complete-art.json` `b4103bf6…`（12,138項），開發執行檔仍是`d32af63c…`，未打包。片頭每次比對約多3到4毫秒，遊戲中約多1.6毫秒。
+## 1.0.8內容：068片頭與結局插畫重畫
 
-未處理：片尾捲字期間捲字層蓋過yuu3剪影畫格的HD，主角進光時溶解沿用誤判（兩者都是前端既有行為，改動須動規格066的契約）；`dmaou-cycle-all`、`credits-scroll`第96列以後、`ttl1`、`ttl2`、`nec`沒有實機證據；片頭單獨的魔王雙眼沒有來源。
+入口[068片頭與結局插畫的HD覆蓋修正](docs/spec/068-picture-coverage.md)，工作區`workplace/picture-coverage-v1/`，第一輪`ad77357`、重畫`d8c54a0`。[補登錄工具](tools/hd_picture_complete.py)把只有人工圖格的插畫登錄為整張插畫與片段，FIN兩張遮去第0列，國王擁抱圖背景透明；[插畫覆繪](internal/prototype/hd/complete_art.go)在片頭／結局模式下以特徵點過半相符補畫被局部蓋住的插畫。插畫依實機色盤以Codex內建生圖重畫：[參考圖工具](tools/hd_picture_refs.py)依實機截圖的點陣與色盤做參考圖，生成圖由[色相閘門](tools/hd_hue_check.py)檢查，[補丁工具](tools/hd_portrait_patch.py)處理人像說話與眨眼、魔王與`new1`的說話嘴型及yuu3灰光剪影畫格。片頭每次比對約多3到4毫秒，遊戲中約多1.6毫秒。
 
-使用者決定（2026-10-23）：本輪只commit推送，不打包、不出新版號。
+未處理：片尾捲字期間捲字層蓋過yuu3剪影畫格的HD，主角進光時溶解沿用誤判（兩者都是前端既有行為，改動須動規格066的契約）；`dmaou-cycle-all`、`credits-scroll`第96列以後、`ttl1`、`ttl2`、`nec`沒有實機證據；片頭單獨的魔王雙眼沒有來源；公主在對話畫面的姿態仍無HD。
 
+## 前次交付（1.0.7）
 
-## 目前狀態表
+1.0.7入口為[067開局揭開、F7選單與結局的無閃爍呈現及補譯](docs/spec/067-start-menu-ending-presentation.md)，工作區`workplace/release-v107/`。使用者在1.0.6推送後要求：結局敘述、製作名單與版權翻譯；開局逐格揭開與第一次進城堡、F7都要維持HD；中文出現後又變回英文要確定處理好。決定另出1.0.7，結局以直接載入結局模組驗證，HUD場景名、房間標題與alma改「中文（English）」，日籍人名查得到漢字就寫漢字。
+
+1.0.7版本為`v.1.0.7-20261023`，完整包位於`dist-all/v.1.0.7-20261023/full-local/`。正式建置在`workplace/release-v107/package/`，Linux二進位SHA為`3eeb4b7a9ebdeeea7cbc9e826fdc84bec401aeef48df4aae37c52eb87552bed6`，出貨來源與工作樹逐檔相同。第一次1.0.7打包未發布即作廢（說話沿用原本不分模式，可能蓋住遊戲過場背景上的角色）；作廢產物已於2026-10-23依使用者指示刪除。1.0.7沒有新推廣片。
+
+## 1.0.7狀態表
 
 | 項目 | 1.0.7現況 |
 |---|---|
@@ -28,9 +33,9 @@
 | 結局插畫 | 片頭／結局模式下，說話小圖時大插畫沿用整張HD；對話肖像框沒有整張肖像時整框原版 |
 | 譯名 | HUD場景名、房間標題「賈辛（Jashiin）殿」、「靈魂寶石（alma）」、片頭故事與捲字專名、名單漢字 |
 | 探針 | 正式binary 17條（HD 12、CHT 5）英文先於中文、中文後變回英文、寫回後可見、狀態列未畫全為0；不追蹤色號0字形，字形可見須同格原版底色照原版顯示 |
-| 保留限制 | 結局部分插畫HD對不上（加蘭離城、公主對話姿態、FIN）；陽台棋盤格；後段內容只靜態通過。加蘭離城、FIN與陽台棋盤格的處理見068（未打包）；公主對話姿態仍無HD |
+| 保留限制 | 結局部分插畫HD對不上（加蘭離城、公主對話姿態、FIN）；陽台棋盤格；後段內容只靜態通過。加蘭離城、FIN與陽台棋盤格已由068處理並收錄1.0.8；公主對話姿態仍無HD |
 
-1.0.7正式包驗證在同版`smoke/`與`SHA256SUMS.json`；探針輸出在`workplace/release-v107/probe/out/rel*`。
+1.0.7正式包驗證在同版`smoke/`與`SHA256SUMS.json`；探針輸出在`workplace/release-v107/probe/out/rel*`，截圖已於1.0.8結案清除，jsonl與日誌保留。
 
 ## 前次交付（1.0.6）
 
@@ -49,7 +54,7 @@
 | 補譯 | 對話、商店說明、數字句、洞窟訊息、首領台詞與標題版權補齊，專有名詞寫「中文（English）」；部分只靜態通過 |
 | 保留限制 | 開局外框柱子逐格組合時顯示原版；F7讀檔選單期間城鎮背景退原版；陽台插畫棋盤格；結局未中文化；HUD專名未改 |
 
-1.0.6正式包驗證在同版`smoke/`與`SHA256SUMS.json`；探針輸出在`workplace/release-v106/probe/out/v106rel3-*`，摘要在`smoke/probe-release/`。
+1.0.6正式包驗證在同版`smoke/`與`SHA256SUMS.json`；探針輸出在`workplace/release-v106/probe/out/v106rel3-*`（截圖已於1.0.8結案清除，jsonl與日誌保留），摘要在`smoke/probe-release/`。
 
 ## 前次交付（1.0.5）
 

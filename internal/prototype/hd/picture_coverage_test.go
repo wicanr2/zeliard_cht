@@ -203,7 +203,7 @@ func BenchmarkPictureCoverageDraw(b *testing.B) {
 		return data
 	}
 	story := read("workplace/picture-coverage-v1/evidence/res-story-long_probe.shot-412010000.indexed")
-	talking := read("workplace/picture-coverage-v1/probe/out/g-story-long/probe.shot-468050000.indexed")
+	talking := read("workplace/picture-coverage-v1/evidence/g-story-long_probe.shot-468050000.indexed")
 	caveRaw := read("workplace/hd-cave-artifact-v1/replay-source/source.indexed")
 	cavePalette := read("workplace/hd-cave-artifact-v1/replay-source/source.palette")
 	memory := read("workplace/hd-cave-artifact-v1/replay-source/source.memory")
