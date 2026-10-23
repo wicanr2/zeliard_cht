@@ -33,8 +33,25 @@ func TestPictureCoverageRuntimeDumps(t *testing.T) {
 		{"res-story-long_probe.shot-668010000", image.Rect(16, 16, 304, 120), 0, 0},    // 片頭國王
 		{"r10-ending-poke_probe.shot-656010000", image.Rect(44, 18, 148, 118), 0, 0},   // 結局Garland離城
 		{"r10-ending-poke_probe.shot-266010000", image.Rect(116, 18, 228, 118), 0, 51}, // 結局國王擁抱公主，洋紅背景維持原版
-		{"r10-ending-poke_probe.shot-1256010000", image.Rect(0, 1, 320, 134), 0, 0},    // FIN背景
-		{"r10-ending-poke_probe.shot-1286010000", image.Rect(0, 1, 320, 134), 0, 0},    // FIN
+		{"r10-ending-poke_probe.shot-1256010000", image.Rect(8, 9, 312, 128), 0, 0},    // FIN背景；外框是純色線條，HD與原版同色，只量內部
+		{"r10-ending-poke_probe.shot-1286010000", image.Rect(8, 9, 312, 128), 0, 0},    // FIN
+		// 正確色序重畫後新增的覆蓋（規格068）。
+		{"r10-ending-poke_probe.shot-386010000", image.Rect(88, 16, 232, 120), 0, 0},        // 守護精靈sei，點陣以實機為準
+		{"r10-ending-poke_probe.shot-116010000", image.Rect(180, 24, 276, 112), 0, 0},       // 結局第一段公主new1
+		{"r10-ending-poke_probe.shot-116010000", image.Rect(44, 24, 140, 112), 0, 0},        // 同畫面主角人像
+		{"d-ending-poke_probe.shot-206050000", image.Rect(180, 24, 276, 112), 0, 0},         // new1說話嘴型
+		{"stopped-a-ending-poke_probe.shot-236010000", image.Rect(180, 24, 276, 112), 0, 0}, // new1另一嘴型
+		{"r10-ending-poke_probe.shot-566010000", image.Rect(44, 24, 140, 112), 0, 0},        // 主角說話中
+		{"r10-ending-poke_probe.shot-566010000", image.Rect(180, 24, 276, 112), 0, 0},       // 公主人像himp
+		{"t-story-tail_probe.shot-1190050000", image.Rect(180, 24, 276, 112), 0, 0},         // 國王說話中
+		{"t-story-tail_probe.shot-1100050000", image.Rect(16, 16, 304, 120), 0, 0},          // yuu1，288×104
+		{"t-story-tail_probe.shot-1680050000", image.Rect(64, 16, 260, 112), 0, 0},          // yuu2，196×96
+		{"w-story-title_probe.shot-1704650000", image.Rect(32, 8, 288, 200), 0, 0},          // yuu3-base
+		{"w-story-title_probe.shot-1710050000", image.Rect(32, 8, 288, 200), 0, 0},          // yuu3-final
+		{"w-story-title_probe.shot-1714050000", image.Rect(32, 8, 288, 200), 0, 0},          // 灰光剪影畫格
+		{"v-boot-title_probe.shot-3000000", image.Rect(28, 15, 288, 127), 0, 0},             // 標題ttl3
+		{"x-boot-threat_probe.shot-167600000", image.Rect(92, 32, 228, 144), 0, 0},          // 魔王宣言，點陣以實機為準
+		{"x-boot-threat_probe.shot-172000000", image.Rect(92, 32, 228, 144), 0, 0},          // 魔王說話嘴型
 	}
 	for _, c := range cases {
 		data, err := os.ReadFile(filepath.Join(root, "workplace/picture-coverage-v1/evidence", c.dump+".indexed"))

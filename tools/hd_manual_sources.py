@@ -151,8 +151,8 @@ def main():
             raw=picture_six(planes,width,height) if six else picture(planes,width,height,gfx)
         except (ValueError,IndexError) as e:
             print('DEFER_FORMAT',key,str(e)); continue
-        # 六位元為兩個RGB三位元子像素；參考圖用其平均色，不借用城鎮色盤。
-        reference_pal=np.array([[(((i>>4)&4)+(i&4))*255//8,(((i>>4)&2)+(i&2))*255//4,(((i>>4)&1)+(i&1))*255//2] for i in range(256)],np.uint8) if six else intro_pal
+        # 六位元為兩個三位元子像素，位元順序與PC-98相同（1藍、2紅、4綠）；參考圖用其平均色，不借用城鎮色盤。規格068。
+        reference_pal=np.array([[(((i>>4)&2)+(i&2))*255//4,(((i>>4)&4)+(i&4))*255//8,(((i>>4)&1)+(i&1))*255//2] for i in range(256)],np.uint8) if six else intro_pal
         pixels=reference_pal[np.frombuffer(raw,np.uint8)].reshape(height,width,3)
         ref=refs/(key+'-picture-v1.png'); Image.fromarray(pixels).resize((width*3,height*3),Image.Resampling.NEAREST).save(ref)
         scenes.append({'key':key,'record':recno,'width':width,'height':height,'reference':str(ref.relative_to(p)),

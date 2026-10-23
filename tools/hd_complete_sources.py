@@ -29,7 +29,8 @@ def main():
     root = p/'workplace/full-hd-v1/decoded-v2'
     palette = np.frombuffer((p/'workplace/music-release-v1/release-build/AppDir/assets/town/frame/palette.bin').read_bytes(), np.uint8).reshape(256,3)
     intro = np.frombuffer((p/'workplace/probe-intro-display/palette.bin').read_bytes(), np.uint8).reshape(256,3)
-    rgb_pair = np.array([[(((i>>4)&4)+(i&4))*255//8,(((i>>4)&2)+(i&2))*255//4,(((i>>4)&1)+(i&1))*255//2] for i in range(256)], np.uint8)
+    # 兩個三位元子像素的平均色，位元順序與PC-98相同（1藍、2紅、4綠）。規格068。
+    rgb_pair = np.array([[(((i>>4)&2)+(i&2))*255//4,(((i>>4)&4)+(i&4))*255//8,(((i>>4)&1)+(i&1))*255//2] for i in range(256)], np.uint8)
     rows = []
 
     def load(archive, record):

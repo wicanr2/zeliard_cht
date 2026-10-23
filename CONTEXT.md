@@ -8,9 +8,14 @@
 
 ## 開發中：068片頭與結局插畫HD覆蓋（未打包）
 
-1.0.7以`6830358`推送後，使用者要求清理作廢打包並修正結局與片頭陽台插畫。入口[068片頭與結局插畫的HD覆蓋修正](docs/spec/068-picture-coverage.md)，工作區`workplace/picture-coverage-v1/`。[補登錄工具](tools/hd_picture_complete.py)把九張只有人工圖格的插畫登錄為整張插畫與片段，FIN兩張遮去第0列，國王擁抱圖背景透明；[插畫覆繪](internal/prototype/hd/complete_art.go)在片頭／結局模式下以特徵點過半相符補畫被局部蓋住的插畫。陽台柱底棋盤格、FIN、名單公主圖、Garland離城與國王擁抱圖的原版色塊已消除。開發執行檔`d32af63c…`，未打包；已登錄資產在`workplace/full-hd-v1/manual-hd-v1/registered/`（`complete-art.json` `dcfbe11b…`）。片頭每次比對約多3到5毫秒，遊戲中不變。
+1.0.7以`6830358`推送後，使用者要求清理作廢打包並修正結局與片頭陽台插畫；第一輪以`ad77357`推送。入口[068片頭與結局插畫的HD覆蓋修正](docs/spec/068-picture-coverage.md)，工作區`workplace/picture-coverage-v1/`。[補登錄工具](tools/hd_picture_complete.py)把只有人工圖格的插畫登錄為整張插畫與片段，FIN兩張遮去第0列，國王擁抱圖背景透明；[插畫覆繪](internal/prototype/hd/complete_art.go)在片頭／結局模式下以特徵點過半相符補畫被局部蓋住的插畫。
 
-使用者決定（2026-10-23）：本輪只commit推送，不打包、不出新版號；片頭與結局插畫HD的紅綠色序與原版相反（參考圖用IBM色序，原版是PC-98色序），之後以正確色序重畫，守護精靈`sei`與結局第一段公主人像`new1`一併處理。本輪不改圖面。
+2026-10-23使用者指示以正確色序重畫，由Codex內建生圖處理。[參考圖工具](tools/hd_picture_refs.py)依實機截圖的點陣與色盤做參考圖，生成圖由[色相閘門](tools/hd_hue_check.py)檢查；[補丁工具](tools/hd_portrait_patch.py)處理人像說話與眨眼、魔王與`new1`的說話嘴型及yuu3灰光剪影畫格。story四張、完整插畫三張、`new1`與以實機點陣為準的`sei`、`dmaou`都已重畫並登錄；`complete-art.json` `b4103bf6…`（12,138項），開發執行檔仍是`d32af63c…`，未打包。片頭每次比對約多3到4毫秒，遊戲中約多1.6毫秒。
+
+未處理：片尾捲字期間捲字層蓋過yuu3剪影畫格的HD，主角進光時溶解沿用誤判（兩者都是前端既有行為，改動須動規格066的契約）；`dmaou-cycle-all`、`credits-scroll`第96列以後、`ttl1`、`ttl2`、`nec`沒有實機證據；片頭單獨的魔王雙眼沒有來源。
+
+使用者決定（2026-10-23）：本輪只commit推送，不打包、不出新版號。
+
 
 ## 目前狀態表
 

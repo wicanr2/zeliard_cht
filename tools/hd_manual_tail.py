@@ -91,7 +91,8 @@ def main():
     data=img_open((root/'zelres1-23.decoded').read_bytes())
     # ENDMO fill_credits_triplane: plane stride18D8、每列24bytes，96×265捲動圖。
     raw=picture_six(data,96,265)
-    colors=np.array([[(((i>>4)&4)+(i&4))*255//8,(((i>>4)&2)+(i&2))*255//4,(((i>>4)&1)+(i&1))*255//2] for i in range(256)],np.uint8)
+    # 位元順序與PC-98相同（1藍、2紅、4綠）。規格068。
+    colors=np.array([[(((i>>4)&2)+(i&2))*255//4,(((i>>4)&4)+(i&4))*255//8,(((i>>4)&1)+(i&1))*255//2] for i in range(256)],np.uint8)
     Image.fromarray(colors[np.frombuffer(raw,np.uint8)].reshape(265,96,3)).resize((384,1060),Image.Resampling.NEAREST).save(w/'references/credits-scroll.png')
     (w/'credits-scroll.json').write_text(json.dumps({'width':96,'height':265,'raster':base64.b64encode(raw).decode(),'source':'zelres1-23.decoded','plane_stride':0x18d8},indent=2)+'\n')
     print('PREPARED',len(entries),'fragment candidates',len(pages),'pages; CMAN40; story',len(scenes))

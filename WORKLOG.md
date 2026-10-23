@@ -1901,3 +1901,32 @@ Windows啟動：1.0.5以`filepath.Rel`判斷使用者目錄是否在原版目錄
 最終驗證：開發執行檔`d32af63c…e970`、`complete-art.json` `dcfbe11b…0166`，基底`v068-h-CHT-HD`，片頭與結局兩條探針（`-flicker-slice 200000`）合計5分19秒。與前一版`g-*`相比片頭逐張相同；結局只有Garland離城圖右上角外側一格背景抖色（144,16）由HD回到原版，原因是局部母圖改為只由三色以上片段定位，與圖框外其他背景一致。中文覆繪統計全為0，人像整框原版720個合成點與1.0.7相同。被取代的探針基底`v068-a`到`v068-g`已刪除（本輪自建，只有`manual-hd`為實體複製），保留`v068-h`與1.0.7正式版硬連結`v107-rel-CHT-HD`。
 
 使用者決定：本輪只commit推送，不打包；插畫紅綠色序之後以正確色序重畫（含`sei`、`new1`）。WORKLIST列為下一步。
+
+## 2026-10-23 068插畫以正確色序重畫（開發，未打包）
+
+使用者指示：「加速探針 不用那麼久」，之後的探針一律以`-flicker-slice 200000`只作截圖比較；「做吧 用codex處理」，以Codex內建生圖依實機色盤重畫片頭與結局插畫。沿用工作區`workplace/picture-coverage-v1/`，本輪新增：
+
+- `refs-v2-story1..4`、`refs-v2-scenes1..3`、`refs-v2-new1`、`refs-v2-dmaou`：[hd_picture_refs.py](tools/hd_picture_refs.py)的參考圖、`refs.json`與色相閘門收據`hue-v2.json`。
+- `refs-v2-patches`、`refs-v2-frames`、`refs-v2-frames2`：[hd_portrait_patch.py](tools/hd_portrait_patch.py)的補丁參考圖、`patch.json`與`check-v2.json`。
+- `generated-v2/`：每張生成圖、提示詞、請求與Codex事件紀錄；`record_request.sh`只從`~/.codex/generated_images/`複製輸出，不改`~/.codex`。
+- `evidence/`新增yuu3三畫格（`w-story-title`）、魔王宣言五張（`x-boot-threat`）與`new1`說話兩張（`d-ending-poke`、`stopped-a-ending-poke`）實機截圖；`probe/research/boot-threat.commands`冷開機不按鍵跑到標題。
+- `tile-backup-v1/`：被換掉的人工圖格、整張與片段PNG及`manual-tiles.json`第一次改寫前的備份。登錄前的清單備份`complete-art.before-v3.json`到`before-v6.json`；完整參數`supplement-args-v6.txt`。
+- 探針基底`probe-base/v068-k-CHT-HD`，輸出`probe/out/k-*`；研究探針`w-story-title`、`x-boot-threat`、`y-boot-threat`、`z-story-title`。
+
+Codex CLI 0.163.0（ChatGPT登入），指令為`codex exec -s read-only -C <暫存目錄> --skip-git-repo-check -i <參考圖> [-i <風格參考>] --json -o last-message.txt - < prompt.txt`，暫存目錄在session scratchpad。登錄採用的生成圖：story1到story4、完整插畫三張、`new1`、`dmaou`、五組人像與眼睛補丁、三組畫格補丁，每個鍵一張。
+
+色相閘門：灰階檢查第一版逐色號比對，黑色描線被畫成陰影、白黃抖色被畫成膚色都會判錯，幾乎全部不通過；改為4×4原生區塊平均色。補丁的色相以實機色盤比會被膚色詮釋拉高（底圖本身也把淡黃抖色畫成膚色），改為與底圖HD同色號的平均色比較，並先以未改動的上下文對位。`portrait-yuup-all`第三欄三格生成時整欄左移約32點，第一版搜尋半徑只有3個原生點，接縫明顯；半徑改為48點後對位正確。四個上限是看過這批量測後定的，依據寫在規格068。
+
+`yuu3-dark`第一版參考圖露出底圖HD的紅衣綠褲：原版主角以黑點勾身體，換色時黑點不變；加`--close yuu3-dark=6`閉合補洞後才整塊納入。
+
+登錄四次：v3加`new1`與五組補丁，v4加`yuu3-dark`與`new1-talk`，v5加以實機點陣為準的`dmaou`，v6加`dmaou-talk`。最終`complete-art.json` `b4103bf6…ef41`，12,138項；執行檔仍是`d32af63c…`。
+
+顧問提醒後補做：色相閘門收據改版前的`hue-v2.json`刪除後以最終版工具寫回原檔名；`refs-v2-patches`與九組`hd_picture_refs.py`參考圖以最終版工具重做到暫存目錄，參考圖、排版與`refs.json`除工具SHA外完全相同。`refs-v2-portraits`（以公式色盤做的人像補丁）與`refs-v2-parts`（公式色盤部件圖集）已被取代、沒有任何收據引用，刪除；`hd_picture_refs.py`的`--parts`一併移除。
+
+驗證結果見規格068。另查出兩項前端既有行為，不在本輪改動：片尾六行捲字期間捲字層以原版色盤重畫整個視窗底圖，`yuu3-dark`的HD被蓋住；主角跑進光裡時，規格066的溶解沿用誤判為清黑轉場。以暫時測試（未提交，已刪除）依序合成`z-story-title`每個合成點，插畫層本身在1707.65M起已畫出`yuu3-final`、1713.85M起畫出`yuu3-dark`。
+
+本輪在主機誤執行過一次`python3 -c`讀取`patch.json`摘要（唯讀，未寫檔），之後改用`jq`或容器內Python。
+
+勘誤：
+- 「`dmaou`保留v1，片頭色盤正確」不成立。v1依片頭第一幕的色盤畫成灰白色，登錄點陣的色號與實機宣言畫面不同，從未在實機配對過；實機是藍色線條、紅眼。現由實機點陣的`story-dmaou`取代，舊項目以`--keep`保留但不會配對。
+- 「PC-98公式色盤適用全部插畫」不成立。人像、yuu3與魔王宣言另外載入場景色盤，參考圖改以實機截圖色盤為準；只有沒有截圖的`ttl1`、`ttl2`、`nec`用公式。
