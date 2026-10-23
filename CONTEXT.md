@@ -4,7 +4,13 @@
 
 本輪入口為[067開局揭開、F7選單與結局的無閃爍呈現及補譯](docs/spec/067-start-menu-ending-presentation.md)，工作區`workplace/release-v107/`。使用者在1.0.6推送後要求：結局敘述、製作名單與版權翻譯；開局逐格揭開與第一次進城堡、F7都要維持HD；中文出現後又變回英文要確定處理好。決定另出1.0.7，結局以直接載入結局模組驗證，HUD場景名、房間標題與alma改「中文（English）」，日籍人名查得到漢字就寫漢字。
 
-現行本機版本為`v.1.0.7-20261023`，完整包位於`dist-all/v.1.0.7-20261023/full-local/`，`bash tools/play.sh`啟動HD版、`--cht`選原貌中文版。正式建置在`workplace/release-v107/package/`，Linux二進位SHA為`3eeb4b7a9ebdeeea7cbc9e826fdc84bec401aeef48df4aae37c52eb87552bed6`，出貨來源與工作樹逐檔相同。第一次1.0.7打包未發布即作廢（說話沿用原本不分模式，可能蓋住遊戲過場背景上的角色），保留於`workplace/release-v107/package-attempt-1/`。1.0.7沒有新推廣片。
+現行本機版本為`v.1.0.7-20261023`，完整包位於`dist-all/v.1.0.7-20261023/full-local/`，`bash tools/play.sh`啟動HD版、`--cht`選原貌中文版。正式建置在`workplace/release-v107/package/`，Linux二進位SHA為`3eeb4b7a9ebdeeea7cbc9e826fdc84bec401aeef48df4aae37c52eb87552bed6`，出貨來源與工作樹逐檔相同。第一次1.0.7打包未發布即作廢（說話沿用原本不分模式，可能蓋住遊戲過場背景上的角色）；作廢產物已於2026-10-23依使用者指示刪除。1.0.7沒有新推廣片。
+
+## 開發中：068片頭與結局插畫HD覆蓋（未打包）
+
+1.0.7以`6830358`推送後，使用者要求清理作廢打包並修正結局與片頭陽台插畫。入口[068片頭與結局插畫的HD覆蓋修正](docs/spec/068-picture-coverage.md)，工作區`workplace/picture-coverage-v1/`。[補登錄工具](tools/hd_picture_complete.py)把九張只有人工圖格的插畫登錄為整張插畫與片段，FIN兩張遮去第0列，國王擁抱圖背景透明；[插畫覆繪](internal/prototype/hd/complete_art.go)在片頭／結局模式下以特徵點過半相符補畫被局部蓋住的插畫。陽台柱底棋盤格、FIN、名單公主圖、Garland離城與國王擁抱圖的原版色塊已消除。開發執行檔`d32af63c…`，未打包；已登錄資產在`workplace/full-hd-v1/manual-hd-v1/registered/`（`complete-art.json` `dcfbe11b…`）。片頭每次比對約多3到5毫秒，遊戲中不變。
+
+使用者決定（2026-10-23）：本輪只commit推送，不打包、不出新版號；片頭與結局插畫HD的紅綠色序與原版相反（參考圖用IBM色序，原版是PC-98色序），之後以正確色序重畫，守護精靈`sei`與結局第一段公主人像`new1`一併處理。本輪不改圖面。
 
 ## 目前狀態表
 
@@ -17,13 +23,13 @@
 | 結局插畫 | 片頭／結局模式下，說話小圖時大插畫沿用整張HD；對話肖像框沒有整張肖像時整框原版 |
 | 譯名 | HUD場景名、房間標題「賈辛（Jashiin）殿」、「靈魂寶石（alma）」、片頭故事與捲字專名、名單漢字 |
 | 探針 | 正式binary 17條（HD 12、CHT 5）英文先於中文、中文後變回英文、寫回後可見、狀態列未畫全為0；不追蹤色號0字形，字形可見須同格原版底色照原版顯示 |
-| 保留限制 | 結局部分插畫HD對不上（加蘭離城、公主對話姿態、FIN）；陽台棋盤格；後段內容只靜態通過 |
+| 保留限制 | 結局部分插畫HD對不上（加蘭離城、公主對話姿態、FIN）；陽台棋盤格；後段內容只靜態通過。加蘭離城、FIN與陽台棋盤格的處理見068（未打包）；公主對話姿態仍無HD |
 
 1.0.7正式包驗證在同版`smoke/`與`SHA256SUMS.json`；探針輸出在`workplace/release-v107/probe/out/rel*`。
 
 ## 前次交付（1.0.6）
 
-1.0.6入口為[066原版字形改寫與無閃爍呈現](docs/spec/066-glyph-patch-stable-presentation.md)，工作區`workplace/release-v106/`，以`4b884ba`推送。1.0.6版本為`v.1.0.6-20261023`，完整包位於`dist-all/v.1.0.6-20261023/full-local/`。正式建置在`workplace/release-v106/package/`，Linux二進位SHA為`5a73a5d59a44076cec75b1dd13c797746adfb4fb2f2e136fb2466aa36b4138cb`。前兩次打包未發布即作廢：第一次在片頭跳過與房間離場會露出英文，第二次在居民對話開框有一個合成點HD與原版拼接；各自保留於`workplace/release-v106/package-attempt-1/`、`package-attempt-2/`。1.0.6沒有新推廣片，1.0.5影片保留原版號。
+1.0.6入口為[066原版字形改寫與無閃爍呈現](docs/spec/066-glyph-patch-stable-presentation.md)，工作區`workplace/release-v106/`，以`4b884ba`推送。1.0.6版本為`v.1.0.6-20261023`，完整包位於`dist-all/v.1.0.6-20261023/full-local/`。正式建置在`workplace/release-v106/package/`，Linux二進位SHA為`5a73a5d59a44076cec75b1dd13c797746adfb4fb2f2e136fb2466aa36b4138cb`。前兩次打包未發布即作廢：第一次在片頭跳過與房間離場會露出英文，第二次在居民對話開框有一個合成點HD與原版拼接；兩次作廢產物已於2026-10-23依使用者指示刪除。1.0.6沒有新推廣片，1.0.5影片保留原版號。
 
 ## 1.0.6狀態表
 

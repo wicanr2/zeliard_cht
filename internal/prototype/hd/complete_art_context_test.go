@@ -6,6 +6,7 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/wicanr2/zeliard_cht/internal/prototype/bitmap"
@@ -46,6 +47,10 @@ func TestCompleteArtworkCaveContext(t *testing.T) {
 		if placement.x == 159 && placement.y == 90 && placement.entry.Source == "yuu3-final" {
 			t.Fatal("結局片段誤貼洞窟")
 		}
+		// 規格068補登錄的片頭／結局插畫只能在原版畫出整張母圖時出現。
+		if strings.HasPrefix(placement.entry.Source, "story-") {
+			t.Fatal("片頭插畫片段誤貼洞窟", placement.entry.File, placement.x, placement.y)
+		}
 	}
 	if !bytes.Equal(memory, original) {
 		t.Fatal("原版來源被修改")
@@ -57,7 +62,7 @@ func TestCompleteArtworkCaveContext(t *testing.T) {
 			break
 		}
 	}
-	if fragment == nil || fragment.context == nil || fragment.contextMatches(raw, 159, 90) {
+	if fragment == nil || fragment.context == nil || fragment.contextMatches(raw, 159, 90, false) || fragment.contextMatches(raw, 159, 90, true) {
 		t.Fatal("錯誤上下文仍被接受")
 	}
 	parent := fragment.context
@@ -70,13 +75,45 @@ func TestCompleteArtworkCaveContext(t *testing.T) {
 			}
 		}
 		x, y := position.X+fragment.contextX, position.Y+fragment.contextY
-		if !fragment.contextMatches(frame, x, y) {
+		if !fragment.contextMatches(frame, x, y, false) {
 			t.Fatal("正確母圖或邊界裁切被拒絕", position)
 		}
 		// 改動片段之外、仍在可見母圖內的像素，局部圖樣維持原狀。
 		frame[visible.Min.Y*320+visible.Min.X] ^= 1
-		if fragment.contextMatches(frame, x, y) {
+		if fragment.contextMatches(frame, x, y, false) {
 			t.Fatal("只看子圖而忽略母圖")
+		}
+		// 片頭／結局模式：母圖可見部分過半相符仍接受，過半不符就拒絕（規格068）。
+		if !fragment.contextMatches(frame, x, y, true) {
+			t.Fatal("片頭模式拒絕僅一點不同的母圖", position)
+		}
+		// 先還原上面改動的點，再改動片段以外、超過可見母圖一半的特徵點（黑色與兩種主要背景色不算上下文證據）。
+		frame[visible.Min.Y*320+visible.Min.X] ^= 1
+		key := func(v byte) bool {
+			return v != 0 && int(v) != parent.background[0] && int(v) != parent.background[1]
+		}
+		inked := 0
+		for py := visible.Min.Y; py < visible.Max.Y; py++ {
+			for px := visible.Min.X; px < visible.Max.X; px++ {
+				if key(parent.Raster[(py-position.Y)*parent.Width+px-position.X]) {
+					inked++
+				}
+			}
+		}
+		need := inked/2 + 1
+		for py := visible.Min.Y; py < visible.Max.Y && need > 0; py++ {
+			for px := visible.Min.X; px < visible.Max.X && need > 0; px++ {
+				if key(parent.Raster[(py-position.Y)*parent.Width+px-position.X]) && !image.Pt(px, py).In(image.Rect(x, y, x+fragment.Width, y+fragment.Height)) {
+					frame[py*320+px] ^= 1
+					need--
+				}
+			}
+		}
+		if need != 0 || len(parent.Mask) != 0 {
+			t.Fatal("過半改動的測試前提不成立", position)
+		}
+		if fragment.contextMatches(frame, x, y, true) {
+			t.Fatal("片頭模式接受過半不符的母圖", position)
 		}
 	}
 	if output := os.Getenv("ZELIARD_ARTIFACT_OUTPUT"); output != "" {

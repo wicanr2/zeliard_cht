@@ -35,10 +35,18 @@ type completeEntry struct {
 	baseline             byte
 	context              *completeEntry
 	contextX, contextY   int
+	// background 是母圖最常見的兩種非黑色（多半是背景）；局部母圖只以其餘顏色當證據。規格068。
+	background [2]int
+	// keySamples 是均勻取出的最多512個特徵點位置，供局部母圖先抽樣篩選。
+	keySamples []int
+	// distinct 是片段未遮罩點的色數；局部母圖只由三色以上的片段定位，兩色抖色片段在畫面上到處都對得上。
+	distinct int
 }
 type completePlacement struct {
 	entry *completeEntry
 	x, y  int
+	// cells 非空時只畫標記的點（被局部蓋住的母圖），其餘維持原版。
+	cells []bool
 }
 type CompleteArtwork struct {
 	groups             []completeGroup
@@ -54,8 +62,8 @@ type CompleteArtwork struct {
 	held    []completePlacement
 	holding bool
 	Held    int
-	// introMode 是原版 FF77 非零的片頭／結局模式；只有這時沿用說話中的大插畫。
-	introMode bool
+	// introMode 是原版 FF77 非零的片頭／結局模式；只有這時沿用說話中的大插畫，片段上下文也只在這時放寬。
+	introMode, lastIntro bool
 }
 
 func loadCompleteArtwork(dir string) (*CompleteArtwork, error) {
@@ -142,6 +150,13 @@ func loadCompleteArtworkMode(dir string, lazy bool) (*CompleteArtwork, error) {
 				break
 			}
 		}
+		var used [256]bool
+		for j, v := range e.Raster {
+			if (len(e.Mask) == 0 || e.Mask[j] != 0) && !used[v] {
+				used[v] = true
+				e.distinct++
+			}
+		}
 		// 純色空白仍保留在清單及人物組裝器，避免以大面積單色誤認場景。
 		if best < 2 {
 			continue
@@ -177,6 +192,10 @@ func loadCompleteArtworkMode(dir string, lazy bool) (*CompleteArtwork, error) {
 			}
 		}
 		e.context, e.contextX, e.contextY = parent, x, y
+		if parent.background == [2]int{} {
+			parent.background = dominantColors(parent)
+			parent.keySamples = keySamples(parent)
+		}
 	}
 	for _, e := range m.Components {
 		if e.Width != 8 || e.Height != 8 || len(e.Raster) != 64 || filepath.Base(e.File) != e.File {
@@ -282,15 +301,52 @@ func completeAnchor(b []byte) uint64 {
 }
 
 // 無記憶體綁定的插畫片段須同時符合母圖可見上下文，防止單一色點跨場景誤貼。
-func (e *completeEntry) contextMatches(raw []byte, x, y int) bool {
+// relaxed 用於片頭／結局：原版會以另一張插畫局部蓋住（製作名單騎士圖蓋住公主圖），
+// 母圖可見部分的特徵點過半相符即接受。特徵點是黑色與母圖兩種主要背景色以外的點：
+// 大片黑色的插畫在全黑畫面上、人物被擦掉後只剩背景抖色的插畫，都只有背景相符。規格068。
+func (e *completeEntry) contextMatches(raw []byte, x, y int, relaxed bool) bool {
+	diff, keyDiff, keyTotal, ok := e.contextDiff(raw, x, y, !relaxed)
+	return ok && (diff == 0 || relaxed && partialContext(keyDiff, keyTotal))
+}
+
+// partialMinKey 是局部母圖至少要相符的特徵點數。
+const partialMinKey = 256
+
+func partialContext(keyDiff, keyTotal int) bool {
+	return keyDiff*2 < keyTotal && keyTotal-keyDiff >= partialMinKey
+}
+
+// dominantColors 回報母圖最常見的兩種非黑色；沒有就是-1。
+func dominantColors(e *completeEntry) [2]int {
+	var count [256]int
+	for i, v := range e.Raster {
+		if v != 0 && (len(e.Mask) == 0 || e.Mask[i] != 0) {
+			count[v]++
+		}
+	}
+	top := [2]int{-1, -1}
+	for c := 1; c < 256; c++ {
+		switch {
+		case count[c] == 0:
+		case top[0] < 0 || count[c] > count[top[0]]:
+			top[1], top[0] = top[0], c
+		case top[1] < 0 || count[c] > count[top[1]]:
+			top[1] = c
+		}
+	}
+	return top
+}
+
+// contextDiff 回報母圖可見部分與畫面不同的點數，以及其中特徵點的不同數與總數；strict 時遇到第一個不同就停。
+func (e *completeEntry) contextDiff(raw []byte, x, y int, strict bool) (diff, keyDiff, keyTotal int, ok bool) {
 	parent := e.context
 	if parent == nil {
-		return true
+		return 0, 0, 0, true
 	}
 	left, top := x-e.contextX, y-e.contextY
 	visible := image.Rect(left, top, left+parent.Width, top+parent.Height).Intersect(image.Rect(0, 0, 320, 200))
 	if visible.Empty() {
-		return false
+		return 0, 0, 0, false
 	}
 	for py := visible.Min.Y; py < visible.Max.Y; py++ {
 		for px := visible.Min.X; px < visible.Max.X; px++ {
@@ -298,19 +354,119 @@ func (e *completeEntry) contextMatches(raw []byte, x, y int) bool {
 			if len(parent.Mask) != 0 && parent.Mask[at] == 0 {
 				continue
 			}
+			v := int(parent.Raster[at])
+			key := v != 0 && v != parent.background[0] && v != parent.background[1]
+			if key {
+				keyTotal++
+			}
 			if raw[py*320+px] != parent.Raster[at] {
-				return false
+				diff++
+				if key {
+					keyDiff++
+				}
+				if strict {
+					return diff, keyDiff, keyTotal, true
+				}
 			}
 		}
 	}
-	return true
+	return diff, keyDiff, keyTotal, true
+}
+
+// keySamples 均勻取出最多512個特徵點的位置。
+func keySamples(e *completeEntry) []int {
+	var keys []int
+	for i, v := range e.Raster {
+		if v != 0 && int(v) != e.background[0] && int(v) != e.background[1] && (len(e.Mask) == 0 || e.Mask[i] != 0) {
+			keys = append(keys, i)
+		}
+	}
+	if len(keys) <= 512 {
+		return keys
+	}
+	out := make([]int, 512)
+	for i := range out {
+		out[i] = keys[i*len(keys)/512]
+	}
+	return out
+}
+
+// partialLikely 以抽樣特徵點先篩選局部母圖：兩色抖色片段在畫面上到處都對得上，每個巧合位置都完整掃描
+// 整張母圖，片頭一次比對會由約22毫秒升到約0.4秒。回報抽樣相符比例；可見樣本不足32點回報0。規格068。
+func (e *completeEntry) partialLikely(raw []byte, left, top int) float64 {
+	seen, same := 0, 0
+	for _, at := range e.keySamples {
+		x, y := left+at%e.Width, top+at/e.Width
+		if x < 0 || y < 0 || x >= 320 || y >= 200 {
+			continue
+		}
+		seen++
+		if raw[y*320+x] == e.Raster[at] {
+			same++
+		}
+	}
+	if seen < 32 {
+		return 0
+	}
+	return float64(same) / float64(seen)
+}
+
+// completeContext 是同一次比對中母圖與其原生左上角；同一畫面每個位置只核對一次上下文。
+type completeContext struct {
+	parent    *completeEntry
+	left, top int
+}
+
+// partialCells 標出母圖在畫面上可畫的點（依母圖8×8格線，畫面外不計）。整格逐點相同就整格畫；
+// 與這類格相鄰、被遮擋物切過的交界格，只畫其中逐點相同的非黑色點。遮擋物內部的格不畫，避免巧合同色點散落。規格068。
+func partialCells(e *completeEntry, raw []byte, left, top int) []bool {
+	cells := make([]bool, e.Width*e.Height)
+	cw, ch := (e.Width+7)/8, (e.Height+7)/8
+	full := make([]bool, cw*ch)
+	box := func(cx, cy int) image.Rectangle {
+		return image.Rect(left+cx*8, top+cy*8, left+min(cx*8+8, e.Width), top+min(cy*8+8, e.Height)).Intersect(image.Rect(0, 0, 320, 200))
+	}
+	same := func(px, py int) bool {
+		at := (py-top)*e.Width + px - left
+		return len(e.Mask) != 0 && e.Mask[at] == 0 || raw[py*320+px] == e.Raster[at]
+	}
+	for cy := 0; cy < ch; cy++ {
+		for cx := 0; cx < cw; cx++ {
+			r := box(cx, cy)
+			if r.Empty() {
+				continue
+			}
+			ok := true
+			for py := r.Min.Y; py < r.Max.Y && ok; py++ {
+				for px := r.Min.X; px < r.Max.X && ok; px++ {
+					ok = same(px, py)
+				}
+			}
+			full[cy*cw+cx] = ok
+		}
+	}
+	for cy := 0; cy < ch; cy++ {
+		for cx := 0; cx < cw; cx++ {
+			edge := !full[cy*cw+cx] && (cx > 0 && full[cy*cw+cx-1] || cx+1 < cw && full[cy*cw+cx+1] || cy > 0 && full[(cy-1)*cw+cx] || cy+1 < ch && full[(cy+1)*cw+cx])
+			if !full[cy*cw+cx] && !edge {
+				continue
+			}
+			r := box(cx, cy)
+			for py := r.Min.Y; py < r.Max.Y; py++ {
+				for px := r.Min.X; px < r.Max.X; px++ {
+					cells[(py-top)*e.Width+px-left] = full[cy*cw+cx] || e.Raster[(py-top)*e.Width+px-left] != 0 && same(px, py)
+				}
+			}
+		}
+	}
+	return cells
 }
 
 func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Point) bool {
 	if s == nil {
 		return false
 	}
-	changed := len(s.lastActive) != len(s.active)
+	changed := len(s.lastActive) != len(s.active) || s.lastIntro != s.introMode
 	if !changed {
 		for i, v := range s.active {
 			if s.lastActive[i] != v {
@@ -321,6 +477,17 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 	}
 	if changed || !bytes.Equal(raw, s.lastRaw) {
 		s.placements = s.placements[:0]
+		// 0拒絕、1可見部分全部相符、2片頭／結局模式下過半相符（只畫逐點相同的格）。
+		contexts := map[completeContext]int{}
+		// 每張母圖最多一個局部位置：特徵點相符比例最高者。大片平滑區錯開幾點也會過半相同，
+		// 不篩掉會在一百多個錯位位置重複畫。母圖在某處完全相符時不找局部。
+		type partialCandidate struct {
+			key         completeContext
+			same, total int
+			sample      float64
+		}
+		partial := map[*completeEntry]partialCandidate{}
+		exact := map[*completeEntry]bool{}
 		for y := 0; y < 200; y++ {
 			for x := 0; x < 320; x++ {
 				var bits uint8
@@ -359,8 +526,34 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 								}
 							}
 						}
-						if match && e.contextMatches(raw, px, py) {
-							s.placements = append(s.placements, completePlacement{e, px, py})
+						if match && e.context != nil {
+							key := completeContext{e.context, px - e.contextX, py - e.contextY}
+							state, seen := contexts[key]
+							if !seen {
+								// 先嚴格核對（第一個不同就停）；片頭／結局模式才以抽樣篩選後完整核對局部母圖。
+								diff, _, _, ok := e.contextDiff(raw, px, py, true)
+								if ok && diff == 0 {
+									state = 1
+									exact[e.context] = true
+								} else if ok && s.introMode && e.distinct >= 3 && !exact[e.context] {
+									// 抽樣過半，且不比目前最佳位置低0.1以上，才完整核對。
+									best, has := partial[e.context]
+									if sample := e.context.partialLikely(raw, key.left, key.top); sample >= 0.5 && (!has || sample >= best.sample-0.1) {
+										if _, keyDiff, keyTotal, _ := e.contextDiff(raw, px, py, false); partialContext(keyDiff, keyTotal) {
+											state = 2
+											if same := keyTotal - keyDiff; !has || same*best.total > best.same*keyTotal {
+												partial[e.context] = partialCandidate{key, same, keyTotal, sample}
+											}
+										}
+									}
+								}
+								contexts[key] = state
+							}
+							// 過半相符時由母圖逐格畫出，片段本身不另放；片段去重後只登錄首見位置，不足以補滿。
+							match = state == 1
+						}
+						if match {
+							s.placements = append(s.placements, completePlacement{entry: e, x: px, y: py})
 						}
 					}
 				}
@@ -371,8 +564,18 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 			a, b := s.placements[i].entry, s.placements[j].entry
 			return a.Width*a.Height > b.Width*b.Height
 		})
+		// 局部母圖排在最後，只補完整插畫與沿用都沒畫到的格。
+		// 依母圖在清單中的順序加入，結果與map走訪順序無關。
+		for _, e := range s.entries {
+			c, has := partial[e]
+			if !has || exact[e] {
+				continue
+			}
+			s.placements = append(s.placements, completePlacement{entry: e, x: c.key.left, y: c.key.top, cells: partialCells(e, raw, c.key.left, c.key.top)})
+		}
 		s.lastRaw = append(s.lastRaw[:0], raw...)
 		s.lastActive = append(s.lastActive[:0], s.active...)
+		s.lastIntro = s.introMode
 	}
 	painted := false
 	for _, p := range s.placements {
@@ -380,11 +583,13 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 		if !e.ensurePixels() {
 			continue
 		}
+		// 放置範圍完全在畫布內時直接讀寫Pix，結果與RGBAAt／SetRGBA逐點相同；片頭整張插畫每次比對約省12毫秒。規格068。
+		fast := paintDirect && image.Rect(p.x*3+origin.X, p.y*3+origin.Y, (p.x+e.Width)*3+origin.X, (p.y+e.Height)*3+origin.Y).In(dst.Rect)
 		brightness := byte(0)
 		for y := 0; y < e.Height; y++ {
 			for x := 0; x < e.Width; x++ {
 				at := y*e.Width + x
-				if len(e.Mask) != 0 && e.Mask[at] == 0 {
+				if len(e.Mask) != 0 && e.Mask[at] == 0 || p.cells != nil && !p.cells[at] {
 					continue
 				}
 				i := ((p.y+y)*320 + p.x + x) * 3
@@ -398,10 +603,14 @@ func (s *CompleteArtwork) draw(dst *image.RGBA, raw, rgb []byte, origin image.Po
 		for y := 0; y < e.Height; y++ {
 			for x := 0; x < e.Width; x++ {
 				at := y*e.Width + x
-				if len(e.Mask) != 0 && e.Mask[at] == 0 {
+				if len(e.Mask) != 0 && e.Mask[at] == 0 || p.cells != nil && !p.cells[at] {
 					continue
 				}
 				i := ((p.y+y)*320 + p.x + x) * 3
+				if fast {
+					painted = paintFast(dst, e, x, y, (p.x+x)*3+origin.X, (p.y+y)*3+origin.Y, rgb[i:i+3], brightness) || painted
+					continue
+				}
 				native := true
 				for dy := 0; dy < 3 && native; dy++ {
 					for dx := 0; dx < 3; dx++ {
@@ -510,7 +719,7 @@ func (s *CompleteArtwork) holdLarge(raw []byte) {
 		}
 		found := false
 		for _, q := range large {
-			if q == p {
+			if q.entry == p.entry && q.x == p.x && q.y == p.y {
 				found = true
 				break
 			}
@@ -552,4 +761,40 @@ func (s *CompleteArtwork) largeCovers(r image.Rectangle) bool {
 		}
 	}
 	return false
+}
+
+// paintDirect 只供測試比對兩條路徑。
+var paintDirect = true
+
+// paintFast 是draw的直接Pix版本：(dx0,dy0)起的3×3點都還是原版色時，以HD點覆蓋，否則不畫。
+func paintFast(dst *image.RGBA, e *completeEntry, x, y, dx0, dy0 int, native []byte, brightness byte) bool {
+	for dy := 0; dy < 3; dy++ {
+		o := dst.PixOffset(dx0, dy0+dy)
+		for dx := 0; dx < 3; dx++ {
+			if dst.Pix[o] != native[0] || dst.Pix[o+1] != native[1] || dst.Pix[o+2] != native[2] {
+				return false
+			}
+			o += 4
+		}
+	}
+	dim := e.baseline > 0 && brightness < e.baseline
+	for dy := 0; dy < 3; dy++ {
+		o := dst.PixOffset(dx0, dy0+dy)
+		row := (y*3+dy)*e.Width*3 + x*3
+		for dx := 0; dx < 3; dx++ {
+			c := e.pixels[row+dx]
+			if dim {
+				c.R = uint8(uint32(c.R) * uint32(brightness) / uint32(e.baseline))
+				c.G = uint8(uint32(c.G) * uint32(brightness) / uint32(e.baseline))
+				c.B = uint8(uint32(c.B) * uint32(brightness) / uint32(e.baseline))
+			}
+			inv, a := uint32(255-c.A), uint32(c.A)
+			dst.Pix[o] = uint8((uint32(c.R)*a + uint32(native[0])*inv + 127) / 255)
+			dst.Pix[o+1] = uint8((uint32(c.G)*a + uint32(native[1])*inv + 127) / 255)
+			dst.Pix[o+2] = uint8((uint32(c.B)*a + uint32(native[2])*inv + 127) / 255)
+			dst.Pix[o+3] = 255
+			o += 4
+		}
+	}
+	return true
 }
